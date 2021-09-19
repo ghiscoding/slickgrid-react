@@ -15,12 +15,10 @@ import {
   unsubscribeAll,
 } from '@slickgrid-universal/common';
 import { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
-// import { inject, singleton } from 'aurelia-framework';
 import * as DOMPurify from 'dompurify';
 
 import { ReactComponentOutput, GridOption, RowDetailView, SlickGrid, ViewModelBindableInputData } from '../models/index';
-import { GlobalEventPubSubService, GlobalEventSharedService } from '../services/singletons';
-// import { AureliaUtilService } from '../services/aureliaUtil.service';
+// import { ReactUtilService } from '../services/reactUtil.service';
 
 // using external non-typed js libraries
 declare const Slick: SlickNamespace;
@@ -42,11 +40,7 @@ export class RowDetailViewExtension implements UniversalRowDetailViewExtension {
   private _subscriptions: EventSubscription[] = [];
   private _userProcessFn?: (item: any) => Promise<any>;
 
-  private readonly eventPubSubService: EventPubSubService = GlobalEventPubSubService;
-  //private readonly aureliaUtilService: AureliaUtilService;
-  private readonly sharedService: SharedService = GlobalEventSharedService;
-
-  constructor() {
+  constructor(private readonly eventPubSubService: EventPubSubService, private readonly reactUtilService: any /* ReactUtilService */, private readonly sharedService: SharedService) {
     this._eventHandler = new Slick.EventHandler();
   }
 
