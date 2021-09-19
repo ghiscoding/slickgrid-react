@@ -17,7 +17,7 @@ interface State { }
 export class ReactSlickgridCustomElement extends Component<Props, State> {
   render() {
     return (
-      <span>test 5</span>
+      <span>test 9</span>
     );
   }
 }
