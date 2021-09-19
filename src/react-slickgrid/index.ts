@@ -1,13 +1,17 @@
+import * as $ from 'jquery';
+window['$'] = $;
+window['jQuery'] = $;
+
 export * from '@slickgrid-universal/common';
-import Button from './custom-elements/Button';
-export { Button };
 
 /*
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { FrameworkConfiguration, NewInstance } from 'aurelia-framework';
 import { PLATFORM } from 'aurelia-pal';
+*/
 
-import { AureliaSlickgridCustomElement } from './custom-elements/aurelia-slickgrid';
+import { ReactSlickgridCustomElement } from './custom-elements/react-slickgrid';
+/*
 import { SlickPaginationCustomElement } from './custom-elements/slick-pagination';
 import { SlickgridEventAggregator } from './custom-elements/slickgridEventAggregator';
 import { SlickgridConfig } from './slickgrid-config';
@@ -56,8 +60,12 @@ export function configure(aurelia: FrameworkConfiguration, callback: (instance: 
 }
 
 export {
-  AureliaSlickgridCustomElement,
+  ReactSlickgridCustomElement,
   SlickPaginationCustomElement,
   SlickgridConfig
 };
 */
+
+export {
+  ReactSlickgridCustomElement
+};
