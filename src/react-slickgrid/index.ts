@@ -15,9 +15,11 @@ import { ReactSlickgridCustomElement } from './custom-elements/react-slickgrid';
 import { SlickPaginationCustomElement } from './custom-elements/slick-pagination';
 import { SlickgridEventAggregator } from './custom-elements/slickgridEventAggregator';
 import { SlickgridConfig } from './slickgrid-config';
+*/
+
 import {
-  AureliaGridInstance,
-  AureliaViewOutput,
+  ReactGridInstance,
+  ReactComponentOutput,
   GridOption,
   RowDetailView,
   SlickGrid,
@@ -25,24 +27,14 @@ import {
   ViewModelBindableInputData
 } from './models/index';
 
-// re-export only the Aurelia interfaces (models), some of which were overriden
-export {
-  AureliaGridInstance,
-  AureliaViewOutput,
-  GridOption,
-  RowDetailView,
-  SlickGrid,
-  ViewModelBindableData,
-  ViewModelBindableInputData
-};
-
 // expose all public classes
 export {
-  AureliaUtilService,
-  TranslaterService,
+  // ReactUtilService,
+  TranslatorService,
   disposeAllSubscriptions
 } from './services/index';
 
+/*
 export function configure(aurelia: FrameworkConfiguration, callback: (instance: SlickgridConfig) => void) {
   aurelia.globalResources(PLATFORM.moduleName('./custom-elements/aurelia-slickgrid'));
   aurelia.globalResources(PLATFORM.moduleName('./custom-elements/slick-pagination'));
