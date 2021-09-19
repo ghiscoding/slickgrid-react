@@ -9,15 +9,15 @@ import 'slickgrid/slick.core';
 import 'slickgrid/slick.dataview';
 import 'slickgrid/slick.grid';
 import 'slickgrid/slick.groupitemmetadataprovider';
-import React, { Component } from 'react';
+import React from 'react';
+import { GlobalEventPubSubService } from '../services/singletons';
 
 interface Props { }
-interface State { }
 
-export class ReactSlickgridCustomElement extends Component<Props, State> {
-  render() {
-    return (
-      <span>test 9</span>
-    );
-  }
-}
+export const ReactSlickgridCustomElement: React.FC<Props> = ({ }) => {
+  const _eventPubSubService = GlobalEventPubSubService;
+
+  return (
+    <span>7</span>
+  );
+};

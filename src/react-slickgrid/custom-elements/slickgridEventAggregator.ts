@@ -1,30 +1,12 @@
-import * as PubSub from 'pubsub-js';
-import * as React from 'react';
-import { useContext } from 'react';
-const GlobalEventAggregatorContext = React.createContext<PubSubJS.Base>(PubSub);
-
-export interface Disposable {
-  dispose(): void;
-}
+import { EventSubscription } from '@slickgrid-universal/common';
 
 /**
  * A class that will be used for internal communication of parent-child
  *
  * All methods are abstract for typings purposes only
  */
-export class SlickgridEventAggregator {
-  private readonly ea: PubSubJS.Base = useContext<PubSubJS.Base>(GlobalEventAggregatorContext);
+export abstract class SlickgridEventAggregator {
+  abstract publish(event: string, data: any): void;
 
-  publish(event: string, data: any): void {
-    this.ea.publish(event, data);
-  }
-
-  subscribe(event: string, callback: (data: any) => void): Disposable {
-    const token = this.ea.subscribe(event, callback);
-    return {
-      dispose: () => {
-        this.ea.unsubscribe(token);
-      }
-    };
-  }
+  abstract subscribe(event: string, callback: (data: any) => void): EventSubscription;
 }

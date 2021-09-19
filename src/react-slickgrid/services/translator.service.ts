@@ -1,16 +1,13 @@
 import { TranslaterService as UniversalTranslateService } from '@slickgrid-universal/common';
 import i18next, { i18n } from 'i18next';
-import * as React from 'react';
-import { useContext } from 'react';
-
-const TranslationContext = React.createContext<i18n>(i18next);
+import PubSub from './pubSub';
 
 /**
  * This is a Translate Service Wrapper for Slickgrid-Universal monorepo lib to work properly,
  * it must implement Slickgrid-Universal TranslatorService interface to work properly
  */
 export class TranslatorService implements UniversalTranslateService {
-  private readonly i18n: i18n = useContext<i18n>(TranslationContext);
+  private readonly i18n: i18n = i18next;
   constructor() { }
 
   /**
@@ -28,11 +25,13 @@ export class TranslatorService implements UniversalTranslateService {
    */
   async use(newLang: string): Promise<any> {
     return new Promise((resolve, reject) => {
+      const oldLocale = this.getCurrentLanguage();
       this.i18n.changeLanguage(newLang, (err, tr) => {
         if (err) {
           reject(err);
         }
 
+        PubSub.singletonInstance.publish('i18n:locale:changed', { oldValue: oldLocale, newValue: newLang });
         resolve(tr);
       });
     });
