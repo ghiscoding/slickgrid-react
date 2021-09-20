@@ -86,8 +86,8 @@ import { ReactGridInstance, GridOption, } from '../models/index';
 import {
   //ReactUtilService,
   disposeAllSubscriptions,
-  //ContainerService,
-  TranslatorService,
+  ContainerService,
+  TranslaterService,
 } from '../services/index';
 import { RowDetailViewExtension } from '../extensions';
 import { Subscription } from 'rxjs';
@@ -96,14 +96,15 @@ import { Subscription } from 'rxjs';
 declare const Slick: SlickNamespace;
 
 import { SlickgridEventAggregator } from '../custom-elements/slickgridEventAggregator';
+import { SlickPaginationCustomElement } from './slick-pagination';
 
 interface Props {
   reactUtilService: any; // ReactUtilService;
   container: any; // Container;
   elm: Element;
   globalEa: SlickgridEventAggregator;
-  containerService: any; // ContainerService;
-  translatorService: TranslatorService;
+  containerService: ContainerService;
+  translaterService: TranslaterService;
   externalServices: {
     backendUtilityService?: BackendUtilityService,
     collectionService?: CollectionService,
@@ -124,7 +125,7 @@ interface Props {
   }
 }
 
-export const ReactSlickgridCustomElement = ({ reactUtilService, container, elm, globalEa, containerService, translatorService, externalServices }: Props): JSX.Element => {
+export const ReactSlickgridCustomElement = ({ reactUtilService, container, elm, globalEa, containerService, translaterService, externalServices }: Props): JSX.Element => {
   let _columnDefinitions: Column[] = [];
   let _currentDatasetLength = 0;
   let _dataset: any[] | null = null;
@@ -198,9 +199,9 @@ export const ReactSlickgridCustomElement = ({ reactUtilService, container, elm, 
   backendUtilityService = externalServices?.backendUtilityService ?? new BackendUtilityService();
   gridEventService = externalServices?.gridEventService ?? new GridEventService();
   sharedService = externalServices?.sharedService ?? new SharedService();
-  collectionService = externalServices?.collectionService ?? new CollectionService(translatorService);
-  extensionUtility = externalServices?.extensionUtility ?? new ExtensionUtility(sharedService, translatorService);
-  filterFactory = new FilterFactory(slickgridConfig, translatorService, collectionService);
+  collectionService = externalServices?.collectionService ?? new CollectionService(translaterService);
+  extensionUtility = externalServices?.extensionUtility ?? new ExtensionUtility(sharedService, translaterService);
+  filterFactory = new FilterFactory(slickgridConfig, translaterService, collectionService);
   filterService = externalServices?.filterService ?? new FilterService(filterFactory as any, _eventPubSubService, sharedService, backendUtilityService);
   resizerService = externalServices?.resizerService ?? new ResizerService(_eventPubSubService);
   sortService = externalServices?.sortService ?? new SortService(sharedService, _eventPubSubService, backendUtilityService);
@@ -210,15 +211,15 @@ export const ReactSlickgridCustomElement = ({ reactUtilService, container, elm, 
   // extensions
   const autoTooltipExtension = new AutoTooltipExtension(sharedService);
   const cellExternalCopyManagerExtension = new CellExternalCopyManagerExtension(extensionUtility, sharedService);
-  const cellMenuExtension = new CellMenuExtension(extensionUtility, sharedService, translatorService);
-  const contextMenuExtension = new ContextMenuExtension(extensionUtility, _eventPubSubService, sharedService, treeDataService, translatorService);
+  const cellMenuExtension = new CellMenuExtension(extensionUtility, sharedService, translaterService);
+  const contextMenuExtension = new ContextMenuExtension(extensionUtility, _eventPubSubService, sharedService, treeDataService, translaterService);
   const columnPickerExtension = new ColumnPickerExtension(extensionUtility, sharedService);
   const checkboxExtension = new CheckboxSelectorExtension(sharedService);
   const draggableGroupingExtension = new DraggableGroupingExtension(extensionUtility, _eventPubSubService, sharedService);
-  const gridMenuExtension = new GridMenuExtension(extensionUtility, filterService, sharedService, sortService, backendUtilityService, translatorService);
+  const gridMenuExtension = new GridMenuExtension(extensionUtility, filterService, sharedService, sortService, backendUtilityService, translaterService);
   const groupItemMetaProviderExtension = new GroupItemMetaProviderExtension(sharedService);
   const headerButtonExtension = new HeaderButtonExtension(extensionUtility, sharedService);
-  const headerMenuExtension = new HeaderMenuExtension(extensionUtility, filterService, _eventPubSubService, sharedService, sortService, translatorService);
+  const headerMenuExtension = new HeaderMenuExtension(extensionUtility, filterService, _eventPubSubService, sharedService, sortService, translaterService);
   const rowDetailViewExtension = new RowDetailViewExtension(reactUtilService, _eventPubSubService, sharedService);
   const rowMoveManagerExtension = new RowMoveManagerExtension(sharedService);
   const rowSelectionExtension = new RowSelectionExtension(sharedService);
@@ -239,7 +240,7 @@ export const ReactSlickgridCustomElement = ({ reactUtilService, container, elm, 
     rowMoveManagerExtension,
     rowSelectionExtension,
     sharedService,
-    translatorService,
+    translaterService,
   );
 
   gridStateService = externalServices?.gridStateService ?? new GridStateService(extensionService, filterService, _eventPubSubService, sharedService, sortService, treeDataService);
@@ -259,8 +260,27 @@ export const ReactSlickgridCustomElement = ({ reactUtilService, container, elm, 
     treeDataService,
   ];
 
+  // register all Service instances in the container
+  containerService = containerService ?? new ContainerService();
+  containerService.registerInstance('ExtensionUtility', extensionUtility);
+  containerService.registerInstance('FilterService', filterService);
+  containerService.registerInstance('CollectionService', collectionService);
+  containerService.registerInstance('ExtensionService', extensionService);
+  containerService.registerInstance('GridEventService', gridEventService);
+  containerService.registerInstance('GridService', gridService);
+  containerService.registerInstance('GridStateService', gridStateService);
+  containerService.registerInstance('GroupingAndColspanService', groupingService);
+  containerService.registerInstance('PaginationService', paginationService);
+  containerService.registerInstance('ResizerService', resizerService);
+  containerService.registerInstance('SharedService', sharedService);
+  containerService.registerInstance('SortService', sortService);
+  containerService.registerInstance('EventPubSubService', _eventPubSubService);
+  containerService.registerInstance('PubSubService', _eventPubSubService);
+  containerService.registerInstance('TranslaterService', translaterService);
+  containerService.registerInstance('TreeDataService', treeDataService);
+
   return (
-    <div id={`slickGridContainer-${gridId}`} className="grid-pane">
+    <div id={`slickGridContainer-${gridId}`} className="grid-pane test2">
       {/* <!-- Header slot if you need to create a complex custom header --> */}
       <slot name="slickgrid-header"></slot>
 
@@ -268,12 +288,11 @@ export const ReactSlickgridCustomElement = ({ reactUtilService, container, elm, 
       </div>
 
       {/* <!-- Pagination section under the grid-- > */}
-      {/*
       {showPagination &&
-        <slick-pagination id={`slickPagingContainer-${gridId}`} grid-options={gridOptions} pagination-service={paginationService}>
-        </slick-pagination>
+        <div id={`slickPagingContainer-${gridId}`}>
+          <SlickPaginationCustomElement gridOptions={gridOptions!} paginationService={paginationService} />
+        </div>
       }
-      */}
 
       {/* <!--Footer slot if you need to create a complex custom footer-- > */}
       <slot name="slickgrid-footer"></slot>

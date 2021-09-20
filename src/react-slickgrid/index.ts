@@ -29,7 +29,7 @@ import {
 // expose all public classes
 export {
   // ReactUtilService,
-  TranslatorService,
+  TranslaterService,
   disposeAllSubscriptions
 } from './services/index';
 

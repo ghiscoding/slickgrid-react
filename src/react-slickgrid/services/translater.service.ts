@@ -4,9 +4,9 @@ import PubSub from './pubSub';
 
 /**
  * This is a Translate Service Wrapper for Slickgrid-Universal monorepo lib to work properly,
- * it must implement Slickgrid-Universal TranslatorService interface to work properly
+ * it must implement Slickgrid-Universal TranslaterService interface to work properly
  */
-export class TranslatorService implements UniversalTranslateService {
+export class TranslaterService implements UniversalTranslateService {
   private readonly i18n: i18n = i18next;
   constructor() { }
 
