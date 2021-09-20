@@ -12,10 +12,14 @@ import {
   SortService,
   TreeDataService
 } from '@slickgrid-universal/common';
+import { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
 
 import { SlickGrid } from '../models/index';
 
 export interface ReactGridInstance {
+  element: React.RefObject<HTMLDivElement>;
+  eventPubSubService: EventPubSubService;
+
   /** Slick DataView object */
   dataView: SlickDataView;
 

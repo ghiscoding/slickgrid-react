@@ -25,6 +25,10 @@ export class SlickPaginationCustomElement extends React.Component {
   textOf = 'of';
   textPage = 'Page';
 
+  static defaultProps = {
+    globalEa: PubSub
+  }
+
   constructor(public readonly props: Props) {
     super(props);
   }
