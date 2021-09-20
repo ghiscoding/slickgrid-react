@@ -210,12 +210,16 @@ export class ReactSlickgridCustomElement extends React.Component {
   instances: ReactGridInstance | null = null;
 
   private elm: React.RefObject<HTMLDivElement> = React.createRef();
+
+  static defaultProps = {
+    dataset: [],
+    gridId: '',
+    columnDefinitions: [],
+    totalItems: 0
+  }
+
   constructor(public readonly props: Props) {
     super(props);
-    this.props.dataset = this.props.dataset || [];
-    this.props.gridId = this.props.gridId || '';
-    this.props.columnDefinitions = this.props.columnDefinitions || [];
-    this.props.totalItems = this.props.totalItems || 0;
 
     const slickgridConfig = new SlickgridConfig();
 
