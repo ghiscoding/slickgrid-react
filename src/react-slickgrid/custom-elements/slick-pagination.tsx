@@ -5,10 +5,11 @@ import { GridOption } from '../models/index';
 import { disposeAllSubscriptions } from '../services/utilities';
 import { Constants } from '../constants';
 import { TranslaterService } from '../services/translater.service';
-import PubSub from '../services/pubSub';
+import { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
+import { GlobalEventPubSubService } from '../services/singletons';
 
 interface Props {
-  globalEa?: PubSub;
+  globalEa?: EventPubSubService;
   translateService?: TranslaterService;
   paginationService: PaginationService;
   gridOptions: GridOption;
@@ -26,7 +27,7 @@ export class SlickPaginationCustomElement extends React.Component {
   textPage = 'Page';
 
   static defaultProps = {
-    globalEa: PubSub
+    globalEa: GlobalEventPubSubService
   }
 
   constructor(public readonly props: Props) {
