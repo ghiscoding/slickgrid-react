@@ -3,6 +3,7 @@ window['$'] = window['jQuery'] = jquery;
 import 'jquery-ui/ui/widgets/draggable';
 import 'jquery-ui/ui/widgets/droppable';
 import 'jquery-ui/ui/widgets/sortable';
+import 'regenerator-runtime/runtime.js';
 export * from '@slickgrid-universal/common';
 
 /*

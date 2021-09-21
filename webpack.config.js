@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { ProvidePlugin } = require('webpack');
+const { HotModuleReplacementPlugin, ProvidePlugin } = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
@@ -64,6 +64,28 @@ module.exports = ({ production } = {}, { server } = {}) => ({
         test: /\.css$/i,
         use: [{ loader: MiniCssExtractPlugin.loader }, 'css-loader']
       },
+      {
+        test: /\.(ts|js)x?$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+            presets: [
+              ["@babel/preset-env",
+                {
+                  "targets": {
+                    "browsers": [">0.03%"]
+                  },
+                  "useBuiltIns": "entry",
+                  "corejs": 3
+                }
+              ],
+              "@babel/preset-typescript",
+              "@babel/preset-react"
+            ]
+          },
+        },
+      },
       { test: /\.(sass|scss)$/, use: ['style-loader', 'css-loader', 'sass-loader'], issuer: /\.[tj]s$/i },
       { test: /\.(sass|scss)$/, use: ['css-loader', 'sass-loader'], issuer: /\.html?$/i },
       { test: /\.html$/i, loader: 'html-loader' },
@@ -79,13 +101,6 @@ module.exports = ({ production } = {}, { server } = {}) => ({
       'window.jQuery': 'jquery',
       'window.$': 'jquery'
     }),
-    new HtmlWebpackPlugin({
-      template: 'index.html',
-      favicon: `${srcDir}/favicon.ico`,
-      metadata: {
-        title, server, baseUrl
-      }
-    }),
     // ref: https://webpack.js.org/plugins/mini-css-extract-plugin/
     new MiniCssExtractPlugin({ // updated to match the naming conventions for the js files
       filename: '[name].[contenthash].bundle.css',
@@ -100,6 +115,11 @@ module.exports = ({ production } = {}, { server } = {}) => ({
 
     // Note that the usage of following plugin cleans the webpack output directory before build.
     new CleanWebpackPlugin(),
-    new ForkTsCheckerWebpackPlugin()
+    new ForkTsCheckerWebpackPlugin(),
+    new ForkTsCheckerWebpackPlugin(),
+    new HotModuleReplacementPlugin(),
+    new HtmlWebpackPlugin({
+      template: './src/index.html'
+    })
   ]
 });

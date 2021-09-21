@@ -43,10 +43,10 @@
     "postbuild:esm": "cross-env copyfiles --up 2 src/react-slickgrid/**/*.html dist/esm",
     "build:native-modules": "cross-env tsc --project src/react-slickgrid/tsconfig.build.json --outDir dist/native-modules --module es2015",
     "postbuild:native-modules": "cross-env copyfiles --up 2 src/react-slickgrid/**/*.html dist/native-modules",
+    "//prebuild": "npm-run-all delete:dist lint",
     "prebuild": "npm-run-all delete:dist",
     "build": "npm-run-all build:amd build:commonjs build:esm build:native-modules",
     "postbuild": "npm-run-all copy-i18n:dist copy-asset-lib",
-    "//prebuild": "npm-run-all delete:dist lint",
     "build:with-e2e": "npm-run-all build cypress:ci",
     "copy-asset-lib": "cross-env copyfiles --up 2 src/assets/lib/** dist",
     "copy-i18n:dist": "cross-env copyfiles --up 3 src/assets/i18n/**/*.* dist/i18n",
@@ -65,7 +65,7 @@
     "test:jest:coverage": "npx jest --detectOpenHandles --runInBand --coverage --config test/jest.config.js",
     "build:demo": "webpack --env production",
     "update-npm-versions": "npm-check --skip-unused --update-all",
-    "debug": "npm run build && copyfiles dist/**/* c:/temp/react-slickgrid-test/node_modules/@speige/react-slickgrid"
+    "//debug": "npm run build && copyfiles dist/**/* c:/temp/react-slickgrid-test/node_modules/@speige/react-slickgrid"
   },
   "browserslist": [
     "last 2 version",
@@ -95,7 +95,9 @@
     "moment-mini": "^2.24.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
+    "regenerator-runtime": "^0.13.9",
     "typescript": ">=4.3.5",
     "web-vitals": "^1.1.2"
   },

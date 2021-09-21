@@ -7,12 +7,14 @@
     "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": false,
+    "esModuleInterop": true,
     "moduleResolution": "node",
     "allowJs": true,
     "baseUrl": "src",
     "skipLibCheck": true,
     "strict": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "jsx": "react",
     "lib": [
       "es2018",
       "dom"
