@@ -1,7 +1,8 @@
-import * as $ from 'jquery';
-window['$'] = $;
-window['jQuery'] = $;
-
+import jquery from 'jquery';
+window['$'] = window['jQuery'] = jquery;
+import 'jquery-ui/ui/widgets/draggable';
+import 'jquery-ui/ui/widgets/droppable';
+import 'jquery-ui/ui/widgets/sortable';
 export * from '@slickgrid-universal/common';
 
 /*
