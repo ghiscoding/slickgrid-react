@@ -1,11 +1,12 @@
 import React from 'react';
 import Example1 from './example1';
+import Example2 from './example2';
 import Router from './Router';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
 const routes = [
   { route: '/example1', component: Example1, title: '1- Basic Grid / 2 Grids' },
-  { route: '/example2', title: '2- Formatters' },
+  { route: '/example2', component: Example2, title: '2- Formatters' },
   // { route: '/example3', title: '3- Editors / Delete' },
   // { route: '/example4', title: '4- Client Side Sort/Filter' },
   // { route: '/example5', title: '5- Backend OData Service' },
