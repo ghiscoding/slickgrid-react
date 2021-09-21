@@ -1,15 +1,13 @@
 import { ContainerService as UniversalContainerService } from '@slickgrid-universal/common';
-import * as React from 'react';
-import { useContext } from 'react';
 
 export class ContainerService implements UniversalContainerService {
-  private readonly container: { [key: string]: React.Context<any> } = {};
+  private readonly container: { [key: string]: any } = {};
 
   get<T = any>(key: string): T | null {
-    return useContext(this.container[key]);
+    return this.container[key];
   }
 
   registerInstance(key: string, instance: any) {
-    this.container[key] = React.createContext<any>(instance);
+    this.container[key] = instance;
   }
 }
