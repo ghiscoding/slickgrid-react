@@ -5,10 +5,11 @@ import {
   Formatter,
   Formatters,
   GridOption,
+  ReactSlickgridCustomElement,
 } from '../../react-slickgrid';
 import React from 'react';
 
-interface Props {
+interface DataItem {
   id: number;
   title: string;
   duration: string;
@@ -22,18 +23,20 @@ interface Props {
 }
 
 // create my custom Formatter with the Formatter type
-const myCustomCheckmarkFormatter: Formatter<Props> = (_row, _cell, value) => {
+const myCustomCheckmarkFormatter: Formatter<DataItem> = (_row, _cell, value) => {
   // you can return a string of a object (of type FormatterResultObject), the 2 types are shown below
   return value ? `<i class="fa fa-fire red" aria-hidden="true"></i>` : { text: '<i class="fa fa-snowflake-o" aria-hidden="true"></i>', addClasses: 'lightblue', toolTip: 'Freezing' };
 };
 
-const customEnableButtonFormatter: Formatter<Props> = (_row: number, _cell: number, value: any) => {
+const customEnableButtonFormatter: Formatter<DataItem> = (_row: number, _cell: number, value: any) => {
   return `<span style="margin-left: 5px">
       <button class="btn btn-xs btn-default">
         <i class="fa ${value ? 'fa-check-circle' : 'fa-circle-thin'} fa-lg" style="color: ${value ? 'black' : 'lavender'}"></i>
       </button>
     </span>`;
 };
+
+interface Props { }
 
 export default class Example2 extends React.Component {
   title = 'Example 2: Grid with Formatters';
@@ -52,7 +55,7 @@ export default class Example2 extends React.Component {
 
   reactGrid!: ReactGridInstance;
   gridOptions!: GridOption;
-  columnDefinitions: Column<Props>[] = [];
+  columnDefinitions: Column<DataItem>[] = [];
   dataset: any[] = [];
   resizerPaused = false;
 
@@ -181,7 +184,7 @@ export default class Example2 extends React.Component {
         <h2>
           {this.title}
           <span className="float-right">
-            <a style={{ fontSize: '18px'}}
+            <a style={{ fontSize: '18px' }}
               target="_blank"
               href="https://github.com/ghiscoding/React-Slickgrid/blob/master/src/app/examples/grid-basic.component.ts">
               <span className="fa fa-link"></span> code
@@ -190,15 +193,15 @@ export default class Example2 extends React.Component {
         </h2>
         <div className="subtitle">{this.subTitle}</div>
         <button className="btn btn-outline-secondary btn-sm"
-          onClick={togglePauseResizer()}>
-        Pause auto-resize: <b>{this.resizerPaused}</b>
+          onClick={this.togglePauseResizer}>
+          Pause auto-resize: <b>{this.resizerPaused}</b>
         </button>
 
         <ReactSlickgridCustomElement gridId="grid2"
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          instances={this.reactGrid} />
+          dataset={this.dataset} />
+        {/* instances={this.reactGrid} */}
       </div>
     );
   }
