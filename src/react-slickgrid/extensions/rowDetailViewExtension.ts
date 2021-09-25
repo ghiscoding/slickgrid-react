@@ -18,7 +18,8 @@ import { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
 import * as DOMPurify from 'dompurify';
 
 import { ReactComponentOutput, GridOption, RowDetailView, SlickGrid, ViewModelBindableInputData } from '../models/index';
-// import { ReactUtilService } from '../services/reactUtil.service';
+import { ReactUtilService } from '../services/reactUtil.service';
+import ReactDOM from 'react-dom';
 
 // using external non-typed js libraries
 declare const Slick: SlickNamespace;
@@ -40,7 +41,7 @@ export class RowDetailViewExtension implements UniversalRowDetailViewExtension {
   private _subscriptions: EventSubscription[] = [];
   private _userProcessFn?: (item: any) => Promise<any>;
 
-  constructor(private readonly eventPubSubService: EventPubSubService, private readonly reactUtilService: any /* ReactUtilService */, private readonly sharedService: SharedService) {
+  constructor(private readonly eventPubSubService: EventPubSubService, private readonly reactUtilService: ReactUtilService, private readonly sharedService: SharedService) {
     this._eventHandler = new Slick.EventHandler();
   }
 
@@ -282,7 +283,7 @@ export class RowDetailViewExtension implements UniversalRowDetailViewExtension {
   renderPreloadView() {
     const containerElements = document.getElementsByClassName(`${PRELOAD_CONTAINER_PREFIX}`);
     if (containerElements && containerElements.length >= 0) {
-      //this.aureliaUtilService.createAureliaViewAddToSlot(this._preloadView, containerElements[containerElements.length - 1], true);
+      this.reactUtilService.createReactComponentAppendToDom(this._preloadView, containerElements[containerElements.length - 1], true);
     }
   }
 
@@ -297,16 +298,15 @@ export class RowDetailViewExtension implements UniversalRowDetailViewExtension {
         dataView: this.sharedService.dataView,
         parent: this.rowDetailViewOptions && this.rowDetailViewOptions.parent,
       } as ViewModelBindableInputData;
-      /*
-      const aureliaComp = this.aureliaUtilService.createAureliaViewModelAddToSlot(this._viewModel, bindableData, containerElements[containerElements.length - 1], true);
+      const reactComp = this.reactUtilService.createReactComponentAppendToDom(this._viewModel, containerElements[containerElements.length - 1], true, bindableData);
 
       const slotObj = this._slots.find(obj => obj.id === item[this.datasetIdPropName]);
 
-      if (slotObj && aureliaComp) {
-        slotObj.view = aureliaComp.view;
-        slotObj.viewSlot = aureliaComp.viewSlot;
+      if (slotObj && reactComp) {
+        slotObj.componentInstance = reactComp.componentInstance;
+        slotObj.componentElement = reactComp.componentElement;
+        slotObj.domElement = reactComp.domElement;
       }
-      */
     }
   }
 
@@ -315,17 +315,14 @@ export class RowDetailViewExtension implements UniversalRowDetailViewExtension {
   // ------------------
 
   private disposeViewSlot(expandedView: CreatedView) {
-    /*
-    if (expandedView && expandedView.view && expandedView.viewSlot && expandedView.view.unbind && expandedView.viewSlot.remove) {
+    if (expandedView && expandedView.domElement) {
+      ReactDOM.unmountComponentAtNode(<any>expandedView.domElement);
       const container = document.getElementsByClassName(`${ROW_DETAIL_CONTAINER_PREFIX}${this._slots[0].id}`);
       if (container && container.length > 0) {
-        expandedView.viewSlot.remove(expandedView.view);
-        expandedView.view.unbind();
         container[0].innerHTML = '';
         return expandedView;
       }
     }
-    */
 
     return null;
   }
