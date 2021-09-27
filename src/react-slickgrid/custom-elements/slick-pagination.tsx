@@ -188,7 +188,7 @@ export class SlickPaginationCustomElement extends React.Component {
           </div>
           <span className="slick-pagination-settings">
             <select id="items-per-page-label" value={AsgNumberValueConverter.fromView(this.itemsPerPage)}>
-              {this.availablePageSizes.map(pageSize => <option value={pageSize}>{pageSize}</option>)}
+              {this.availablePageSizes.map(pageSize => <option value={pageSize} key={pageSize}>{pageSize}</option>)}
             </select>
             <span>{this.textItemsPerPage}</span>,
             <span className="slick-pagination-count">

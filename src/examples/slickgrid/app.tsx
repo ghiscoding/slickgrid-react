@@ -51,8 +51,8 @@ export class App extends React.Component {
               className="panel-wm-left au-animate">
               <ul className="well nav nav-pills nav-stacked">
                 {
-                  routes.map(row =>
-                    <li className="nav-item">
+                  routes.map((row) =>
+                    <li className="nav-item" key={row.route}>
                       <a className={`nav-link ${location.pathname === row.route ? 'active' : ''}`} href={row.route}>{row.title}</a>
                     </li>
                   )
@@ -65,7 +65,7 @@ export class App extends React.Component {
                   <Switch>
                     {
                       routes.map(row =>
-                        <Route path={row.route} component={row.component} />
+                        <Route path={row.route} component={row.component} key={row.route} />
                       )
                     }
                     <Redirect to="/example1" />

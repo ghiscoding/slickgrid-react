@@ -80,7 +80,7 @@ import { Constants } from '../constants';
 import { GlobalGridOptions } from '../global-grid-options';
 import { ReactGridInstance, GridOption, } from '../models/index';
 import {
-  //ReactUtilService,
+  ReactUtilService,
   disposeAllSubscriptions,
   ContainerService,
   TranslaterService,
@@ -97,7 +97,7 @@ import { SlickPaginationCustomElement } from './slick-pagination';
 import { GlobalContainerService, GlobalEventPubSubService } from '../services/singletons';
 
 interface Props {
-  reactUtilService: any; // ReactUtilService;
+  reactUtilService: ReactUtilService;
   globalEa: SlickgridEventAggregator;
   containerService: ContainerService;
   translaterService: TranslaterService;
@@ -194,7 +194,7 @@ export class ReactSlickgridCustomElement extends React.Component {
   private elm: React.RefObject<HTMLDivElement> = React.createRef();
 
   static defaultProps = {
-    reactUtilService: undefined, // todo
+    reactUtilService: new ReactUtilService(),
     globalEa: GlobalEventPubSubService,
     containerService: GlobalContainerService,
     translaterService: new TranslaterService(),
@@ -236,7 +236,7 @@ export class ReactSlickgridCustomElement extends React.Component {
     const groupItemMetaProviderExtension = new GroupItemMetaProviderExtension(this.sharedService);
     const headerButtonExtension = new HeaderButtonExtension(this.extensionUtility, this.sharedService);
     const headerMenuExtension = new HeaderMenuExtension(this.extensionUtility, this.filterService, this._eventPubSubService, this.sharedService, this.sortService, this.props.translaterService);
-    const rowDetailViewExtension = new RowDetailViewExtension(this.props.reactUtilService, this._eventPubSubService, this.sharedService);
+    const rowDetailViewExtension = new RowDetailViewExtension(this._eventPubSubService, this.props.reactUtilService, this.sharedService);
     const rowMoveManagerExtension = new RowMoveManagerExtension(this.sharedService);
     const rowSelectionExtension = new RowSelectionExtension(this.sharedService);
 
