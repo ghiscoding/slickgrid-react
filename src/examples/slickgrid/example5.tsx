@@ -483,7 +483,7 @@ export default class Example5 extends React.Component {
           </div>
         </div>
 
-        <ReactSlickgridCustomElement grid-id="grid5"
+        <ReactSlickgridCustomElement gridId="grid5"
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}
