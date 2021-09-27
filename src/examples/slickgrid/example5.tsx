@@ -450,11 +450,11 @@ export default class Example5 extends React.Component {
             <span data-test="radioVersion">
               <label className="radio-inline control-label" htmlFor="radio2">
                 <input type="radio" name="inlineRadioOptions" data-test="version2" id="radio2" checked value="2"
-                  onClick={this.setOdataVersion(2)} /> 2
+                  onClick={() => this.setOdataVersion(2)} /> 2
               </label>
               <label className="radio-inline control-label" htmlFor="radio4">
                 <input type="radio" name="inlineRadioOptions" data-test="version4" id="radio4" value="4"
-                  onClick={this.setOdataVersion(4)} /> 4
+                  onClick={() =>this.setOdataVersion(4)} /> 4
               </label>
             </span>
             <label className="checkbox-inline control-label" htmlFor="enableCount" style={{ marginLeft: '20px' }}>
