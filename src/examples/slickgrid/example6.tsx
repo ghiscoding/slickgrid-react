@@ -65,7 +65,7 @@ export default class Example6 extends React.Component {
     this.selectedLanguage = defaultLang;
   }
 
-  detached() {
+  componentWillUnmount() {
     this.saveCurrentGridState();
   }
 
