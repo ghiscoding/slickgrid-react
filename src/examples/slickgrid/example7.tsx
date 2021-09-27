@@ -48,7 +48,8 @@ export default class Example7 extends React.Component {
     columnsWithHighlightingById = {};
   }
 
-  attached() {
+  componentDidMount() {
+    document.title = this.title;
     // populate the dataset once the grid is ready
     this.getData();
   }
