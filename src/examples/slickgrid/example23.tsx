@@ -73,7 +73,7 @@ export default class Example23 extends React.Component {
   ];
   selectedPredefinedFilter = '';
 
-  constructor(public readonly props:Props, private i18n: I18N) {
+  constructor(public readonly props: Props, private i18n: I18N) {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
@@ -296,81 +296,81 @@ export default class Example23 extends React.Component {
     return (
       <div id="demo-container" className="container-fluid">
         <h2>
-      {this.title}
-      <span className="float-right">
-        <a style={{fontSize: '18px'}}
-           target="_blank"
-           href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example23.ts">
-          <span className="fa fa-link"></span> code
-        </a>
-      </span>
-    </h2>
-    <div className="subtitle">{this.subTitle}</div>
+          {this.title}
+          <span className="float-right">
+            <a style={{ fontSize: '18px' }}
+              target="_blank"
+              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example23.ts">
+              <span className="fa fa-link"></span> code
+            </a>
+          </span>
+        </h2>
+        <div className="subtitle">{this.subTitle}</div>
 
-    <br />
+        <br />
 
-    {this.metrics && <span>
-      <b>Metrics:</b>
-      {this.metrics.endTime} | {this.metrics.itemCount} of {this.metrics.totalItemCount} items
-    </span> }
+        {this.metrics && <span>
+          <b>Metrics:</b>
+          {this.metrics.endTime} | {this.metrics.itemCount} of {this.metrics.totalItemCount} items
+        </span>}
 
-    <form className="row row-cols-lg-auto g-1 align-items-center">
-      <div className="col">
-        <button className="btn btn-outline-secondary btn-sm" data-test="clear-filters"
-                onClick={this.reactGrid.filterService.clearFilters}>
-          Clear Filters
-        </button>
-      </div>
-      <div className="col">
-        <button className="btn btn-outline-secondary btn-sm" data-test="clear-sorting"
-                onClick={this.reactGrid.sortService.clearSorting}>
-          Clear Sorting
-        </button>
-      </div>
-      <div className="col">
-        <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-filter"
-                onClick={this.setFiltersDynamically}>
-          Set Filters Dynamically
-        </button>
-      </div>
-      <div className="col">
-        <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-sorting"
-                onClick={this.setSortingDynamically}>
-          Set Sorting Dynamically
-        </button>
-      </div>
-      <div className="col">
-        <label htmlFor="selectedFilter" style={{marginLeft: '10px'}}>Predefined Filters</label>
-      </div>
-      <div className="col">
-        <select name="selectedFilter" className="form-select" data-test="select-dynamic-filter"
-                value="selectedPredefinedFilter" onChange={() => this.predefinedFilterChanged(this.selectedPredefinedFilter)}>
-          {
-            routes.map((filter) =>
-              <option value="filter.value">{filter.label}</option>
-            )
-          }
-        </select>
-      </div>
-    </form>
+        <form className="row row-cols-lg-auto g-1 align-items-center">
+          <div className="col">
+            <button className="btn btn-outline-secondary btn-sm" data-test="clear-filters"
+              onClick={this.reactGrid.filterService.clearFilters}>
+              Clear Filters
+            </button>
+          </div>
+          <div className="col">
+            <button className="btn btn-outline-secondary btn-sm" data-test="clear-sorting"
+              onClick={this.reactGrid.sortService.clearSorting}>
+              Clear Sorting
+            </button>
+          </div>
+          <div className="col">
+            <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-filter"
+              onClick={this.setFiltersDynamically}>
+              Set Filters Dynamically
+            </button>
+          </div>
+          <div className="col">
+            <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-sorting"
+              onClick={this.setSortingDynamically}>
+              Set Sorting Dynamically
+            </button>
+          </div>
+          <div className="col">
+            <label htmlFor="selectedFilter" style={{ marginLeft: '10px' }}>Predefined Filters</label>
+          </div>
+          <div className="col">
+            <select name="selectedFilter" className="form-select" data-test="select-dynamic-filter"
+              value="selectedPredefinedFilter" onChange={() => this.predefinedFilterChanged(this.selectedPredefinedFilter)}>
+              {
+                routes.map((filter) =>
+                  <option value="filter.value">{filter.label}</option>
+                )
+              }
+            </select>
+          </div>
+        </form>
 
-    <div className="row mt-2">
-      <div className="col">
-        <button className="btn btn-outline-secondary btn-sm" data-test="language" onClick={this.switchLanguage}>
-          <i className="fa fa-language"></i>
-          Switch Language
-        </button>
-        <b>Locale:</b> <span style={{fontStyle: 'italic'} data-test="selected-locale">{selectedLanguage + '.json'}</span>
-      </div>
-    </div>
+        <div className="row mt-2">
+          <div className="col">
+            <button className="btn btn-outline-secondary btn-sm" data-test="language" onClick={this.switchLanguage}>
+              <i className="fa fa-language"></i>
+              Switch Language
+            </button>
+            <b>Locale:</b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{this.selectedLanguage + '.json'}</span>
+          </div>
+        </div>
 
-    <ReactSlickgridCustomElement gridId="grid23"
-                       columnDefinitions={this.columnDefinitions}
-                       gridOptions={this.gridOptions}
-                       dataset={this.dataset}
-                       instances={this.reactGrid}
-                       onGridStateChanged={$event => this.gridStateChanged($event.detail)}
-                       onRowCountChanged={$event => this.refreshMetrics($event.detail.eventData, $event.detail.args)} />
+        <ReactSlickgridCustomElement gridId="grid23"
+          columnDefinitions={this.columnDefinitions}
+          gridOptions={this.gridOptions}
+          dataset={this.dataset}
+          instances={this.reactGrid}
+          onGridStateChanged={$event => this.gridStateChanged($event.detail)}
+          onRowCountChanged={$event => this.refreshMetrics($event.detail.eventData, $event.detail.args)} />
       </div>
     );
   }
