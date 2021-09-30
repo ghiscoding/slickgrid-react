@@ -21,6 +21,7 @@ import {
   ReactSlickgridCustomElement
 } from '../../react-slickgrid';
 import React from 'react';
+import { resourceLimits } from 'worker_threads';
 
 interface Props { }
 
@@ -399,98 +400,106 @@ export default class Example18 extends React.Component {
     return (
       <div id="demo-container" className="container-fluid">
         <h2>
-      {this.title}
-      <span className="float-right">
-        <a style={{fontSize: '18px'}}
-           target="_blank"
-           href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example18.ts">
-          <span className="fa fa-link"></span> code
-        </a>
-      </span>
-    </h2>
-    <div className="subtitle">{this.title}</div>
+          {this.title}
+          <span className="float-right">
+            <a style={{ fontSize: '18px' }}
+              target="_blank"
+              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example18.ts">
+              <span className="fa fa-link"></span> code
+            </a>
+          </span>
+        </h2>
+        <div className="subtitle">{this.title}</div>
 
-    <form className="form-inline">
-      <div className="row">
-        <div className="col-sm-12">
-          <button className="btn btn-outline-secondary btn-xs" data-test="add-500-rows-btn" onClick={() => this.loadData(500)}>
-            500 rows
-          </button>
-          <button className="btn btn-outline-secondary btn-xs" data-test="add-50k-rows-btn" onClick={() => this.loadData(50000)}>
-            50k rows
-          </button>
-          <button className="btn btn-outline-secondary btn-xs" data-test="clear-grouping-btn"
-                  onClick={this.clearGroupsAndSelects}>
-            <i className="fa fa-times"></i> Clear grouping
-          </button>
-          <button className="btn btn-outline-secondary btn-xs" data-test="collapse-all-btn"
-                  onClick={this.collapseAllGroups}>
-            <i className="fa fa-compress"></i> Collapse all groups
-          </button>
-          <button className="btn btn-outline-secondary btn-xs" data-test="expand-all-btn" onClick={this.expandAllGroups}>
-            <i className="fa fa-expand"></i> Expand all groups
-          </button>
-          <button className="btn btn-outline-secondary btn-xs" onClick={this.toggleDraggableGroupingRow}>
-            Toggle Draggable Grouping Row
-          </button>
-          <button className="btn btn-outline-secondary btn-xs" onClick={this.exportToExcel}>
-            <i className="fa fa-file-excel-o text-success"></i> Export to Excel
-          </button>
-        </div>
-      </div>
+        <form className="form-inline">
+          <div className="row">
+            <div className="col-sm-12">
+              <button className="btn btn-outline-secondary btn-xs" data-test="add-500-rows-btn" onClick={() => this.loadData(500)}>
+                500 rows
+              </button>
+              <button className="btn btn-outline-secondary btn-xs" data-test="add-50k-rows-btn" onClick={() => this.loadData(50000)}>
+                50k rows
+              </button>
+              <button className="btn btn-outline-secondary btn-xs" data-test="clear-grouping-btn"
+                onClick={this.clearGroupsAndSelects}>
+                <i className="fa fa-times"></i> Clear grouping
+              </button>
+              <button className="btn btn-outline-secondary btn-xs" data-test="collapse-all-btn"
+                onClick={this.collapseAllGroups}>
+                <i className="fa fa-compress"></i> Collapse all groups
+              </button>
+              <button className="btn btn-outline-secondary btn-xs" data-test="expand-all-btn" onClick={this.expandAllGroups}>
+                <i className="fa fa-expand"></i> Expand all groups
+              </button>
+              <button className="btn btn-outline-secondary btn-xs" onClick={this.toggleDraggableGroupingRow}>
+                Toggle Draggable Grouping Row
+              </button>
+              <button className="btn btn-outline-secondary btn-xs" onClick={this.exportToExcel}>
+                <i className="fa fa-file-excel-o text-success"></i> Export to Excel
+              </button>
+            </div>
+          </div>
 
-      <div className="row">
-        <div className="col-sm-12">
-          <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-sort-value-btn"
-                  onClick={() => this.groupByDurationOrderByCount(false)}>
-            Group by duration &amp; sort groups by value
-          </button>
-          <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-sort-count-btn"
-                  onClick={() => this.groupByDurationOrderByCount(true)}>
-            Group by duration &amp; sort groups by count
-          </button>
-          <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-effort-btn"
-                  onClick={this.groupByDurationEffortDriven}>
-            Group by Duration then Effort-Driven
-          </button>
-          <button className="btn btn-outline-secondary btn-xs" data-test="set-dynamic-filter"
-                  onClick={this.setFiltersDynamically}>
-            Set Filters Dynamically
-          </button>
-          <button className="btn btn-outline-secondary btn-xs" data-test="set-dynamic-sorting"
-                  onClick={this.setSortingDynamically}>
-            Set Sorting Dynamically
-          </button>
-        </div>
-      </div>
+          <div className="row">
+            <div className="col-sm-12">
+              <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-sort-value-btn"
+                onClick={() => this.groupByDurationOrderByCount(false)}>
+                Group by duration &amp; sort groups by value
+              </button>
+              <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-sort-count-btn"
+                onClick={() => this.groupByDurationOrderByCount(true)}>
+                Group by duration &amp; sort groups by count
+              </button>
+              <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-effort-btn"
+                onClick={this.groupByDurationEffortDriven}>
+                Group by Duration then Effort-Driven
+              </button>
+              <button className="btn btn-outline-secondary btn-xs" data-test="set-dynamic-filter"
+                onClick={this.setFiltersDynamically}>
+                Set Filters Dynamically
+              </button>
+              <button className="btn btn-outline-secondary btn-xs" data-test="set-dynamic-sorting"
+                onClick={this.setSortingDynamically}>
+                Set Sorting Dynamically
+              </button>
+            </div>
+          </div>
 
-      <div className="row mt-2">
-        <div className="col-sm-12">
-          <div className="form-row">
-            <div className="row form-group">
-              <label htmlFor="field1" className="col-sm-3 mb-2">Group by field(s)</label>
-              <div className="form-group col-md-3" repeat.for="groupField of selectedGroupingFields">
-                <select className="form-select" change.delegate="groupByFieldName(column.id, $index)"
-                        value.bind="selectedGroupingFields[$index]">
-                  <option model.bind="''">...</option>
-                  <option model.bind="column.id" repeat.for="column of columnDefinitions">${column.name}</option>
-                </select>
+          <div className="row mt-2">
+            <div className="col-sm-12">
+              <div className="form-row">
+                <div className="row form-group">
+                  <label htmlFor="field1" className="col-sm-3 mb-2">Group by field(s)</label>
+                  {
+                    routes.map((groupField) =>
+                      <div className="form-group col-md-3" key={groupField.route}>
+                        <select className="form-select" change={this.groupByFieldName(column.id, $index)}
+                          value={this.selectedGroupingFields[$index]}>
+                          <option value="''">...</option>
+                          {
+                            routes.map((column) =>
+                              <option value={column.id} key={column.route}></option>
+                            )
+                          }
+                        </select>
+                      </div>
+                    )
+                  }
+                </div>
               </div>
             </div>
           </div>
+        </form>
+
+        <div className="row mt-1 mb-1">
+          <hr />
         </div>
-      </div>
-    </form>
 
-    <div class="row mt-1 mb-1">
-      <hr />
-    </div>
-
-    <ReactSlickgridCustomElement gridId="grid18"
-                       columnDefinitions={this.columnDefinitions}
-                       gridOptions={this.gridOptions}
-                       dataset={this.dataset}
-                       onReactGridCreated={$event => this.reactGridReady($event.detail)} />
+        <ReactSlickgridCustomElement gridId="grid18"
+          columnDefinitions={this.columnDefinitions}
+          gridOptions={this.gridOptions}
+          dataset={this.dataset}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)} />
       </div>
     );
   }
