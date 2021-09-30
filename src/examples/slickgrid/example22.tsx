@@ -3,7 +3,6 @@ import { HttpClient } from 'react-fetch-client';
 import { ReactGridInstance, Column, Filters, GridOption, ReactSlickgridCustomElement } from '../../react-slickgrid';
 import React from 'react';
 import './example22.scss';
-import { props } from 'bluebird';
 
 const URL_CUSTOMERS = 'assets/data/customers_100.json';
 
