@@ -295,8 +295,8 @@ export default class Example25 extends React.Component {
 
         <div className="row">
           <div className="col-xs-6 col-sm-3">
-            <div className="status.class" role="alert" data-test="status">
-              <strong>Status: </strong> {status}
+            <div className={this.status.class} role="alert" data-test="status">
+              <strong>Status: </strong> {this.status.text}
               {!this.processing && <span>
                 <i className="fa fa-refresh fa-spin fa-lg fa-fw"></i>
               </span>}
