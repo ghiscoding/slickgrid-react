@@ -1,5 +1,3 @@
-import jquery from 'jquery';
-window['$'] = window['jQuery'] = jquery;
 import 'jquery-ui/ui/widgets/draggable';
 import 'jquery-ui/ui/widgets/droppable';
 import 'jquery-ui/ui/widgets/sortable';
@@ -29,6 +27,14 @@ export {
 } from './services/index';
 
 export {
+  SlickgridEventAggregator,
+  ReactGridInstance,
+  ReactComponentOutput,
+  GridOption,
+  RowDetailView,
+  SlickGrid,
+  ViewModelBindableData,
+  ViewModelBindableInputData,
   ReactSlickgridCustomElement,
   SlickPaginationCustomElement,
   SlickgridConfig
