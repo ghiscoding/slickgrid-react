@@ -30,7 +30,10 @@ module.exports = ({ production } = {}, { server } = {}) => ({
       zlib: false,
     }
   },
-  entry: `${srcDir}/index`,
+  entry: {
+    app: [`${srcDir}/index`],
+    vendor: ['jquery']
+  },
   mode: production ? 'production' : 'development',
   output: {
     path: production ? outProdDir : outDevDir,
