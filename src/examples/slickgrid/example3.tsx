@@ -1,5 +1,3 @@
-import { HttpClient as FetchClient } from 'react-fetch-client';
-import { HttpClient } from 'react-http-client';
 import { i18n } from 'i18next';
 import {
   ReactGridInstance,
@@ -92,7 +90,7 @@ export default class Example3 extends React.Component {
   duplicateTitleHeaderCount = 1;
   private i18n: i18n;
 
-  constructor(public readonly props: Props, private http: HttpClient, private httpFetch: FetchClient) {
+  constructor(public readonly props: Props) {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
@@ -344,12 +342,12 @@ export default class Example3 extends React.Component {
         editor: {
           model: Editors.autoComplete,
           customStructure: { label: 'name', value: 'code' },
-          collectionAsync: this.httpFetch.fetch(URL_COUNTRIES_COLLECTION),
+          collectionAsync: fetch(URL_COUNTRIES_COLLECTION),
         },
         filter: {
           model: Filters.autoComplete,
           customStructure: { label: 'name', value: 'code' },
-          collectionAsync: this.httpFetch.fetch(URL_COUNTRIES_COLLECTION),
+          collectionAsync: fetch(URL_COUNTRIES_COLLECTION),
         }
       }, {
         id: 'countryOfOriginName', name: 'Country of Origin Name', field: 'countryOfOriginName',
@@ -358,11 +356,11 @@ export default class Example3 extends React.Component {
         minWidth: 100,
         editor: {
           model: Editors.autoComplete,
-          collectionAsync: this.httpFetch.fetch(URL_COUNTRY_NAMES),
+          collectionAsync: fetch(URL_COUNTRY_NAMES),
         },
         filter: {
           model: Filters.autoComplete,
-          collectionAsync: this.httpFetch.fetch(URL_COUNTRY_NAMES),
+          collectionAsync: fetch(URL_COUNTRY_NAMES),
         }
       }, {
         id: 'effort-driven',
@@ -398,7 +396,7 @@ export default class Example3 extends React.Component {
           // collectionAsync: this.http.createRequest(URL_SAMPLE_COLLECTION_DATA).asGet().send(),
 
           // OR 2- use "react-fetch-client", they are both supported
-          collectionAsync: this.httpFetch.fetch(URL_SAMPLE_COLLECTION_DATA),
+          collectionAsync: fetch(URL_SAMPLE_COLLECTION_DATA),
 
           // OR 3- use a Promise
           // collectionAsync: new Promise<any>((resolve) => {
@@ -425,7 +423,7 @@ export default class Example3 extends React.Component {
           model: Editors.multipleSelect,
         },
         filter: {
-          collectionAsync: this.httpFetch.fetch(URL_SAMPLE_COLLECTION_DATA),
+          collectionAsync: fetch(URL_SAMPLE_COLLECTION_DATA),
           // collectionAsync: new Promise((resolve) => {
           //   setTimeout(() => {
           //     resolve(Array.from(Array(this.dataset.length).keys()).map(k => ({ value: k, label: `Task ${k}` })));
