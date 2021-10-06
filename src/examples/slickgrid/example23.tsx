@@ -1,4 +1,3 @@
-import { autoinject } from 'react-framework';
 import { I18N } from 'react-i18n';
 import * as moment from 'moment-mini';
 
@@ -38,7 +37,6 @@ const taskTranslateFormatter: Formatter = (_row, _cell, value, _columnDef, _data
 
 interface Props { }
 
-@autoinject()
 export default class Example23 extends React.Component {
   title = 'Example 23: Filtering from Range of Search Values';
   subTitle = `

@@ -1,6 +1,5 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { TextExportService } from '@slickgrid-universal/text-export';
-import { autoinject } from 'react-framework';
 import { I18N } from 'react-i18n';
 
 import {
@@ -31,7 +30,6 @@ const taskTranslateFormatter: Formatter = (_row, _cell, value, _columnDef, _data
 
 interface Props { }
 
-@autoinject()
 export default class Example12 extends React.Component {
   title = 'Example 12: Localization (i18n)';
   subTitle = `Support multiple locales with the i18next plugin, following these steps.

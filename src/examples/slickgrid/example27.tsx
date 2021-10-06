@@ -1,5 +1,4 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-import { autoinject } from 'react-framework';
 import {
   ReactGridInstance,
   Column,
@@ -20,7 +19,6 @@ const NB_ITEMS = 500;
 
 interface Props { }
 
-@autoinject()
 export default class Example27 extends React.Component {
   title = 'Example 27: Tree Data <small>(from a flat dataset with <code>parentId</code> references)</small>';
   subTitle = `<ul>

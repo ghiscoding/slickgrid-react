@@ -1,4 +1,3 @@
-import { autoinject, PLATFORM } from 'react-framework';
 import { I18N } from 'react-i18n';
 import {
   ReactGridInstance,
@@ -25,7 +24,6 @@ const NB_ITEMS = 100;
 
 interface Props { }
 
-@autoinject()
 export default class Example26 extends React.Component {
   title = 'Example 26: Use of React Custom Elements';
   subTitle = `

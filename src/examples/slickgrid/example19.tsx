@@ -1,4 +1,3 @@
-import { autoinject, bindable, PLATFORM } from 'react-framework';
 import { Subscription } from 'react-event-aggregator';
 import {
   ReactGridInstance,
@@ -14,7 +13,6 @@ import React from 'react';
 
 interface Props { }
 
-@autoinject()
 export default class Example19 extends React.Component {
   @bindable detailViewRowCount = 9;
   title = 'Example 19: Row Detail View';

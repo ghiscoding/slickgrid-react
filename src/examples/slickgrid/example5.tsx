@@ -1,5 +1,4 @@
 import { GridOdataService, OdataServiceApi, OdataOption } from '@slickgrid-universal/odata';
-import { autoinject } from 'react-framework';
 import { HttpClient } from 'react-http-client';
 import {
   ReactGridInstance,
@@ -20,7 +19,6 @@ const sampleDataRoot = 'assets/data';
 
 interface Props { }
 
-@autoinject()
 export default class Example5 extends React.Component {
   title = 'Example 5: Grid with Backend OData Service';
   subTitle = `

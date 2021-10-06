@@ -1,5 +1,4 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-import { autoinject } from 'react-framework';
 import { I18N } from 'react-i18n';
 
 import {
@@ -62,7 +61,6 @@ const taskTranslateFormatter: Formatter = (_row, _cell, value, _columnDef, _data
 
 interface Props { }
 
-@autoinject()
 export default class Example24 extends React.Component {
   title = 'Example 24: Cell Menu & Context Menu Plugins';
   subTitle = `Add Cell Menu and Context Menu

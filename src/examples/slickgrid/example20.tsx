@@ -1,6 +1,3 @@
-
-import { autoinject } from 'react-framework';
-
 import {
   ReactGridInstance,
   Column,
@@ -22,7 +19,6 @@ declare const Slick: SlickNamespace;
 
 interface Props { }
 
-@autoinject()
 export default class Example20 extends React.Component {
   title = 'Example 20: Pinned (frozen) Columns/Rows';
   subTitle = `

@@ -1,5 +1,5 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-import { autoinject, bindable } from 'react-framework';
+import { bindable } from 'react-framework';
 import {
   ReactGridInstance,
   Column,
@@ -16,7 +16,6 @@ import './example28.scss'; // provide custom CSS/SASS styling
 
 interface Props { }
 
-@autoinject()
 export default class Example28 extends React.Component {
   title = 'Example 28: Tree Data <small>(from a Hierarchical Dataset)</small>';
   subTitle = `<ul>

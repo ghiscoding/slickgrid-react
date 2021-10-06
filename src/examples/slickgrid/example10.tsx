@@ -1,11 +1,10 @@
-import { autoinject, bindable } from 'react-framework';
+import { bindable } from 'react-framework';
 import { ReactGridInstance, Column, FieldType, Filters, Formatters, GridOption, GridStateChange, ReactSlickgridCustomElement } from '../../react-slickgrid';
 import React from 'react';
 import './example10.scss'; // provide custom CSS/SASS styling
 
 interface Props { }
 
-@autoinject()
 export default class Example10 extends React.Component {
   title = 'Example 10: Multiple Grids with Row Selection';
   subTitle = `

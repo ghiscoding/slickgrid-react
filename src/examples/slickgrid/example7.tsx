@@ -1,4 +1,3 @@
-import { autoinject } from 'react-framework';
 import React from 'react';
 import { ReactGridInstance, Column, Formatter, GridOption, SlickGrid, ReactSlickgridCustomElement } from '../../react-slickgrid';
 
@@ -15,7 +14,6 @@ const highlightingFormatter: Formatter = (_row, _cell, value, columnDef) => {
 
 interface Props { }
 
-@autoinject()
 export default class Example7 extends React.Component {
   title = 'Example 7: Header Button Plugin';
   subTitle = `

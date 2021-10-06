@@ -2,7 +2,6 @@ import { EditCommand, SlickGrid } from '@slickgrid-universal/common';
 import { SlickCompositeEditorComponent } from '@slickgrid-universal/composite-editor-component';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { HttpClient as FetchClient } from 'react-fetch-client';
-import { autoinject } from 'react-framework';
 
 import {
   ReactGridInstance,
@@ -84,7 +83,6 @@ const myCustomTitleValidator = (value: any, args: any) => {
 
 interface Props { }
 
-@autoinject()
 export default class Example30 extends React.Component {
   title = 'Example 30: Composite Editor Modal';
   subTitle = `Composite Editor allows you to Create, Clone, Edit, Mass Update & Mass Selection Changes inside a nice Modal Window.

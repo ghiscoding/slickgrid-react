@@ -1,5 +1,4 @@
 import { GraphqlService, GraphqlResult, GraphqlServiceApi, } from '@slickgrid-universal/graphql';
-import { autoinject } from 'react-framework';
 import { HttpClient, json } from 'react-fetch-client';
 import {
   ReactGridInstance,
@@ -33,7 +32,6 @@ export interface Country {
 
 interface Props { }
 
-@autoinject()
 export default class Example25 extends React.Component {
   title = 'Example 25: GraphQL Basic API without Pagination';
   subTitle = `

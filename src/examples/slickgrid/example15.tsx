@@ -1,5 +1,4 @@
 import { I18N } from 'react-i18n';
-import { autoinject } from 'react-framework';
 import {
   ReactGridInstance,
   Column,
@@ -24,7 +23,6 @@ const NB_ITEMS = 500;
 
 interface Props { }
 
-@autoinject()
 export default class Example15 extends React.Component {
   title = 'Example 15: Grid State & Presets using Local Storage';
   subTitle = `

@@ -1,6 +1,5 @@
 import { HttpClient as FetchClient } from 'react-fetch-client';
 import { HttpClient } from 'react-http-client';
-import { autoinject } from 'react-framework';
 import { CustomInputFilter } from './custom-inputFilter';
 import {
   ReactGridInstance,
@@ -16,7 +15,7 @@ import {
   OperatorType,
   ReactSlickgridCustomElement,
 } from '../../react-slickgrid';
-import React from "react";
+import React from 'react';
 
 function randomBetween(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -26,7 +25,6 @@ const URL_SAMPLE_COLLECTION_DATA = 'assets/data/collection_500_numbers.json';
 
 interface Props { }
 
-@autoinject()
 export default class Example4 extends React.Component {
   title = 'Example 4: Client Side Sort/Filter';
   subTitle = `

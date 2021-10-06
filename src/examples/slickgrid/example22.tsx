@@ -1,4 +1,3 @@
-import { autoinject } from 'react-framework';
 import { HttpClient } from 'react-fetch-client';
 import { ReactGridInstance, Column, Filters, GridOption, ReactSlickgridCustomElement } from '../../react-slickgrid';
 import React from 'react';
@@ -8,7 +7,6 @@ const URL_CUSTOMERS = 'assets/data/customers_100.json';
 
 interface Props { }
 
-@autoinject()
 export default class Example22 extends React.Component {
   title = 'Example 22: Grids in Bootstrap Tabs';
   subTitle = `This example demonstrate the creation of multiple grids in Bootstrap Tabs

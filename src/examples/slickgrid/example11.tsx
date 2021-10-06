@@ -1,4 +1,3 @@
-import { autoinject } from 'react-framework';
 import {
   ReactGridInstance,
   Column,
@@ -17,7 +16,6 @@ import './example11.scss';
 
 interface Props { }
 
-@autoinject()
 export default class Example11 extends React.Component {
   title = 'Example 11: Add / Update / Highlight a Datagrid Item';
   subTitle = `

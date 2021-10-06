@@ -1,5 +1,4 @@
 import { I18N } from 'react-i18n';
-import { autoinject } from 'react-framework';
 import {
   ReactGridInstance,
   Column,
@@ -17,7 +16,6 @@ import './example9.scss'; // provide custom CSS/SASS styling
 
 interface Props { }
 
-@autoinject()
 export default class Example9 extends React.Component {
   title = 'Example 9: Grid Menu Control';
   subTitle = `

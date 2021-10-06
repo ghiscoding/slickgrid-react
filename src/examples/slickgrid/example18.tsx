@@ -1,6 +1,5 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { TextExportService } from '@slickgrid-universal/text-export';
-import { autoinject } from 'react-framework';
 import {
   Aggregators,
   ReactGridInstance,
@@ -21,11 +20,9 @@ import {
   ReactSlickgridCustomElement
 } from '../../react-slickgrid';
 import React from 'react';
-import { resourceLimits } from 'worker_threads';
 
 interface Props { }
 
-@autoinject()
 export default class Example18 extends React.Component {
   title = 'Example 18: Draggable Grouping & Aggregators';
   subTitle = `

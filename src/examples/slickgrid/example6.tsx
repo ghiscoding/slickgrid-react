@@ -1,5 +1,4 @@
 import { GraphqlService, GraphqlPaginatedResult, GraphqlServiceApi, } from '@slickgrid-universal/graphql';
-import { autoinject } from 'react-framework';
 import { I18N } from 'react-i18n';
 import * as moment from 'moment-mini';
 import {
@@ -23,7 +22,6 @@ const GRAPHQL_QUERY_DATASET_NAME = 'users';
 
 interface Props { }
 
-@autoinject()
 export default class Example6 extends React.Component {
   title = 'Example 6: Grid with Backend GraphQL Service';
   subTitle = `

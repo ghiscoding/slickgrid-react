@@ -1,12 +1,10 @@
 import { I18N } from 'react-i18n';
-import { autoinject } from 'react-framework';
 import { ReactGridInstance, Column, Formatters, GridOption, SlickDataView, SlickGrid, ReactSlickgridCustomElement } from '../../react-slickgrid';
 import './example8.scss'; // provide custom CSS/SASS styling
 import React from 'react';
 
 interface Props { }
 
-@autoinject()
 export default class Example8 extends React.Component {
   title = 'Example 8: Header Menu Plugin';
   subTitle = `

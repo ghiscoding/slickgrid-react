@@ -1,7 +1,6 @@
 import { Column, Editors, FieldType, Filters, GridOption, GridStateChange, Metrics, OperatorType, Pagination, } from '@slickgrid-universal/common';
 import { GridOdataService, OdataServiceApi, OdataOption } from '@slickgrid-universal/odata';
 import { RxJsResource } from '@slickgrid-universal/rxjs-observable';
-import { autoinject } from 'react-framework';
 import { HttpClient } from 'react-http-client';
 import { Observable, of, Subject } from 'rxjs';
 
@@ -14,7 +13,6 @@ const sampleDataRoot = 'assets/data';
 
 interface Props { }
 
-@autoinject()
 export default class Example31 extends React.Component {
   title = 'Example 31: Grid with OData Backend Service using RxJS Observables';
   subTitle = `
