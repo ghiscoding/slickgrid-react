@@ -1,4 +1,4 @@
-import { I18N } from 'react-i18n';
+import { i18n } from 'i18next';
 import {
   ReactGridInstance,
   Column,
@@ -42,8 +42,9 @@ export default class Example15 extends React.Component {
   gridOptions!: GridOption;
   dataset: any[] = [];
   selectedLanguage: string;
+  private i18n: i18n;
 
-  constructor(public readonly props: Props, private i18n: I18N) {
+  constructor(public readonly props: Props) {
     super(props);
     const presets = JSON.parse(localStorage[LOCAL_STORAGE_KEY] || null);
 
@@ -53,7 +54,7 @@ export default class Example15 extends React.Component {
 
     // always start with English for Cypress E2E tests to be consistent
     const defaultLang = 'en';
-    this.i18n.setLocale(defaultLang);
+    this.i18n.changeLanguage(defaultLang);
     this.selectedLanguage = defaultLang;
   }
 
@@ -220,7 +221,7 @@ export default class Example15 extends React.Component {
 
   async switchLanguage() {
     const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
-    await this.i18n.setLocale(nextLanguage);
+    await this.i18n.changeLanguage(nextLanguage);
     this.selectedLanguage = nextLanguage;
   }
 

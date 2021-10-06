@@ -11,7 +11,7 @@ import {
   OperatorType,
   ReactSlickgridCustomElement
 } from '../../react-slickgrid';
-import React from 'react'
+import React from 'react';
 import './example25.scss'; // provide custom CSS/SASS styling
 
 const COUNTRIES_API = 'https://countries.trevorblades.com/';

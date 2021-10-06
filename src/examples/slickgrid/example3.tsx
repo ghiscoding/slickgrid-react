@@ -1,7 +1,6 @@
-import { autoinject } from 'react-framework';
 import { HttpClient as FetchClient } from 'react-fetch-client';
 import { HttpClient } from 'react-http-client';
-import { I18N } from 'react-i18n';
+import { i18n } from 'i18next';
 import {
   ReactGridInstance,
   AutocompleteOption,
@@ -66,7 +65,6 @@ const taskFormatter = (_row: number, _cell: number, value: any) => {
 
 interface Props { }
 
-@autoinject()
 export default class Example3 extends React.Component {
   title = 'Example 3: Editors / Delete';
   subTitle = `
@@ -92,12 +90,13 @@ export default class Example3 extends React.Component {
   alertWarning: any;
   selectedLanguage: string;
   duplicateTitleHeaderCount = 1;
+  private i18n: i18n;
 
-  constructor(public readonly props: Props, private http: HttpClient, private httpFetch: FetchClient, private i18n: I18N) {
+  constructor(public readonly props: Props, private http: HttpClient, private httpFetch: FetchClient) {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
-    this.selectedLanguage = this.i18n.getLocale();
+    this.selectedLanguage = this.i18n.language;
   }
 
   componentDidMount() {
@@ -650,7 +649,7 @@ export default class Example3 extends React.Component {
 
   async switchLanguage() {
     const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
-    await this.i18n.setLocale(nextLanguage);
+    await this.i18n.changeLanguage(nextLanguage);
     this.selectedLanguage = nextLanguage;
   }
 
@@ -723,9 +722,9 @@ export default class Example3 extends React.Component {
           </span>
           <div className="row" style={{ marginTop: '5px' }}>
             <div className="col-sm-12">
-              <button className="btn btn-outline-secondary btn-sm" onClick={this.reactGrid.filterService.clearFilters()}>Clear
+              <button className="btn btn-outline-secondary btn-sm" onClick={() => this.reactGrid.filterService.clearFilters()}>Clear
                 Filters</button>
-              <button className="btn btn-outline-secondary btn-sm" onClick={this.reactGrid.sortService.clearSorting()}>Clear
+              <button className="btn btn-outline-secondary btn-sm" onClick={() => this.reactGrid.sortService.clearSorting()}>Clear
                 Sorting</button>
               <button className="btn btn-outline-primary btn-sm" data-test="add-item-btn" onClick={this.addItem}
                 title="Clear Filters &amp; Sorting to see it better">
