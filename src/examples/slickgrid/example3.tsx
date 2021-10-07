@@ -1,4 +1,4 @@
-import { i18n } from 'i18next';
+import i18next, { i18n } from 'i18next';
 import {
   ReactGridInstance,
   AutocompleteOption,
@@ -25,6 +25,11 @@ import * as $ from 'jquery';
 // using external non-typed js libraries
 declare const Slick: SlickNamespace;
 
+i18next.init({
+  lng: 'en',
+}
+);
+
 const NB_ITEMS = 100;
 const URL_SAMPLE_COLLECTION_DATA = 'assets/data/collection_100_numbers.json';
 const URL_COUNTRIES_COLLECTION = 'assets/data/countries.json';
@@ -46,7 +51,7 @@ const myCustomTitleValidator: EditorValidator = (value: any) => {
   } else if (!/^Task\s\d+$/.test(value)) {
     return { valid: false, msg: 'Your title is invalid, it must start with "Task" followed by a number' };
     // OR use the Translate Service with your custom message
-    // return { valid: false, msg: i18n.tr('YOUR_ERROR', { x: value }) };
+    // return { valid: false, msg: i18n.t('YOUR_ERROR', { x: value }) };
   }
   return { valid: true, msg: '' };
 };
@@ -88,13 +93,12 @@ export default class Example3 extends React.Component {
   alertWarning: any;
   selectedLanguage: string;
   duplicateTitleHeaderCount = 1;
-  private i18n: i18n;
 
   constructor(public readonly props: Props) {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
-    this.selectedLanguage = this.i18n.language;
+    this.selectedLanguage = i18next.language;
   }
 
   componentDidMount() {
@@ -196,7 +200,7 @@ export default class Example3 extends React.Component {
           minValue: 0,
           maxValue: 365,
           // the default validation error message is in English but you can override it by using "errorMessage"
-          // errorMessage: this.i18n.tr('INVALID_FLOAT', { maxDecimal: 2 }),
+          // errorMessage: i18next.t('INVALID_FLOAT', { maxDecimal: 2 }),
           params: { decimalPlaces: 2 },
         },
         */
@@ -466,7 +470,7 @@ export default class Example3 extends React.Component {
         this._commandQueue.push(editCommand);
         editCommand.execute();
       },
-      i18n: this.i18n,
+      i18n: i18next,
     };
   }
 
@@ -647,7 +651,7 @@ export default class Example3 extends React.Component {
 
   async switchLanguage() {
     const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
-    await this.i18n.changeLanguage(nextLanguage);
+    await i18next.changeLanguage(nextLanguage);
     this.selectedLanguage = nextLanguage;
   }
 
@@ -683,7 +687,7 @@ export default class Example3 extends React.Component {
                 <input type="radio"
                   name="inlineRadioOptions"
                   id="radioTrue"
-                  checked
+                  defaultChecked
                   value={this.isAutoEdit.toString()}
                   onClick={() => this.setAutoEdit(true)} /> ON
                 (single-click)
@@ -693,7 +697,7 @@ export default class Example3 extends React.Component {
                 <input type="radio"
                   name="inlineRadioOptions"
                   id="radioFalse"
-                  checked
+                  defaultChecked
                   value={this.isAutoEdit.toString()}
                   onClick={() => this.setAutoEdit(false)} /> OFF
                 (double-click)
