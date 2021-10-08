@@ -2,6 +2,8 @@ import React from 'react';
 import Example1 from './example1';
 import Example2 from './example2';
 import Example3 from './example3';
+import Example4 from './example4';
+import Example6 from './example6';
 import Router from './Router';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
@@ -9,9 +11,9 @@ const routes = [
   { route: '/example1', component: Example1, title: '1- Basic Grid / 2 Grids' },
   { route: '/example2', component: Example2, title: '2- Formatters' },
   { route: '/example3', component: Example3, title: '3- Editors / Delete' },
-  // { route: '/example4', component: Example4, title: '4- Client Side Sort/Filter' },
+  { route: '/example4', component: Example4, title: '4- Client Side Sort/Filter' },
   // { route: '/example5', component: Example5, title: '5- Backend OData Service' },
-  // { route: '/example6', component: Example6, title: '6- Backend GraphQL Service' },
+  { route: '/example6', component: Example6, title: '6- Backend GraphQL Service' },
   // { route: '/example7', component: Example7, title: '7- Header Button Plugin' },
   // { route: '/example8', component: Example8, title: '8- Header Menu Plugin' },
   // { route: '/example9', component: Example9, title: '9- Grid Menu Control' },
