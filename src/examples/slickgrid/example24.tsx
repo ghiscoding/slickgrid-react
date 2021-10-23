@@ -1,5 +1,5 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-import { I18N } from 'react-i18n';
+import { i18n } from 'i18next';
 
 import {
   ReactGridInstance,
@@ -48,7 +48,7 @@ const priorityExportFormatter: Formatter = (_row, _cell, value, _columnDef, _dat
   const count = +(value >= 3 ? 3 : value);
   const key = count === 3 ? 'HIGH' : (count === 2 ? 'MEDIUM' : 'LOW');
 
-  return i18n?.tr(key) ?? '';
+  return i18n?.t(key) ?? '';
 };
 
 // create a custom translate Formatter (typically you would move that a separate file, for separation of concerns)
@@ -56,7 +56,7 @@ const taskTranslateFormatter: Formatter = (_row, _cell, value, _columnDef, _data
   const gridOptions: GridOption = (grid && typeof grid.getOptions === 'function') ? grid.getOptions() : {};
   const i18n = gridOptions.i18n;
 
-  return i18n?.tr('TASK_X', { x: value }) ?? '';
+  return i18n?.t('TASK_X', { x: value }) ?? '';
 };
 
 interface Props { }
@@ -94,15 +94,16 @@ export default class Example24 extends React.Component {
   columnDefinitions: Column[] = [];
   dataset: any[] = [];
   selectedLanguage: string;
+  private i18n: i18n;
 
-  constructor(public readonly props: Props, private i18n: I18N) {
+  constructor(public readonly props: Props) {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
 
     // always start with English for Cypress E2E tests to be consistent
     const defaultLang = 'en';
-    this.i18n.setLocale(defaultLang);
+    this.i18n.changeLanguage(defaultLang);
     this.selectedLanguage = defaultLang;
   }
 
@@ -315,7 +316,7 @@ export default class Example24 extends React.Component {
         alert('Please help!');
         break;
       case 'delete-row':
-        if (confirm(`Do you really want to delete row ${args.row + 1} with ${this.i18n.tr('TASK_X', { x: dataContext.id })}`)) {
+        if (confirm(`Do you really want to delete row ${args.row + 1} with ${this.i18n.t('TASK_X', { x: dataContext.id })}`)) {
           this.reactGrid.dataView.deleteItem(dataContext.id);
         }
         break;
@@ -459,7 +460,7 @@ export default class Example24 extends React.Component {
 
   async switchLanguage() {
     const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
-    await this.i18n.setLocale(nextLanguage);
+    await this.i18n.changeLanguage(nextLanguage);
     this.selectedLanguage = nextLanguage;
   }
 

@@ -1,4 +1,4 @@
-import { I18N } from 'react-i18n';
+import { i18n } from 'i18next';
 import {
   ReactGridInstance,
   ReactUtilService,
@@ -63,12 +63,13 @@ export default class Example26 extends React.Component {
   ];
   selectedItem: any;
   selectedId = '';
+  private i18n: i18n;
 
-  constructor(public readonly props: Props, private reactUtilService: ReactUtilService, private i18n: I18N) {
+  constructor(public readonly props: Props, private reactUtilService: ReactUtilService) {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
-    this.selectedLanguage = this.i18n.getLocale();
+    this.selectedLanguage = this.i18n.language;
   }
 
   componentDidMount() {
@@ -352,7 +353,7 @@ export default class Example26 extends React.Component {
 
   switchLanguage() {
     this.selectedLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
-    this.i18n.setLocale(this.selectedLanguage);
+    this.i18n.changeLanguage(this.selectedLanguage);
   }
 
   undo() {
@@ -368,7 +369,7 @@ export default class Example26 extends React.Component {
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
-          <span class="float-right">
+          <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
               href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example26.ts">
@@ -412,9 +413,9 @@ export default class Example26 extends React.Component {
           </span>
           <div className="row" style={{ marginTop: '5px' }}>
             <div className="col">
-              <button className="btn btn-outline-secondary btn-sm" onClick={this.reactGrid.filterService.clearFilters}>Clear
+              <button className="btn btn-outline-secondary btn-sm" onClick={() => this.reactGrid.filterService.clearFilters}>Clear
                 Filters</button>
-              <button className="btn btn-outline-secondary btn-sm" onClick={this.reactGrid.sortService.clearSorting}>Clear
+              <button className="btn btn-outline-secondary btn-sm" onClick={() => this.reactGrid.sortService.clearSorting}>Clear
                 Sorting</button>
             </div>
           </div>

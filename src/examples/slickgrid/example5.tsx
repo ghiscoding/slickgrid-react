@@ -1,5 +1,4 @@
 import { GridOdataService, OdataServiceApi, OdataOption } from '@slickgrid-universal/odata';
-import { HttpClient } from 'react-http-client';
 import {
   ReactGridInstance,
   Column,
@@ -57,7 +56,7 @@ export default class Example5 extends React.Component {
   isPageErrorTest = false;
   status = { text: '', class: '' };
 
-  constructor(public readonly props: Props, private http: HttpClient) {
+  constructor(public readonly props: Props) {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
@@ -485,12 +484,14 @@ export default class Example5 extends React.Component {
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}
-          paginationOptions={this.paginationOptions}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          onGridStateChanged={$event => this.gridStateChanged($event.detail)}
-          onBeforeSort={$event => this.handleOnBeforeSort($event)}
-          onBeforeSearchChange={$event => this.handleOnBeforeSearchChange($event)}
-          onBeforePaginationChange={$event => this.handleOnBeforePaginationChange($event)} />
+          customEvents={{
+            paginationOptions:this.paginationOptions,
+            onReactGridCreated:$event => this.reactGridReady($event.detail),
+            onGridStateChanged:$event => this.gridStateChanged($event.detail),
+            onBeforeSort:$event => this.handleOnBeforeSort($event),
+            onBeforeSearchChange:$event => this.handleOnBeforeSearchChange($event),
+            onBeforePaginationChange:$event => this.handleOnBeforePaginationChange($event)
+          }} />
       </div>
     );
   }

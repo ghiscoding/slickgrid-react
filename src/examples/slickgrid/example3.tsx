@@ -1,6 +1,4 @@
-import { HttpClient as FetchClient } from 'react-fetch-client';
-import { HttpClient } from 'react-http-client';
-import { I18N } from 'react-i18n';
+import i18next from 'i18next';
 import {
   ReactGridInstance,
   AutocompleteOption,
@@ -27,6 +25,11 @@ import * as $ from 'jquery';
 // using external non-typed js libraries
 declare const Slick: SlickNamespace;
 
+i18next.init({
+  lng: 'en',
+}
+);
+
 const NB_ITEMS = 100;
 const URL_SAMPLE_COLLECTION_DATA = 'assets/data/collection_100_numbers.json';
 const URL_COUNTRIES_COLLECTION = 'assets/data/countries.json';
@@ -48,7 +51,7 @@ const myCustomTitleValidator: EditorValidator = (value: any) => {
   } else if (!/^Task\s\d+$/.test(value)) {
     return { valid: false, msg: 'Your title is invalid, it must start with "Task" followed by a number' };
     // OR use the Translate Service with your custom message
-    // return { valid: false, msg: i18n.tr('YOUR_ERROR', { x: value }) };
+    // return { valid: false, msg: i18n.t('YOUR_ERROR', { x: value }) };
   }
   return { valid: true, msg: '' };
 };
@@ -91,11 +94,11 @@ export default class Example3 extends React.Component {
   selectedLanguage: string;
   duplicateTitleHeaderCount = 1;
 
-  constructor(public readonly props: Props, private http: HttpClient, private httpFetch: FetchClient, private i18n: I18N) {
+  constructor(public readonly props: Props) {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
-    this.selectedLanguage = this.i18n.getLocale();
+    this.selectedLanguage = i18next.language;
   }
 
   componentDidMount() {
@@ -197,7 +200,7 @@ export default class Example3 extends React.Component {
           minValue: 0,
           maxValue: 365,
           // the default validation error message is in English but you can override it by using "errorMessage"
-          // errorMessage: this.i18n.tr('INVALID_FLOAT', { maxDecimal: 2 }),
+          // errorMessage: i18next.t('INVALID_FLOAT', { maxDecimal: 2 }),
           params: { decimalPlaces: 2 },
         },
         */
@@ -343,12 +346,12 @@ export default class Example3 extends React.Component {
         editor: {
           model: Editors.autoComplete,
           customStructure: { label: 'name', value: 'code' },
-          collectionAsync: this.httpFetch.fetch(URL_COUNTRIES_COLLECTION),
+          collectionAsync: fetch(URL_COUNTRIES_COLLECTION),
         },
         filter: {
           model: Filters.autoComplete,
           customStructure: { label: 'name', value: 'code' },
-          collectionAsync: this.httpFetch.fetch(URL_COUNTRIES_COLLECTION),
+          collectionAsync: fetch(URL_COUNTRIES_COLLECTION),
         }
       }, {
         id: 'countryOfOriginName', name: 'Country of Origin Name', field: 'countryOfOriginName',
@@ -357,11 +360,11 @@ export default class Example3 extends React.Component {
         minWidth: 100,
         editor: {
           model: Editors.autoComplete,
-          collectionAsync: this.httpFetch.fetch(URL_COUNTRY_NAMES),
+          collectionAsync: fetch(URL_COUNTRY_NAMES),
         },
         filter: {
           model: Filters.autoComplete,
-          collectionAsync: this.httpFetch.fetch(URL_COUNTRY_NAMES),
+          collectionAsync: fetch(URL_COUNTRY_NAMES),
         }
       }, {
         id: 'effort-driven',
@@ -397,7 +400,7 @@ export default class Example3 extends React.Component {
           // collectionAsync: this.http.createRequest(URL_SAMPLE_COLLECTION_DATA).asGet().send(),
 
           // OR 2- use "react-fetch-client", they are both supported
-          collectionAsync: this.httpFetch.fetch(URL_SAMPLE_COLLECTION_DATA),
+          collectionAsync: fetch(URL_SAMPLE_COLLECTION_DATA),
 
           // OR 3- use a Promise
           // collectionAsync: new Promise<any>((resolve) => {
@@ -424,7 +427,7 @@ export default class Example3 extends React.Component {
           model: Editors.multipleSelect,
         },
         filter: {
-          collectionAsync: this.httpFetch.fetch(URL_SAMPLE_COLLECTION_DATA),
+          collectionAsync: fetch(URL_SAMPLE_COLLECTION_DATA),
           // collectionAsync: new Promise((resolve) => {
           //   setTimeout(() => {
           //     resolve(Array.from(Array(this.dataset.length).keys()).map(k => ({ value: k, label: `Task ${k}` })));
@@ -467,7 +470,7 @@ export default class Example3 extends React.Component {
         this._commandQueue.push(editCommand);
         editCommand.execute();
       },
-      i18n: this.i18n,
+      i18n: i18next,
     };
   }
 
@@ -648,7 +651,7 @@ export default class Example3 extends React.Component {
 
   async switchLanguage() {
     const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
-    await this.i18n.setLocale(nextLanguage);
+    await i18next.changeLanguage(nextLanguage);
     this.selectedLanguage = nextLanguage;
   }
 
@@ -684,7 +687,7 @@ export default class Example3 extends React.Component {
                 <input type="radio"
                   name="inlineRadioOptions"
                   id="radioTrue"
-                  checked
+                  defaultChecked
                   value={this.isAutoEdit.toString()}
                   onClick={() => this.setAutoEdit(true)} /> ON
                 (single-click)
@@ -694,7 +697,7 @@ export default class Example3 extends React.Component {
                 <input type="radio"
                   name="inlineRadioOptions"
                   id="radioFalse"
-                  checked
+                  defaultChecked
                   value={this.isAutoEdit.toString()}
                   onClick={() => this.setAutoEdit(false)} /> OFF
                 (double-click)
@@ -721,9 +724,9 @@ export default class Example3 extends React.Component {
           </span>
           <div className="row" style={{ marginTop: '5px' }}>
             <div className="col-sm-12">
-              <button className="btn btn-outline-secondary btn-sm" onClick={this.reactGrid.filterService.clearFilters()}>Clear
+              <button className="btn btn-outline-secondary btn-sm" onClick={() => this.reactGrid.filterService.clearFilters()}>Clear
                 Filters</button>
-              <button className="btn btn-outline-secondary btn-sm" onClick={this.reactGrid.sortService.clearSorting()}>Clear
+              <button className="btn btn-outline-secondary btn-sm" onClick={() => this.reactGrid.sortService.clearSorting()}>Clear
                 Sorting</button>
               <button className="btn btn-outline-primary btn-sm" data-test="add-item-btn" onClick={this.addItem}
                 title="Clear Filters &amp; Sorting to see it better">

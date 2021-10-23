@@ -1,5 +1,3 @@
-import { HttpClient as FetchClient } from 'react-fetch-client';
-import { HttpClient } from 'react-http-client';
 import { CustomInputFilter } from './custom-inputFilter';
 import {
   ReactGridInstance,
@@ -55,7 +53,7 @@ export default class Example4 extends React.Component {
   dataset: any[] = [];
   metrics!: Metrics;
 
-  constructor(public readonly props: Props, private http: HttpClient, private httpFetch: FetchClient) {
+  constructor(public readonly props: Props) {
     super(props);
     this.defineGrid();
   }
@@ -110,7 +108,7 @@ export default class Example4 extends React.Component {
           // collectionAsync: this.http.createRequest(URL_SAMPLE_COLLECTION_DATA).asGet().send(),
 
           // OR 2- use "react-fetch-client", they are both supported
-          collectionAsync: this.httpFetch.fetch(URL_SAMPLE_COLLECTION_DATA),
+          collectionAsync: fetch(URL_SAMPLE_COLLECTION_DATA),
 
           // collectionFilterBy & collectionSortBy accept a single or multiple options
           // we can exclude certains values 365 & 360 from the dropdown filter
@@ -346,11 +344,11 @@ export default class Example4 extends React.Component {
         </div>
 
         <button className="btn btn-outline-secondary btn-sm" data-test="clear-filters"
-          onClick={this.reactGrid.filterService.clearFilters()}>
+          onClick={() => this.reactGrid.filterService.clearFilters()}>
           Clear Filters
         </button>
         <button className="btn btn-outline-secondary btn-sm" data-test="clear-sorting"
-          onClick={this.reactGrid.sortService.clearSorting()}>
+          onClick={() => this.reactGrid.sortService.clearSorting()}>
           Clear Sorting
         </button>
         <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-filter"
@@ -366,9 +364,12 @@ export default class Example4 extends React.Component {
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          onGridStateChanged={$event => this.gridStateChanged($event.detail)}
-          onRowCountChanged={$event => this.refreshMetrics($event.eventData, $event.detail.args)} />
+          customEvents={{
+            onReactGridCreated: $event => this.reactGridReady($event),
+            onGridStateChanged: $event => this.gridStateChanged($event),
+            onRowCountChanged: $event => this.refreshMetrics($event.eventData, $event.detail.args)
+          }}
+        />
       </div>
     );
   }

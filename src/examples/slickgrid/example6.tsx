@@ -1,5 +1,5 @@
 import { GraphqlService, GraphqlPaginatedResult, GraphqlServiceApi, } from '@slickgrid-universal/graphql';
-import { I18N } from 'react-i18n';
+import i18next from 'i18next';
 import * as moment from 'moment-mini';
 import {
   ReactGridInstance,
@@ -19,6 +19,11 @@ import React from 'react';
 
 const defaultPageSize = 20;
 const GRAPHQL_QUERY_DATASET_NAME = 'users';
+
+i18next.init({
+  lng: 'en',
+}
+);
 
 interface Props { }
 
@@ -52,14 +57,14 @@ export default class Example6 extends React.Component {
   selectedLanguage: string;
   status = { text: '', class: '' };
 
-  constructor(public readonly props: Props, private i18n: I18N) {
+  constructor(public readonly props: Props) {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
 
     // always start with English for Cypress E2E tests to be consistent
     const defaultLang = 'en';
-    this.i18n.setLocale(defaultLang);
+    i18next.changeLanguage(defaultLang);
     this.selectedLanguage = defaultLang;
   }
 
@@ -136,7 +141,7 @@ export default class Example6 extends React.Component {
       createPreHeaderPanel: true,
       showPreHeaderPanel: true,
       preHeaderPanelHeight: 28,
-      i18n: this.i18n,
+      i18n: i18next,
       gridHeight: 200,
       gridWidth: 900,
       gridMenu: {
@@ -280,7 +285,7 @@ export default class Example6 extends React.Component {
 
   async switchLanguage() {
     const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
-    await this.i18n.setLocale(nextLanguage);
+    await i18next.changeLanguage(nextLanguage);
     this.selectedLanguage = nextLanguage;
   }
 
@@ -372,8 +377,10 @@ export default class Example6 extends React.Component {
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          onGridStateChanged={$event => this.gridStateChanged($event.detail)} />
+          customEvents={{
+            onReactGridCreated: $event => this.reactGridReady($event),
+            onGridStateChanged: $event => this.gridStateChanged($event),
+          }} />
       </div>
     );
   }

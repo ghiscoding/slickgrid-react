@@ -1,4 +1,4 @@
-import { I18N } from 'react-i18n';
+import { i18n } from 'i18next';
 import { ReactGridInstance, Column, Formatters, GridOption, SlickDataView, SlickGrid, ReactSlickgridCustomElement } from '../../react-slickgrid';
 import './example8.scss'; // provide custom CSS/SASS styling
 import React from 'react';
@@ -35,12 +35,13 @@ export default class Example8 extends React.Component {
   gridObj!: SlickGrid;
   selectedLanguage: string;
   visibleColumns: Column[] = [];
+  private i18n: i18n;
 
-  constructor(public readonly props: Props, private i18n: I18N) {
+  constructor(public readonly props: Props) {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
-    this.selectedLanguage = this.i18n.getLocale();
+    this.selectedLanguage = this.i18n.language;
   }
 
   componentDidMount() {
@@ -153,7 +154,7 @@ export default class Example8 extends React.Component {
 
   async switchLanguage() {
     const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
-    await this.i18n.setLocale(nextLanguage);
+    await this.i18n.changeLanguage(nextLanguage);
     this.selectedLanguage = nextLanguage;
   }
 
