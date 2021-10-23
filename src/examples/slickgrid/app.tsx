@@ -4,6 +4,7 @@ import Example2 from './example2';
 import Example3 from './example3';
 import Router from './Router';
 import { Redirect, Route, Switch } from 'react-router-dom';
+import { NavBar } from '../../NavBar';
 
 const routes = [
   { route: '/example1', component: Example1, title: '1- Basic Grid / 2 Grids' },
@@ -45,6 +46,7 @@ export class App extends React.Component {
   render() {
     return (
       <div>
+        <NavBar></NavBar>
         <div className="container-fluid">
           <div className="panel-wm">
             <section id="panel-left"

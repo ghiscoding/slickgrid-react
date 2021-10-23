@@ -1,7 +1,6 @@
 import { EventAggregator } from 'react-event-aggregator';
-import { autoinject, bindable, DOM } from 'react-framework';
+import { bindable, DOM } from 'react-framework';
 
-@autoinject()
 export class FilterSelect {
   @bindable selectedItem: any;
   selectedId = '';

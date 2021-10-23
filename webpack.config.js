@@ -89,7 +89,7 @@ module.exports = ({ production } = {}, { server } = {}) => ({
           },
         },
       },
-      { test: /\.(sass|scss)$/, use: ['style-loader', 'css-loader', 'sass-loader'], issuer: /\.[tj]s$/i },
+      { test: /\.(sass|scss)$/, use: ['style-loader', 'css-loader', 'sass-loader'], issuer: /\.[tj]sx?$/i },
       { test: /\.(sass|scss)$/, use: ['css-loader', 'sass-loader'], issuer: /\.html?$/i },
       { test: /\.html$/i, loader: 'html-loader' },
       { test: /\.ts?$/, use: 'ts-loader', exclude: nodeModulesDir, },

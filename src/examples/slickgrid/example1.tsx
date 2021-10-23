@@ -5,33 +5,50 @@ const NB_ITEMS = 995;
 
 interface Props { }
 
-export default class Example1 extends React.Component {
-  title = 'Example 1: Basic Grids';
-  subTitle = `Simple Grids with Fixed Sizes (800 x 225)`;
+interface State {
+  title: string;
+  subTitle: string;
+  gridOptions1: GridOption;
+  gridOptions2: GridOption;
+  columnDefinitions1: Column[];
+  columnDefinitions2: Column[];
+  dataset1: any[];
+  dataset2: any[];
+}
 
-  gridOptions1!: GridOption;
-  gridOptions2!: GridOption;
-  columnDefinitions1: Column[] = [];
-  columnDefinitions2: Column[] = [];
-  dataset1: any[] = [];
-  dataset2: any[] = [];
-
+export default class Example1 extends React.Component<Props, State> {
   constructor(public readonly props: Props) {
     super(props);
+
+    this.state = {
+      title: 'Example 1: Basic Grids',
+      subTitle: `Simple Grids with Fixed Sizes (800 x 225)`,
+      gridOptions1: undefined,
+      gridOptions2: undefined,
+      columnDefinitions1: [],
+      columnDefinitions2: [],
+      dataset1: [],
+      dataset2: []
+    };
+
     // define the grid options & columns and then create the grid itself
     this.defineGrids();
   }
 
   componentDidMount() {
-    document.title = this.title;
+    document.title = this.state.title;
     // mock some data (different in each dataset)
-    this.dataset1 = this.mockData(NB_ITEMS);
-    this.dataset2 = this.mockData(NB_ITEMS);
+    this.setState((state: any, props: Props) => {
+      return {
+        dataset1: this.mockData(NB_ITEMS),
+        dataset2: this.mockData(NB_ITEMS)
+      };
+    });
   }
 
   /* Define grid Options and Columns */
   defineGrids() {
-    this.columnDefinitions1 = [
+    const columns = [
       { id: 'title', name: 'Title', field: 'title', sortable: true, minWidth: 100 },
       { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true, minWidth: 100 },
       { id: '%', name: '% Complete', field: 'percentComplete', sortable: true, minWidth: 100 },
@@ -39,7 +56,7 @@ export default class Example1 extends React.Component {
       { id: 'finish', name: 'Finish', field: 'finish', formatter: Formatters.dateIso },
       { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven', sortable: true, minWidth: 100 }
     ];
-    this.gridOptions1 = {
+    const gridOptions1 = {
       gridHeight: 225,
       gridWidth: 800,
       enableAutoResize: false,
@@ -48,9 +65,8 @@ export default class Example1 extends React.Component {
 
     // copy the same Grid Options and Column Definitions to 2nd grid
     // but also add Pagination in this grid
-    this.columnDefinitions2 = this.columnDefinitions1;
-    this.gridOptions2 = {
-      ...this.gridOptions1,
+    const gridOptions2 = {
+      ...gridOptions1,
       ...{
         enablePagination: true,
         pagination: {
@@ -58,6 +74,14 @@ export default class Example1 extends React.Component {
           pageSize: 5
         },
       }
+    };
+
+    this.state = {
+      ...this.state,
+      columnDefinitions1: columns,
+      columnDefinitions2: columns,
+      gridOptions1,
+      gridOptions2
     };
   }
 
@@ -88,7 +112,7 @@ export default class Example1 extends React.Component {
     return (
       <div id="demo-container" className="container-fluid">
         <h2>
-          {this.title}
+          {this.state.title}
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
@@ -97,21 +121,21 @@ export default class Example1 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle">{this.state.subTitle}</div>
 
         <h3>Grid 1</h3>
         <ReactSlickgridCustomElement gridId="grid1"
-          columnDefinitions={this.columnDefinitions1}
-          gridOptions={this.gridOptions1}
-          dataset={this.dataset1} />
+          columnDefinitions={this.state.columnDefinitions1}
+          gridOptions={this.state.gridOptions1}
+          dataset={this.state.dataset1} />
 
         <hr />
 
         <h3>Grid 2 <small>(with local Pagination)</small></h3>
         <ReactSlickgridCustomElement gridId="grid2"
-          columnDefinitions={this.columnDefinitions2}
-          gridOptions={this.gridOptions2}
-          dataset={this.dataset2} />
+          columnDefinitions={this.state.columnDefinitions2}
+          gridOptions={this.state.gridOptions2}
+          dataset={this.state.dataset2} />
       </div>
     );
   }

@@ -127,13 +127,38 @@ interface Props {
   columnDefinitions: Column[];
 }
 
+interface State {
+  showPagination: boolean;
+  _gridOptions: GridOption;
+  paginationService: PaginationService;
+}
+
 class CustomEventPubSubService extends EventPubSubService {
   set elementSource(value: Element) {
     this._elementSource = value;
   }
 }
 
-export class ReactSlickgridCustomElement extends React.Component {
+export class ReactSlickgridCustomElement extends React.Component<Props, State> {
+  private _mounted = false;
+  private setStateValue(key: string, value: any): void {
+    if (this.state && this.state[key] === value) {
+      return;
+    }
+
+    if (!this._mounted) {
+      this.state = this.state || {};
+      this.state[key] = value;
+      return;
+    }
+
+    this.setState(() => {
+      const result = {};
+      result[key] = value;
+      return result;
+    });
+  }
+
   private _columnDefinitions: Column[] = [];
   private _currentDatasetLength = 0;
   private _dataset: any[] | null = null;
@@ -147,12 +172,23 @@ export class ReactSlickgridCustomElement extends React.Component {
   private _isLocalGrid = true;
   private _paginationOptions: Pagination | undefined;
   private _registeredResources: ExternalResource[] = [];
-  private _gridOptions: GridOption;
+  private get _gridOptions(): GridOption {
+    return this.state?._gridOptions;
+  }
+  private set _gridOptions(value: GridOption) {
+    this.setStateValue('_gridOptions', value);
+  }
+
   groupItemMetadataProvider: any;
   backendServiceApi: BackendServiceApi | undefined;
   locales!: Locale;
   metrics?: Metrics;
-  showPagination = false;
+  private get showPagination(): boolean {
+    return this.state?.showPagination;
+  }
+  private set showPagination(value: boolean) {
+    this.setStateValue('showPagination', value);
+  }
   serviceList: any[] = [];
   subscriptions: Array<EventSubscription | Subscription> = [];
   paginationData?: {
@@ -177,7 +213,12 @@ export class ReactSlickgridCustomElement extends React.Component {
   gridService: GridService;
   gridStateService: GridStateService;
   groupingService: GroupingAndColspanService;
-  paginationService: PaginationService;
+  private get paginationService(): PaginationService {
+    return this.state?.paginationService;
+  }
+  private set paginationService(value: PaginationService) {
+    this.setStateValue('paginationService', value);
+  }
   resizerService!: ResizerService;
   rxjs?: RxJsFacade;
   sharedService: SharedService;
@@ -207,6 +248,8 @@ export class ReactSlickgridCustomElement extends React.Component {
     super(props);
 
     const slickgridConfig = new SlickgridConfig();
+
+    this.showPagination = false;
 
     // initialize and assign all Service Dependencies
     this._eventPubSubService = this.props.externalServices?.eventPubSubService ?? new CustomEventPubSubService();
@@ -313,6 +356,7 @@ export class ReactSlickgridCustomElement extends React.Component {
   }
 
   componentDidMount() {
+    this._mounted = true;
     if (this.elm.current && this._eventPubSubService instanceof CustomEventPubSubService) {
       (this._eventPubSubService as CustomEventPubSubService).elementSource = this.elm.current;
     }
@@ -576,14 +620,16 @@ export class ReactSlickgridCustomElement extends React.Component {
       }
       this.backendServiceApi = undefined;
     }
+    /*
     for (const prop of Object.keys(this.props.columnDefinitions)) {
       (this.props.columnDefinitions as any)[prop] = null;
     }
+    */
     for (const prop of Object.keys(this.sharedService)) {
       (this.sharedService as any)[prop] = null;
     }
     this._dataset = null;
-    this.props.datasetHierarchical = null;
+    // this.props.datasetHierarchical = null;
     this._columnDefinitions = [];
   }
 
@@ -599,11 +645,21 @@ export class ReactSlickgridCustomElement extends React.Component {
 
   componentDidUpdate(prevProps: Props) {
     // get the grid options (order of precedence is Global Options first, then user option which could overwrite the Global options)
-    this._gridOptions = { ...GlobalGridOptions, ...this._gridOptions };
-    this._columnDefinitions = this.props.columnDefinitions;
+    if (this.props.gridOptions !== prevProps.gridOptions) {
+      this._gridOptions = { ...GlobalGridOptions, ...this._gridOptions };
+    }
 
     if (this.props.columnDefinitions !== prevProps.columnDefinitions) {
+      this._columnDefinitions = this.props.columnDefinitions;
       this.columnDefinitionsChanged();
+    }
+
+    if (this.props.dataset !== prevProps.dataset) {
+      this.datasetChanged(this.props.dataset, prevProps.dataset);
+    }
+
+    if (this.props.datasetHierarchical && this.props.datasetHierarchical !== prevProps.datasetHierarchical) {
+      this.datasetHierarchicalChanged(this.props.datasetHierarchical);
     }
   }
 

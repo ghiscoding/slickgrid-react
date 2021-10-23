@@ -1,4 +1,3 @@
-import { autoinject } from 'react-framework';
 import { HttpClient as FetchClient } from 'react-fetch-client';
 import { HttpClient } from 'react-http-client';
 import { I18N } from 'react-i18n';
@@ -66,7 +65,6 @@ const taskFormatter = (_row: number, _cell: number, value: any) => {
 
 interface Props { }
 
-@autoinject()
 export default class Example3 extends React.Component {
   title = 'Example 3: Editors / Delete';
   subTitle = `
