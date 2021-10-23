@@ -419,7 +419,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     // however "editor" is used internally by SlickGrid for it's own Editor Factory
     // so in our lib we will swap "editor" and copy it into a new property called "internalColumnEditor"
     // then take back "editor.model" and make it the new "editor" so that SlickGrid Editor Factory still works
-    this._columnDefinitions = this.swapInternalEditorToSlickGridFactoryEditor(this._columnDefinitions);
+    this._columnDefinitions = this.swapInternalEditorToSlickGridFactoryEditor(this.props.columnDefinitions);
 
     // if the user wants to automatically add a Custom Editor Formatter, we need to call the auto add function again
     if (this._gridOptions.autoAddCustomEditorFormatter) {
