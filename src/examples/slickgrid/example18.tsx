@@ -468,14 +468,14 @@ export default class Example18 extends React.Component {
                 <div className="row form-group">
                   <label htmlFor="field1" className="col-sm-3 mb-2">Group by field(s)</label>
                   {
-                    routes.map((groupField) =>
-                      <div className="form-group col-md-3" key={groupField.route}>
-                        <select className="form-select" change={this.groupByFieldName(column.id, $index)}
-                          value={this.selectedGroupingFields[$index]}>
+                    this.selectedGroupingFields.map((groupField) =>
+                      <div className="form-group col-md-3" key={groupField.toString()}>
+                        <select className="form-select" onChange={() => this.groupByFieldName()}
+                          value={this.selectedGroupingFields.toString()}>
                           <option value="''">...</option>
                           {
-                            routes.map((column) =>
-                              <option value={column.id} key={column.route}></option>
+                            this.columnDefinitions.map((column) =>
+                              <option value={column.id} key={column.id}></option>
                             )
                           }
                         </select>
@@ -496,7 +496,9 @@ export default class Example18 extends React.Component {
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)} />
+          customEvents={{
+            onReactGridCreated: $event => this.reactGridReady($event.detail)
+          }} />
       </div>
     );
   }

@@ -1,7 +1,7 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { ReactGridInstance, Column, FieldType, GridOption, ItemMetadata, ReactSlickgridCustomElement } from '../../react-slickgrid';
 import React from 'react';
-import './example14.scss'; // provide custom CSS/SASS styling
+// import './example14.scss'; // provide custom CSS/SASS styling
 
 interface Props { }
 
@@ -193,7 +193,9 @@ export default class Example14 extends React.Component {
           columnDefinitions={this.columnDefinitions2}
           gridOptions={this.gridOptions2}
           dataset={this.dataset2}
-          onReactGridCreated={$event => this.reactGridReady2($event.detail)} />
+          customEvents={{
+            onReactGridCreated: $event => this.reactGridReady2($event.detail),
+          }} />
       </div>
     );
   }

@@ -411,9 +411,11 @@ export default class Example13 extends React.Component {
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}
-          onBeforeExportToExcel={this.processing = true}
-          onAfterExportToExcel={this.processing = false}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)} />
+          customEvents={{
+            onBeforeExportToExcel: this.processing = true,
+            onAfterExportToExcel: this.processing = false,
+            onReactGridCreated: $event => this.reactGridReady($event.detail),
+          }} />
       </div>
     );
   }

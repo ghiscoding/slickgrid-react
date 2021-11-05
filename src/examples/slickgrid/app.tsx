@@ -3,7 +3,20 @@ import Example1 from './example1';
 import Example2 from './example2';
 import Example3 from './example3';
 import Example4 from './example4';
+import Example5 from './example5';
 import Example6 from './example6';
+import Example7 from './example7';
+import Example8 from './example8';
+import Example9 from './example9';
+import Example10 from './example10';
+import Example11 from './example11';
+import Example12 from './example12';
+import Example13 from './example13';
+import Example14 from './example14';
+import Example15 from './example15';
+import Example16 from './example16';
+import Example17 from './example17';
+import Example18 from './example18';
 import Router from './Router';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
@@ -12,20 +25,20 @@ const routes = [
   { route: '/example2', component: Example2, title: '2- Formatters' },
   { route: '/example3', component: Example3, title: '3- Editors / Delete' },
   { route: '/example4', component: Example4, title: '4- Client Side Sort/Filter' },
-  // { route: '/example5', component: Example5, title: '5- Backend OData Service' },
+  { route: '/example5', component: Example5, title: '5- Backend OData Service' },
   { route: '/example6', component: Example6, title: '6- Backend GraphQL Service' },
-  // { route: '/example7', component: Example7, title: '7- Header Button Plugin' },
-  // { route: '/example8', component: Example8, title: '8- Header Menu Plugin' },
-  // { route: '/example9', component: Example9, title: '9- Grid Menu Control' },
-  // { route: '/example10', component: Example10, title: '10- Row Selection / 2 Grids' },
-  // { route: '/example11', component: Example11, title: '11- Add/Update Grid Item' },
-  // { route: '/example12', component: Example12, title: '12- Localization (i18n)' },
-  // { route: '/example13', component: Example13, title: '13- Grouping & Aggregators' },
-  // { route: '/example14', component: Example14, title: '14- Column Span & Header Grouping' },
-  // { route: '/example15', component: Example15, title: '15- Grid State & Local Storage' },
-  // { route: '/example16', component: Example16, title: '16- Row Move Plugin' },
-  // { route: '/example17', component: Example17, title: '17- Remote Model' },
-  // { route: '/example18', component: Example18, title: '18- Draggable Grouping' },
+  { route: '/example7', component: Example7, title: '7- Header Button Plugin' },
+  { route: '/example8', component: Example8, title: '8- Header Menu Plugin' },
+  { route: '/example9', component: Example9, title: '9- Grid Menu Control' },
+  { route: '/example10', component: Example10, title: '10- Row Selection / 2 Grids' },
+  { route: '/example11', component: Example11, title: '11- Add/Update Grid Item' },
+  { route: '/example12', component: Example12, title: '12- Localization (i18n)' },
+  { route: '/example13', component: Example13, title: '13- Grouping & Aggregators' },
+  { route: '/example14', component: Example14, title: '14- Column Span & Header Grouping' },
+  { route: '/example15', component: Example15, title: '15- Grid State & Local Storage' },
+  { route: '/example16', component: Example16, title: '16- Row Move Plugin' },
+  { route: '/example17', component: Example17, title: '17- Remote Model' },
+  { route: '/example18', component: Example18, title: '18- Draggable Grouping' },
   // { route: '/example19', component: Example19, title: '19- Row Detail View' },
   // { route: '/example20', component: Example20, title: '20- Pinned Columns/Rows' },
   // { route: '/example21', component: Example21, title: '21- Grid AutoHeight (full height)' },

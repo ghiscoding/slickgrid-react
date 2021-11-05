@@ -12,7 +12,7 @@ import {
   ReactSlickgridCustomElement,
 } from '../../react-slickgrid';
 import React from 'react';
-import './example11.scss';
+//import './example11.scss';
 
 interface Props { }
 
@@ -328,7 +328,9 @@ export default class Example11 extends React.Component {
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)} />
+          customEvents={{
+            onReactGridCreated: $event => this.reactGridReady($event.detail),
+          }} />
       </div>
     );
   }

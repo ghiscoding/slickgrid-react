@@ -1,10 +1,8 @@
-import { bindable } from 'react-framework';
-
-import { Example19 } from './example19';
+import Example19 from './example19';
 import { SlickDataView, SlickGrid, ViewModelBindableData } from '../../react-slickgrid';
 
 export class DetailViewCustomElement {
-  @bindable() model!: {
+  model!: {
     duration: Date;
     percentComplete: number;
     reporter: string;

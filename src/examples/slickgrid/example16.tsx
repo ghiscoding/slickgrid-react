@@ -289,7 +289,9 @@ export default class Example16 extends React.Component {
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)} />
+          customEvents={{
+            onReactGridCreated: $event => this.reactGridReady($event.detail)
+          }} />
       </div>
     );
   }

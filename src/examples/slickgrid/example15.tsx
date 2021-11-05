@@ -285,8 +285,10 @@ export default class Example15 extends React.Component {
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          onGridStateChanged={$event => this.gridStateChanged($event.detail)} />
+          customEvents={{
+            onReactGridCreated: $event => this.reactGridReady($event.detail),
+            onGridStateChanged: $event => this.gridStateChanged($event.detail),
+          }} />
       </div>
     );
   }

@@ -1,7 +1,6 @@
-import { bindable } from 'react-framework';
 import { ReactGridInstance, Column, FieldType, Filters, Formatters, GridOption, GridStateChange, ReactSlickgridCustomElement } from '../../react-slickgrid';
 import React from 'react';
-import './example10.scss'; // provide custom CSS/SASS styling
+//import './example10.scss'; // provide custom CSS/SASS styling
 
 interface Props { }
 
@@ -15,7 +14,7 @@ export default class Example10 extends React.Component {
       <li>NOTE: Any Row Selection(s) will be reset when using Pagination and changing Page (you will need to set it back manually if you want it back)</li>
     </ul>
   `;
-  @bindable() isGrid2WithPagination = true;
+  isGrid2WithPagination = true;
 
   reactGrid1!: ReactGridInstance;
   reactGrid2!: ReactGridInstance;
@@ -294,9 +293,11 @@ export default class Example10 extends React.Component {
             columnDefinitions={this.columnDefinitions1}
             gridOptions={this.gridOptions1}
             dataset={this.dataset1}
-            onReactGridCreated={$event => this.reactGrid1Ready($event.detail)}
-            onGridStateChanged={$event => this.grid1StateChanged($event.detail)}
-            onSelectedRowsChanged={$event => this.onGrid1SelectedRowsChanged($event.detail.eventData, $event.detail.args)} />
+            customEvents={{
+              onReactGridCreated: $event => this.reactGrid1Ready($event),
+              onGridStateChanged: $event => this.grid1StateChanged($event),
+              onSelectedRowsChanged: $event => this.onGrid1SelectedRowsChanged($event.detail.eventData, $event.detail.args)
+            }} />
         </div>
 
         <hr className="col-md-6 offset-md-1" />
@@ -333,8 +334,10 @@ export default class Example10 extends React.Component {
             columnDefinitions={this.columnDefinitions2}
             gridOptions={this.gridOptions2}
             dataset={this.dataset2}
-            onReactGridCreated={$event => this.reactGrid2Ready($event.detail)}
-            onGridStateChanged={$event => this.grid2StateChanged($event.detail)} />
+            customEvents={{
+              onReactGridCreated: $event => this.reactGrid2Ready($event.detail),
+              onGridStateChanged: $event => this.grid2StateChanged($event.detail)
+            }}/>
         </div>
       </div>
     );

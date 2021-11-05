@@ -1,7 +1,6 @@
 
 import 'slickgrid/lib/jquery.jsonp-2.4.min';
 import 'slickgrid/slick.remotemodel'; // SlickGrid Remote Plugin
-import { bindable, bindingMode } from 'react-framework';
 
 import {
   ReactGridInstance,
@@ -31,7 +30,7 @@ const mpnFormatter: Formatter = (_row, _cell, _value, _columnDef, dataContext) =
 };
 
 export default class Example17 extends React.Component {
-  @bindable({ defaultBindingMode: bindingMode.twoWay }) search = '';
+  search = '';
   private _eventHandler: any = new Slick.EventHandler();
 
   title = 'Example 17: Octopart Catalog Search - Remote Model Plugin';
@@ -199,9 +198,11 @@ export default class Example17 extends React.Component {
           gridOptions={this.gridOptions}
           dataset={this.dataset}
           customDataView={this.customDataView}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          onViewportChanged={$event => this.onViewportChanged($event.detail.eventData, $event.detail.args)}
-          onSort={$event => this.onSort($event.detail.eventData, $event.detail.args)} />
+          customEvents={{
+            onReactGridCreated: $event => this.reactGridReady($event.detail),
+            onViewportChanged: $event => this.onViewportChanged($event.detail.eventData, $event.detail.args),
+            onSort: $event => this.onSort($event.detail.eventData, $event.detail.args)
+          }} />
       </div>
     );
   }

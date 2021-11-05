@@ -1,4 +1,4 @@
-import { i18n } from 'i18next';
+import i18next from 'i18next';
 import { ReactGridInstance, Column, Formatters, GridOption, SlickDataView, SlickGrid, ReactSlickgridCustomElement } from '../../react-slickgrid';
 import './example8.scss'; // provide custom CSS/SASS styling
 import React from 'react';
@@ -35,13 +35,12 @@ export default class Example8 extends React.Component {
   gridObj!: SlickGrid;
   selectedLanguage: string;
   visibleColumns: Column[] = [];
-  private i18n: i18n;
 
   constructor(public readonly props: Props) {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
-    this.selectedLanguage = this.i18n.language;
+    this.selectedLanguage = i18next.language;
   }
 
   componentDidMount() {
@@ -131,7 +130,7 @@ export default class Example8 extends React.Component {
         }
       },
       enableTranslate: true,
-      i18n: this.i18n
+      i18n: i18next
     };
   }
 
@@ -154,7 +153,7 @@ export default class Example8 extends React.Component {
 
   async switchLanguage() {
     const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
-    await this.i18n.changeLanguage(nextLanguage);
+    await i18next.changeLanguage(nextLanguage);
     this.selectedLanguage = nextLanguage;
   }
 
@@ -183,7 +182,9 @@ export default class Example8 extends React.Component {
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)} />
+          customEvents={{
+            onReactGridCreated: $event => this.reactGridReady($event),
+          }} />
       </div>
     );
   }

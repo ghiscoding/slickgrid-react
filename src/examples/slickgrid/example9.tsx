@@ -1,4 +1,4 @@
-import { i18n } from 'i18next';
+import i18next from 'i18next';
 import {
   ReactGridInstance,
   Column,
@@ -12,7 +12,7 @@ import {
   ReactSlickgridCustomElement,
 } from '../../react-slickgrid';
 import React from 'react';
-import './example9.scss'; // provide custom CSS/SASS styling
+//import './example9.scss'; // provide custom CSS/SASS styling
 
 interface Props { }
 
@@ -38,7 +38,6 @@ export default class Example9 extends React.Component {
   dataView!: SlickDataView;
   gridObj!: SlickGrid;
   selectedLanguage: string;
-  private i18n: i18n;
 
   constructor(public readonly props: Props) {
     super(props);
@@ -47,7 +46,7 @@ export default class Example9 extends React.Component {
 
     // always start with English for Cypress E2E tests to be consistent
     const defaultLang = 'en';
-    this.i18n.changeLanguage(defaultLang);
+    i18next.changeLanguage(defaultLang);
     this.selectedLanguage = defaultLang;
   }
 
@@ -190,7 +189,7 @@ export default class Example9 extends React.Component {
         }
       },
       enableTranslate: true,
-      i18n: this.i18n
+      i18n: i18next
     };
   }
 
@@ -222,7 +221,7 @@ export default class Example9 extends React.Component {
 
   async switchLanguage() {
     const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
-    await this.i18n.changeLanguage(nextLanguage);
+    await i18next.changeLanguage(nextLanguage);
     this.selectedLanguage = nextLanguage;
   }
 
@@ -272,7 +271,9 @@ export default class Example9 extends React.Component {
           columnDefinitions={this.columnDefinitions}
           dataset={this.dataset}
           gridOptions={this.gridOptions}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)} />
+          customEvents={{
+            onReactGridCreated: $event => this.reactGridReady($event),
+          }} />
       </div>
     );
   }

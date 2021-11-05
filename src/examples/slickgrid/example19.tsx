@@ -14,7 +14,7 @@ import React from 'react';
 interface Props { }
 
 export default class Example19 extends React.Component {
-  @bindable detailViewRowCount = 9;
+  detailViewRowCount = 9;
   title = 'Example 19: Row Detail View';
   subTitle = `
     Add functionality to show extra information with a Row Detail View, (<a href="https://github.com/ghiscoding/react-slickgrid/wiki/Row-Detail" target="_blank">Wiki docs</a>)
@@ -220,7 +220,7 @@ export default class Example19 extends React.Component {
             Set
           </button>
         </div>
-        {this.message && <div className="alert alert-${flashAlertType} col-sm-6" data-test="flash-msg">${this.message}</div>}
+        {this.message && <div className="alert alert-{this.flashAlertType} col-sm-6" data-test="flash-msg">{this.message}</div>}
 
         <hr />
 
