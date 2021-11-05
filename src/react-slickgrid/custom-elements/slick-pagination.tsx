@@ -14,7 +14,12 @@ interface Props {
   paginationService: PaginationService;
   gridOptions: GridOption;
 }
-export class SlickPaginationCustomElement extends React.Component {
+
+interface State {
+
+}
+
+export class SlickPaginationCustomElement extends React.Component<Props, State> {
   private _enableTranslate = false;
   private _locales!: Locale;
   private _gridOptions!: GridOption;
@@ -78,20 +83,22 @@ export class SlickPaginationCustomElement extends React.Component {
     return this.props.paginationService.totalItems;
   }
 
-  bind(bindings: { gridOptions: GridOption; paginationService: PaginationService; }) {
-    this._gridOptions = this.props.gridOptions || bindings && bindings.gridOptions || {};
-    this._enableTranslate = this._gridOptions && this._gridOptions.enableTranslate || false;
-    this._locales = this._gridOptions && this._gridOptions.locales || Constants.locales;
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.gridOptions !== prevProps.gridOptions) {
+      this._gridOptions = this.props.gridOptions || this.props.gridOptions || {};
+      this._enableTranslate = this._gridOptions && this._gridOptions.enableTranslate || false;
+      this._locales = this._gridOptions && this._gridOptions.locales || Constants.locales;
 
-    if (this._enableTranslate && (!this.props.translateService || !this.props.translateService.translate)) {
-      throw new Error('[React-Slickgrid] requires "I18N" to be installed and configured when the grid option "enableTranslate" is enabled.');
-    }
-    this.translatePaginationTexts(this._locales);
+      if (this._enableTranslate && (!this.props.translateService || !this.props.translateService.translate)) {
+        throw new Error('[React-Slickgrid] requires "I18N" to be installed and configured when the grid option "enableTranslate" is enabled.');
+      }
+      this.translatePaginationTexts(this._locales);
 
-    if (this._enableTranslate && this.props.globalEa && this.props.globalEa.subscribe) {
-      this._subscriptions.push(
-        this.props.globalEa.subscribe('i18n:locale:changed', () => this.translatePaginationTexts(this._locales))
-      );
+      if (this._enableTranslate && this.props.globalEa && this.props.globalEa.subscribe) {
+        this._subscriptions.push(
+          this.props.globalEa.subscribe('i18n:locale:changed', () => this.translatePaginationTexts(this._locales))
+        );
+      }
     }
   }
 
