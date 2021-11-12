@@ -468,61 +468,61 @@ export default class Example24 extends React.Component {
     return (
       <div id="demo-container" className="container-fluid">
         <h2>
-      {this.title}
-      <span className="float-right">
-        <a style={{fontSize: '18px'}}
-           target="_blank"
-           href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example24.ts">
-          <span className="fa fa-link"></span> code
-        </a>
-      </span>
-    </h2>
-    <div className="subtitle">{this.subTitle}</div>
+          {this.title}
+          <span className="float-right">
+            <a style={{ fontSize: '18px' }}
+              target="_blank"
+              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example24.ts">
+              <span className="fa fa-link"></span> code
+            </a>
+          </span>
+        </h2>
+        <div className="subtitle">{this.subTitle}</div>
 
-    <div className="row">
-      <span className="context-menu">
-        <strong>Context Menu:</strong>
-        <button className="btn btn-outline-secondary btn-xs" onClick={() => this.showContextCommandsAndOptions(false)}
-                data-test="context-menu-priority-only-button">
-          Show Priority Options Only
-        </button>
-        <button className="btn btn-outline-secondary btn-xs" onClick={() => this.showContextCommandsAndOptions(true)}
-                data-test="context-menu-commands-and-priority-button">
-          Show Commands & Priority Options
-        </button>
-      </span>
+        <div className="row">
+          <span className="context-menu">
+            <strong>Context Menu:</strong>
+            <button className="btn btn-outline-secondary btn-xs" onClick={() => this.showContextCommandsAndOptions(false)}
+              data-test="context-menu-priority-only-button">
+              Show Priority Options Only
+            </button>
+            <button className="btn btn-outline-secondary btn-xs" onClick={() => this.showContextCommandsAndOptions(true)}
+              data-test="context-menu-commands-and-priority-button">
+              Show Commands & Priority Options
+            </button>
+          </span>
 
-      <span className="cell-menu">
-        <strong>Cell Menu:</strong>
-        <button className="btn btn-outline-secondary btn-xs" onClick={() => this.showCellMenuCommandsAndOptions(false)}
-                data-test="cell-menu-commands-and-options-false-button">
-          Show Action Commands Only
-        </button>
-        <button className="btn btn-outline-secondary btn-xs" onClick={() => this.showCellMenuCommandsAndOptions(true)}
-                data-test="cell-menu-commands-and-options-true-button">
-          Show Actions Commands & Completed Options
-        </button>
-      </span>
-    </div>
+          <span className="cell-menu">
+            <strong>Cell Menu:</strong>
+            <button className="btn btn-outline-secondary btn-xs" onClick={() => this.showCellMenuCommandsAndOptions(false)}
+              data-test="cell-menu-commands-and-options-false-button">
+              Show Action Commands Only
+            </button>
+            <button className="btn btn-outline-secondary btn-xs" onClick={() => this.showCellMenuCommandsAndOptions(true)}
+              data-test="cell-menu-commands-and-options-true-button">
+              Show Actions Commands & Completed Options
+            </button>
+          </span>
+        </div>
 
-    <div className="row locale">
-      <div className="col-12">
-        <button className="btn btn-outline-secondary btn-xs" onClick={this.switchLanguage} data-test="language-button">
-          <i className="fa fa-language"></i>
-          Switch Language
-        </button>
-        <label>Locale:</label>
-        <span style={{fontStyle: 'italic'}} data-test="selected-locale">
-          {this.selectedLanguage + '.json'}
-        </span>
-      </div>
-    </div>
+        <div className="row locale">
+          <div className="col-12">
+            <button className="btn btn-outline-secondary btn-xs" onClick={this.switchLanguage} data-test="language-button">
+              <i className="fa fa-language"></i>
+              Switch Language
+            </button>
+            <label>Locale:</label>
+            <span style={{ fontStyle: 'italic' }} data-test="selected-locale">
+              {this.selectedLanguage + '.json'}
+            </span>
+          </div>
+        </div>
 
-    <ReactSlickgridCustomElement gridId="grid24"
-                       columnDefinitions={this.columnDefinitions}
-                       gridOptions={this.gridOptions}
-                       dataset={this.dataset}
-                       instances={this.reactGrid}>
+        <ReactSlickgridCustomElement gridId="grid24"
+          columnDefinitions={this.columnDefinitions}
+          gridOptions={this.gridOptions}
+          dataset={this.dataset}
+          instances={this.reactGrid} />
       </div>
     );
   }

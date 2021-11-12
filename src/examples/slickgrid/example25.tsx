@@ -1,5 +1,4 @@
 import { GraphqlService, GraphqlResult, GraphqlServiceApi, } from '@slickgrid-universal/graphql';
-import { HttpClient, json } from 'react-fetch-client';
 import {
   ReactGridInstance,
   Column,
@@ -60,7 +59,7 @@ export default class Example25 extends React.Component {
   selectedLanguage = '';
   status = { text: '', class: '' };
 
-  constructor(public readonly props: Props, private http: HttpClient) {
+  constructor(public readonly props: Props) {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
@@ -221,7 +220,7 @@ export default class Example25 extends React.Component {
   /** Calling the GraphQL backend API to get the Countries with the Query created by the "process" method of GraphqlService  */
   getCountries(query: string): Promise<GraphqlResult<Country>> {
     return new Promise(async resolve => {
-      const response = await this.http.fetch(COUNTRIES_API, {
+      const response = await fetch(COUNTRIES_API, {
         method: 'post',
         body: json({ query })
       });
@@ -237,7 +236,7 @@ export default class Example25 extends React.Component {
   getContinents(): Promise<GraphqlResult<{ code: string; name: string; }>> {
     const continentQuery = `query { continents { code, name  }}`;
     return new Promise(async resolve => {
-      const response = await this.http.fetch(COUNTRIES_API, {
+      const response = await fetch(COUNTRIES_API, {
         method: 'post',
         body: json({ query: continentQuery })
       });
@@ -253,7 +252,7 @@ export default class Example25 extends React.Component {
   getLanguages(): Promise<GraphqlResult<{ code: string; name: string; native: string; }>> {
     const languageQuery = `query { languages { code, name, native  }}`;
     return new Promise(async resolve => {
-      const response = await this.http.fetch(COUNTRIES_API, {
+      const response = await fetch(COUNTRIES_API, {
         method: 'post',
         body: json({ query: languageQuery })
       });

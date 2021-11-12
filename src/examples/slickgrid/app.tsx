@@ -17,6 +17,19 @@ import Example15 from './example15';
 import Example16 from './example16';
 import Example17 from './example17';
 import Example18 from './example18';
+import Example19 from './example19';
+import Example20 from './example20';
+import Example21 from './example21';
+import Example22 from './example22';
+import Example23 from './example23';
+import Example24 from './example24';
+import Example25 from './example25';
+import Example27 from './example27';
+import Example28 from './example28';
+import Example29 from './example29';
+import Example30 from './example30';
+import Example31 from './example31';
+import Example32 from './example32';
 import Router from './Router';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { NavBar } from '../../NavBar';
@@ -40,20 +53,20 @@ const routes = [
   { route: '/example16', component: Example16, title: '16- Row Move Plugin' },
   { route: '/example17', component: Example17, title: '17- Remote Model' },
   { route: '/example18', component: Example18, title: '18- Draggable Grouping' },
-  // { route: '/example19', component: Example19, title: '19- Row Detail View' },
-  // { route: '/example20', component: Example20, title: '20- Pinned Columns/Rows' },
-  // { route: '/example21', component: Example21, title: '21- Grid AutoHeight (full height)' },
-  // { route: '/example22', component: Example22, title: '22- with Bootstrap Tabs' },
-  // { route: '/example23', component: Example23, title: '23- Filter by Range of Values' },
-  // { route: '/example24', component: Example24, title: '24- Cell & Context Menu' },
-  // { route: '/example25', component: Example25, title: '25- GraphQL without Pagination' },
+  { route: '/example19', component: Example19, title: '19- Row Detail View' },
+  { route: '/example20', component: Example20, title: '20- Pinned Columns/Rows' },
+  { route: '/example21', component: Example21, title: '21- Grid AutoHeight (full height)' },
+  { route: '/example22', component: Example22, title: '22- with Bootstrap Tabs' },
+  { route: '/example23', component: Example23, title: '23- Filter by Range of Values' },
+  { route: '/example24', component: Example24, title: '24- Cell & Context Menu' },
+  { route: '/example25', component: Example25, title: '25- GraphQL without Pagination' },
   // { route: '/example26', component: Example26, title: '26- Use of Aurelia Components' },
-  // { route: '/example27', component: Example27, title: '27- Tree Data (Parent/Child)' },
-  // { route: '/example28', component: Example28, title: '28- Tree Data (Hierarchical set)' },
-  // { route: '/example29', component: Example29, title: '29- Grid with header and footer slots' },
-  // { route: '/example30', component: Example30, title: '30- Composite Editor Modal' },
-  // { route: '/example31', component: Example31, title: '31- Backend OData with RxJS' },
-  // { route: '/example32', component: Example32, title: '32- Columns Resize by Content' },
+  { route: '/example27', component: Example27, title: '27- Tree Data (Parent/Child)' },
+  { route: '/example28', component: Example28, title: '28- Tree Data (Hierarchical set)' },
+  { route: '/example29', component: Example29, title: '29- Grid with header and footer slots' },
+  { route: '/example30', component: Example30, title: '30- Composite Editor Modal' },
+  { route: '/example31', component: Example31, title: '31- Backend OData with RxJS' },
+  { route: '/example32', component: Example32, title: '32- Columns Resize by Content' },
 ];
 
 

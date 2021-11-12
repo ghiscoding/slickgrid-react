@@ -13,9 +13,9 @@ import React from 'react';
 interface Props { }
 
 export default class Example21 extends React.Component {
-  @bindable() selectedColumn!: Column;
-  @bindable() selectedOperator!: string;
-  @bindable() searchValue = '';
+  selectedColumn!: Column;
+  selectedOperator!: string;
+  searchValue = '';
   title = 'Example 21: Grid AutoHeight';
   subTitle = `
   The SlickGrid option "autoHeight" can be used if you wish to keep the full height of the grid without any scrolling

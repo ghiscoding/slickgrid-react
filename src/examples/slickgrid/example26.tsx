@@ -436,9 +436,12 @@ export default class Example26 extends React.Component {
             gridOptions={this.gridOptions}
             dataset={this.dataset}
             instances={this.reactGrid}
-            onCellChange={$event => this.onCellChanged($event.detail.eventData, $event.detail.args)}
-            onClick={$event => this.onCellClicked($event.detail.eventData, $event.detail.args)}
-            onValidationError={$event => this.onCellValidationError($event.detail.eventData, $event.detail.args)} />
+            customEvents={{
+              onCellChange: $event => this.onCellChanged($event.detail.eventData, $event.detail.args),
+              onClick: $event => this.onCellClicked($event.detail.eventData, $event.detail.args),
+              onValidationError: $event => this.onCellValidationError($event.detail.eventData, $event.detail.args)
+            }}
+          />
         </div>
       </div>
     );

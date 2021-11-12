@@ -1,5 +1,4 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-import { bindable } from 'react-framework';
 import {
   ReactGridInstance,
   Column,
@@ -31,7 +30,7 @@ export default class Example28 extends React.Component {
   gridOptions!: GridOption;
   columnDefinitions: Column[] = [];
   datasetHierarchical: any[] = [];
-  @bindable() searchString = '';
+  searchString = '';
 
   constructor(public readonly props: Props) {
     super(props);

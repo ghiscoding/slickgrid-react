@@ -12,7 +12,7 @@ import {
   ReactSlickgridCustomElement,
 } from '../../react-slickgrid';
 import React from 'react';
-//import './example9.scss'; // provide custom CSS/SASS styling
+import './example9.scss'; // provide custom CSS/SASS styling
 
 interface Props { }
 

@@ -382,8 +382,11 @@ export default class Example20 extends React.Component {
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}
-          onValidationError={$event => this.onCellValidationError($event.detail.eventData, $event.detail.args)}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)} />
+          customEvents={{
+            onValidationError: $event => this.onCellValidationError($event.detail.eventData, $event.detail.args),
+            onReactGridCreated: $event => this.reactGridReady($event.detail)
+          }}
+        />
       </div>
     );
   }

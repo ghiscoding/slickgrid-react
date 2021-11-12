@@ -1,6 +1,6 @@
 import { ReactGridInstance, Column, FieldType, Filters, Formatters, GridOption, GridStateChange, ReactSlickgridCustomElement } from '../../react-slickgrid';
 import React from 'react';
-//import './example10.scss'; // provide custom CSS/SASS styling
+import './example10.scss'; // provide custom CSS/SASS styling
 
 interface Props { }
 

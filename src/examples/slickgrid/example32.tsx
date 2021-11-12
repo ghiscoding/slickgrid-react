@@ -15,9 +15,8 @@ import {
   SortComparers,
 } from '@slickgrid-universal/common';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-import { HttpClient as FetchClient } from 'react-fetch-client';
 
-import { ReactGridInstance. ReactSlickgridCustomElement } from '../../react-slickgrid';
+import { ReactGridInstance, ReactSlickgridCustomElement } from '../../react-slickgrid';
 import React from 'react';
 import './example32.scss'; // provide custom CSS/SASS styling
 
@@ -100,7 +99,7 @@ export default class Example32 extends React.Component {
     { value: 4, label: 'Very Complex' },
   ];
 
-  constructor(public readonly props: Props, private httpFetch: FetchClient) {
+  constructor(public readonly props: Props) {
     super(props);
     this.initializeGrid();
   }
@@ -278,7 +277,7 @@ export default class Example32 extends React.Component {
           model: Editors.autoComplete,
           massUpdate: true,
           customStructure: { label: 'name', value: 'code' },
-          collectionAsync: this.httpFetch.fetch(URL_COUNTRIES_COLLECTION),
+          collectionAsync: fetch(URL_COUNTRIES_COLLECTION),
         },
         filter: {
           model: Filters.inputText,
@@ -826,66 +825,69 @@ export default class Example32 extends React.Component {
     return (
       <div id="demo-container" className="container-fluid">
         <h2>
-      {this.title}
-      <span className="float-right">
-        <a style={{fontSize: '18px'}}
-           target="_blank"
-           href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example32.ts">
-          <span className="fa fa-link"></span> code
-        </a>
-      </span>
-    </h2>
-    <div className="subtitle">{this.subTitle}</div>
+          {this.title}
+          <span className="float-right">
+            <a style={{ fontSize: '18px' }}
+              target="_blank"
+              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example32.ts">
+              <span className="fa fa-link"></span> code
+            </a>
+          </span>
+        </h2>
+        <div className="subtitle">{this.subTitle}</div>
 
-    <h4 className="ml-3">Container Width (950px)</h4>
+        <h4 className="ml-3">Container Width (950px)</h4>
 
-    <div className="row">
-      <div className="ml-2 mb-2 mr-2">
-        <div className="btn-group btn-group-toggle" data-bs-toggle="buttons">
-          <label className="btn btn-sm btn-outline-secondary" className={this.isUsingDefaultResize ? 'active' : ''}
-                 data-test="autosize-columns-btn">
-            <input type="radio" className="btn-check" name="options"
-                   checked={this.isUsingDefaultResize}
-                   onClick={this.handleDefaultResizeColumns} />
-            <i className="fa fa-expand"></i> (default resize) by "autosizeColumns"
-          </label>
-          <label className="btn btn-sm btn-outline-secondary" className={this.isUsingDefaultResize ? '' : 'active'}
-                 data-test="resize-by-content-btn">
-            <input type="radio" className="btn-check" name="options"
-                   checked={!this.isUsingDefaultResize}
-                   onClick={this.handleNewResizeColumns} />
-            <i className="fa fa-expand"></i> Resize by Cell Content
-          </label>
+        <div className="row">
+          <div className="ml-2 mb-2 mr-2">
+            <div className="btn-group btn-group-toggle" data-bs-toggle="buttons">
+              <label className="btn btn-sm btn-outline-secondary" className={this.isUsingDefaultResize ? 'active' : ''}
+                data-test="autosize-columns-btn">
+                <input type="radio" className="btn-check" name="options"
+                  checked={this.isUsingDefaultResize}
+                  onClick={this.handleDefaultResizeColumns} />
+                <i className="fa fa-expand"></i> (default resize) by "autosizeColumns"
+              </label>
+              <label className="btn btn-sm btn-outline-secondary" className={this.isUsingDefaultResize ? '' : 'active'}
+                data-test="resize-by-content-btn">
+                <input type="radio" className="btn-check" name="options"
+                  checked={!this.isUsingDefaultResize}
+                  onClick={this.handleNewResizeColumns} />
+                <i className="fa fa-expand"></i> Resize by Cell Content
+              </label>
+            </div>
+          </div>
+
+          <div className="mb-2">
+            <div className="btn-group btn-group-sm" role="group" aria-label="Basic Editing Commands">
+              <button type="button" className="btn btn-outline-secondary" data-test="toggle-readonly-btn"
+                onClick={this.toggleGridEditReadonly}>
+                <i className="fa fa-table"></i> Toggle Edit/Readonly Grid
+              </button>
+              <button type="button" className="btn btn-outline-secondary" data-test="undo-last-edit-btn"
+                onClick={() => this.undoLastEdit}>
+                <i className="fa fa-undo"></i> Undo Last Edit
+              </button>
+              <button type="button" className="btn btn-outline-secondary" data-test="save-all-btn"
+                onClick={this.saveAll}>
+                <i className="fa fa-save"></i> Save All
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div className="mb-2">
-        <div className="btn-group btn-group-sm" role="group" aria-label="Basic Editing Commands">
-          <button type="button" className="btn btn-outline-secondary" data-test="toggle-readonly-btn"
-                  onClick={this.toggleGridEditReadonly}>
-            <i className="fa fa-table"></i> Toggle Edit/Readonly Grid
-          </button>
-          <button type="button" className="btn btn-outline-secondary" data-test="undo-last-edit-btn"
-                  onClick={() => this.undoLastEdit}>
-            <i className="fa fa-undo"></i> Undo Last Edit
-          </button>
-          <button type="button" className="btn btn-outline-secondary" data-test="save-all-btn"
-                  onClick={this.saveAll}>
-            <i className="fa fa-save"></i> Save All
-          </button>
+        <div id="smaller-container" style={{ width: '950px' }}>
+          <ReactSlickgridCustomElement gridId="grid32"
+            columnDefinitions={this.columnDefinitions}
+            gridOptions={this.gridOptions}
+            dataset={this.dataset}
+            paginationOptions={this.paginationOptions}
+            customEvents={{
+              onReactGridCreated: $event => this.reactGridReady($event.detail),
+              onGridStateChanged: $event => this.gridStateChanged($event.detail)
+            }}
+          />
         </div>
-      </div>
-    </div>
-
-    <div id="smaller-container" style={{width: '950px'}}>
-      <ReactSlickgridCustomElement gridId="grid32"
-                         columnDefinitions={this.columnDefinitions}
-                         gridOptions={this.gridOptions}
-                         dataset={this.dataset}
-                         paginationOptions={this.paginationOptions}
-                         onReactGridCreated={$event => this.reactGridReady($event.detail)}
-                         onGridStateChanged={$event => this.gridStateChanged($event.detail)} />
-    </div>
       </div>
     );
   }

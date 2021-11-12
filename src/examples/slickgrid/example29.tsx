@@ -1,4 +1,4 @@
-import { Column, GridOption, Formatters, ReactSlickgridCustomElement } from '../../react-slickgrid';
+import { Column, GridOption, Formatters, ReactSlickgridCustomElement} from '../../react-slickgrid';
 import React from 'react';
 
 const NB_ITEMS = 995;

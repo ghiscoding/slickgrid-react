@@ -12,7 +12,7 @@ import {
   ReactSlickgridCustomElement,
 } from '../../react-slickgrid';
 import React from 'react';
-//import './example11.scss';
+import './example11.scss';
 
 interface Props { }
 

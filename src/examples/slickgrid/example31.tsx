@@ -1,7 +1,6 @@
 import { Column, Editors, FieldType, Filters, GridOption, GridStateChange, Metrics, OperatorType, Pagination, } from '@slickgrid-universal/common';
 import { GridOdataService, OdataServiceApi, OdataOption } from '@slickgrid-universal/odata';
 import { RxJsResource } from '@slickgrid-universal/rxjs-observable';
-import { HttpClient } from 'react-http-client';
 import { Observable, of, Subject } from 'rxjs';
 
 import { ReactGridInstance, ReactSlickgridCustomElement } from '../../react-slickgrid';

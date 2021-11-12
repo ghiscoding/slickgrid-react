@@ -1,7 +1,7 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { ReactGridInstance, Column, FieldType, GridOption, ItemMetadata, ReactSlickgridCustomElement } from '../../react-slickgrid';
 import React from 'react';
-// import './example14.scss'; // provide custom CSS/SASS styling
+import './example14.scss'; // provide custom CSS/SASS styling
 
 interface Props { }
 

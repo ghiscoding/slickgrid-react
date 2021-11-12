@@ -1,7 +1,6 @@
 import { EditCommand, SlickGrid } from '@slickgrid-universal/common';
 import { SlickCompositeEditorComponent } from '@slickgrid-universal/composite-editor-component';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-import { HttpClient as FetchClient } from 'react-fetch-client';
 
 import {
   ReactGridInstance,
@@ -106,7 +105,7 @@ export default class Example30 extends React.Component {
     { value: 4, label: 'Very Complex' },
   ];
 
-  constructor(public readonly props: Props, private httpFetch: FetchClient) {
+  constructor(public readonly props: Props) {
     super(props);
     this.compositeEditorInstance = new SlickCompositeEditorComponent();
     // define the grid options & columns and then create the grid itself
@@ -304,7 +303,7 @@ export default class Example30 extends React.Component {
           model: Editors.autoComplete,
           massUpdate: true,
           customStructure: { label: 'name', value: 'code' },
-          collectionAsync: this.httpFetch.fetch(URL_COUNTRIES_COLLECTION),
+          collectionAsync: fetch(URL_COUNTRIES_COLLECTION),
         },
         filter: {
           model: Filters.inputText,
@@ -1017,15 +1016,18 @@ export default class Example30 extends React.Component {
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          onBeforeEditCell={$event => this.handleOnBeforeEditCell($event.detail.eventData, $event.detail.args)}
-          onCellChange={$event => this.handleOnCellChange($event.detail.eventData, $event.detail.args)}
-          onOnClick={$event => this.handleOnCellClicked($event.detail.eventData, $event.detail.args)}
-          onCompositeEditorChange={$event => this.handleOnCompositeEditorChange($event.detail.eventData, $event.detail.args)}
-          onItemDeleted={$event => this.handleItemDeleted($event.detail.eventData, $event.detail.args)}
-          onGridStateChanged={$event => this.handleOnGridStateChanged($event.detail)}
-          onPaginationChanged={$event => this.handlePaginationChanged($event.detail.eventData, $event.detail.args)}
-          onValidationError={$event => this.handleValidationError($event.detail.eventData, $event.detail.args)} />
+          customEvents={{
+            onReactGridCreated: $event => this.reactGridReady($event.detail),
+            onBeforeEditCell: $event => this.handleOnBeforeEditCell($event.detail.eventData, $event.detail.args),
+            onCellChange: $event => this.handleOnCellChange($event.detail.eventData, $event.detail.args),
+            onOnClick: $event => this.handleOnCellClicked($event.detail.eventData, $event.detail.args),
+            onCompositeEditorChange: $event => this.handleOnCompositeEditorChange($event.detail.eventData, $event.detail.args),
+            onItemDeleted: $event => this.handleItemDeleted($event.detail.eventData, $event.detail.args),
+            onGridStateChanged: $event => this.handleOnGridStateChanged($event.detail),
+            onPaginationChanged: $event => this.handlePaginationChanged($event.detail.eventData, $event.detail.args),
+            onValidationError: $event => this.handleValidationError($event.detail.eventData, $event.detail.args)
+          }}
+        />
       </div>
     );
   }
