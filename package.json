@@ -1,5 +1,5 @@
 {
-  "name": "@speige/slickgrid-react",
+  "name": "slickgrid-react",
   "version": "1.0.0-beta.1",
   "description": "Slickgrid components made available in React",
   "keywords": [
@@ -28,6 +28,9 @@
     },
     {
       "name": "Javier Soques"
+    },
+    {
+      "name": "Dustin Garner"
     }
   ],
   "main": "dist/commonjs/index.js",
@@ -65,7 +68,7 @@
     "test:jest:coverage": "npx jest --detectOpenHandles --runInBand --coverage --config test/jest.config.js",
     "build:demo": "webpack --env production",
     "update-npm-versions": "npm-check --skip-unused --update-all",
-    "//debug": "npm run build && copyfiles dist/**/* c:/temp/slickgrid-react-test/node_modules/@speige/slickgrid-react"
+    "//debug": "npm run build && copyfiles dist/**/* c:/temp/slickgrid-react-test/node_modules/slickgrid-react"
   },
   "browserslist": [
     "last 2 version",
