@@ -5,7 +5,7 @@ import {
   EditorValidator,
   EditorValidationResult,
   KeyCode
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 
 /*
  * An example of a 'detached' editor.

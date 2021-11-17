@@ -14,7 +14,7 @@ import {
   OperatorType,
   SortDirection,
   ReactSlickgridCustomElement,
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import React from 'react';
 
 const defaultPageSize = 20;
@@ -31,7 +31,7 @@ export default class Example6 extends React.Component {
   title = 'Example 6: Grid with Backend GraphQL Service';
   subTitle = `
   Use it when you need to support Pagination with a GraphQL endpoint (for simple JSON, use a regular grid).
-  <br/>Take a look at the (<a href="https://github.com/ghiscoding/react-slickgrid/wiki/GraphQL" target="_blank">Wiki docs</a>)
+  <br/>Take a look at the (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/GraphQL" target="_blank">Wiki docs</a>)
     <ul class="small">
       <li><span class="red bold">(*) NO DATA SHOWN</span> - just change filters &amp; page and look at the "GraphQL Query" changing</li>
       <li>Only "Name" field is sortable for the demo (because we use JSON files), however "multiColumnSort: true" is also supported</li>
@@ -40,7 +40,7 @@ export default class Example6 extends React.Component {
         <li>The (*) can be used as startsWith (ex.: "abc*" => startsWith "abc") / endsWith (ex.: "*xyz" => endsWith "xyz")</li>
         <li>The other operators can be used on column type number for example: ">=100" (greater or equal than 100)</li>
       </ul>
-      <li>You can also preload a grid with certain "presets" like Filters / Sorters / Pagination <a href="https://github.com/ghiscoding/react-slickgrid/wiki/Grid-State-&-Preset" target="_blank">Wiki - Grid Preset</a>
+      <li>You can also preload a grid with certain "presets" like Filters / Sorters / Pagination <a href="https://github.com/ghiscoding/slickgrid-react/wiki/Grid-State-&-Preset" target="_blank">Wiki - Grid Preset</a>
     </ul>
   `;
 
@@ -297,7 +297,7 @@ export default class Example6 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example6.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example6.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

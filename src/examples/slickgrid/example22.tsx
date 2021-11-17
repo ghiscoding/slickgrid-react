@@ -1,5 +1,5 @@
 import { HttpClient } from 'react-fetch-client';
-import { ReactGridInstance, Column, Filters, GridOption, ReactSlickgridCustomElement } from '../../react-slickgrid';
+import { ReactGridInstance, Column, Filters, GridOption, ReactSlickgridCustomElement } from '../../slickgrid-react';
 import React from 'react';
 import './example22.scss';
 
@@ -134,7 +134,7 @@ export default class Example22 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example22.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example22.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

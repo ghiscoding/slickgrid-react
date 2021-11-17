@@ -12,7 +12,7 @@ import {
   OnEventArgs,
   OperatorType,
   ReactSlickgridCustomElement
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import { CustomReactViewModelEditor } from './custom-reactViewModelEditor';
 import { CustomReactViewModelFilter } from './custom-reactViewModelFilter';
 import React from 'react';
@@ -372,7 +372,7 @@ export default class Example26 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example26.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example26.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

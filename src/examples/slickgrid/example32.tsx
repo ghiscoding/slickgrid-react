@@ -16,7 +16,7 @@ import {
 } from '@slickgrid-universal/common';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 
-import { ReactGridInstance, ReactSlickgridCustomElement } from '../../react-slickgrid';
+import { ReactGridInstance, ReactSlickgridCustomElement } from '../../slickgrid-react';
 import React from 'react';
 import './example32.scss'; // provide custom CSS/SASS styling
 
@@ -829,7 +829,7 @@ export default class Example32 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example32.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example32.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

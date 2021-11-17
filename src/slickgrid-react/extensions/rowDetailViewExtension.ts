@@ -357,7 +357,7 @@ export class RowDetailViewExtension implements UniversalRowDetailViewExtension {
       }
 
       if (!awaitedItemDetail || !awaitedItemDetail.hasOwnProperty(this.datasetIdPropName)) {
-        throw new Error(`[React-Slickgrid] could not process the Row Detail, you must make sure that your "process" callback
+        throw new Error(`[Slickgrid-React] could not process the Row Detail, you must make sure that your "process" callback
           (a Promise call returning an Observable) returns an item object that has an "${this.datasetIdPropName}" property`);
       }
 

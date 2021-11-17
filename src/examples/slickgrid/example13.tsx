@@ -17,7 +17,7 @@ import {
   SlickDataView,
   SlickGrid,
   ReactSlickgridCustomElement,
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import React from 'react';
 
 interface Props { }
@@ -26,10 +26,10 @@ export default class Example13 extends React.Component {
   title = 'Example 13: Grouping & Aggregators';
   subTitle = `
     <ul>
-      <li><a href="https://github.com/ghiscoding/react-slickgrid/wiki/Grouping-&-Aggregators" target="_blank">Wiki docs</a></li>
+      <li><a href="https://github.com/ghiscoding/slickgrid-react/wiki/Grouping-&-Aggregators" target="_blank">Wiki docs</a></li>
       <li>Fully dynamic and interactive multi-level grouping with filtering and aggregates over 50'000 items</li>
       <li>Each grouping level can have its own aggregates (over child rows, child groups, or all descendant rows)..</li>
-      <li>Use "Aggregators" and "GroupTotalFormatters" directly from React-Slickgrid</li>
+      <li>Use "Aggregators" and "GroupTotalFormatters" directly from Slickgrid-React</li>
     </ul>
   `;
 
@@ -342,7 +342,7 @@ export default class Example13 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example13.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example13.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

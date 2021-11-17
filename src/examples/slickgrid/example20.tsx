@@ -11,7 +11,7 @@ import {
   SlickGrid,
   SlickNamespace,
   ReactSlickgridCustomElement
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import React from 'react';
 import './example20.scss'; // provide custom CSS/SASS styling
 
@@ -22,7 +22,7 @@ interface Props { }
 export default class Example20 extends React.Component {
   title = 'Example 20: Pinned (frozen) Columns/Rows';
   subTitle = `
-    This example demonstrates the use of Pinned (aka frozen) Columns and/or Rows (<a href="https://github.com/ghiscoding/react-slickgrid/wiki/Pinned-(aka-Frozen)-Columns-Rows" target="_blank">Wiki docs</a>)
+    This example demonstrates the use of Pinned (aka frozen) Columns and/or Rows (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Pinned-(aka-Frozen)-Columns-Rows" target="_blank">Wiki docs</a>)
     <ul>
       <li>Option to pin any number of columns (left only) or rows</li>
       <li>Option to pin the rows at the bottom instead of the top (default)</li>
@@ -323,7 +323,7 @@ export default class Example20 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example20.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example20.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

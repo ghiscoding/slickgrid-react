@@ -20,7 +20,7 @@ import {
   SlickNamespace,
   SortComparers,
   ReactSlickgridCustomElement,
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import React from 'react';
 import './example30.scss'; // provide custom CSS/SASS styling
 
@@ -85,7 +85,7 @@ interface Props { }
 export default class Example30 extends React.Component {
   title = 'Example 30: Composite Editor Modal';
   subTitle = `Composite Editor allows you to Create, Clone, Edit, Mass Update & Mass Selection Changes inside a nice Modal Window.
-  <br>The modal is simply populated by looping through your column definition list and also uses a lot of the same logic as inline editing (see <a href="https://github.com/ghiscoding/react-slickgrid/wiki/Composite-Editor-Modal" target="_blank">Composite Editor - Wiki</a>.)`;
+  <br>The modal is simply populated by looping through your column definition list and also uses a lot of the same logic as inline editing (see <a href="https://github.com/ghiscoding/slickgrid-react/wiki/Composite-Editor-Modal" target="_blank">Composite Editor - Wiki</a>.)`;
 
   reactGrid!: ReactGridInstance;
   compositeEditorInstance: SlickCompositeEditorComponent;
@@ -955,7 +955,7 @@ export default class Example30 extends React.Component {
           <span className="float-Right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example30.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example30.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

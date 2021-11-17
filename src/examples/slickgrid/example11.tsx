@@ -10,7 +10,7 @@ import {
   SlickDataView,
   SlickGrid,
   ReactSlickgridCustomElement,
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import React from 'react';
 import './example11.scss';
 
@@ -19,20 +19,20 @@ interface Props { }
 export default class Example11 extends React.Component {
   title = 'Example 11: Add / Update / Highlight a Datagrid Item';
   subTitle = `
-  Add / Update / Hightlight an Item from the Datagrid (<a href="https://github.com/ghiscoding/react-slickgrid/wiki/Add,-Update-or-Highlight-a-Datagrid-Item" target="_blank">Wiki docs</a>).
+  Add / Update / Hightlight an Item from the Datagrid (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Add,-Update-or-Highlight-a-Datagrid-Item" target="_blank">Wiki docs</a>).
   <ul>
     <li><b>Note:</b> this demo is <b>only</b> on the datagrid (client) side, you still need to deal with the backend yourself</li>
     <li>Adding an item, will always be showing as the 1st item in the grid because that is the best visual place to add it</li>
     <li>Add/Update an item requires a valid Slickgrid Selection Model, you have 2 choices to deal with this:</li>
     <ul><li>You can enable "enableCheckboxSelector" or "enableRowSelection" to True</li></ul>
     <li>Click on any of the buttons below to test this out</li>
-    <li>You can change the highlighted color &amp; animation by changing the <a href="https://github.com/ghiscoding/react-slickgrid/blob/master/react-slickgrid/src/react-slickgrid/styles/_variables.scss" target="_blank">SASS Variables</a></li>
+    <li>You can change the highlighted color &amp; animation by changing the <a href="https://github.com/ghiscoding/slickgrid-react/blob/master/slickgrid-react/src/slickgrid-react/styles/_variables.scss" target="_blank">SASS Variables</a></li>
     <ul>
       <li>"$row-highlight-background-color" or "$row-highlight-fade-animation"</li>
     </ul>
     <li>You can also add CSS class(es) on the fly (or on page load) on rows with certain criteria, (e.g. click on last button)
     <ul>
-      <li>Example, click on button "Highlight Rows with Duration over 50" to see row styling changing. <a href="https://github.com/ghiscoding/react-slickgrid/wiki/Dynamically-Add-CSS-Classes-to-Item-Rows" target="_blank">Wiki doc</a></li>
+      <li>Example, click on button "Highlight Rows with Duration over 50" to see row styling changing. <a href="https://github.com/ghiscoding/slickgrid-react/wiki/Dynamically-Add-CSS-Classes-to-Item-Rows" target="_blank">Wiki doc</a></li>
     </ul>
   </ul>
   `;
@@ -218,11 +218,11 @@ export default class Example11 extends React.Component {
     // also re-render the grid for the styling to be applied right away
     this.grid.invalidate();
     this.grid.render();
-    // or use the React-SlickGrid GridService
+    // or use the SlickGrid-React GridService
     // this.gridService.renderGrid();
   }
 
-  /** Highlight the 5th row using the React-Slickgrid GridService */
+  /** Highlight the 5th row using the Slickgrid-React GridService */
   highlighFifthRow() {
     this.scrollGridTop();
     this.reactGrid.gridService.highlightRow(4, 1500);
@@ -286,7 +286,7 @@ export default class Example11 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example11.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example11.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

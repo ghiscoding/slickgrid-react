@@ -10,7 +10,7 @@ import {
   GridStateChange,
   MultipleSelectOption,
   ReactSlickgridCustomElement
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import React from 'react';
 
 
@@ -26,7 +26,7 @@ interface Props { }
 export default class Example15 extends React.Component {
   title = 'Example 15: Grid State & Presets using Local Storage';
   subTitle = `
-  Grid State & Preset (<a href="https://github.com/ghiscoding/react-slickgrid/wiki/Grid-State-&-Preset" target="_blank">Wiki docs</a>)
+  Grid State & Preset (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Grid-State-&-Preset" target="_blank">Wiki docs</a>)
   <br/>
   <ul class="small">
     <li>Uses Local Storage to persist the Grid State and uses Grid Options "presets" to put the grid back to it's previous state</li>
@@ -259,7 +259,7 @@ export default class Example15 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example15.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example15.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

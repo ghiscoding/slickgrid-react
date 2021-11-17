@@ -1,5 +1,5 @@
 {
-  "name": "@speige/react-slickgrid",
+  "name": "@speige/slickgrid-react",
   "version": "1.0.0-beta.1",
   "description": "Slickgrid components made available in React",
   "keywords": [
@@ -9,13 +9,13 @@
     "plugin",
     "slickgrid"
   ],
-  "homepage": "https://github.com/ghiscoding/react-slickgrid",
+  "homepage": "https://github.com/ghiscoding/slickgrid-react",
   "bugs": {
-    "url": "https://github.com/ghiscoding/react-slickgrid/issues"
+    "url": "https://github.com/ghiscoding/slickgrid-react/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ghiscoding/react-slickgrid.git"
+    "url": "https://github.com/ghiscoding/slickgrid-react.git"
   },
   "license": "MIT",
   "author": "Ghislain B.",
@@ -34,15 +34,15 @@
   "typings": "dist/commonjs/index.d.ts",
   "scripts": {
     "delete:dist": "cross-env rimraf dist",
-    "lint": "eslint src/react-slickgrid/** --ext .ts --quiet",
-    "build:amd": "cross-env tsc --project src/react-slickgrid/tsconfig.build.json --outDir dist/amd --module amd",
-    "postbuild:amd": "cross-env copyfiles --up 2 src/react-slickgrid/**/*.html dist/amd",
-    "build:commonjs": "cross-env tsc --project src/react-slickgrid/tsconfig.build.json --outDir dist/commonjs --module commonjs",
-    "postbuild:commonjs": "cross-env copyfiles --up 2 src/react-slickgrid/**/*.html dist/commonjs",
-    "build:esm": "cross-env tsc --project src/react-slickgrid/tsconfig.build.json --outDir dist/esm --module esnext --target es2018",
-    "postbuild:esm": "cross-env copyfiles --up 2 src/react-slickgrid/**/*.html dist/esm",
-    "build:native-modules": "cross-env tsc --project src/react-slickgrid/tsconfig.build.json --outDir dist/native-modules --module es2015",
-    "postbuild:native-modules": "cross-env copyfiles --up 2 src/react-slickgrid/**/*.html dist/native-modules",
+    "lint": "eslint src/slickgrid-react/** --ext .ts --quiet",
+    "build:amd": "cross-env tsc --project src/slickgrid-react/tsconfig.build.json --outDir dist/amd --module amd",
+    "postbuild:amd": "cross-env copyfiles --up 2 src/slickgrid-react/**/*.html dist/amd",
+    "build:commonjs": "cross-env tsc --project src/slickgrid-react/tsconfig.build.json --outDir dist/commonjs --module commonjs",
+    "postbuild:commonjs": "cross-env copyfiles --up 2 src/slickgrid-react/**/*.html dist/commonjs",
+    "build:esm": "cross-env tsc --project src/slickgrid-react/tsconfig.build.json --outDir dist/esm --module esnext --target es2018",
+    "postbuild:esm": "cross-env copyfiles --up 2 src/slickgrid-react/**/*.html dist/esm",
+    "build:native-modules": "cross-env tsc --project src/slickgrid-react/tsconfig.build.json --outDir dist/native-modules --module es2015",
+    "postbuild:native-modules": "cross-env copyfiles --up 2 src/slickgrid-react/**/*.html dist/native-modules",
     "//prebuild": "npm-run-all delete:dist lint",
     "prebuild": "npm-run-all delete:dist",
     "build": "npm-run-all build:amd build:commonjs build:esm build:native-modules",
@@ -50,7 +50,7 @@
     "build:with-e2e": "npm-run-all build cypress:ci",
     "copy-asset-lib": "cross-env copyfiles --up 2 src/assets/lib/** dist",
     "copy-i18n:dist": "cross-env copyfiles --up 3 src/assets/i18n/**/*.* dist/i18n",
-    "predoc": "cross-env rimraf api.json && rimraf dist/doc-temp && tsc --project src/react-slickgrid/tsconfig.build.json --outFile dist/doc-temp/react-validation.js && node shape-defs && copyfiles tsconfig.json dist/doc-temp",
+    "predoc": "cross-env rimraf api.json && rimraf dist/doc-temp && tsc --project src/slickgrid-react/tsconfig.build.json --outFile dist/doc-temp/react-validation.js && node shape-defs && copyfiles tsconfig.json dist/doc-temp",
     "doc": "cross-env typedoc --json api.json --excludeExternals --includeDeclarations --mode modules --target ES6 --name react-validation-docs dist/doc-temp/",
     "postdoc": "cross-env node shape-doc && rimraf dist/doc-temp",
     "changelog": "cross-env conventional-changelog -p react -i CHANGELOG.md -s",
@@ -65,7 +65,7 @@
     "test:jest:coverage": "npx jest --detectOpenHandles --runInBand --coverage --config test/jest.config.js",
     "build:demo": "webpack --env production",
     "update-npm-versions": "npm-check --skip-unused --update-all",
-    "//debug": "npm run build && copyfiles dist/**/* c:/temp/react-slickgrid-test/node_modules/@speige/react-slickgrid"
+    "//debug": "npm run build && copyfiles dist/**/* c:/temp/slickgrid-react-test/node_modules/@speige/slickgrid-react"
   },
   "browserslist": [
     "last 2 version",

@@ -4,7 +4,7 @@ import 'jquery-ui/ui/widgets/sortable';
 import 'regenerator-runtime/runtime.js';
 export * from '@slickgrid-universal/common';
 
-import { ReactSlickgridCustomElement } from './custom-elements/react-slickgrid';
+import { ReactSlickgridCustomElement } from './custom-elements/slickgrid-react';
 import { SlickgridEventAggregator } from './custom-elements/slickgridEventAggregator';
 import { SlickgridConfig } from './slickgrid-config';
 
