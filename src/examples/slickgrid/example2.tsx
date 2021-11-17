@@ -22,6 +22,12 @@ interface DataItem {
   completed: number;
 }
 
+interface State {
+  gridOptions: GridOption;
+  columnDefinitions: Column[];
+  dataset: any[];
+}
+
 // create my custom Formatter with the Formatter type
 const myCustomCheckmarkFormatter: Formatter<DataItem> = (_row, _cell, value) => {
   // you can return a string of a object (of type FormatterResultObject), the 2 types are shown below
@@ -38,7 +44,7 @@ const customEnableButtonFormatter: Formatter<DataItem> = (_row: number, _cell: n
 
 interface Props { }
 
-export default class Example2 extends React.Component {
+export default class Example2 extends React.Component<Props, State> {
   title = 'Example 2: Grid with Formatters';
   subTitle = `
     Grid with Custom and/or included Slickgrid Formatters (<a href="https://github.com/ghiscoding/aurelia-slickgrid/wiki/Formatters" target="_blank">Wiki docs</a>).
@@ -54,13 +60,17 @@ export default class Example2 extends React.Component {
   `;
 
   reactGrid!: ReactGridInstance;
-  gridOptions!: GridOption;
-  columnDefinitions: Column<DataItem>[] = [];
-  dataset: any[] = [];
   resizerPaused = false;
 
   constructor(public readonly props: Props) {
     super(props);
+
+    this.state = {
+      gridOptions: undefined,
+      columnDefinitions: [],
+      dataset: [],
+    };
+
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
   }
@@ -68,13 +78,17 @@ export default class Example2 extends React.Component {
   componentDidMount() {
     document.title = this.title;
     // populate the dataset once the grid is ready
-    this.getData();
+    this.setState((state: any, props: Props) => {
+      return {
+        dataset: this.getData(),
+      };
+    });
   }
 
   /* Define grid Options and Columns */
   defineGrid() {
     // the columns field property is type-safe, try to add a different string not representing one of DataItems properties
-    this.columnDefinitions = [
+    const columns = [
       { id: 'title', name: 'Title', field: 'title', sortable: true, type: FieldType.string, width: 70 },
       { id: 'phone', name: 'Phone Number using mask', field: 'phone', sortable: true, type: FieldType.number, minWidth: 100, formatter: Formatters.mask, params: { mask: '(000) 000-0000' } },
       { id: 'duration', name: 'Duration (days)', field: 'duration', formatter: Formatters.decimal, params: { minDecimal: 1, maxDecimal: 2 }, sortable: true, type: FieldType.number, minWidth: 90, exportWithFormatter: true },
@@ -92,7 +106,7 @@ export default class Example2 extends React.Component {
       }
     ];
 
-    this.gridOptions = {
+    const gridOptions = {
       autoResize: {
         container: '#demo-container',
         rightPadding: 10
@@ -127,18 +141,24 @@ export default class Example2 extends React.Component {
       //   onCopyCancelled: (e, args: { ranges: SelectedRange[] }) => console.log('onCopyCancelled', args.ranges),
       // }
     };
+
+    this.state = {
+      ...this.state,
+      columnDefinitions : columns,
+      gridOptions,
+    };
   }
 
   getData() {
     // mock a dataset
-    this.dataset = [];
+    const mockDataset = [];
     for (let i = 0; i < 500; i++) {
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomMonth = Math.floor(Math.random() * 11);
       const randomDay = Math.floor((Math.random() * 29));
       const randomPercent = Math.round(Math.random() * 100);
 
-      this.dataset[i] = {
+      mockDataset[i] = {
         id: i,
         title: 'Task ' + i,
         phone: this.generatePhoneNumber(),
@@ -151,6 +171,7 @@ export default class Example2 extends React.Component {
         effortDriven: (i % 5 === 0)
       };
     }
+    return mockDataset;
   }
 
   generatePhoneNumber() {
@@ -198,9 +219,9 @@ export default class Example2 extends React.Component {
         </button>
 
         <ReactSlickgridCustomElement gridId="grid2"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset} />
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions}
+          dataset={this.state.dataset} />
         {/* instances={this.reactGrid} */}
       </div>
     );

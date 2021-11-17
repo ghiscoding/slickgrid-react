@@ -74,6 +74,7 @@ import {
 import { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
 import { SlickFooterComponent } from '@slickgrid-universal/custom-footer-component';
 import { SlickEmptyWarningComponent } from '@slickgrid-universal/empty-warning-component';
+import { SlickPaginationComponent } from '@slickgrid-universal/pagination-component';
 
 import { dequal } from 'dequal/lite';
 import { Constants } from '../constants';
@@ -92,7 +93,6 @@ import { Subscription } from 'rxjs';
 declare const Slick: SlickNamespace;
 
 import { SlickgridEventAggregator } from '../custom-elements/slickgridEventAggregator';
-import { SlickPaginationCustomElement } from './slick-pagination';
 
 import { GlobalContainerService, GlobalEventPubSubService } from '../services/singletons';
 
@@ -199,6 +199,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
   // components
   slickEmptyWarning: SlickEmptyWarningComponent | undefined;
   slickFooter: SlickFooterComponent | undefined;
+  slickPagination: SlickPaginationComponent | undefined;
 
   // extensions
   extensionUtility: ExtensionUtility;
@@ -275,7 +276,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     const columnPickerExtension = new ColumnPickerExtension(this.extensionUtility, this.sharedService);
     const checkboxExtension = new CheckboxSelectorExtension(this.sharedService);
     const draggableGroupingExtension = new DraggableGroupingExtension(this.extensionUtility, this._eventPubSubService, this.sharedService);
-    const gridMenuExtension = new GridMenuExtension(this.extensionUtility, this.filterService, this.sharedService, this.sortService, this.backendUtilityService, this.props.translaterService);
+    const gridMenuExtension = new GridMenuExtension(this.extensionUtility, this.filterService,this._eventPubSubService, this.sharedService, this.sortService, this.backendUtilityService, this.props.translaterService);
     const groupItemMetaProviderExtension = new GroupItemMetaProviderExtension(this.sharedService);
     const headerButtonExtension = new HeaderButtonExtension(this.extensionUtility, this.sharedService);
     const headerMenuExtension = new HeaderMenuExtension(this.extensionUtility, this.filterService, this._eventPubSubService, this.sharedService, this.sortService, this.props.translaterService);
@@ -465,7 +466,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
     // user could show a custom footer with the data metrics (dataset length and last updated timestamp)
     if (!this._gridOptions.enablePagination && this._gridOptions.showCustomFooter && this._gridOptions.customFooterOptions && gridContainerElm) {
-      this.slickFooter = new SlickFooterComponent(this.grid, this._gridOptions.customFooterOptions, this.props.translaterService);
+      this.slickFooter = new SlickFooterComponent(this.grid, this._gridOptions.customFooterOptions,this._eventPubSubService, this.props.translaterService);
       this.slickFooter.renderFooter(gridContainerElm as HTMLDivElement);
     }
 
@@ -597,7 +598,9 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     }
 
     // dispose the Components
+    this.slickEmptyWarning?.dispose();
     this.slickFooter?.dispose();
+    this.slickPagination?.dispose();
 
     if (this.dataview) {
       if (this.dataview.setItems) {
@@ -773,12 +776,14 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     if (gridOptions.enableTranslate) {
       this.translateColumnHeaderTitleKeys();
       this.translateColumnGroupKeys();
-      this.translateCustomFooterTexts();
     }
 
     // on locale change, we have to manually translate the Headers, GridMenu
     this.subscriptions.push(
       this.props.globalEa.subscribe('i18n:locale:changed', () => {
+        // publish event of the same name that Slickgrid-Universal uses on a language change event
+        this._eventPubSubService.publish('onLanguageChange');
+
         if (gridOptions.enableTranslate) {
           this.extensionService.translateCellMenu();
           this.extensionService.translateColumnHeaders();
@@ -786,7 +791,6 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
           this.extensionService.translateContextMenu();
           this.extensionService.translateGridMenu();
           this.extensionService.translateHeaderMenu();
-          this.translateCustomFooterTexts();
           this.translateColumnHeaderTitleKeys();
           this.translateColumnGroupKeys();
           if (gridOptions.createPreHeaderPanel && !gridOptions.enableDraggableGrouping) {
@@ -1213,8 +1217,12 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
           if (this._gridOptions?.backendServiceApi) {
             this.backendUtilityService?.refreshBackendDataset(this._gridOptions);
           }
+          this.renderPagination(this.showPagination);
         })
       );
+
+      // also initialize (render) the pagination component
+      this.renderPagination();
       this._isPaginationInitialized = true;
     }
   }
@@ -1441,6 +1449,25 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
   }
 
   /**
+   * Render (or dispose) the Pagination Component, user can optionally provide False (to not show it) which will in term dispose of the Pagination,
+   * also while disposing we can choose to omit the disposable of the Pagination Service (if we are simply toggling the Pagination, we want to keep the Service alive)
+   * @param {Boolean} showPagination - show (new render) or not (dispose) the Pagination
+   * @param {Boolean} shouldDisposePaginationService - when disposing the Pagination, do we also want to dispose of the Pagination Service? (defaults to True)
+   */
+  private renderPagination(showPagination = true) {
+    if (this._gridOptions?.enablePagination && !this._isPaginationInitialized && showPagination) {
+      this.slickPagination = new SlickPaginationComponent(this.paginationService, this._eventPubSubService, this.sharedService, this.props.translaterService);
+      this.slickPagination.renderPagination(this.elm.current as HTMLDivElement);
+      this._isPaginationInitialized = true;
+    } else if (!showPagination) {
+      if (this.slickPagination) {
+        this.slickPagination.dispose();
+      }
+      this._isPaginationInitialized = false;
+    }
+  }
+
+  /**
    * Takes a flat dataset with parent/child relationship, sort it (via its tree structure) and return the sorted flat array
    * @param {Array<Object>} flatDatasetInput - flat dataset input
    * @param {Boolean} forceGridRefresh - optionally force a full grid refresh
@@ -1502,13 +1529,6 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     });
   }
 
-  /** Translate all Custom Footer Texts (footer with metrics) */
-  private translateCustomFooterTexts() {
-    if (this.slickFooter && this.props.translaterService?.translate) {
-      this.slickFooter?.translateCustomFooterTexts();
-    }
-  }
-
   /** translate all columns (including hidden columns) */
   private translateColumnHeaderTitleKeys() {
     this.extensionUtility.translateItems(this.sharedService.allColumns, 'nameKey', 'name');
@@ -1554,13 +1574,6 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
         <div id={`${this.props.gridId}`} className="slickgrid-container" style={{ width: '100%' }} onBlur={$event => this.commitEdit($event.target)}>
         </div>
-
-        {/* <!-- Pagination section under the grid-- > */}
-        {this.showPagination &&
-          <div id={`slickPagingContainer-${this.props.gridId}`}>
-            <SlickPaginationCustomElement gridOptions={this._gridOptions!} paginationService={this.paginationService} />
-          </div>
-        }
 
         {/* <!--Footer slot if you need to create a complex custom footer-- > */}
         <slot name="slickgrid-footer"></slot>

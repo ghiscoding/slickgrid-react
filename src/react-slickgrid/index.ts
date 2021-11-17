@@ -6,7 +6,6 @@ export * from '@slickgrid-universal/common';
 
 import { ReactSlickgridCustomElement } from './custom-elements/react-slickgrid';
 import { SlickgridEventAggregator } from './custom-elements/slickgridEventAggregator';
-import { SlickPaginationCustomElement } from './custom-elements/slick-pagination';
 import { SlickgridConfig } from './slickgrid-config';
 
 import {
@@ -36,6 +35,5 @@ export {
   ViewModelBindableData,
   ViewModelBindableInputData,
   ReactSlickgridCustomElement,
-  SlickPaginationCustomElement,
   SlickgridConfig
 };
