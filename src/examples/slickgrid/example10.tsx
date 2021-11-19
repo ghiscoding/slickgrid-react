@@ -1,4 +1,4 @@
-import { ReactGridInstance, Column, FieldType, Filters, Formatters, GridOption, GridStateChange, ReactSlickgridCustomElement } from '../../react-slickgrid';
+import { ReactGridInstance, Column, FieldType, Filters, Formatters, GridOption, GridStateChange, ReactSlickgridCustomElement } from '../../slickgrid-react';
 import React from 'react';
 import './example10.scss'; // provide custom CSS/SASS styling
 
@@ -7,7 +7,7 @@ interface Props { }
 export default class Example10 extends React.Component {
   title = 'Example 10: Multiple Grids with Row Selection';
   subTitle = `
-    Row selection, single or multi-select (<a href="https://github.com/ghiscoding/react-slickgrid/wiki/Row-Selection" target="_blank">Wiki docs</a>).
+    Row selection, single or multi-select (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Row-Selection" target="_blank">Wiki docs</a>).
     <ul>
       <li>Single Select, you can click on any cell to make the row active</li>
       <li>Multiple Selections, you need to specifically click on the checkbox to make 1 or more selections</li>
@@ -262,7 +262,7 @@ export default class Example10 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example10.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example10.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

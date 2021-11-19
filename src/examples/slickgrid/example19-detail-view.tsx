@@ -1,5 +1,5 @@
 import Example19 from './example19';
-import { SlickDataView, SlickGrid, ViewModelBindableData } from '../../react-slickgrid';
+import { SlickDataView, SlickGrid, ViewModelBindableData } from '../../slickgrid-react';
 
 export class DetailViewCustomElement {
   model!: {

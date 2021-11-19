@@ -16,7 +16,7 @@ import {
   SlickNamespace,
   SortComparers,
   ReactSlickgridCustomElement,
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import React from 'react';
 import { CustomInputEditor } from './custom-inputEditor';
 import { CustomInputFilter } from './custom-inputFilter';
@@ -71,7 +71,7 @@ interface Props { }
 export default class Example3 extends React.Component {
   title = 'Example 3: Editors / Delete';
   subTitle = `
-  Grid with Inline Editors and onCellClick actions (<a href="https://github.com/ghiscoding/react-slickgrid/wiki/Editors" target="_blank">Wiki docs</a>).
+  Grid with Inline Editors and onCellClick actions (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Editors" target="_blank">Wiki docs</a>).
   <ul>
     <li>When using "enableCellNavigation: true", clicking on a cell will automatically make it active &amp; selected.</li>
     <ul><li>If you don't want this behavior, then you should disable "enableCellNavigation"</li></ul>
@@ -627,7 +627,7 @@ export default class Example3 extends React.Component {
 
     // NOTE if you use an Extensions (Checkbox Selector, Row Detail, ...) that modifies the column definitions in any way
     // you MUST use the code below, first you must reassign the Editor facade (from the internalColumnEditor back to the editor)
-    // in other words, SlickGrid is not using the same as React-Slickgrid uses (editor with a "model" and other properties are a facade, SlickGrid only uses what is inside the model)
+    // in other words, SlickGrid is not using the same as Slickgrid-React uses (editor with a "model" and other properties are a facade, SlickGrid only uses what is inside the model)
     /*
     const allColumns = this.reactGrid.gridService.getAllColumnDefinitions();
     const allOriginalColumns = allColumns.map((column) => {
@@ -671,7 +671,7 @@ export default class Example3 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/React-Slickgrid/blob/master/src/examples/slickgrid/example3.ts">
+              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example3.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

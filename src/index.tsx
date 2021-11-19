@@ -9,6 +9,6 @@ import ReactDOM from 'react-dom';
 import { App } from './examples/slickgrid/App';
 import Backend from 'i18next-xhr-backend';
 import 'bootstrap';
-import { SlickgridConfig } from './react-slickgrid';
+import { SlickgridConfig } from './slickgrid-react';
 
 ReactDOM.render(<App />, document.getElementById('main'));

@@ -10,7 +10,7 @@ import {
   SlickDataView,
   SlickGrid,
   ReactSlickgridCustomElement,
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import React from 'react';
 import './example9.scss'; // provide custom CSS/SASS styling
 
@@ -20,7 +20,7 @@ export default class Example9 extends React.Component {
   title = 'Example 9: Grid Menu Control';
   subTitle = `
     This example demonstrates using the <b>Slick.Controls.GridMenu</b> plugin to easily add a Grid Menu (aka hamburger menu) on the top right corner of the grid.<br/>
-    (<a href="https://github.com/ghiscoding/react-slickgrid/wiki/Grid-Menu" target="_blank">Wiki docs</a>)
+    (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Grid-Menu" target="_blank">Wiki docs</a>)
     <ul>
     <li>You can change the Grid Menu icon, for example "fa-ellipsis-v"&nbsp;&nbsp;<span class="fa fa-ellipsis-v"></span>&nbsp;&nbsp;(which is shown in this example)</li>
     <li>By default the Grid Menu shows all columns which you can show/hide them</li>
@@ -249,7 +249,7 @@ export default class Example9 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example9.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example9.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

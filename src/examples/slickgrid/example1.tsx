@@ -1,4 +1,4 @@
-import { Column, Formatters, GridOption, ReactSlickgridCustomElement } from '../../react-slickgrid';
+import { Column, Formatters, GridOption, ReactSlickgridCustomElement } from '../../slickgrid-react';
 import React from 'react';
 
 const NB_ITEMS = 995;
@@ -116,7 +116,7 @@ export default class Example1 extends React.Component<Props, State> {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/React-Slickgrid/blob/master/src/app/examples/grid-basic.component.ts">
+              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/app/examples/grid-basic.component.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

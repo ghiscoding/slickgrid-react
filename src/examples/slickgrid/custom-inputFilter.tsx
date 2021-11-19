@@ -10,7 +10,7 @@ import {
   OperatorString,
   SearchTerm,
   SlickGrid,
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 
 export class CustomInputFilter implements Filter {
   private _clearFilterTriggered = false;

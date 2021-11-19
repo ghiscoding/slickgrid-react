@@ -13,7 +13,7 @@ import {
   GridOption,
   SlickGrid,
   ReactSlickgridCustomElement,
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import React from 'react';
 import './example24.scss'; // provide custom CSS/SASS styling
 
@@ -68,10 +68,10 @@ export default class Example24 extends React.Component {
       <li>This example demonstrates 2 SlickGrid plugins
       <ol>
         <li>Using the <b>Slick.Plugins.CellMenu</b> plugin, often used for an Action Menu(s), 1 or more per grid
-          (<a href="https://github.com/ghiscoding/react-slickgrid/wiki/Cell-Menu" target="_blank">Wiki docs</a>).
+          (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Cell-Menu" target="_blank">Wiki docs</a>).
         </li>
         <li>Using the <b>Slick.Plugins.ContextMenu</b> plugin, shown after a mouse right+click, only 1 per grid.
-        (<a href="https://github.com/ghiscoding/react-slickgrid/wiki/Context-Menu" target="_blank">Wiki docs</a>).
+        (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Context-Menu" target="_blank">Wiki docs</a>).
         </li>
       </ol>
       <li>It will also "autoAdjustDrop" (bottom/top) and "autoAlignSide" (left/right) by default but could be turned off</li>
@@ -472,7 +472,7 @@ export default class Example24 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example24.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example24.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

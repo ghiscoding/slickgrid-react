@@ -2,7 +2,7 @@ import { Column, DelimiterType, EventNamingStyle, FileType, Filters, GridAutosiz
 import { GridOption, RowDetailView } from './models/index';
 
 /**
- * Default Options that can be passed to the React-Slickgrid
+ * Default Options that can be passed to the Slickgrid-React
  */
 export const GlobalGridOptions: Partial<GridOption> = {
   alwaysShowVerticalScroll: true,

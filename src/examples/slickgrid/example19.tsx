@@ -8,7 +8,7 @@ import {
   Formatters,
   GridOption,
   ReactSlickgridCustomElement,
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import React from 'react';
 
 interface Props { }
@@ -17,7 +17,7 @@ export default class Example19 extends React.Component {
   detailViewRowCount = 9;
   title = 'Example 19: Row Detail View';
   subTitle = `
-    Add functionality to show extra information with a Row Detail View, (<a href="https://github.com/ghiscoding/react-slickgrid/wiki/Row-Detail" target="_blank">Wiki docs</a>)
+    Add functionality to show extra information with a Row Detail View, (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Row-Detail" target="_blank">Wiki docs</a>)
     <ul>
       <li>Click on the row "+" icon or anywhere on the row to open it (the latter can be changed via property "useRowClick: false")</li>
       <li>Pass a View/Model as a Template to the Row Detail</li>
@@ -199,7 +199,7 @@ export default class Example19 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example19.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example19.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

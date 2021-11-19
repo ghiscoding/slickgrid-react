@@ -6,7 +6,7 @@ import {
   Formatters,
   GridOption,
   ReactSlickgridCustomElement,
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import React from 'react';
 
 interface DataItem {
@@ -207,7 +207,7 @@ export default class Example2 extends React.Component<Props, State> {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/React-Slickgrid/blob/master/src/app/examples/grid-basic.component.ts">
+              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/app/examples/grid-basic.component.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

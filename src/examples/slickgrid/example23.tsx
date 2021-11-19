@@ -18,7 +18,7 @@ import {
   OperatorType,
   SlickGrid,
   ReactSlickgridCustomElement
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import React from 'react';
 
 const NB_ITEMS = 1500;
@@ -39,7 +39,7 @@ interface Props { }
 export default class Example23 extends React.Component {
   title = 'Example 23: Filtering from Range of Search Values';
   subTitle = `
-    This demo shows how to use Filters with Range of Search Values (<a href="https://github.com/ghiscoding/react-slickgrid/wiki/Range-Filters" target="_blank">Wiki docs</a>)
+    This demo shows how to use Filters with Range of Search Values (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Range-Filters" target="_blank">Wiki docs</a>)
     <br/>
     <ul class="small">
       <li>All input filters support the following operators: (>, >=, <, <=, <>, !=, =, ==, *) and now also the (..) for an input range
@@ -298,7 +298,7 @@ export default class Example23 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example23.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example23.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

@@ -416,7 +416,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     // RxJS Resource is in this lot because it has to be registered before anything else and doesn't require SlickGrid to be initialized
     this.preRegisterResources();
 
-    // for convenience to the user, we provide the property "editor" as an React-Slickgrid editor complex object
+    // for convenience to the user, we provide the property "editor" as an Slickgrid-React editor complex object
     // however "editor" is used internally by SlickGrid for it's own Editor Factory
     // so in our lib we will swap "editor" and copy it into a new property called "internalColumnEditor"
     // then take back "editor.model" and make it the new "editor" so that SlickGrid Editor Factory still works
@@ -980,7 +980,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
   bindResizeHook(grid: SlickGrid, options: GridOption) {
     if ((options.autoFitColumnsOnFirstLoad && options.autosizeColumnsByCellContentOnFirstLoad) || (options.enableAutoSizeColumns && options.enableAutoResizeColumnsByCellContent)) {
-      throw new Error(`[React-Slickgrid] You cannot enable both autosize/fit viewport & resize by content, you must choose which resize technique to use. You can enable these 2 options ("autoFitColumnsOnFirstLoad" and "enableAutoSizeColumns") OR these other 2 options ("autosizeColumnsByCellContentOnFirstLoad" and "enableAutoResizeColumnsByCellContent").`);
+      throw new Error(`[Slickgrid-React] You cannot enable both autosize/fit viewport & resize by content, you must choose which resize technique to use. You can enable these 2 options ("autoFitColumnsOnFirstLoad" and "enableAutoSizeColumns") OR these other 2 options ("autosizeColumnsByCellContentOnFirstLoad" and "enableAutoResizeColumnsByCellContent").`);
     }
 
     // expand/autofit columns on first page load
@@ -1240,7 +1240,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
           this.updateEditorCollection(column, response); // from Promise
         } else if (response instanceof Response && typeof response.json === 'function') {
           if (response.bodyUsed) {
-            console.warn(`[React-SlickGrid] The response body passed to collectionAsync was already read.`
+            console.warn(`[SlickGrid-React] The response body passed to collectionAsync was already read.`
               + `Either pass the dataset from the Response or clone the response first using response.clone()`);
           } else {
             // from Fetch
@@ -1505,14 +1505,14 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
   }
 
   /**
-   * For convenience to the user, we provide the property "editor" as an React-Slickgrid editor complex object
+   * For convenience to the user, we provide the property "editor" as an Slickgrid-React editor complex object
    * however "editor" is used internally by SlickGrid for it's own Editor Factory
    * so in our lib we will swap "editor" and copy it into a new property called "internalColumnEditor"
    * then take back "editor.model" and make it the new "editor" so that SlickGrid Editor Factory still works
    */
   private swapInternalEditorToSlickGridFactoryEditor(columnDefinitions: Column[]) {
     if (columnDefinitions.some(col => `${col.id}`.includes('.'))) {
-      console.error('[React-Slickgrid] Make sure that none of your Column Definition "id" property includes a dot in its name because that will cause some problems with the Editors. For example if your column definition "field" property is "user.firstName" then use "firstName" as the column "id".');
+      console.error('[Slickgrid-React] Make sure that none of your Column Definition "id" property includes a dot in its name because that will cause some problems with the Editors. For example if your column definition "field" property is "user.firstName" then use "firstName" as the column "id".');
     }
 
     return columnDefinitions.map((column: Column | any) => {

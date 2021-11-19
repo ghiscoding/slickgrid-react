@@ -12,7 +12,7 @@ import {
   MultipleSelectOption,
   OperatorType,
   ReactSlickgridCustomElement,
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import React from 'react';
 
 function randomBetween(min: number, max: number) {
@@ -26,7 +26,7 @@ interface Props { }
 export default class Example4 extends React.Component {
   title = 'Example 4: Client Side Sort/Filter';
   subTitle = `
-  Sort/Filter on client side only using SlickGrid DataView (<a href="https://github.com/ghiscoding/react-slickgrid/wiki/Sorting" target="_blank">Wiki docs</a>)
+  Sort/Filter on client side only using SlickGrid DataView (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Sorting" target="_blank">Wiki docs</a>)
   <br/>
   <ul class="small">
     <li>Support multi-sort (by default), hold "Shift" key and click on the next column to sort.</li>
@@ -43,7 +43,7 @@ export default class Example4 extends React.Component {
       </li>
     </ul>
     <li>On String filters, (*) can be used as startsWith (Hello* => matches "Hello Word") ... endsWith (*Doe => matches: "John Doe")</li>
-    <li>Custom Filter are now possible, "Description" column below, is a customized InputFilter with different placeholder. See <a href="https://github.com/ghiscoding/react-slickgrid/wiki/Custom-Filter" target="_blank">Wiki - Custom Filter</a></li>
+    <li>Custom Filter are now possible, "Description" column below, is a customized InputFilter with different placeholder. See <a href="https://github.com/ghiscoding/slickgrid-react/wiki/Custom-Filter" target="_blank">Wiki - Custom Filter</a></li>
   </ul>
 `;
 
@@ -320,7 +320,7 @@ export default class Example4 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/React-Slickgrid/blob/master/src/examples/slickgrid/example4.ts">
+              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example4.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

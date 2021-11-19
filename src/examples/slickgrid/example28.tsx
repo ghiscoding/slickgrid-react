@@ -9,7 +9,7 @@ import {
   findItemInTreeStructure,
   Formatter,
   ReactSlickgridCustomElement
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import React from 'react';
 import './example28.scss'; // provide custom CSS/SASS styling
 
@@ -263,7 +263,7 @@ export default class Example28 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example28.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example28.ts">
               <span className="mdi mdi-link mdi-v-align-sub"></span> code
             </a>
           </span>

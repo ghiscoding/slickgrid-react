@@ -14,7 +14,7 @@ import {
   GridStateChange,
   SlickGrid,
   ReactSlickgridCustomElement,
-} from '../../react-slickgrid';
+} from '../../slickgrid-react';
 import React from 'react';
 import { i18n } from 'i18next';
 
@@ -32,7 +32,7 @@ interface Props { }
 export default class Example12 extends React.Component {
   title = 'Example 12: Localization (i18n)';
   subTitle = `Support multiple locales with the i18next plugin, following these steps.
-    Take a look at the (<a href="https://github.com/ghiscoding/react-slickgrid/wiki/Localization" target="_blank">Wiki documentation</a>)
+    Take a look at the (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Localization" target="_blank">Wiki documentation</a>)
     <ol class="small">
       <li>You first need to "enableTranslate" in the Grid Options</li>
       <li>In the Column Definitions, you have following options</li>
@@ -52,9 +52,9 @@ export default class Example12 extends React.Component {
         <ul>
           <li>What if your select options have totally different value/label pair? In this case, you can use the <b>customStructure: { label: 'customLabel', value: 'customValue'}</b> to change the property name(s) to use.'</li>
           <li>What if you want to use "customStructure" and translation? Simply pass this flag <b>enableTranslateLabel: true</b></li>
-          <li>More info on the Select Filter <a href="https://github.com/ghiscoding/react-slickgrid/wiki/Select-Filter" target="_blank">Wiki page</a>
+          <li>More info on the Select Filter <a href="https://github.com/ghiscoding/slickgrid-react/wiki/Select-Filter" target="_blank">Wiki page</a>
         </ul>
-        <li>For more info about "Download to File", read the <a href="https://github.com/ghiscoding/react-slickgrid/wiki/Export-to-File" target="_blank">Wiki page</a></li>
+        <li>For more info about "Download to File", read the <a href="https://github.com/ghiscoding/slickgrid-react/wiki/Export-to-File" target="_blank">Wiki page</a></li>
       </ol>
     `;
 
@@ -263,7 +263,7 @@ export default class Example12 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example12.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example12.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>

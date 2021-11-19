@@ -1,5 +1,5 @@
 import i18next from 'i18next';
-import { ReactGridInstance, Column, Formatters, GridOption, SlickDataView, SlickGrid, ReactSlickgridCustomElement } from '../../react-slickgrid';
+import { ReactGridInstance, Column, Formatters, GridOption, SlickDataView, SlickGrid, ReactSlickgridCustomElement } from '../../slickgrid-react';
 import './example8.scss'; // provide custom CSS/SASS styling
 import React from 'react';
 
@@ -10,7 +10,7 @@ export default class Example8 extends React.Component {
   subTitle = `
     This example demonstrates using the <b>Slick.Plugins.HeaderMenu</b> plugin to easily add menus to colum headers.<br/>
     These menus can be specified directly in the column definition, and are very easy to configure and use.
-    (<a href="https://github.com/ghiscoding/react-slickgrid/wiki/Header-Menu-&-Header-Buttons" target="_blank">Wiki docs</a>)
+    (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Header-Menu-&-Header-Buttons" target="_blank">Wiki docs</a>)
     <ul>
       <li>Now enabled by default in the Global Grid Options, it will add the default commands of (hide column, sort asc/desc)</li>
       <li>Hover over any column header to see an arrow showing up on the right</li>
@@ -165,7 +165,7 @@ export default class Example8 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/react-slickgrid/blob/master/src/examples/slickgrid/example8.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example8.ts">
               <span className="fa fa-link"></span> code
             </a>
           </span>
