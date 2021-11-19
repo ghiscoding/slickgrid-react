@@ -459,7 +459,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
     // initialized the resizer service only after SlickGrid is initialized
     // if we don't we end up binding our resize to a grid element that doesn't yet exist in the DOM and the resizer service will fail silently (because it has a try/catch that unbinds the resize without throwing back)
-    const gridContainerElm = this.elm.current?.querySelector('div');
+    const gridContainerElm = this.elm.current;
     if (gridContainerElm) {
       this.resizerService.init(this.grid, gridContainerElm);
     }
