@@ -212,7 +212,7 @@ export default class Example2 extends React.Component<Props, State> {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
         <button className="btn btn-outline-secondary btn-sm"
           onClick={this.togglePauseResizer}>
           Pause auto-resize: <b>{this.resizerPaused}</b>
