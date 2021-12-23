@@ -1,11 +1,14 @@
 // import 3rd party vendor libs
 // also only import jQueryUI necessary widget (note autocomplete & slider are imported in their respective editors/filters)
+import * as $ from 'jquery';
+import 'jquery-ui/ui/widgets/draggable';
+import 'jquery-ui/ui/widgets/droppable';
+import 'jquery-ui/ui/widgets/sortable';
 import 'slickgrid/lib/jquery.event.drag-2.3.0';
 import 'slickgrid/lib/jquery.mousewheel';
 import 'slickgrid/slick.core';
 import 'slickgrid/slick.dataview';
 import 'slickgrid/slick.grid';
-import 'slickgrid/slick.groupitemmetadataprovider';
 import React from 'react';
 
 import {
@@ -19,7 +22,6 @@ import {
   EventSubscription,
   ExtensionList,
   ExternalResource,
-  GetSlickEventType,
   GridStateType,
   Locale,
   Metrics,
@@ -36,6 +38,7 @@ import {
   CollectionService,
   EventNamingStyle,
   ExtensionService,
+  ExtensionUtility,
   FilterFactory,
   FilterService,
   GridEventService,
@@ -47,25 +50,10 @@ import {
   ResizerService,
   RxJsFacade,
   SharedService,
+  SlickGroupItemMetadataProvider,
   SlickgridConfig,
   SortService,
   TreeDataService,
-
-  // extensions
-  AutoTooltipExtension,
-  CheckboxSelectorExtension,
-  CellExternalCopyManagerExtension,
-  CellMenuExtension,
-  ColumnPickerExtension,
-  ContextMenuExtension,
-  DraggableGroupingExtension,
-  ExtensionUtility,
-  GridMenuExtension,
-  GroupItemMetaProviderExtension,
-  HeaderMenuExtension,
-  HeaderButtonExtension,
-  RowSelectionExtension,
-  RowMoveManagerExtension,
 
   // utilities
   autoAddEditorFormatterToColumnsWithEditor,
@@ -86,7 +74,6 @@ import {
   ContainerService,
   TranslaterService,
 } from '../services/index';
-import { RowDetailViewExtension } from '../extensions';
 import { Subscription } from 'rxjs';
 
 // using external non-typed js libraries
@@ -179,7 +166,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     this.setStateValue('_gridOptions', value);
   }
 
-  groupItemMetadataProvider: any;
+  groupItemMetadataProvider?: SlickGroupItemMetadataProvider;
   backendServiceApi: BackendServiceApi | undefined;
   locales!: Locale;
   metrics?: Metrics;
@@ -201,13 +188,11 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
   slickFooter: SlickFooterComponent | undefined;
   slickPagination: SlickPaginationComponent | undefined;
 
-  // extensions
-  extensionUtility: ExtensionUtility;
-
   // services
   backendUtilityService!: BackendUtilityService;
   collectionService: CollectionService;
   extensionService: ExtensionService;
+  extensionUtility: ExtensionUtility;
   filterFactory!: FilterFactory;
   filterService: FilterService;
   gridEventService: GridEventService;
@@ -230,7 +215,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
   grid!: SlickGrid;
   totalItems = 0;
 
-  extensions!: ExtensionList<any, any>;
+  extensions!: ExtensionList<any>;
   instances: ReactGridInstance | null = null;
 
   private elm: React.RefObject<HTMLDivElement> = React.createRef();
@@ -243,7 +228,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     dataset: [],
     gridId: '',
     columnDefinitions: [],
-  }
+  };
 
   constructor(public readonly props: Props) {
     super(props);
@@ -260,7 +245,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     this.gridEventService = this.props.externalServices?.gridEventService ?? new GridEventService();
     this.sharedService = this.props.externalServices?.sharedService ?? new SharedService();
     this.collectionService = this.props.externalServices?.collectionService ?? new CollectionService(this.props.translaterService);
-    this.extensionUtility = this.props.externalServices?.extensionUtility ?? new ExtensionUtility(this.sharedService, this.props.translaterService);
+    this.extensionUtility = this.props.externalServices?.extensionUtility ?? new ExtensionUtility(this.sharedService, this.backendUtilityService, this.props.translaterService);
     this.filterFactory = new FilterFactory(slickgridConfig, this.props.translaterService, this.collectionService);
     this.filterService = this.props.externalServices?.filterService ?? new FilterService(this.filterFactory as any, this._eventPubSubService, this.sharedService, this.backendUtilityService);
     this.resizerService = this.props.externalServices?.resizerService ?? new ResizerService(this._eventPubSubService);
@@ -268,44 +253,19 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     this.treeDataService = this.props.externalServices?.treeDataService ?? new TreeDataService(this._eventPubSubService, this.sharedService, this.sortService);
     this.paginationService = this.props.externalServices?.paginationService ?? new PaginationService(this._eventPubSubService, this.sharedService, this.backendUtilityService);
 
-    // extensions
-    const autoTooltipExtension = new AutoTooltipExtension(this.sharedService);
-    const cellExternalCopyManagerExtension = new CellExternalCopyManagerExtension(this.extensionUtility, this.sharedService);
-    const cellMenuExtension = new CellMenuExtension(this.extensionUtility, this.sharedService, this.props.translaterService);
-    const contextMenuExtension = new ContextMenuExtension(this.extensionUtility, this._eventPubSubService, this.sharedService, this.treeDataService, this.props.translaterService);
-    const columnPickerExtension = new ColumnPickerExtension(this.extensionUtility, this.sharedService);
-    const checkboxExtension = new CheckboxSelectorExtension(this.sharedService);
-    const draggableGroupingExtension = new DraggableGroupingExtension(this.extensionUtility, this._eventPubSubService, this.sharedService);
-    const gridMenuExtension = new GridMenuExtension(this.extensionUtility, this.filterService,this._eventPubSubService, this.sharedService, this.sortService, this.backendUtilityService, this.props.translaterService);
-    const groupItemMetaProviderExtension = new GroupItemMetaProviderExtension(this.sharedService);
-    const headerButtonExtension = new HeaderButtonExtension(this.extensionUtility, this.sharedService);
-    const headerMenuExtension = new HeaderMenuExtension(this.extensionUtility, this.filterService, this._eventPubSubService, this.sharedService, this.sortService, this.props.translaterService);
-    const rowDetailViewExtension = new RowDetailViewExtension(this._eventPubSubService, this.props.reactUtilService, this.sharedService);
-    const rowMoveManagerExtension = new RowMoveManagerExtension(this.sharedService);
-    const rowSelectionExtension = new RowSelectionExtension(this.sharedService);
-
     this.extensionService = this.props.externalServices?.extensionService ?? new ExtensionService(
-      autoTooltipExtension,
-      cellExternalCopyManagerExtension,
-      cellMenuExtension,
-      checkboxExtension,
-      columnPickerExtension,
-      contextMenuExtension,
-      draggableGroupingExtension,
-      gridMenuExtension,
-      groupItemMetaProviderExtension,
-      headerButtonExtension,
-      headerMenuExtension,
-      rowDetailViewExtension,
-      rowMoveManagerExtension,
-      rowSelectionExtension,
+      this.extensionUtility,
+      this.filterService,
+      this._eventPubSubService,
       this.sharedService,
+      this.sortService,
+      this.treeDataService,
       this.props.translaterService,
     );
 
     this.gridStateService = this.props.externalServices?.gridStateService ?? new GridStateService(this.extensionService, this.filterService, this._eventPubSubService, this.sharedService, this.sortService, this.treeDataService);
     this.gridService = this.props.externalServices?.gridService ?? new GridService(this.gridStateService, this.filterService, this._eventPubSubService, this.paginationService, this.sharedService, this.sortService, this.treeDataService);
-    this.groupingService = this.props.externalServices?.groupingAndColspanService ?? new GroupingAndColspanService(this.extensionUtility, this.extensionService, this._eventPubSubService);
+    this.groupingService = this.props.externalServices?.groupingAndColspanService ?? new GroupingAndColspanService(this.extensionUtility, this._eventPubSubService);
 
     this.serviceList = [
       this.extensionService,
@@ -351,6 +311,9 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
   set isDatasetInitialized(isInitialized: boolean) {
     this._isDatasetInitialized = isInitialized;
   }
+  set isDatasetHierarchicalInitialized(isInitialized: boolean) {
+    this._isDatasetHierarchicalInitialized = isInitialized;
+  }
 
   get registeredResources(): ExternalResource[] {
     return this._registeredResources;
@@ -358,6 +321,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
   componentDidMount() {
     this._mounted = true;
+    console.log('current', this.elm.current)
     if (this.elm.current && this._eventPubSubService instanceof CustomEventPubSubService) {
       (this._eventPubSubService as CustomEventPubSubService).elementSource = this.elm.current;
     }
@@ -392,6 +356,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     // make sure the dataset is initialized (if not it will throw an error that it cannot getLength of null)
     this._dataset = this._dataset || this.props.dataset || [];
     this._currentDatasetLength = this._dataset.length;
+    this._gridOptions = this.mergeGridOptions(this._gridOptions);
     this._paginationOptions = this._gridOptions?.pagination;
     this.locales = this._gridOptions?.locales ?? Constants.locales;
     this.backendServiceApi = this._gridOptions?.backendServiceApi;
@@ -404,7 +369,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
       let dataViewOptions: DataViewOption = { inlineFilters: dataviewInlineFilters };
 
       if (this._gridOptions.draggableGrouping || this._gridOptions.enableGrouping) {
-        this.groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
+        this.groupItemMetadataProvider = new SlickGroupItemMetadataProvider();
         this.sharedService.groupItemMetadataProvider = this.groupItemMetadataProvider;
         dataViewOptions = { ...dataViewOptions, groupItemMetadataProvider: this.groupItemMetadataProvider };
       }
@@ -466,19 +431,19 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
     // user could show a custom footer with the data metrics (dataset length and last updated timestamp)
     if (!this._gridOptions.enablePagination && this._gridOptions.showCustomFooter && this._gridOptions.customFooterOptions && gridContainerElm) {
-      this.slickFooter = new SlickFooterComponent(this.grid, this._gridOptions.customFooterOptions,this._eventPubSubService, this.props.translaterService);
+      this.slickFooter = new SlickFooterComponent(this.grid, this._gridOptions.customFooterOptions, this._eventPubSubService, this.props.translaterService);
       this.slickFooter.renderFooter(gridContainerElm as HTMLDivElement);
     }
 
     if (!this.props.customDataView && this.dataview) {
       const initialDataset = this._gridOptions?.enableTreeData ? this.sortTreeDataset(this.props.dataset) : this.props.dataset;
       if (Array.isArray(initialDataset)) {
-        this.dataview.setItems(initialDataset, this._gridOptions.datasetIdPropertyName);
+        this.dataview.setItems(initialDataset, this._gridOptions.datasetIdPropertyName ?? 'id');
       }
 
       // if you don't want the items that are not visible (due to being filtered out or being on a different page)
       // to stay selected, pass 'false' to the second arg
-      const selectionModel = this.grid?.getSelectionModel?.();
+      const selectionModel = this.grid?.getSelectionModel();
       if (selectionModel && this._gridOptions?.dataView && this._gridOptions.dataView.hasOwnProperty('syncGridSelection')) {
         // if we are using a Backend Service, we will do an extra flag check, the reason is because it might have some unintended behaviors
         // with the BackendServiceApi because technically the data in the page changes the DataView on every page change.
@@ -560,7 +525,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     };
 
     // addons (SlickGrid extra plugins/controls)
-    this.extensions = this.extensionService && this.extensionService.extensionList;
+    this.extensions = this.extensionService?.extensionList;
 
     // all instances (SlickGrid, DataView & all Services)
     this.instances = reactElementInstance;
@@ -580,7 +545,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
     // dispose of all Services
     this.serviceList.forEach((service: any) => {
-      if (service && service.dispose) {
+      if (service?.dispose) {
         service.dispose();
       }
     });
@@ -623,16 +588,14 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
       }
       this.backendServiceApi = undefined;
     }
-    /*
     for (const prop of Object.keys(this.props.columnDefinitions)) {
       (this.props.columnDefinitions as any)[prop] = null;
     }
-    */
     for (const prop of Object.keys(this.sharedService)) {
       (this.sharedService as any)[prop] = null;
     }
     this._dataset = null;
-    // this.props.datasetHierarchical = null;
+    this.props.datasetHierarchical = null;
     this._columnDefinitions = [];
   }
 
@@ -691,7 +654,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
       setTimeout(() => {
         // make sure the target is the active editor so we do not
         // commit prematurely
-        if (activeNode && activeNode.contains(target) && this.grid.getEditorLock().isActive() && !target?.classList?.contains('autocomplete')) {
+        if (activeNode?.contains(target) && this.grid.getEditorLock().isActive() && !target?.classList?.contains('autocomplete')) {
           this.grid.getEditorLock().commitCurrentEdit();
         }
       });
@@ -731,7 +694,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
     // when a hierarchical dataset is set afterward, we can reset the flat dataset and call a tree data sort that will overwrite the flat dataset
     if (newHierarchicalDataset && this.grid && this.sortService?.processTreeDataInitialSort) {
-      this.dataview.setItems([], this._gridOptions.datasetIdPropertyName);
+      this.dataview.setItems([], this._gridOptions.datasetIdPropertyName ?? 'id');
       this.sortService.processTreeDataInitialSort();
 
       // we also need to reset/refresh the Tree Data filters because if we inserted new item(s) then it might not show up without doing this refresh
@@ -742,9 +705,8 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
           this.filterService.refreshTreeDataFilters();
         }
       });
+      this._isDatasetHierarchicalInitialized = true;
     }
-
-    this._isDatasetHierarchicalInitialized = true;
   }
 
   /**
@@ -753,8 +715,8 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
    * refresh the Dataset & Pagination without having the user to create his own PostProcess every time
    */
   createBackendApiInternalPostProcessCallback(gridOptions: GridOption) {
-    const backendApi = gridOptions && gridOptions.backendServiceApi;
-    if (backendApi && backendApi.service) {
+    const backendApi = gridOptions?.backendServiceApi;
+    if (backendApi?.service) {
       const backendApiService = backendApi.service;
 
       // internalPostProcess only works (for now) with a GraphQL Service, so make sure it is of that type
@@ -774,6 +736,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
   bindDifferentHooks(grid: SlickGrid, gridOptions: GridOption, dataView: SlickDataView) {
     // translate some of them on first load, then on each language change
     if (gridOptions.enableTranslate) {
+      this.extensionService.translateAllExtensions();
       this.translateColumnHeaderTitleKeys();
       this.translateColumnGroupKeys();
     }
@@ -785,12 +748,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
         this._eventPubSubService.publish('onLanguageChange');
 
         if (gridOptions.enableTranslate) {
-          this.extensionService.translateCellMenu();
-          this.extensionService.translateColumnHeaders();
-          this.extensionService.translateColumnPicker();
-          this.extensionService.translateContextMenu();
-          this.extensionService.translateGridMenu();
-          this.extensionService.translateHeaderMenu();
+          this.extensionService.translateAllExtensions();
           this.translateColumnHeaderTitleKeys();
           this.translateColumnGroupKeys();
           if (gridOptions.createPreHeaderPanel && !gridOptions.enableDraggableGrouping) {
@@ -804,7 +762,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     if (gridOptions.backendServiceApi) {
       const backendApi = gridOptions.backendServiceApi;
 
-      if (backendApi && backendApi.service && backendApi.service.init) {
+      if (backendApi?.service?.init) {
         backendApi.service.init(backendApi.options, gridOptions.pagination, this.grid, this.sharedService);
       }
     }
@@ -815,9 +773,8 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
       // expose all Slick Grid Events through dispatch
       for (const prop in grid) {
         if (grid.hasOwnProperty(prop) && prop.startsWith('on')) {
-          const gridEventHandler = (grid as any)[prop];
           const gridEventName = this._eventPubSubService.getEventNameByNamingConvention(prop, slickgridEventPrefix);
-          (this._eventHandler as SlickEventHandler<GetSlickEventType<typeof gridEventHandler>>).subscribe(gridEventHandler, (event, args) => {
+          this._eventHandler.subscribe((grid as any)[prop], (event, args) => {
             return this._eventPubSubService.dispatchCustomEvent(gridEventName, { eventData: event, args });
           });
         }
@@ -826,8 +783,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
       // expose all Slick DataView Events through dispatch
       for (const prop in dataView) {
         if (dataView.hasOwnProperty(prop) && prop.startsWith('on')) {
-          const dataViewEventHandler = (dataView as any)[prop];
-          (this._eventHandler as SlickEventHandler<GetSlickEventType<typeof dataViewEventHandler>>).subscribe(dataViewEventHandler, (event, args) => {
+          this._eventHandler.subscribe((dataView as any)[prop], (event, args) => {
             const dataViewEventName = this._eventPubSubService.getEventNameByNamingConvention(prop, slickgridEventPrefix);
             return this._eventPubSubService.dispatchCustomEvent(dataViewEventName, { eventData: event, args });
           });
@@ -867,13 +823,11 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
         this.loadFilterPresetsWhenDatasetInitialized();
 
         // When data changes in the DataView, we need to refresh the metrics and/or display a warning if the dataset is empty
-        const onRowCountChangedHandler = dataView.onRowCountChanged;
-        (this._eventHandler as SlickEventHandler<GetSlickEventType<typeof onRowCountChangedHandler>>).subscribe(onRowCountChangedHandler, () => {
+        this._eventHandler.subscribe(dataView.onRowCountChanged, () => {
           grid.invalidate();
           this.handleOnItemCountChanged(dataView.getFilteredItemCount() || 0, dataView.getItemCount());
         });
-        const onSetItemsCalledHandler = dataView.onSetItemsCalled;
-        (this._eventHandler as SlickEventHandler<GetSlickEventType<typeof onSetItemsCalledHandler>>).subscribe(onSetItemsCalledHandler, (_e, args) => {
+        this._eventHandler.subscribe(dataView.onSetItemsCalled, (_e, args) => {
           grid.invalidate();
           this.handleOnItemCountChanged(dataView.getFilteredItemCount() || 0, args.itemCount);
 
@@ -883,12 +837,11 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
           }
         });
 
-        const onRowsChangedHandler = dataView.onRowsChanged;
-        (this._eventHandler as SlickEventHandler<GetSlickEventType<typeof onRowsChangedHandler>>).subscribe(onRowsChangedHandler, (_e, args) => {
+        this._eventHandler.subscribe(dataView.onRowsChanged, (_e, args) => {
           // filtering data with local dataset will not always show correctly unless we call this updateRow/render
           // also don't use "invalidateRows" since it destroys the entire row and as bad user experience when updating a row
           // see commit: https://github.com/ghiscoding/aurelia-slickgrid/commit/8c503a4d45fba11cbd8d8cc467fae8d177cc4f60
-          if (gridOptions && gridOptions.enableFiltering && !gridOptions.enableRowDetailView) {
+          if (gridOptions?.enableFiltering && !gridOptions.enableRowDetailView) {
             if (args?.rows && Array.isArray(args.rows)) {
               args.rows.forEach((row: number) => grid.updateRow(row));
               grid.render();
@@ -912,14 +865,14 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
   bindBackendCallbackFunctions(gridOptions: GridOption) {
     const backendApi = gridOptions.backendServiceApi;
-    const backendApiService = backendApi && backendApi.service;
-    const serviceOptions: BackendServiceOption = backendApiService && backendApiService.options || {};
+    const backendApiService = backendApi?.service;
+    const serviceOptions: BackendServiceOption = backendApiService?.options || {};
     const isExecuteCommandOnInit = (!serviceOptions) ? false : ((serviceOptions && serviceOptions.hasOwnProperty('executeProcessCommandOnInit')) ? serviceOptions['executeProcessCommandOnInit'] : true);
 
     if (backendApiService) {
       // update backend filters (if need be) BEFORE the query runs (via the onInit command a few lines below)
       // if user entered some any "presets", we need to reflect them all in the grid
-      if (gridOptions && gridOptions.presets) {
+      if (gridOptions?.presets) {
         // Filters "presets"
         if (backendApiService.updateFilters && Array.isArray(gridOptions.presets.filters) && gridOptions.presets.filters.length > 0) {
           backendApiService.updateFilters(gridOptions.presets.filters, true);
@@ -1063,7 +1016,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     }
 
     if (Array.isArray(dataset) && this.grid && this.dataview?.setItems) {
-      this.dataview.setItems(dataset, this._gridOptions.datasetIdPropertyName);
+      this.dataview.setItems(dataset, this._gridOptions.datasetIdPropertyName ?? 'id');
       if (!this._gridOptions.backendServiceApi && !this._gridOptions.enableTreeData) {
         this.dataview.reSort();
       }
@@ -1129,7 +1082,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
    * if there are then load them in the paginationOptions object
    */
   setPaginationOptionsWhenPresetDefined(gridOptions: GridOption, paginationOptions: Pagination): Pagination {
-    if (gridOptions.presets && gridOptions.presets.pagination && gridOptions.pagination) {
+    if (gridOptions.presets?.pagination && gridOptions.pagination) {
       paginationOptions.pageSize = gridOptions.presets.pagination.pageSize;
       paginationOptions.pageNumber = gridOptions.presets.pagination.pageNumber;
     }
@@ -1289,8 +1242,8 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
   private loadFilterPresetsWhenDatasetInitialized() {
     if (this._gridOptions && !this.props.customDataView) {
       // if user entered some Filter "presets", we need to reflect them all in the DOM
-      if (this._gridOptions.presets && Array.isArray(this._gridOptions.presets.filters)) {
-        this.filterService.populateColumnFilterSearchTermPresets(this._gridOptions.presets.filters);
+      if (this._gridOptions.presets && (Array.isArray(this._gridOptions.presets.filters) || Array.isArray(this._gridOptions.presets?.treeData?.toggledItems))) {
+        this.filterService.populateColumnFilterSearchTermPresets(this._gridOptions.presets?.filters || []);
       }
     }
   }
@@ -1319,7 +1272,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
   private loadRowSelectionPresetWhenExists() {
     // if user entered some Row Selections "presets"
     const presets = this._gridOptions?.presets;
-    const selectionModel = this.grid?.getSelectionModel?.();
+    const selectionModel = this.grid?.getSelectionModel();
     const enableRowSelection = this._gridOptions && (this._gridOptions.enableCheckboxSelector || this._gridOptions.enableRowSelection);
     if (enableRowSelection && selectionModel && presets && presets.rowSelection && (Array.isArray(presets.rowSelection.gridRowIndexes) || Array.isArray(presets.rowSelection.dataContextIds))) {
       let dataContextIds = presets.rowSelection.dataContextIds;
@@ -1517,13 +1470,13 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
     return columnDefinitions.map((column: Column | any) => {
       // on every Editor which have a "collection" or a "collectionAsync"
-      if (column.editor && column.editor.collectionAsync) {
+      if (column.editor?.collectionAsync) {
         this.loadEditorCollectionAsync(column);
       }
 
       return {
         ...column,
-        editor: column.editor && column.editor.model,
+        editor: column.editor?.model,
         internalColumnEditor: { ...column.editor }
       };
     });
