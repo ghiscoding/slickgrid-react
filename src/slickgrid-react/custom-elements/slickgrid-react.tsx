@@ -321,12 +321,12 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
   componentDidMount() {
     this._mounted = true;
-    console.log('current', this.elm.current)
     if (this.elm.current && this._eventPubSubService instanceof CustomEventPubSubService) {
       (this._eventPubSubService as CustomEventPubSubService).elementSource = this.elm.current;
     }
 
     this._eventHandler = new Slick.EventHandler();
+    this.sharedService.gridContainerElement = this.elm.current as HTMLDivElement;
 
     this.initialization(this._eventHandler);
     this._isGridInitialized = true;
