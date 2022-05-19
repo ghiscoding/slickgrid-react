@@ -29,6 +29,7 @@ export default class Example22 extends React.Component {
     // define the grid options & columns and then create the grid itself
     this.defineGrid1();
     this.defineGrid2();
+    this.componentDidMount();
   }
 
   reactGrid2Ready(reactGrid: ReactGridInstance) {
@@ -139,7 +140,7 @@ export default class Example22 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <div>
           <ul className="nav nav-tabs"

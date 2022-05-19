@@ -1,6 +1,6 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { TextExportService } from '@slickgrid-universal/text-export';
-
+import i18next from 'i18next';
 import {
   ReactGridInstance,
   Column,
@@ -16,11 +16,15 @@ import {
   ReactSlickgridCustomElement,
 } from '../../slickgrid-react';
 import React from 'react';
-import { i18n } from 'i18next';
+// import { i18n } from 'i18next';
 
 const NB_ITEMS = 1500;
 
 // create a custom translate Formatter (typically you would move that a separate file, for separation of concerns)
+i18next.init({
+  lng: 'en',
+}
+);
 const taskTranslateFormatter: Formatter = (_row, _cell, value, _columnDef, _dataContext, grid) => {
   const gridOptions: GridOption = (grid && typeof grid.getOptions === 'function') ? grid.getOptions() : {};
 
@@ -67,16 +71,18 @@ export default class Example12 extends React.Component {
   gridObj!: SlickGrid;
   excelExportService = new ExcelExportService();
   textExportService = new TextExportService();
-  private i18n: i18n;
+  // private i18n: i18n;
 
   constructor(public readonly props: Props) {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
+    this. componentDidMount();
 
     // always start with English for Cypress E2E tests to be consistent
     const defaultLang = 'en';
-    this.i18n.changeLanguage(defaultLang);
+
+    i18next.changeLanguage(defaultLang);
     this.selectedLanguage = defaultLang;
   }
 
@@ -152,7 +158,7 @@ export default class Example12 extends React.Component {
       enableExcelCopyBuffer: true,
       enableFiltering: true,
       enableTranslate: true,
-      i18n: this.i18n,
+      i18n: i18next,
       checkboxSelector: {
         // you can toggle these 2 properties to show the "select all" checkbox in different location
         hideInFilterHeaderRow: false,
@@ -251,7 +257,7 @@ export default class Example12 extends React.Component {
 
   async switchLanguage() {
     const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
-    await this.i18n.changeLanguage(nextLanguage);
+    await i18next.changeLanguage(nextLanguage);
     this.selectedLanguage = nextLanguage;
   }
 
@@ -268,7 +274,7 @@ export default class Example12 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <hr />
 

@@ -31,6 +31,12 @@
     },
     {
       "name": "Dustin Garner"
+    },
+    {
+      "name": "Joel Peña"
+    },
+    {
+      "name": "Esmarlin Perez"
     }
   ],
   "main": "dist/commonjs/index.js",
@@ -99,11 +105,14 @@
     "dompurify": "^2.3.4",
     "font-awesome": "^4.7.0",
     "i18next": ">= 14.1.1",
+    "i18next-browser-languagedetector": "^6.1.4",
+    "i18next-http-backend": "^1.4.0",
     "jquery": "~3.5.1",
     "jquery-ui-dist": "^1.12.1",
     "moment-mini": "^2.24.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-i18next": "^11.16.9",
     "react-router-dom": "^5.3.0",
     "react-scripts": "^1.1.5",
     "regenerator-runtime": "^0.13.9",
@@ -191,7 +200,7 @@
     "typescript": "~4.3.5",
     "vinyl-fs": "^3.0.3",
     "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1",
+    "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.7.1",
     "yargs": "^17.3.0"
   },

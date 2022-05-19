@@ -8,10 +8,11 @@ export class NavBar extends React.Component {
   };
 
   render() {
+    const libraryRepositoryUrl = 'https://github.com/ghiscoding/slickgrid-react/';
     return (
       <div>
         <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-          <a className="navbar-brand ms-2" href="https://github.com/ghiscoding/aurelia-slickgrid">
+          <a className="navbar-brand ms-2" href={libraryRepositoryUrl}>
             <i className="fa fa-github"></i>
             <span>{this.router.title}</span>
           </a>
@@ -33,8 +34,8 @@ export class NavBar extends React.Component {
                 )
               }
               <li className="nav-item">
-                <a className="nav-link" href="https://ghiscoding.github.io/Aurelia-Bootstrap-Plugins/"
-                  target="_blank">Aurelia-Bootstrap-Plugins</a>
+                <a className="nav-link" href={libraryRepositoryUrl}
+                  target="_blank">React-SlickGrid</a>
               </li>
             </ul>
             <ul className="nav navbar-nav navbar-right">

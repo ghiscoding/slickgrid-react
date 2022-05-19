@@ -102,6 +102,7 @@ export default class Example32 extends React.Component {
   constructor(public readonly props: Props) {
     super(props);
     this.initializeGrid();
+    this.componentDidMount();
   }
 
   componentDidMount() {
@@ -834,7 +835,7 @@ export default class Example32 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <h4 className="ml-3">Container Width (950px)</h4>
 

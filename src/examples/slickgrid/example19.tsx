@@ -38,6 +38,7 @@ export default class Example19 extends React.Component {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
+    this.componentDidMount();
   }
 
   get rowDetailInstance(): any {
@@ -115,11 +116,11 @@ export default class Example19 extends React.Component {
         // for example, display the expand icon only on every 2nd row
         // expandableOverride: (row: number, dataContext: any, grid: SlickGrid) => (dataContext.id % 2 === 1),
 
-        // Preload View Template
-        preloadView: PLATFORM.moduleName('examples/slickgrid/example19-preload.html'),
+        // // Preload View Template
+        // preloadView: PLATFORM.moduleName('examples/slickgrid/example19-preload.html'),
 
-        // ViewModel Template to load when row detail data is ready
-        viewModel: PLATFORM.moduleName('examples/slickgrid/example19-detail-view'),
+        // // ViewModel Template to load when row detail data is ready
+        // viewModel: PLATFORM.moduleName('examples/slickgrid/example19-detail-view'),
 
         // Optionally pass your Parent Component reference to your Child Component (row detail component)
         parent: this
@@ -204,7 +205,7 @@ export default class Example19 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <div className="col-sm-6">
           <button className="btn btn-outline-secondary btn-sm" onClick={this.closeAllRowDetail} data-test="close-all-btn">

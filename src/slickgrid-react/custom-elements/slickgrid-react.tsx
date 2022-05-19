@@ -58,6 +58,51 @@ import {
   // utilities
   autoAddEditorFormatterToColumnsWithEditor,
   emptyElement,
+  OnActiveCellChangedEventArgs,
+  OnClickEventArgs,
+  OnValidationErrorEventArgs,
+  GridStateChange,
+  OnRowCountChangedEventArgs,
+  MultiColumnSort,
+  SingleColumnSort,
+  // SlickEvent,
+  // OnCellChangeEventArgs,
+  // OnClickEventArgs,
+  // OnValidationErrorEventArgs,
+  // OnActiveCellChangedEventArgs,
+  // SlickGridEventData,
+  // OnAddNewRowEventArgs,
+  // OnAutosizeColumnsEventArgs,
+  // OnBeforeAppendCellEventArgs,
+  // OnBeforeCellEditorDestroyEventArgs,
+  // OnBeforeColumnsResizeEventArgs,
+  // OnBeforeEditCellEventArgs,
+  // OnBeforeHeaderCellDestroyEventArgs,
+  // OnBeforeHeaderRowCellDestroyEventArgs,
+  // OnBeforeFooterRowCellDestroyEventArgs,
+  // OnBeforeSetColumnsEventArgs,
+  // SingleColumnSort,
+  // MultiColumnSort,
+  // OnCellCssStylesChangedEventArgs,
+  // OnColumnsDragEventArgs,
+  // OnColumnsReorderedEventArgs,
+  // OnColumnsResizedEventArgs,
+  // OnColumnsResizeDblClickEventArgs,
+  // OnCompositeEditorChangeEventArgs,
+  // DragRowMove,
+  // OnDblClickEventArgs,
+  // OnFooterContextMenuEventArgs,
+  // OnFooterRowCellRenderedEventArgs,
+  // OnHeaderCellRenderedEventArgs,
+  // OnFooterClickEventArgs,
+  // OnHeaderClickEventArgs,
+  // OnHeaderContextMenuEventArgs,
+  // OnHeaderMouseEventArgs,
+  // OnHeaderRowCellRenderedEventArgs,
+  // OnKeyDownEventArgs,
+  // OnRenderedEventArgs,
+  // OnSelectedRowsChangedEventArgs,
+  // OnSetOptionsEventArgs,
 } from '@slickgrid-universal/common';
 import { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
 import { SlickFooterComponent } from '@slickgrid-universal/custom-footer-component';
@@ -112,6 +157,65 @@ interface Props {
   gridId: string;
   gridOptions: GridOption;
   columnDefinitions: Column[];
+
+  // onActiveCellPositionChanged?: SlickEvent<SlickGridEventData>;
+  // onAddNewRow?: SlickEvent<OnAddNewRowEventArgs>;
+  // onAutosizeColumns?: SlickEvent<OnAutosizeColumnsEventArgs>;
+  // onBeforeAppendCell?: SlickEvent<OnBeforeAppendCellEventArgs>;
+  // onBeforeCellEditorDestroy?: SlickEvent<OnBeforeCellEditorDestroyEventArgs>;
+  // onBeforeColumnsResize?: SlickEvent<OnBeforeColumnsResizeEventArgs>;
+  // onBeforeDestroy?: SlickEvent<SlickGridEventData>;
+  // onBeforeEditCell?: SlickEvent<OnBeforeEditCellEventArgs>;
+  // onBeforeHeaderCellDestroy?: SlickEvent<OnBeforeHeaderCellDestroyEventArgs>;
+  // onBeforeHeaderRowCellDestroy?: SlickEvent<OnBeforeHeaderRowCellDestroyEventArgs>;
+  // onBeforeFooterRowCellDestroy?: SlickEvent<OnBeforeFooterRowCellDestroyEventArgs>;
+  // onBeforeSetColumns?: SlickEvent<OnBeforeSetColumnsEventArgs>;
+  // onBeforeSort?: SlickEvent<SingleColumnSort | MultiColumnSort>;
+  // onCellChange?: SlickEvent<OnCellChangeEventArgs>;
+  // onCellCssStylesChanged?: SlickEvent<OnCellCssStylesChangedEventArgs>;
+  // onClick?: SlickEvent<OnClickEventArgs>;
+  // onColumnsDrag?: SlickEvent<OnColumnsDragEventArgs>;
+  // onColumnsReordered?: SlickEvent<OnColumnsReorderedEventArgs>;
+  // onColumnsResized?: SlickEvent<OnColumnsResizedEventArgs>;
+  // onColumnsResizeDblClick?: SlickEvent<OnColumnsResizeDblClickEventArgs>;
+  // onCompositeEditorChange?: SlickEvent<OnCompositeEditorChangeEventArgs>;
+  // onContextMenu?: SlickEvent<SlickGridEventData>;
+  // onDrag?: SlickEvent<DragRowMove>;
+  // onDragEnd?: SlickEvent<DragRowMove>;
+  // onDragInit?: SlickEvent<DragRowMove>;
+  // onDragStart?: SlickEvent<DragRowMove>;
+  // onDblClick?: SlickEvent<OnDblClickEventArgs>;
+  // onFooterContextMenu?: SlickEvent<OnFooterContextMenuEventArgs>;
+  // onFooterRowCellRendered?: SlickEvent<OnFooterRowCellRenderedEventArgs>;
+  // onHeaderCellRendered?: SlickEvent<OnHeaderCellRenderedEventArgs>;
+  // onFooterClick?: SlickEvent<OnFooterClickEventArgs>;
+  // onHeaderClick?: SlickEvent<OnHeaderClickEventArgs>;
+  // onHeaderContextMenu?: SlickEvent<OnHeaderContextMenuEventArgs>;
+  // onHeaderMouseEnter?: SlickEvent<OnHeaderMouseEventArgs>;
+  // onHeaderMouseLeave?: SlickEvent<OnHeaderMouseEventArgs>;
+  // onHeaderRowCellRendered?: SlickEvent<OnHeaderRowCellRenderedEventArgs>;
+  // onHeaderRowMouseEnter?: SlickEvent<OnHeaderMouseEventArgs>;
+  // onHeaderRowMouseLeave?: SlickEvent<OnHeaderMouseEventArgs>;
+  // onKeyDown?: SlickEvent<OnKeyDownEventArgs>;
+  // onMouseEnter?: SlickEvent<SlickGridEventData>;
+  // onMouseLeave?: SlickEvent<SlickGridEventData>;
+  // onValidationError?: SlickEvent<OnValidationErrorEventArgs>;
+  // onViewportChanged?: SlickEvent<SlickGridEventData>;
+  // onRendered?: SlickEvent<OnRenderedEventArgs>;
+  // onSelectedRowsChanged?: SlickEvent<OnSelectedRowsChangedEventArgs>;
+  // onSetOptions?: SlickEvent<OnSetOptionsEventArgs>;
+  // onScroll?: SlickEvent<OnScrollEventArgs>;
+  // onSort?: SlickEvent<SingleColumnSort | MultiColumnSort>;
+  onReactGridCreated?: (event: {detail: { eventData: JQuery.Event, args: ReactGridInstance }})=>void;
+  onActiveCellChanged?: (event: {detail: { eventData: JQuery.Event, args: OnActiveCellChangedEventArgs }})=>void;
+  onClick?: (event: {detail: { eventData: JQuery.Event, args: OnClickEventArgs }})=>void;
+  onValidationError?: (event: {detail: { eventData: JQuery.Event, args: OnValidationErrorEventArgs }})=>void;
+  onGridStateChanged?:(event: {detail: { eventData: JQuery.Event, args:GridStateChange}})=>void;
+  onRowCountChanged?:(event: {detail: {eventData: JQuery.Event, args:OnRowCountChangedEventArgs}}) => void;
+  onBeforeSort?: (event: {detail: {eventData: JQuery.Event, args:SingleColumnSort | MultiColumnSort}}) => void;
+  onBeforeSearchChange?: (event: {detail: {eventData: JQuery.Event, args:ReactGridInstance}}) => void;
+  onBeforePaginationChange?: (event: {detail: {eventData: JQuery.Event, args:ReactGridInstance}}) => void;
+
 }
 
 interface State {
@@ -773,6 +877,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
       // expose all Slick Grid Events through dispatch
       for (const prop in grid) {
         if (grid.hasOwnProperty(prop) && prop.startsWith('on')) {
+          // eslint-disable-next-line no-debugger
           const gridEventName = this._eventPubSubService.getEventNameByNamingConvention(prop, slickgridEventPrefix);
           this._eventHandler.subscribe((grid as any)[prop], (event, args) => {
             return this._eventPubSubService.dispatchCustomEvent(gridEventName, { eventData: event, args });

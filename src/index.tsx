@@ -6,7 +6,7 @@ import 'multiple-select-modified/src/multiple-select.css';
 import './styles.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { App } from './examples/slickgrid/App';
+import { App } from './examples/slickgrid/app';
 import Backend from 'i18next-xhr-backend';
 import 'bootstrap';
 import { SlickgridConfig } from './slickgrid-react';

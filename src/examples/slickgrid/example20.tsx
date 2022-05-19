@@ -44,6 +44,7 @@ export default class Example20 extends React.Component {
   constructor(public readonly props: Props) {
     super(props);
     this.defineGrid();
+    this.componentDidMount();
     this.slickEventHandler = new Slick.EventHandler();
   }
 
@@ -328,7 +329,7 @@ export default class Example20 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.title}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <br />
 

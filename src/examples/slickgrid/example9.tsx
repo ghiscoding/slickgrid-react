@@ -1,22 +1,27 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import i18next from 'i18next';
 import {
   ReactGridInstance,
-  Column,
   ExtensionName,
   FieldType,
   Filters,
   Formatters,
-  GridOption,
   SlickDataView,
   SlickGrid,
   ReactSlickgridCustomElement,
 } from '../../slickgrid-react';
 import React from 'react';
 import './example9.scss'; // provide custom CSS/SASS styling
+import BaseSlickGridState from './state-slick-grid-base';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props { }
 
-export default class Example9 extends React.Component {
+interface State extends BaseSlickGridState{
+  selectedLanguage:string,
+}
+
+export default class Example9 extends React.Component<Props, State> {
   title = 'Example 9: Grid Menu Control';
   subTitle = `
     This example demonstrates using the <b>Slick.Controls.GridMenu</b> plugin to easily add a Grid Menu (aka hamburger menu) on the top right corner of the grid.<br/>
@@ -32,25 +37,28 @@ export default class Example9 extends React.Component {
   `;
 
   reactGrid!: ReactGridInstance;
-  columnDefinitions: Column[] = [];
-  gridOptions!: GridOption;
-  dataset: any[] = [];
   dataView!: SlickDataView;
   gridObj!: SlickGrid;
-  selectedLanguage: string;
 
   constructor(public readonly props: Props) {
     super(props);
     // define the grid options & columns and then create the grid itself
-    this.defineGrid();
 
     // always start with English for Cypress E2E tests to be consistent
     const defaultLang = 'en';
     i18next.changeLanguage(defaultLang);
-    this.selectedLanguage = defaultLang;
+
+    this.state = {
+      columnDefinitions: [],
+      dataset: [],
+      gridOptions: {},
+      selectedLanguage: defaultLang
+    };
   }
 
   componentDidMount() {
+    this.defineGrid();
+
     document.title = this.title;
     // populate the dataset once the grid is ready
     this.getData();
@@ -62,8 +70,8 @@ export default class Example9 extends React.Component {
     this.dataView = reactGrid && reactGrid.dataView;
   }
 
-  defineGrid() {
-    this.columnDefinitions = [
+  getColumnDefinitions(){
+    return [
       { id: 'title', name: 'Title', field: 'title', nameKey: 'TITLE', filterable: true, type: FieldType.string },
       { id: 'duration', name: 'Duration', field: 'duration', nameKey: 'DURATION', sortable: true, filterable: true, type: FieldType.string },
       {
@@ -86,8 +94,10 @@ export default class Example9 extends React.Component {
         }
       }
     ];
+  }
 
-    this.gridOptions = {
+  getGridOptions(){
+    return {
       columnPicker: {
         hideForceFitButton: true,
         hideSyncResizeButton: true,
@@ -193,6 +203,18 @@ export default class Example9 extends React.Component {
     };
   }
 
+  defineGrid() {
+    const columnDefinitions = this.getColumnDefinitions();
+    const gridOptions = this.getGridOptions();
+    this.setState((state:any, props:any)=>{
+      return {
+        ...state,
+        columnDefinitions,
+        gridOptions,
+      };
+    });
+  }
+
   getData() {
     // Set up some test columns.
     const mockDataset = [];
@@ -208,7 +230,12 @@ export default class Example9 extends React.Component {
         completed: (i % 5 === 0)
       };
     }
-    this.dataset = mockDataset;
+    this.setState((state:any, props:any)=>{
+      return {
+        ...state,
+        dataset: mockDataset
+      };
+    });
   }
 
   generatePhoneNumber() {
@@ -220,15 +247,20 @@ export default class Example9 extends React.Component {
   }
 
   async switchLanguage() {
-    const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
+    const nextLanguage = (this.state.selectedLanguage === 'en') ? 'fr' : 'en';
     await i18next.changeLanguage(nextLanguage);
-    this.selectedLanguage = nextLanguage;
+    this.setState((state:any, props:any)=>{
+      return {
+        ...state,
+        selectedLanguage: nextLanguage
+      };
+    });
   }
 
-  toggleGridMenu(e: Event) {
+  toggleGridMenu(e: MouseEvent) {
     if (this.reactGrid && this.reactGrid.extensionService) {
-      const gridMenuInstance = this.reactGrid.extensionService.getSlickgridAddonInstance(ExtensionName.gridMenu);
-      gridMenuInstance.showGridMenu(e);
+      const gridMenuInstance = this.reactGrid.extensionService.getExtensionInstanceByName(ExtensionName.gridMenu);
+      gridMenuInstance.showGridMenu(e, { dropSide: 'right' });
     }
   }
 
@@ -254,10 +286,10 @@ export default class Example9 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <button className="btn btn-outline-secondary btn-sm" data-test="external-gridmenu"
-          onClick={$event => this.toggleGridMenu($event)}>
+          onClick={$event => this.toggleGridMenu($event.nativeEvent)}>
           <i className="fa fa-bars"></i>
           Grid Menu
         </button>
@@ -265,15 +297,14 @@ export default class Example9 extends React.Component {
           <i className="fa fa-language"></i>
           Switch Language
         </button>
-        <b>Locale:</b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{this.selectedLanguage + '.json'}</span>
+        <b>Locale:</b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{this.state.selectedLanguage + '.json'}</span>
 
-        <ReactSlickgridCustomElement grid-id="grid9"
-          columnDefinitions={this.columnDefinitions}
-          dataset={this.dataset}
-          gridOptions={this.gridOptions}
-          customEvents={{
-            onReactGridCreated: $event => this.reactGridReady($event),
-          }} />
+        <ReactSlickgridCustomElement gridId="grid9"
+          columnDefinitions={this.state.columnDefinitions}
+          dataset={this.state.dataset}
+          gridOptions={this.state.gridOptions}
+          onReactGridCreated= {$event => this.reactGridReady($event.detail.args)}
+        />
       </div>
     );
   }

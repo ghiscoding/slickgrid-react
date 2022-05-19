@@ -1,5 +1,5 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-import { i18n } from 'i18next';
+import i18next from 'i18next';
 
 import {
   ReactGridInstance,
@@ -16,7 +16,10 @@ import {
 } from '../../slickgrid-react';
 import React from 'react';
 import './example24.scss'; // provide custom CSS/SASS styling
-
+i18next.init({
+  lng: 'en',
+}
+);
 const actionFormatter: Formatter = (_row, _cell, _value, _columnDef, dataContext) => {
   if (dataContext.priority === 3) { // option 3 is High
     return `<div class="fake-hyperlink">Action <i class="fa fa-caret-down"></i></div>`;
@@ -94,7 +97,7 @@ export default class Example24 extends React.Component {
   columnDefinitions: Column[] = [];
   dataset: any[] = [];
   selectedLanguage: string;
-  private i18n: i18n;
+  // private i18n: i18n;
 
   constructor(public readonly props: Props) {
     super(props);
@@ -103,8 +106,9 @@ export default class Example24 extends React.Component {
 
     // always start with English for Cypress E2E tests to be consistent
     const defaultLang = 'en';
-    this.i18n.changeLanguage(defaultLang);
+    i18next.changeLanguage(defaultLang);
     this.selectedLanguage = defaultLang;
+    this.componentDidMount();
   }
 
   get cellMenuInstance(): any {
@@ -270,7 +274,7 @@ export default class Example24 extends React.Component {
         columnHeaderStyle: { font: { bold: true, italic: true } }
       },
       registerExternalResources: [new ExcelExportService()],
-      i18n: this.i18n,
+      i18n: i18next,
 
       enableContextMenu: true,
       enableCellMenu: true,
@@ -460,7 +464,7 @@ export default class Example24 extends React.Component {
 
   async switchLanguage() {
     const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
-    await this.i18n.changeLanguage(nextLanguage);
+    await i18next.changeLanguage(nextLanguage);
     this.selectedLanguage = nextLanguage;
   }
 
@@ -477,7 +481,7 @@ export default class Example24 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <div className="row">
           <span className="context-menu">

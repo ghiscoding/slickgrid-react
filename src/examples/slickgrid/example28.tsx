@@ -36,6 +36,7 @@ export default class Example28 extends React.Component {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
+    this.componentDidMount();
   }
 
   componentDidMount() {
@@ -259,7 +260,7 @@ export default class Example28 extends React.Component {
     return (
       <div id="demo-container" className="container-fluid">
         <h2>
-          <span>{this.title}</span>
+          <span dangerouslySetInnerHTML={{__html: this.title}}></span>
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
@@ -268,7 +269,7 @@ export default class Example28 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <div className="row">
           <div className="col-md-7">
@@ -310,7 +311,7 @@ export default class Example28 extends React.Component {
             columnDefinitions={this.columnDefinitions}
             gridOptions={this.gridOptions}
             datasetHierarchical={this.datasetHierarchical}
-            instances={this.reactGrid} />
+             />
         </div>
       </div>
     );

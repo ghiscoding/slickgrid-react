@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
-import { ReactGridInstance, Column, Formatter, GridOption, SlickGrid, ReactSlickgridCustomElement } from '../../slickgrid-react';
+import { ReactGridInstance, Formatter, SlickGrid, ReactSlickgridCustomElement } from '../../slickgrid-react';
+import BaseSlickGridState from './state-slick-grid-base';
 
-let columnsWithHighlightingById: any = {};
+const columnsWithHighlightingById: any = {};
 
 // create a custom Formatter to highlight negative values in red
 const highlightingFormatter: Formatter = (_row, _cell, value, columnDef) => {
@@ -12,9 +14,14 @@ const highlightingFormatter: Formatter = (_row, _cell, value, columnDef) => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props { }
 
-export default class Example7 extends React.Component {
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface State extends BaseSlickGridState{}
+
+export default class Example7 extends React.Component<Props, State> {
   title = 'Example 7: Header Button Plugin';
   subTitle = `
     This example demonstrates using the <b>Slick.Plugins.HeaderButtons</b> plugin to easily add buttons to colum headers.
@@ -33,23 +40,24 @@ export default class Example7 extends React.Component {
       </ol>
     </ul>
   `;
-  columnDefinitions: Column[] = [];
-  gridOptions!: GridOption;
-  dataset: any[] = [];
-  reactGrid!: ReactGridInstance;
-  gridObj!: SlickGrid;
+
+  gridObj: SlickGrid;
+  columnsWithHighlightingById: Record<string, never>;
+  reactGrid!:ReactGridInstance;
 
   constructor(public readonly props: Props) {
     super(props);
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-    columnsWithHighlightingById = {};
+    this.columnsWithHighlightingById = {};
+    this.state = {
+      columnDefinitions: [],
+      dataset: [],
+      gridOptions:{}
+    };
   }
 
   componentDidMount() {
     document.title = this.title;
-    // populate the dataset once the grid is ready
-    this.getData();
+    this.defineGrid();
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
@@ -57,10 +65,8 @@ export default class Example7 extends React.Component {
     this.gridObj = reactGrid && reactGrid.slickGrid;
   }
 
-  defineGrid() {
-    this.columnDefinitions = [];
-
-    this.gridOptions = {
+  getGridOptions(){
+    return {
       enableAutoResize: true,
       enableHeaderButton: true,
       enableHeaderMenu: false,
@@ -94,10 +100,24 @@ export default class Example7 extends React.Component {
     };
   }
 
+  defineGrid() {
+    const columnDefinitions = this.getData();
+    const gridOptions = this.getGridOptions();
+
+    this.setState((state:any, props:any)=>{
+      return {
+        ...state,
+        gridOptions,
+        columnDefinitions
+      };
+    });
+  }
+
   getData() {
     // Set up some test columns.
+    const columnDefinitions = [];
     for (let i = 0; i < 10; i++) {
-      this.columnDefinitions.push({
+      columnDefinitions.push({
         id: i,
         name: 'Column ' + String.fromCharCode('A'.charCodeAt(0) + i),
         field: i + '',
@@ -130,8 +150,8 @@ export default class Example7 extends React.Component {
     }
 
     // Set multiple buttons on the first column to demonstrate overflow.
-    this.columnDefinitions[0].name = 'Resize me!';
-    this.columnDefinitions[0].header = {
+    columnDefinitions[0].name = 'Resize me!';
+    columnDefinitions[0].header = {
       buttons: [
         {
           cssClass: 'fa fa-tag',
@@ -161,8 +181,8 @@ export default class Example7 extends React.Component {
     };
 
     // Set a button on the second column to demonstrate hover.
-    this.columnDefinitions[1].name = 'Hover me!';
-    this.columnDefinitions[1].header = {
+    columnDefinitions[1].name = 'Hover me!';
+    columnDefinitions[1].header = {
       buttons: [
         {
           cssClass: 'fa fa-question-circle',
@@ -180,12 +200,21 @@ export default class Example7 extends React.Component {
     for (let i = 0; i < 100; i++) {
       const d = (mockDataset[i] = {});
       (d as any)['id'] = i;
-      for (let j = 0; j < this.columnDefinitions.length; j++) {
+      for (let j = 0; j < columnDefinitions.length; j++) {
         (d as any)[j] = Math.round(Math.random() * 10) - 5;
       }
     }
-    this.dataset = mockDataset;
+
+    this.setState((state:any, props:any)=>{
+      return {
+        ...state,
+        dataset: mockDataset
+      };
+    });
+
+    return columnDefinitions;
   }
+
   render() {
     return (
       <div id="demo-container" className="container-fluid">
@@ -199,15 +228,14 @@ export default class Example7 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <ReactSlickgridCustomElement gridId="grid7"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          customEvents={{
-            onReactGridCreated: $event => this.reactGridReady($event),
-          }} />
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions}
+          dataset={this.state.dataset}
+          onReactGridCreated= {$event => this.reactGridReady($event.detail.args)}
+        />
       </div>
     );
   }
