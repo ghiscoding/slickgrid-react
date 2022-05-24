@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   ReactGridInstance,
   Column,
@@ -42,7 +43,8 @@ const customEnableButtonFormatter: Formatter<DataItem> = (_row: number, _cell: n
     </span>`;
 };
 
-interface Props { }
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface Props {}
 
 export default class Example2 extends React.Component<Props, State> {
   title = 'Example 2: Grid with Formatters';
@@ -78,6 +80,7 @@ export default class Example2 extends React.Component<Props, State> {
   componentDidMount() {
     document.title = this.title;
     // populate the dataset once the grid is ready
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.setState((state: any, props: Props) => {
       return {
         dataset: this.getData(),
@@ -207,7 +210,7 @@ export default class Example2 extends React.Component<Props, State> {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/app/examples/grid-basic.component.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/slickgrid-react/example2.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
@@ -222,7 +225,6 @@ export default class Example2 extends React.Component<Props, State> {
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset} />
-        {/* instances={this.reactGrid} */}
       </div>
     );
   }

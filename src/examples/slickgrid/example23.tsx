@@ -1,4 +1,4 @@
-import { i18n } from 'i18next';
+import i18next from 'i18next';
 import * as moment from 'moment-mini';
 
 import { CustomInputFilter } from './custom-inputFilter';
@@ -20,7 +20,10 @@ import {
   ReactSlickgridCustomElement
 } from '../../slickgrid-react';
 import React from 'react';
-
+i18next.init({
+  lng: 'en',
+}
+);
 const NB_ITEMS = 1500;
 
 function randomBetween(min: number, max: number): number {
@@ -63,6 +66,7 @@ export default class Example23 extends React.Component {
   dataset: any[] = [];
   selectedLanguage: string;
   metrics!: Metrics;
+  selectedGroupingFields: Array<string | GroupingGetterFunction> = ['', '', ''];
   filterList = [
     { value: '', label: '' },
     { value: 'currentYearTasks', label: 'Current Year Completed Tasks' },
@@ -75,10 +79,10 @@ export default class Example23 extends React.Component {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
-
+   this.componentDidMount();
     // always start with English for Cypress E2E tests to be consistent
     const defaultLang = 'en';
-    this.i18n.changeLanguage(defaultLang);
+    i18next.changeLanguage(defaultLang);
     this.selectedLanguage = defaultLang;
   }
 
@@ -303,7 +307,7 @@ export default class Example23 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <br />
 
@@ -341,13 +345,12 @@ export default class Example23 extends React.Component {
             <label htmlFor="selectedFilter" style={{ marginLeft: '10px' }}>Predefined Filters</label>
           </div>
           <div className="col">
-            <select name="selectedFilter" className="form-select" data-test="select-dynamic-filter"
-              value="selectedPredefinedFilter" onChange={() => this.predefinedFilterChanged(this.selectedPredefinedFilter)}>
+          <select className="form-select" data-test="search-column-list" name="selectedColumn"
+              value={this.selectedGroupingFields.toString()}>
+              <option value="''">...</option>
               {
-                routes.map((filter) =>
-                  <option key={filter.value}
-                    value="filter">
-                    {filter.label}</option>
+                this.columnDefinitions.map((column) =>
+                  <option value={column.id} key={column.id}></option>
                 )
               }
             </select>

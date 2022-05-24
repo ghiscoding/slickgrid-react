@@ -48,6 +48,7 @@ export default class Example27 extends React.Component {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
+    this.componentDidMount();
   }
 
   componentDidMount() {
@@ -350,7 +351,7 @@ export default class Example27 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <div className="row" style={{ marginBottom: '4px' }}>
           <div className="col-md-12">

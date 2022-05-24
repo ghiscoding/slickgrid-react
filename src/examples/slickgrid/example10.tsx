@@ -30,6 +30,7 @@ export default class Example10 extends React.Component {
 
   constructor(public readonly props: Props) {
     super(props);
+    this.componentDidMount();
     // define the grid options & columns and then create the grid itself
     this.defineGrids();
   }
@@ -267,7 +268,7 @@ export default class Example10 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <div className="row">
           <div className="col-sm-4" style={{ maxWidth: '170px' }}>
@@ -330,7 +331,9 @@ export default class Example10 extends React.Component {
         </div>
 
         <div className="overflow-hidden">
-          <ReactSlickgridCustomElement grid-id="grid2"
+
+
+          <ReactSlickgridCustomElement gridId="grid2"
             columnDefinitions={this.columnDefinitions2}
             gridOptions={this.gridOptions2}
             dataset={this.dataset2}

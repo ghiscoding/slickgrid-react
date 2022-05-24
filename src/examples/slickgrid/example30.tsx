@@ -108,6 +108,7 @@ export default class Example30 extends React.Component {
   constructor(public readonly props: Props) {
     super(props);
     this.compositeEditorInstance = new SlickCompositeEditorComponent();
+    this.componentDidMount();
     // define the grid options & columns and then create the grid itself
     this.defineGrids();
   }
@@ -960,7 +961,7 @@ export default class Example30 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <div className="mb-2">
           <div className="btn-group btn-group-sm" role="group" aria-label="Basic Editing Commands">

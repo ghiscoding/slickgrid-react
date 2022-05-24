@@ -1,4 +1,4 @@
-import { i18n } from 'i18next';
+import i18next from 'i18next';
 import {
   ReactGridInstance,
   Column,
@@ -12,6 +12,10 @@ import {
   ReactSlickgridCustomElement
 } from '../../slickgrid-react';
 import React from 'react';
+i18next.init({
+  lng: 'en',
+}
+);
 
 
 function randomBetween(min: number, max: number) {
@@ -42,7 +46,7 @@ export default class Example15 extends React.Component {
   gridOptions!: GridOption;
   dataset: any[] = [];
   selectedLanguage: string;
-  private i18n: i18n;
+  // private i18n: i18n;
 
   constructor(public readonly props: Props) {
     super(props);
@@ -51,10 +55,11 @@ export default class Example15 extends React.Component {
     // use some Grid State preset defaults if you wish or just restore from Locale Storage
     // presets = presets || this.useDefaultPresets();
     this.defineGrid(presets);
+    this.componentDidMount();
 
     // always start with English for Cypress E2E tests to be consistent
     const defaultLang = 'en';
-    this.i18n.changeLanguage(defaultLang);
+    i18next.changeLanguage(defaultLang);
     this.selectedLanguage = defaultLang;
   }
 
@@ -151,7 +156,7 @@ export default class Example15 extends React.Component {
       enableCheckboxSelector: true,
       enableFiltering: true,
       enableTranslate: true,
-      i18n: this.i18n,
+      i18n: i18next,
       columnPicker: {
         hideForceFitButton: true
       },
@@ -221,7 +226,7 @@ export default class Example15 extends React.Component {
 
   async switchLanguage() {
     const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
-    await this.i18n.changeLanguage(nextLanguage);
+    await i18next.changeLanguage(nextLanguage);
     this.selectedLanguage = nextLanguage;
   }
 
@@ -264,7 +269,7 @@ export default class Example15 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <button className="btn btn-outline-secondary btn-sm" data-test="reset-button"
           onClick={this.clearGridStateFromLocalStorage}>
