@@ -29,6 +29,7 @@ export default class Example16 extends React.Component {
 
   constructor(public readonly props: Props) {
     super(props);
+    this.componentDidMount();
     this.defineGrid();
   }
 
@@ -253,7 +254,7 @@ export default class Example16 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <div className="row">
           <div className="col-sm-12">

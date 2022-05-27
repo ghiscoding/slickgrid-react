@@ -406,7 +406,7 @@ export default class Example18 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.title}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <form className="form-inline">
           <div className="row">

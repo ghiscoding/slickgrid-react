@@ -1,11 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import i18next from 'i18next';
-import { ReactGridInstance, Column, Formatters, GridOption, SlickDataView, SlickGrid, ReactSlickgridCustomElement } from '../../slickgrid-react';
+import { ReactGridInstance, Column, Formatters, SlickDataView, SlickGrid, ReactSlickgridCustomElement } from '../../slickgrid-react';
 import './example8.scss'; // provide custom CSS/SASS styling
 import React from 'react';
+import BaseSlickGridState from './state-slick-grid-base';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props { }
 
-export default class Example8 extends React.Component {
+interface State extends BaseSlickGridState{
+  selectedLanguage:string,
+  visibleColumns: Column[]
+}
+
+export default class Example8 extends React.Component<Props, State> {
   title = 'Example 8: Header Menu Plugin';
   subTitle = `
     This example demonstrates using the <b>Slick.Plugins.HeaderMenu</b> plugin to easily add menus to colum headers.<br/>
@@ -28,25 +36,28 @@ export default class Example8 extends React.Component {
   `;
 
   reactGrid!: ReactGridInstance;
-  columnDefinitions: Column[] = [];
-  gridOptions!: GridOption;
-  dataset: any[] = [];
-  dataView!: SlickDataView;
   gridObj!: SlickGrid;
-  selectedLanguage: string;
-  visibleColumns: Column[] = [];
+  dataView!: SlickDataView;
 
   constructor(public readonly props: Props) {
     super(props);
     // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-    this.selectedLanguage = i18next.language;
+    this.state = {
+      columnDefinitions: [],
+      dataset: [],
+      gridOptions: {},
+      selectedLanguage: i18next.language || 'en',
+      visibleColumns: []
+    };
   }
 
   componentDidMount() {
+    this.defineGrid();
+
     document.title = this.title;
     // populate the dataset once the grid is ready
     this.getData();
+
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
@@ -55,8 +66,8 @@ export default class Example8 extends React.Component {
     this.dataView = reactGrid?.dataView;
   }
 
-  defineGrid() {
-    this.columnDefinitions = [
+  getColumnDefinitions(){
+    const columnDefinitions:Column[] = [
       { id: 'title', name: 'Title', field: 'title', nameKey: 'TITLE' },
       { id: 'duration', name: 'Duration', field: 'duration', nameKey: 'DURATION', sortable: true },
       { id: 'percentComplete', name: '% Complete', field: 'percentComplete', nameKey: 'PERCENT_COMPLETE', sortable: true },
@@ -65,7 +76,7 @@ export default class Example8 extends React.Component {
       { id: 'completed', name: 'Completed', field: 'completed', nameKey: 'COMPLETED', formatter: Formatters.checkmark }
     ];
 
-    this.columnDefinitions.forEach((columnDef) => {
+    columnDefinitions.forEach((columnDef) => {
       columnDef.header = {
         menu: {
           items: [
@@ -109,8 +120,11 @@ export default class Example8 extends React.Component {
         }
       };
     });
+    return columnDefinitions;
+  }
 
-    this.gridOptions = {
+  getGridOptions(){
+    return {
       enableAutoResize: true,
       enableHeaderMenu: true,
       autoResize: {
@@ -134,6 +148,20 @@ export default class Example8 extends React.Component {
     };
   }
 
+  defineGrid() {
+
+    const gridOptions = this.getGridOptions();
+    const columnDefinitions = this.getColumnDefinitions();
+
+    this.setState((state:any,props:any)=>{
+      return {
+        ...state,
+        columnDefinitions,
+        gridOptions
+      };
+    });
+  }
+
   getData() {
     // Set up some test columns.
     const mockDataset = [];
@@ -148,13 +176,24 @@ export default class Example8 extends React.Component {
         completed: (i % 5 === 0)
       };
     }
-    this.dataset = mockDataset;
+
+    this.setState((state:any, props:any)=>{
+      return {
+        ...state,
+        dataset:mockDataset,
+      };
+    });
   }
 
   async switchLanguage() {
-    const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
+    const nextLanguage = (this.state.selectedLanguage === 'en') ? 'fr' : 'en';
     await i18next.changeLanguage(nextLanguage);
-    this.selectedLanguage = nextLanguage;
+    this.setState((state:any, props:any)=>{
+      return {
+        ...state,
+        selectedLanguage: nextLanguage
+      };
+    });
   }
 
   render() {
@@ -170,21 +209,20 @@ export default class Example8 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <button className="btn btn-outline-secondary btn-sm" onClick={this.switchLanguage}>
           <i className="fa fa-language"></i>
           Switch Language
         </button>
-        <b>Locale:</b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{this.selectedLanguage + '.json'}</span>
+        <b>Locale:</b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{this.state.selectedLanguage + '.json'}</span>
 
         <ReactSlickgridCustomElement gridId="grid8"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          customEvents={{
-            onReactGridCreated: $event => this.reactGridReady($event),
-          }} />
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions}
+          dataset={this.state.dataset}
+          onReactGridCreated= {$event => this.reactGridReady($event.detail.args)}
+        />
       </div>
     );
   }

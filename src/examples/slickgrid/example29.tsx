@@ -15,6 +15,7 @@ export default class Example29 extends React.Component {
     super(props);
     // define the grid options & columns and then create the grid itself
     this.defineGrids();
+    this.componentDidMount();
   }
 
   componentDidMount() {
@@ -38,6 +39,7 @@ export default class Example29 extends React.Component {
       enableSorting: true,
       gridHeight: 225,
       gridWidth: 800,
+      showCustomFooter: true,
     };
   }
 
@@ -77,7 +79,7 @@ export default class Example29 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
 
         <ReactSlickgridCustomElement gridId="grid"
@@ -87,9 +89,9 @@ export default class Example29 extends React.Component {
         <div slot="slickgrid-header">
           <h3>Grid with header and footer slot</h3>
         </div>
-        <CustomFooter className="slick-custom-footer"
+        {/* <CustomFooter className="slick-custom-footer"
           slot="slickgrid-footer">
-        </CustomFooter>
+        </CustomFooter> */}
       </div>
     );
   }

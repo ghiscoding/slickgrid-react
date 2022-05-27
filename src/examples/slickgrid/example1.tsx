@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Column, Formatters, GridOption, ReactSlickgridCustomElement } from '../../slickgrid-react';
 import React from 'react';
 
 const NB_ITEMS = 995;
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props { }
 
 interface State {
@@ -38,6 +40,7 @@ export default class Example1 extends React.Component<Props, State> {
   componentDidMount() {
     document.title = this.state.title;
     // mock some data (different in each dataset)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.setState((state: any, props: Props) => {
       return {
         dataset1: this.mockData(NB_ITEMS),
@@ -116,7 +119,7 @@ export default class Example1 extends React.Component<Props, State> {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/app/examples/grid-basic.component.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/slickgrid-react/examples/example1.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

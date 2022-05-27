@@ -380,7 +380,7 @@ export default class Example31 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <div className="row">
           <div className="col-md-12" aria-label="Basic Editing Commands">

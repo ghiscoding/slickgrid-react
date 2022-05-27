@@ -25,7 +25,7 @@ export default class Example21 extends React.Component {
     <li>This dataset has 25 rows, if you scroll down the page you can see the entire set is shown without any grid scrolling (though you might have browser scrolling)</li>
   </ul>
   `;
-
+  selectedGroupingFields: Array<string | GroupingGetterFunction> = ['', '', ''];
   reactGrid!: ReactGridInstance;
   columnDefinitions: Column[] = [];
   gridOptions!: GridOption;
@@ -34,6 +34,7 @@ export default class Example21 extends React.Component {
 
   constructor(public readonly props: Props) {
     super(props);
+    this.componentDidMount();
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
   }
@@ -183,7 +184,7 @@ export default class Example21 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <div className="row row-cols-lg-auto g-1 align-items-center">
           <div className="col">
@@ -191,27 +192,22 @@ export default class Example21 extends React.Component {
           </div>
           <div className="col">
             <select className="form-select" data-test="search-column-list" name="selectedColumn"
-              value="selectedColumn" id="columnSelect">
+              value={this.selectedGroupingFields.toString()}>
+              <option value="''">...</option>
               {
-                routes.map((column) =>
-                  <option key={column.route}
-                    value="column">
-                    {column.name}
-                  </option>
+                this.columnDefinitions.map((column) =>
+                  <option value={column.id} key={column.id}></option>
                 )
               }
             </select>
           </div>
           <div className="col">
-            <select value="selectedOperator"
-              className="form-select"
-              data-test="search-operator-list">
+          <select className="form-select" data-test="search-column-list" name="selectedColumn"
+              value={this.selectedGroupingFields.toString()}>
+              <option value="''">...</option>
               {
-                routes.map((operator) =>
-                  <option key={operator.route}
-                    value="operator">
-                    {operator}
-                  </option>
+                this.columnDefinitions.map((column) =>
+                  <option value={column.id} key={column.id}></option>
                 )
               }
             </select>

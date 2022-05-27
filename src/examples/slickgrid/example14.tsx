@@ -31,6 +31,7 @@ export default class Example14 extends React.Component {
     super(props);
     this.definedGrid1();
     this.definedGrid2();
+    this.componentDidMount();
   }
 
   componentDidMount() {
@@ -166,7 +167,7 @@ export default class Example14 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <h3>Grid 1 <small>(with Header Grouping &amp; Colspan)</small></h3>
         <ReactSlickgridCustomElement gridId="grid1"

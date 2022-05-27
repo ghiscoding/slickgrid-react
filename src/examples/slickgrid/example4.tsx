@@ -1,12 +1,10 @@
 import { CustomInputFilter } from './custom-inputFilter';
 import {
   ReactGridInstance,
-  Column,
   FieldType,
   Filters,
   FlatpickrOption,
   Formatters,
-  GridOption,
   GridStateChange,
   Metrics,
   MultipleSelectOption,
@@ -14,6 +12,12 @@ import {
   ReactSlickgridCustomElement,
 } from '../../slickgrid-react';
 import React from 'react';
+import BaseSlickGridState from './state-slick-grid-base';
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface State extends BaseSlickGridState{
+  metrics: Metrics,
+}
 
 function randomBetween(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -21,9 +25,10 @@ function randomBetween(min: number, max: number) {
 const NB_ITEMS = 1500;
 const URL_SAMPLE_COLLECTION_DATA = 'assets/data/collection_500_numbers.json';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props { }
 
-export default class Example4 extends React.Component {
+export default class Example4 extends React.Component<Props, State> {
   title = 'Example 4: Client Side Sort/Filter';
   subTitle = `
   Sort/Filter on client side only using SlickGrid DataView (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Sorting" target="_blank">Wiki docs</a>)
@@ -48,20 +53,21 @@ export default class Example4 extends React.Component {
 `;
 
   reactGrid!: ReactGridInstance;
-  columnDefinitions: Column[] = [];
-  gridOptions!: GridOption;
-  dataset: any[] = [];
-  metrics!: Metrics;
 
   constructor(public readonly props: Props) {
     super(props);
-    this.defineGrid();
+    this.state = {
+      gridOptions: null,
+      columnDefinitions: [],
+      dataset: [],
+      metrics: null
+    };
   }
 
   componentDidMount() {
+    this.defineGrid();
     document.title = this.title;
     // populate the dataset once the grid is ready
-    this.dataset = this.mockData(NB_ITEMS);
   }
 
   componentWillUnmount() {
@@ -72,9 +78,8 @@ export default class Example4 extends React.Component {
     this.reactGrid = reactGrid;
   }
 
-  /* Define grid Options and Columns */
-  defineGrid() {
-    this.columnDefinitions = [
+  getColumns(){
+    return [
       {
         id: 'title',
         name: 'Title',
@@ -199,8 +204,10 @@ export default class Example4 extends React.Component {
         }
       }
     ];
+  }
 
-    this.gridOptions = {
+  getGridOptions(){
+    return {
       autoResize: {
         container: '#demo-container',
         rightPadding: 10
@@ -225,6 +232,20 @@ export default class Example4 extends React.Component {
         ],
       }
     };
+  }
+
+  defineGrid() {
+    const columnDefinitions = this.getColumns();
+    const gridOptions = this. getGridOptions();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    this.setState((state:any, props:Props) => {
+      return {
+        ...state,
+        columnDefinitions,
+        gridOptions,
+        dataset: this.mockData(NB_ITEMS),
+      };
+    });
   }
 
   mockData(itemCount: number, startingIndex = 0): any[] {
@@ -291,15 +312,21 @@ export default class Example4 extends React.Component {
     ]);
   }
 
-  refreshMetrics(_e: Event, args: any) {
+  refreshMetrics(_e: JQuery.Event, args: any) {
     if (args && args.current >= 0) {
       setTimeout(() => {
-        this.metrics = {
-          startTime: new Date(),
-          endTime: new Date(),
-          itemCount: args && args.current || 0,
-          totalItemCount: this.dataset.length || 0
-        };
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        this.setState((state:State, props:Props)=>{
+          return {
+            ...state,
+            metrics: {
+              startTime: new Date(),
+              endTime: new Date(),
+              itemCount: args && args.current || 0,
+              totalItemCount: this.state.dataset.length || 0
+            }
+          };
+        });
       });
     }
   }
@@ -313,7 +340,7 @@ export default class Example4 extends React.Component {
   }
 
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -325,12 +352,12 @@ export default class Example4 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <br />
-        {this.metrics && <span>
-          <b>Metrics:</b> {this.metrics.endTime} | {this.metrics.itemCount} of
-          {this.metrics.totalItemCount}
+        {this.state.metrics && <span>
+          <b>Metrics:</b> {this.state.metrics.endTime} | {this.state.metrics.itemCount} of
+          {this.state.metrics.totalItemCount}
           items
         </span>}
 
@@ -361,14 +388,13 @@ export default class Example4 extends React.Component {
         </button>
 
         <ReactSlickgridCustomElement gridId="grid4"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          customEvents={{
-            onReactGridCreated: $event => this.reactGridReady($event),
-            onGridStateChanged: $event => this.gridStateChanged($event),
-            onRowCountChanged: $event => this.refreshMetrics($event.eventData, $event.detail.args)
-          }}
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions}
+          dataset={this.state.dataset}
+          onReactGridCreated= {$event => this.reactGridReady($event.detail.args)}
+          onGridStateChanged= {$event => this.gridStateChanged($event.detail.args)}
+          onRowCountChanged= {$event => this.refreshMetrics($event.detail.eventData, $event.detail.args)}
+
         />
       </div>
     );

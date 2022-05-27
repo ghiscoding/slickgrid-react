@@ -1,13 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { GraphqlService, GraphqlPaginatedResult, GraphqlServiceApi, } from '@slickgrid-universal/graphql';
 import i18next from 'i18next';
 import * as moment from 'moment-mini';
 import {
   ReactGridInstance,
-  Column,
   FieldType,
   Filters,
   Formatters,
-  GridOption,
   GridStateChange,
   Metrics,
   MultipleSelectOption,
@@ -16,6 +15,7 @@ import {
   ReactSlickgridCustomElement,
 } from '../../slickgrid-react';
 import React from 'react';
+import BaseSlickGridState from './state-slick-grid-base';
 
 const defaultPageSize = 20;
 const GRAPHQL_QUERY_DATASET_NAME = 'users';
@@ -25,9 +25,22 @@ i18next.init({
 }
 );
 
+interface Status { text: string, class: string }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props { }
 
-export default class Example6 extends React.Component {
+interface State extends BaseSlickGridState{
+  graphqlQuery:string,
+  isWithCursor:boolean,
+  processing:boolean,
+  selectedLanguage:string,
+  metrics: Metrics,
+  status: Status,
+
+}
+
+export default class Example6 extends React.Component<Props, State> {
   title = 'Example 6: Grid with Backend GraphQL Service';
   subTitle = `
   Use it when you need to support Pagination with a GraphQL endpoint (for simple JSON, use a regular grid).
@@ -45,27 +58,30 @@ export default class Example6 extends React.Component {
   `;
 
   reactGrid!: ReactGridInstance;
-  columnDefinitions: Column[] = [];
-  gridOptions!: GridOption;
-  dataset = [] = [];
-  metrics!: Metrics;
   graphqlService = new GraphqlService();
 
-  isWithCursor = false;
-  graphqlQuery = '';
-  processing = false;
-  selectedLanguage: string;
-  status = { text: '', class: '' };
 
   constructor(public readonly props: Props) {
     super(props);
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-
-    // always start with English for Cypress E2E tests to be consistent
     const defaultLang = 'en';
+
+    this.state = {
+      gridOptions: {},
+      columnDefinitions: [],
+      dataset: [],
+      metrics: null,
+      processing:false,
+      graphqlQuery: '',
+      isWithCursor:false,
+      selectedLanguage: defaultLang,
+      status: {} as Status,
+    };
+
     i18next.changeLanguage(defaultLang);
-    this.selectedLanguage = defaultLang;
+  }
+
+  componentDidMount(): void {
+    this.defineGrid();
   }
 
   componentWillUnmount() {
@@ -76,8 +92,8 @@ export default class Example6 extends React.Component {
     this.reactGrid = reactGrid;
   }
 
-  defineGrid() {
-    this.columnDefinitions = [
+  getColumnsDefinition(){
+    return [
       {
         id: 'name', field: 'name', nameKey: 'NAME', width: 60, columnGroupKey: 'CUSTOMER_INFORMATION',
         type: FieldType.string,
@@ -130,11 +146,27 @@ export default class Example6 extends React.Component {
         }
       },
     ];
+  }
 
+  defineGrid() {
+    const columnDefinitions = this.getColumnsDefinition();
+    const gridOptions = this.getGridOptions();
+
+    this.setState((props:Props, state:any) => {
+      return{
+        ...state,
+        columnDefinitions,
+        gridOptions
+      };
+    });
+
+  }
+
+  getGridOptions(){
     const presetLowestDay = moment().add(-2, 'days').format('YYYY-MM-DD');
     const presetHighestDay = moment().add(20, 'days').format('YYYY-MM-DD');
 
-    this.gridOptions = {
+    return {
       enableFiltering: true,
       enableCellNavigation: true,
       enableTranslate: true,
@@ -196,13 +228,20 @@ export default class Example6 extends React.Component {
         preProcess: () => this.displaySpinner(true),
         process: (query) => this.getCustomerApiCall(query),
         postProcess: (result: GraphqlPaginatedResult) => {
-          this.metrics = result.metrics as Metrics;
+          const metrics = result.metrics as Metrics;
+
+          this.setState((state:any, props) => {
+            return {
+              ...state,
+              metrics,
+            };
+          });
+
           this.displaySpinner(false);
         }
       } as GraphqlServiceApi
     };
   }
-
   clearAllFiltersAndSorts() {
     if (this.reactGrid && this.reactGrid.gridService) {
       this.reactGrid.gridService.clearAllFiltersAndSorts();
@@ -210,10 +249,17 @@ export default class Example6 extends React.Component {
   }
 
   displaySpinner(isProcessing: boolean) {
-    this.processing = isProcessing;
-    this.status = (isProcessing)
+    const newStatus = (isProcessing)
       ? { text: 'processing...', class: 'alert alert-danger' }
       : { text: 'done', class: 'alert alert-success' };
+
+    this.setState((state:any, props:any)=>{
+      return {
+        ...state,
+        status:newStatus,
+        processing: isProcessing,
+      };
+    });
   }
 
   /**
@@ -221,7 +267,6 @@ export default class Example6 extends React.Component {
    * @param query
    * @return Promise<GraphqlPaginatedResult>
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getCustomerApiCall(_query: string): Promise<GraphqlPaginatedResult> {
     // in your case, you will call your WebAPI function (wich needs to return a Promise)
     // for the demo purpose, we will call a mock WebAPI function
@@ -238,7 +283,12 @@ export default class Example6 extends React.Component {
 
     return new Promise(resolve => {
       setTimeout(() => {
-        this.graphqlQuery = this.graphqlService.buildQuery();
+        this.setState((state:any,props:any)=>{
+          return {
+            ...state,
+            graphqlQuery: this.graphqlService.buildQuery()
+          };
+        });
         resolve(mockedResult);
       }, 150);
     });
@@ -284,9 +334,14 @@ export default class Example6 extends React.Component {
   }
 
   async switchLanguage() {
-    const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
+    const nextLanguage = (this.state.selectedLanguage === 'en') ? 'fr' : 'en';
     await i18next.changeLanguage(nextLanguage);
-    this.selectedLanguage = nextLanguage;
+    this.setState((state:any, props:any)=>{
+      return {
+        ...state,
+        selectedLanguage: nextLanguage,
+      };
+    });
   }
 
   render() {
@@ -302,13 +357,13 @@ export default class Example6 extends React.Component {
             </a>
           </span>
         </h2>
-        <div className="subtitle">{this.subTitle}</div>
+        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <div className="row">
           <div className="col-sm-5">
-            <div className={this.status.class} role="alert" data-test="status">
-              <strong>Status: </strong> {this.status.text}
-              {!this.processing && <span>
+            <div className={this.state.status.class} role="alert" data-test="status">
+              <strong>Status: </strong> {this.state.status.text}
+              {!this.state.processing && <span>
                 <i className="fa fa-refresh fa-spin fa-lg fa-fw"></i>
               </span>}
             </div>
@@ -342,14 +397,14 @@ export default class Example6 extends React.Component {
                 </button>
                 <b>Locale:</b>
                 <span style={{ fontStyle: 'italic' }} data-test="selected-locale">
-                  {this.selectedLanguage + '.json'}
+                  {this.state.selectedLanguage + '.json'}
                 </span>
               </div>
             </div>
             <br />
-            {this.metrics && <div style={{ margin: '10px 0px' }}>
-              <b>Metrics:</b> {this.metrics.endTime} | {this.metrics.executionTime}ms |
-              {this.metrics.totalItemCount}
+            {this.state.metrics && <div style={{ margin: '10px 0px' }}>
+              <b>Metrics:</b> {this.state.metrics.endTime} | {this.state.metrics.executionTime}ms |
+              {this.state.metrics.totalItemCount}
               items
             </div>}
             <div className="row" style={{ marginBottom: '5px' }}>
@@ -366,7 +421,7 @@ export default class Example6 extends React.Component {
           </div>
           <div className="col-sm-7">
             <div className="alert alert-info" data-test="alert-graphql-query">
-              <strong>GraphQL Query:</strong> <span data-test="graphql-query-result">{this.graphqlQuery}</span>
+              <strong>GraphQL Query:</strong> <span data-test="graphql-query-result">{this.state.graphqlQuery}</span>
             </div>
           </div>
         </div>
@@ -374,13 +429,12 @@ export default class Example6 extends React.Component {
         <hr />
 
         <ReactSlickgridCustomElement gridId="grid6"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          customEvents={{
-            onReactGridCreated: $event => this.reactGridReady($event),
-            onGridStateChanged: $event => this.gridStateChanged($event),
-          }} />
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions}
+          dataset={this.state.dataset}
+          onReactGridCreated= {$event => this.reactGridReady($event.detail.args)}
+          onGridStateChanged= {$event => this.gridStateChanged($event.detail.args)}
+        />
       </div>
     );
   }
