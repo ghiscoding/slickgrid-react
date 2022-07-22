@@ -1,70 +1,88 @@
-# Getting Started with Create React App
+# slickgrid-react
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
+[![npm version](https://badge.fury.io/js/slickgrid-react.svg)](//npmjs.com/package/slickgrid-react)
+[![NPM downloads](https://img.shields.io/npm/dy/slickgrid-react.svg)](https://npmjs.org/package/slickgrid-react)
 
-## Available Scripts
+[![Actions Status](https://github.com/ghiscoding/slickgrid-react/workflows/CI%20Build/badge.svg)](https://github.com/ghiscoding/slickgrid-react/actions)
+[![Cypress.io](https://img.shields.io/badge/tested%20with-Cypress-04C38E.svg)](https://www.cypress.io/)
+[![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
+[![codecov](https://codecov.io/gh/ghiscoding/slickgrid-react/branch/master/graph/badge.svg)](https://codecov.io/gh/ghiscoding/slickgrid-react)
 
-In the project directory, you can run:
+### Brief introduction
+One of the best javascript datagrid [SlickGrid](https://github.com/mleibman/SlickGrid) which was originally developed by @mleibman is now available to React. I have used a few datagrids and SlickGrid beats most of them in terms of functionalities and performance (it can easily deal with even a million row). We will be using the [6pac/SlickGrid](https://github.com/6pac/SlickGrid/) fork, it is the most active fork since the original author @mleibman stopped working on his original repo. Also worth knowing that I have contributed a lot to the 6pac/SlickGrid fork for the benefit of slickgrid-react... also a reminder, this is a wrapper of a jQuery lib (SlickGrid) and a big portion of the lib (like Editors, Filters and others) are written in jQuery/JavaScript, so just keep that in mind and it also mean that jQuery is a dependency.
 
-### `npm start`
+### License
+[MIT License](LICENSE)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### NPM Package
+[slickgrid-react on NPM](https://www.npmjs.com/package/slickgrid-react)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Demo page
+`slickgrid-react` works with all `Bootstrap` versions, you can see a demo of each one below. There are also 2 new styling Themes, Material & Salesforce which are also available. You can also use different SVG icons, you may want to look at the [Wiki - SVG Icons](https://github.com/ghiscoding/slickgrid-react/wiki/SVG-Icons)
+- [Bootstrap 5 demo](https://ghiscoding.github.io/slickgrid-react)
 
-### `npm test`
+### Like it? :star: it
+You like to use **slickgrid-react**? Be sure to upvote :star:, maybe support me with cafeine :coffee: and feel free to contribute. 👷👷‍♀️ 
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<a href='https://ko-fi.com/ghiscoding' target='_blank'><img height='32' style='border:0px;height:32px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 
-### `npm run build`
+## Latest News & Releases
+Check out the [Releases](https://github.com/ghiscoding/slickgrid-react/releases) section for all latest News & Releases.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Fully Tested with [Jest](https://jestjs.io/) (Unit Tests) - [Cypress](https://www.cypress.io/) (E2E Tests)
+slickgrid-react and Slickgrid-Universal both have **100%** Unit Test Coverage, we are talking about +15,000 lines of code (+3,750 unit tests) that are fully tested with [Jest](https://jestjs.io/). On the UI side, all slickgrid-react Examples are tested with [Cypress](https://www.cypress.io/), there are over +500 Cypress E2E tests.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Installation
+Refer to the **[Wiki - HOWTO Step by Step](https://github.com/ghiscoding/slickgrid-react/wiki/HOWTO---Step-by-Step)**. Please don't open any issue unless you have followed these steps (from the Wiki), and if any of the steps are incorrect or confusing, then please let me know.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**NOTE:** if you have any question, please consider asking installation and/or general questions on [Stack Overflow](https://stackoverflow.com/search?tab=newest&q=slickgrid)
 
-### `npm run eject`
+## Wiki / Documentation
+The Wiki is where all the documentation and instructions will go, so please consult the [slickgrid-react - Wiki](https://github.com/ghiscoding/slickgrid-react/wiki) before opening any issues. The [Wiki - HOWTO](https://github.com/ghiscoding/slickgrid-react/wiki/HOWTO---Step-by-Step) is a great place to start with. You can also take a look at the [Demo page](https://ghiscoding.github.io/slickgrid-react), it includes sample for most of the features and it keeps growing (so you might want to consult it whenever a new version comes out).
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Main features
+You can see some screenshots below and the instructions down below and if that is not enough for you to decide, head over to the [Wiki - Main Features](https://github.com/ghiscoding/slickgrid-react/wiki).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Missing features
+What if `slickgrid-react` is missing feature(s) compare to the original core library [6pac/SlickGrid](https://github.com/6pac/SlickGrid/)?
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Fear not, and just simply reference the `SlickGrid` and `DataView` objects, just like in the core lib, those are exposed through Event Emitters. For more info continue reading on [Wiki - SlickGrid & DataView objects](/ghiscoding/slickgrid-react/wiki/SlickGrid-&-DataView-Objects) and [Wiki - Grid & DataView Events](https://github.com/ghiscoding/slickgrid-react/wiki/Grid-&-DataView-Events)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+## Screenshots
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Screenshots from the demo app with the `Bootstrap` theme.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+_Note that the styling changed a bit, the best is to simply head over to the [Live Demo](https://ghiscoding.github.io/slickgrid-react) page._
 
-### Code Splitting
+### Slickgrid example with Formatters (last column shown is a custom Formatter)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+#### _You can also see the Grid Menu opened (aka hambuger menu)_
 
-### Analyzing the Bundle Size
+![Default Slickgrid Example](/screenshots/formatters.png)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Filters and Multi-Column Sort
 
-### Making a Progressive Web App
+![Filter and Sort](/screenshots/filter_and_sort.png)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Inline Editing
 
-### Advanced Configuration
+![Editors](/screenshots/editors.png)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Pinned (aka frozen) Columns/Rows
 
-### Deployment
+![Pinned Columns/Rows](/screenshots/frozen.png)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Draggable Grouping & Aggregators
 
-### `npm run build` fails to minify
+![Draggable Grouping](/screenshots/draggable-grouping.png)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Slickgrid Example with Server Side (Filter/Sort/Pagination)
+#### Comes with OData & GraphQL support (you can implement custom ones too)
+
+![Slickgrid Server Side](/screenshots/pagination.png)
+
+### Composite Editor Modal Windows
+![Composite Editor Modal](/screenshots/composite-editor.png)
