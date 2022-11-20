@@ -1,9 +1,21 @@
-import { Column, Editors, FieldType, Filters, GridOption, GridStateChange, Metrics, OperatorType, Pagination, } from '@slickgrid-universal/common';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { GridOdataService, OdataServiceApi, OdataOption } from '@slickgrid-universal/odata';
 import { RxJsResource } from '@slickgrid-universal/rxjs-observable';
 import { Observable, of, Subject } from 'rxjs';
 
-import { ReactGridInstance, ReactSlickgridCustomElement } from '../../slickgrid-react';
+import {
+  Column,
+  Editors,
+  FieldType,
+  Filters,
+  GridOption,
+  GridStateChange,
+  Metrics,
+  OperatorType,
+  Pagination,
+  ReactGridInstance,
+  ReactSlickgridCustomElement,
+} from '../../slickgrid-react';
 import React from 'react';
 import './example31.scss'; // provide custom CSS/SASS styling
 
@@ -19,21 +31,25 @@ export default class Example31 extends React.Component {
   `;
 
   reactGrid!: ReactGridInstance;
-  columnDefinitions!: Column[];
+  columnDefinitions: Column[] = [];
   gridOptions!: GridOption;
-  dataset = [];
+  dataset = [] = [];
   metrics!: Metrics;
   paginationOptions!: Pagination;
 
   isCountEnabled = true;
+  isSelectEnabled = false;
+  isExpandEnabled = false;
   odataVersion = 2;
   odataQuery = '';
   processing = false;
+  errorStatus = '';
+  isPageErrorTest = false;
   status = { text: '', class: '' };
   isOtherGenderAdded = false;
   genderCollection = [{ value: 'male', label: 'male' }, { value: 'female', label: 'female' }];
 
-  constructor(public readonly props: Props, private http: HttpClient) {
+  constructor(public readonly props: Props) {
     super(props);
     this.initializeGrid();
   }
@@ -71,7 +87,8 @@ export default class Example31 extends React.Component {
           }
         }
       },
-      { id: 'company', name: 'Company', field: 'company' },
+      { id: 'company', name: 'Company', field: 'company', filterable: true, sortable: true },
+      { id: 'category_name', name: 'Category', field: 'category/name', filterable: true, sortable: true },
     ];
 
     this.gridOptions = {
@@ -114,7 +131,9 @@ export default class Example31 extends React.Component {
       backendServiceApi: {
         service: new GridOdataService(),
         options: {
-          enableCount: this.isCountEnabled, // add the count in the OData query, which will return a property named "odata.count" (v2) or "@odata.count" (v4)
+          enableCount: this.isCountEnabled, // add the count in the OData query, which will return a property named "__count" (v2) or "@odata.count" (v4)
+          enableSelect: this.isSelectEnabled,
+          enableExpand: this.isExpandEnabled,
           version: this.odataVersion        // defaults to 2, the query string is slightly different between OData 2 and 4
         },
         preProcess: () => this.displaySpinner(true),
@@ -162,28 +181,27 @@ export default class Example31 extends React.Component {
   displaySpinner(isProcessing: boolean) {
     this.processing = isProcessing;
     this.status = (isProcessing)
-      ? { text: 'loading...', class: 'alert alert-warning' }
-      : { text: 'finished!!', class: 'alert alert-success' };
+      ? { text: 'loading...', class: 'col-md-2 alert alert-warning' }
+      : { text: 'finished!!', class: 'col-md-2 alert alert-success' };
   }
 
   getCustomerCallback(data: any) {
     // totalItems property needs to be filled for pagination to work correctly
     // however we need to force React to do a dirty check, doing a clone object will do just that
-    let countPropName = 'totalRecordCount'; // you can use "totalRecordCount" or any name or "odata.count" when "enableCount" is set
+    let totalItemCount: number = data['totalRecordCount']; // you can use "totalRecordCount" or any name or "odata.count" when "enableCount" is set
     if (this.isCountEnabled) {
-      countPropName = (this.odataVersion === 4) ? '@odata.count' : 'odata.count';
+      totalItemCount = (this.odataVersion === 4) ? data['@odata.count'] : data['d']['__count'];
     }
-    this.paginationOptions = { ...this.gridOptions.pagination, totalItems: data[countPropName] } as Pagination;
     if (this.metrics) {
-      this.metrics.totalItemCount = data[countPropName];
+      this.metrics.totalItemCount = totalItemCount;
     }
 
-    // once pagination totalItems is filled, we can update the dataset
-    this.dataset = data['items'];
+    this.paginationOptions = { ...this.gridOptions.pagination, totalItems: totalItemCount } as Pagination;
+    this.dataset = this.odataVersion === 4 ? data.value : data.d.results;
     this.odataQuery = data['query'];
   }
 
-  getCustomerApiCall(query: string): Observable<any> {
+  getCustomerApiCall(query: string) {
     // in your case, you will call your WebAPI function (wich needs to return an Observable)
     // for the demo purpose, we will call a mock WebAPI function
     return this.getCustomerDataApiMock(query);
@@ -221,7 +239,7 @@ export default class Example31 extends React.Component {
             (columnFilters as any)[fieldName] = { type: 'substring', term: filterMatch![2].trim() };
           }
           if (filterBy.includes('substringof')) {
-            const filterMatch = filterBy.match(/substringof\('(.*?)',([a-zA-Z ]*)/);
+            const filterMatch = filterBy.match(/substringof\('(.*?)',\s([a-zA-Z\/]+)/);
             const fieldName = filterMatch![2].trim();
             (columnFilters as any)[fieldName] = { type: 'substring', term: filterMatch![1].trim() };
           }
@@ -245,34 +263,42 @@ export default class Example31 extends React.Component {
         }
       }
 
-      const sort = orderBy.includes('asc')
-        ? 'ASC'
-        : orderBy.includes('desc')
-          ? 'DESC'
-          : '';
-
-      let url;
-      switch (sort) {
-        case 'ASC':
-          url = `${sampleDataRoot}/customers_100_ASC.json`;
-          break;
-        case 'DESC':
-          url = `${sampleDataRoot}/customers_100_DESC.json`;
-          break;
-        default:
-          url = `${sampleDataRoot}/customers_100.json`;
-          break;
-      }
-
-      this.http.createRequest(url)
-        .asGet()
-        .send()
+      // read the json and create a fresh copy of the data that we are free to modify
+      fetch(`${sampleDataRoot}/customers_100.json`)
+        .then(response => response.json())
         .then(response => {
-          const dataArray = response.content as any[];
+          let data = response as any[];
+
+          // Sort the data
+          if (orderBy?.length > 0) {
+            const orderByClauses = orderBy.split(',');
+            for (const orderByClause of orderByClauses) {
+              const orderByParts = orderByClause.split(' ');
+              const orderByField = orderByParts[0];
+
+              let selector = (obj: any): string => obj;
+              for (const orderByFieldPart of orderByField.split('/')) {
+                const prevSelector = selector;
+                selector = (obj: any) => {
+                  return prevSelector(obj)[orderByFieldPart as any];
+                };
+              }
+
+              const sort = orderByParts[1] ?? 'asc';
+              switch (sort.toLocaleLowerCase()) {
+                case 'asc':
+                  data = data.sort((a, b) => selector(a).localeCompare(selector(b)));
+                  break;
+                case 'desc':
+                  data = data.sort((a, b) => selector(b).localeCompare(selector(a)));
+                  break;
+              }
+            }
+          }
 
           // Read the result field from the JSON response.
           const firstRow = skip;
-          let filteredData = dataArray;
+          let filteredData = data;
           if (columnFilters) {
             for (const columnId in columnFilters) {
               if (columnFilters.hasOwnProperty(columnId)) {
@@ -284,7 +310,14 @@ export default class Example31 extends React.Component {
                     const splitIds = columnId.split(' ');
                     colId = splitIds[splitIds.length - 1];
                   }
-                  const filterTerm = column[colId];
+
+                  let filterTerm;
+                  let col = column;
+                  for (const part of colId.split('/')) {
+                    filterTerm = (col as any)[part];
+                    col = filterTerm;
+                  }
+
                   if (filterTerm) {
                     switch (filterType) {
                       case 'equal': return filterTerm.toLowerCase() === searchTerm;
@@ -298,14 +331,26 @@ export default class Example31 extends React.Component {
             }
             countTotalItems = filteredData.length;
           }
-          const updatedData = filteredData.slice(firstRow, firstRow + top);
+          const updatedData = filteredData.slice(firstRow, firstRow + top!);
 
           setTimeout(() => {
-            let countPropName = 'totalRecordCount';
-            if (this.isCountEnabled) {
-              countPropName = (this.odataVersion === 4) ? '@odata.count' : 'odata.count';
+            const backendResult: any = { query };
+            if (!this.isCountEnabled) {
+              backendResult['totalRecordCount'] = countTotalItems;
             }
-            const backendResult = { items: updatedData, [countPropName]: countTotalItems, query };
+
+            if (this.odataVersion === 4) {
+              backendResult['value'] = updatedData;
+              if (this.isCountEnabled) {
+                backendResult['@odata.count'] = countTotalItems;
+              }
+            } else {
+              backendResult['d'] = { results: updatedData };
+              if (this.isCountEnabled) {
+                backendResult['d']['__count'] = countTotalItems;
+              }
+            }
+
             // console.log('Backend Result', backendResult);
             observer.next(backendResult);
             observer.complete();
@@ -346,25 +391,58 @@ export default class Example31 extends React.Component {
     ]);
   }
 
+  // YOU CAN CHOOSE TO PREVENT EVENT FROM BUBBLING IN THE FOLLOWING 3x EVENTS
+  // note however that internally the cancelling the search is more of a rollback
+  handleOnBeforeSort(e: Event) {
+    // e.preventDefault();
+    // return false;
+    return true;
+  }
+
+  handleOnBeforeSearchChange(e: Event) {
+    // e.preventDefault();
+    // return false;
+    return true;
+  }
+
+  handleOnBeforePaginationChange(e: Event) {
+    // e.preventDefault();
+    // return false;
+    return true;
+  }
+
   // THE FOLLOWING METHODS ARE ONLY FOR DEMO PURPOSES DO NOT USE THIS CODE
   // ---
 
   changeCountEnableFlag() {
     this.isCountEnabled = !this.isCountEnabled;
-    const odataService = this.gridOptions.backendServiceApi!.service as GridOdataService;
-    odataService.updateOptions({ enableCount: this.isCountEnabled } as OdataOption);
-    odataService.clearFilters();
-    this.reactGrid?.filterService.clearFilters();
+    this.resetOptions({ enableCount: this.isCountEnabled });
+    return true;
+  }
+
+  changeEnableSelectFlag() {
+    this.isSelectEnabled = !this.isSelectEnabled;
+    this.resetOptions({ enableSelect: this.isSelectEnabled });
+    return true;
+  }
+
+  changeEnableExpandFlag() {
+    this.isExpandEnabled = !this.isExpandEnabled;
+    this.resetOptions({ enableExpand: this.isExpandEnabled });
     return true;
   }
 
   setOdataVersion(version: number) {
     this.odataVersion = version;
+    this.resetOptions({ version: this.odataVersion });
+    return true;
+  }
+
+  private resetOptions(options: Partial<OdataOption>) {
     const odataService = this.gridOptions.backendServiceApi!.service as GridOdataService;
-    odataService.updateOptions({ version: this.odataVersion } as OdataOption);
+    odataService.updateOptions(options);
     odataService.clearFilters();
     this.reactGrid?.filterService.clearFilters();
-    return true;
   }
 
   render() {
@@ -422,17 +500,27 @@ export default class Example31 extends React.Component {
             <span data-test="radioVersion">
               <label className="radio-inline control-label" htmlFor="radio2">
                 <input type="radio" name="inlineRadioOptions" data-test="version2" id="radio2" checked value="2"
-                  onClick={() => this.setOdataVersion(2)} /> 2
+                  onChange={() => this.setOdataVersion(2)} /> 2
               </label>
               <label className="radio-inline control-label" htmlFor="radio4">
                 <input type="radio" name="inlineRadioOptions" data-test="version4" id="radio4" value="4"
-                  onClick={() => this.setOdataVersion(4)} /> 4
+                  onChange={() => this.setOdataVersion(4)} /> 4
               </label>
             </span>
             <label className="checkbox-inline control-label" htmlFor="enableCount" style={{ marginLeft: '20px' }}>
               <input type="checkbox" id="enableCount" data-test="enable-count" checked={this.isCountEnabled}
-                onClick={this.changeCountEnableFlag} />
+                onChange={this.changeCountEnableFlag} />
               <span style={{ fontWeight: 'bold' }}>Enable Count</span> (add to OData query)
+            </label>
+            <label className="checkbox-inline control-label" htmlFor="enableSelect" style={{ marginLeft: '20px' }}>
+              <input type="checkbox" id="enableSelect" data-test="enable-select" checked={this.isSelectEnabled}
+                onChange={() => this.changeEnableSelectFlag()} />
+              <span style={{ fontWeight: 'bold' }}>Enable Select</span> (add to OData query)
+            </label>
+            <label className="checkbox-inline control-label" htmlFor="enableExpand" style={{ marginLeft: '20px' }}>
+              <input type="checkbox" id="enableExpand" data-test="enable-expand" checked={this.isExpandEnabled}
+                onChange={() => this.changeEnableExpandFlag()} />
+              <span style={{ fontWeight: 'bold' }}>Enable Expand</span> (add to OData query)
             </label>
           </span>
         </div>

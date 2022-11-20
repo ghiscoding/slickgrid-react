@@ -22,6 +22,8 @@ interface State extends BaseSlickGridState{
   paginationOptions:Pagination,
   metrics: Metrics,
   isCountEnabled: boolean,
+  isSelectEnabled: boolean,
+  isExpandEnabled: boolean,
   odataVersion: number,
   odataQuery: string,
   processing: boolean,
@@ -65,8 +67,10 @@ export default class Example5 extends React.Component<Props,State> {
       columnDefinitions: [],
       dataset: [],
       paginationOptions: null,
-      errorStatus:undefined,
+      errorStatus: '',
       isCountEnabled: false,
+      isSelectEnabled: false,
+      isExpandEnabled: false,
       metrics: {} as Metrics,
       status: {class:'', text:''},
       odataVersion: 0,
@@ -74,10 +78,9 @@ export default class Example5 extends React.Component<Props,State> {
       processing:false,
       isPageErrorTest:false
     };
-
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.defineGrid();
   }
 
@@ -85,7 +88,7 @@ export default class Example5 extends React.Component<Props,State> {
     this.reactGrid = reactGrid;
   }
 
-  getGridDefinition(){
+  getGridDefinition() {
     return {
       enableAutoResize: true,
       autoResize: {
@@ -121,37 +124,29 @@ export default class Example5 extends React.Component<Props,State> {
       backendServiceApi: {
         service: new GridOdataService(),
         options: {
-          enableCount: this.state.isCountEnabled, // add the count in the OData query, which will return a property named "odata.count" (v2) or "@odata.count" (v4)
+          enableCount: this.state.isCountEnabled, // add the count in the OData query, which will return a property named "__count" (v2) or "@odata.count" (v4)
+          enableSelect: this.state.isSelectEnabled,
+          enableExpand: this.state.isExpandEnabled,
           version: this.state.odataVersion        // defaults to 2, the query string is slightly different between OData 2 and 4
         },
         onError: (error: Error) => {
           this.setState((state:State, props:Props)=>{
-            return {
-              ...state,
-              errorStatus: error.message
-            };
+            return { ...state, errorStatus: error.message };
           });
-
           this.displaySpinner(false, true);
         },
         preProcess: () => {
           this.setState((state:State, props:Props)=>{
-            return {
-              ...state,
-              errorStatus: ''
-            };
+            return { ...state, errorStatus: '' };
           });
           this.displaySpinner(true);
         },
-        process: (query)=>{
+        process: (query) => {
           this.getCustomerApiCall(query);
         },
         postProcess: (response) => {
-          this.setState((state:State, props:Props)=>{
-            return {
-              ...state,
-              metrics:response.metrics
-            };
+          this.setState((state: State, props: Props) => {
+            return { ...state, metrics: response.metrics };
           });
           this.displaySpinner(false);
           this.getCustomerCallback(response);
@@ -160,7 +155,7 @@ export default class Example5 extends React.Component<Props,State> {
     };
   }
 
-  getColumnDefinitions(){
+  getColumnDefinitions() {
     return [
       {
         id: 'name', name: 'Name', field: 'name', sortable: true,
@@ -171,13 +166,14 @@ export default class Example5 extends React.Component<Props,State> {
         }
       },
       {
-        id: 'gender', name: 'Gender', field: 'gender', filterable: true,
+        id: 'gender', name: 'Gender', field: 'gender', filterable: true, sortable: true,
         filter: {
           model: Filters.singleSelect,
           collection: [{ value: '', label: '' }, { value: 'male', label: 'male' }, { value: 'female', label: 'female' }]
         }
       },
       { id: 'company', name: 'Company', field: 'company', filterable: true, sortable: true },
+      { id: 'category_name', name: 'Category', field: 'category/name', filterable: true, sortable: true },
     ];
   }
 
@@ -195,24 +191,18 @@ export default class Example5 extends React.Component<Props,State> {
 
   displaySpinner(isProcessing: boolean, isError?: boolean) {
     this.setState((state:State, props:Props)=>{
-      return {
-        ...state,
-        processing: isProcessing
-      };
+      return { ...state, processing: isProcessing };
     });
     if (isError) {
       this.setState((state:State, props:Props)=>{
-        return {
-          ...state,
-          status: { text: 'ERROR!!!', class: 'alert alert-danger' }
-        };
+        return { ...state, status: { text: 'ERROR!!!', class: 'alert alert-danger' } };
       });
     } else {
       this.setState((state:State, props:Props)=>{
         return {
           ...state,
           status: (isProcessing)
-            ? { text: 'loading...', class: 'alert alert-warning' }
+            ? { text: 'loading', class: 'alert alert-warning' }
             : { text: 'finished', class: 'alert alert-success' }
         };
       });
@@ -222,25 +212,26 @@ export default class Example5 extends React.Component<Props,State> {
   getCustomerCallback(data: any) {
     // totalItems property needs to be filled for pagination to work correctly
     // however we need to force React to do a dirty check, doing a clone object will do just that
-    let countPropName = 'totalRecordCount'; // you can use "totalRecordCount" or any name or "odata.count" when "enableCount" is set
+    let totalItemCount: number = data['totalRecordCount']; // you can use "totalRecordCount" or any name or "odata.count" when "enableCount" is set
     if (this.state.isCountEnabled) {
-      countPropName = (this.state.odataVersion === 4) ? '@odata.count' : 'odata.count';
+      totalItemCount = (this.state.odataVersion === 4) ? data['@odata.count'] : data['d']['__count'];
     }
-    this.setState((state:State, props:Props)=>{
+    this.setState((state: State, props: Props) => {
       return {
         ...state,
-        paginationOptions: { ...state.gridOptions.pagination, totalItems: data[countPropName] } as Pagination
+        paginationOptions: { ...state.gridOptions!.pagination, totalItems: totalItemCount } as Pagination
       };
     });
     if (this.state.metrics) {
-      this.state.metrics.totalItemCount = data[countPropName];
+      this.state.metrics.totalItemCount = totalItemCount;
     }
 
     // once pagination totalItems is filled, we can update the dataset
-    this.setState((state:State, props:Props)=>{
+    this.setState((state: State, props: Props) => {
       return {
         ...state,
-        dataset: data['items'],
+        paginationOptions: { ...state.gridOptions!.pagination, totalItems: totalItemCount } as Pagination,
+        dataset: state.odataVersion === 4 ? data.value : data.d.results,
         odataQuery: data['query']
       };
     });
@@ -292,7 +283,7 @@ export default class Example5 extends React.Component<Props,State> {
         if (param.includes('$filter=')) {
           const filterBy = param.substring('$filter='.length).replace('%20', ' ');
           if (filterBy.includes('contains')) {
-            const filterMatch = filterBy.match(/contains\(([a-zA-Z\/]+),\s?'(.*?)'/);
+            const filterMatch = filterBy.match(/substringof\('(.*?)',\s([a-zA-Z\/]+)/);
             const fieldName = filterMatch![1].trim();
             (columnFilters as any)[fieldName] = { type: 'substring', term: filterMatch![2].trim() };
           }
@@ -319,45 +310,54 @@ export default class Example5 extends React.Component<Props,State> {
             (columnFilters as any)[fieldName] = { type: 'ends', term: filterMatch![2].trim() };
           }
 
-          // simular a backend error when trying to sort on the "Company" field
+          // simulate a backend error when trying to sort on the "Company" field
           if (filterBy.includes('company')) {
             throw new Error('Server could not filter using the field "Company"');
           }
         }
       }
 
-      // simular a backend error when trying to sort on the "Company" field
+      // simulate a backend error when trying to sort on the "Company" field
       if (orderBy.includes('company')) {
         throw new Error('Server could not sort using the field "Company"');
       }
 
-      const sort = orderBy.includes('asc')
-        ? 'ASC'
-        : orderBy.includes('desc')
-          ? 'DESC'
-          : '';
-
-      let url;
-      switch (sort) {
-        case 'ASC':
-          url = `${sampleDataRoot}/customers_100_ASC.json`;
-          break;
-        case 'DESC':
-          url = `${sampleDataRoot}/customers_100_DESC.json`;
-          break;
-        default:
-          url = `${sampleDataRoot}/customers_100.json`;
-          break;
-      }
-
-      fetch(url)
+      // read the json and create a fresh copy of the data that we are free to modify
+      fetch(`${sampleDataRoot}/customers_100.json`)
         .then(response => response.json())
         .then(response => {
-          const dataArray = response.content as any[];
+          let data = response as any[];
+
+          // Sort the data
+          if (orderBy?.length > 0) {
+            const orderByClauses = orderBy.split(',');
+            for (const orderByClause of orderByClauses) {
+              const orderByParts = orderByClause.split(' ');
+              const orderByField = orderByParts[0];
+
+              let selector = (obj: any): string => obj;
+              for (const orderByFieldPart of orderByField.split('/')) {
+                const prevSelector = selector;
+                selector = (obj: any) => {
+                  return prevSelector(obj)[orderByFieldPart as any];
+                };
+              }
+
+              const sort = orderByParts[1] ?? 'asc';
+              switch (sort.toLocaleLowerCase()) {
+                case 'asc':
+                  data = data.sort((a, b) => selector(a).localeCompare(selector(b)));
+                  break;
+                case 'desc':
+                  data = data.sort((a, b) => selector(b).localeCompare(selector(a)));
+                  break;
+              }
+            }
+          }
 
           // Read the result field from the JSON response.
           const firstRow = skip;
-          let filteredData = dataArray;
+          let filteredData = data;
           if (columnFilters) {
             for (const columnId in columnFilters) {
               if (columnFilters.hasOwnProperty(columnId)) {
@@ -369,7 +369,12 @@ export default class Example5 extends React.Component<Props,State> {
                     const splitIds = columnId.split(' ');
                     colId = splitIds[splitIds.length - 1];
                   }
-                  const filterTerm = column[colId];
+                  let filterTerm;
+                  let col = column;
+                  for (const part of colId.split('/')) {
+                    filterTerm = (col as any)[part];
+                    col = filterTerm;
+                  }
                   if (filterTerm) {
                     switch (filterType) {
                       case 'equal': return filterTerm.toLowerCase() === searchTerm;
@@ -383,15 +388,26 @@ export default class Example5 extends React.Component<Props,State> {
             }
             countTotalItems = filteredData.length;
           }
-          const updatedData = filteredData.slice(firstRow, firstRow + top);
+          const updatedData = filteredData.slice(firstRow, firstRow + top!);
 
           setTimeout(() => {
-            let countPropName = 'totalRecordCount';
-            if (this.state.isCountEnabled) {
-              countPropName = (this.state.odataVersion === 4) ? '@odata.count' : 'odata.count';
+            const backendResult: any = { query };
+            if (!this.state.isCountEnabled) {
+              backendResult['totalRecordCount'] = countTotalItems;
             }
-            const backendResult = { items: updatedData, [countPropName]: countTotalItems, query };
-            // console.log('Backend Result', backendResult);
+
+            if (this.state.odataVersion === 4) {
+              backendResult['value'] = updatedData;
+              if (this.state.isCountEnabled) {
+                backendResult['@odata.count'] = countTotalItems;
+              }
+            } else {
+              backendResult['d'] = { results: updatedData };
+              if (this.state.isCountEnabled) {
+                backendResult['d']['__count'] = countTotalItems;
+              }
+            }
+
             resolve(backendResult);
           }, 150);
         });
@@ -466,11 +482,29 @@ export default class Example5 extends React.Component<Props,State> {
         isCountEnabled: !this.state.isCountEnabled,
       };
     });
+    this.resetOptions({ enableCount: this.state.isCountEnabled });
+    return true;
+  }
 
-    const odataService = this.state.gridOptions.backendServiceApi!.service as GridOdataService;
-    odataService.updateOptions({ enableCount: this.state.isCountEnabled } as OdataOption);
-    odataService.clearFilters();
-    this.reactGrid.filterService.clearFilters();
+  changeEnableSelectFlag() {
+    this.setState((state: State, props: Props) => {
+      return {
+        ...state,
+        isSelectEnabled: !this.state.isSelectEnabled,
+      };
+    });
+    this.resetOptions({ enableSelect: this.state.isSelectEnabled });
+    return true;
+  }
+
+  changeEnableExpandFlag() {
+    this.setState((state: State, props: Props) => {
+      return {
+        ...state,
+        isExpandEnabled: !this.state.isExpandEnabled,
+      };
+    });
+    this.resetOptions({ enableExpand: this.state.isExpandEnabled });
     return true;
   }
 
@@ -481,11 +515,15 @@ export default class Example5 extends React.Component<Props,State> {
         odataVersion: version,
       };
     });
-    const odataService = this.state.gridOptions.backendServiceApi!.service as GridOdataService;
-    odataService.updateOptions({ version: this.state.odataVersion } as OdataOption);
-    odataService.clearFilters();
-    this.reactGrid.filterService.clearFilters();
+    this.resetOptions({ version: this.state.odataVersion });
     return true;
+  }
+
+  private resetOptions(options: Partial<OdataOption>) {
+    const odataService = this.state.gridOptions!.backendServiceApi!.service as GridOdataService;
+    odataService.updateOptions(options);
+    odataService.clearFilters();
+    this.reactGrid?.filterService.clearFilters();
   }
 
   render() {
@@ -513,13 +551,24 @@ export default class Example5 extends React.Component<Props,State> {
         </div>
 
         <div className="row">
-          <div className="col-sm-4">
+          <div className="col-sm-2">
             <div className={this.state.status.class} role="alert" data-test="status">
               <strong>Status: </strong> {this.state.status.text}
               {this.state.processing && <span>
                 <i className="fa fa-refresh fa-spin fa-lg fa-fw"></i>
               </span>}
             </div>
+          </div>
+          <div className="col-sm-10">
+            <div className="alert alert-info" data-test="alert-odata-query">
+              <strong>OData Query:</strong> <span data-test="odata-query-result">{this.state.odataQuery}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-sm-4">
+
             <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-filter"
               onChange={this.setFiltersDynamically}>
               Set Filters Dynamically
@@ -536,9 +585,6 @@ export default class Example5 extends React.Component<Props,State> {
             </span>}
           </div>
           <div className="col-sm-8">
-            <div className="alert alert-info" data-test="alert-odata-query">
-              <strong>OData Query:</strong> <span data-test="odata-query-result">{this.state.odataQuery}</span>
-            </div>
             <label>OData Version: </label>
             <span data-test="radioVersion">
               <label className="radio-inline control-label" htmlFor="radio2">
@@ -555,24 +601,35 @@ export default class Example5 extends React.Component<Props,State> {
                 onChange={this.changeCountEnableFlag} />
               <span style={{ fontWeight: 'bold' }}>Enable Count</span> (add to OData query)
             </label>
-            <span className="float-right">
-              <button className="btn btn-outline-danger btn-sm " data-test="throw-page-error-btn"
-                onChange={this.throwPageChangeError}>
-                <span>Throw Error Going to Last Page... </span>
-                <i className="mdi mdi-page-last"></i>
-              </button>
-            </span>
+            <label className="checkbox-inline control-label" htmlFor="enableSelect" style={{ marginLeft: '20px' }}>
+              <input type="checkbox" id="enableSelect" data-test="enable-select" checked={this.state.isSelectEnabled}
+                onChange={this.changeEnableSelectFlag} />
+              <span style={{ fontWeight: 'bold' }}>Enable Select</span> (add to OData query)
+            </label>
+            <label className="checkbox-inline control-label" htmlFor="enableExpand" style={{ marginLeft: '20px' }}>
+              <input type="checkbox" id="enableExpand" data-test="enable-expand" checked={this.state.isExpandEnabled}
+                onChange={this.changeEnableExpandFlag} />
+              <span style={{ fontWeight: 'bold' }}>Enable Expand</span> (add to OData query)
+            </label>
           </div >
         </div >
-        <div className="row">
+        <div className="row mt-2 mb-1">
           <div className="col-md-12">
-            <label>Programmatically go to first/last page:</label>
-            <button className="btn btn-outline-secondary btn-xs" data-test="goto-first-page" onChange={this.goToFirstPage}>
-              <i className="fa fa-caret-left fa-lg"></i>
+            <button className="btn btn-outline-danger btn-sm" data-test="throw-page-error-btn"
+              onClick={this.throwPageChangeError}>
+              <span>Throw Error Going to Last Page... </span>
+              <i className="mdi mdi-page-last"></i>
             </button>
-            <button className="btn btn-outline-secondary btn-xs" data-test="goto-last-page" onChange={this.goToLastPage}>
-              <i className="fa fa-caret-right fa-lg"></i>
-            </button>
+
+            <span className="ms-2">
+              <label>Programmatically go to first/last page:</label>
+              <button className="btn btn-outline-secondary btn-xs" data-test="goto-first-page" onChange={this.goToFirstPage}>
+                <i className="fa fa-caret-left fa-lg"></i>
+              </button>
+              <button className="btn btn-outline-secondary btn-xs" data-test="goto-last-page" onChange={this.goToLastPage}>
+                <i className="fa fa-caret-right fa-lg"></i>
+              </button>
+            </span>
           </div>
         </div>
 

@@ -236,7 +236,7 @@ export default class Example4 extends React.Component<Props, State> {
 
   defineGrid() {
     const columnDefinitions = this.getColumns();
-    const gridOptions = this. getGridOptions();
+    const gridOptions = this.getGridOptions();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.setState((state:any, props:Props) => {
       return {
@@ -250,7 +250,7 @@ export default class Example4 extends React.Component<Props, State> {
 
   mockData(itemCount: number, startingIndex = 0): any[] {
     // mock a dataset
-    const tempDataset = [];
+    const tempDataset: any[] = [];
     for (let i = startingIndex; i < (startingIndex + itemCount); i++) {
       const randomDuration = Math.round(Math.random() * 100);
       const randomYear = randomBetween(2000, 2035);
@@ -323,7 +323,7 @@ export default class Example4 extends React.Component<Props, State> {
               startTime: new Date(),
               endTime: new Date(),
               itemCount: args && args.current || 0,
-              totalItemCount: this.state.dataset.length || 0
+              totalItemCount: this.state.dataset?.length ?? 0
             }
           };
         });
@@ -393,11 +393,9 @@ export default class Example4 extends React.Component<Props, State> {
           dataset={this.state.dataset}
           onReactGridCreated= {$event => this.reactGridReady($event.detail.args)}
           onGridStateChanged= {$event => this.gridStateChanged($event.detail.args)}
-          onRowCountChanged= {$event => this.refreshMetrics($event.detail.eventData, $event.detail.args)}
-
+          onRowCountChanged={$event => this.refreshMetrics($event.detail.eventData, $event.detail.args)}
         />
       </div>
     );
   }
-
 }
