@@ -81,11 +81,11 @@
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
-    "@slickgrid-universal/common": "^1.4.0",
-    "@slickgrid-universal/custom-footer-component": "^1.4.0",
-    "@slickgrid-universal/empty-warning-component": "^1.4.0",
-    "@slickgrid-universal/event-pub-sub": "^1.4.0",
-    "@slickgrid-universal/pagination-component": "^1.4.0",
+    "@slickgrid-universal/common": "^2.1.1",
+    "@slickgrid-universal/custom-footer-component": "^2.1.1",
+    "@slickgrid-universal/empty-warning-component": "^2.1.1",
+    "@slickgrid-universal/event-pub-sub": "^2.1.1",
+    "@slickgrid-universal/pagination-component": "^2.1.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.5.0",
@@ -101,18 +101,20 @@
     "react-router-dom": "^5.3.0",
     "react-scripts": "^1.1.5",
     "regenerator-runtime": "^0.13.9",
+    "sortablejs": "^1.15.0",
     "typescript": ">=4.3.5",
     "web-vitals": "^1.1.2"
   },
   "devDependencies": {
     "@popperjs/core": "^2.11.0",
     "@release-it/conventional-changelog": "^5.1.1",
-    "@slickgrid-universal/composite-editor-component": "^1.4.0",
-    "@slickgrid-universal/excel-export": "^1.4.0",
-    "@slickgrid-universal/graphql": "^1.4.0",
-    "@slickgrid-universal/odata": "^1.4.0",
-    "@slickgrid-universal/rxjs-observable": "^1.4.0",
-    "@slickgrid-universal/text-export": "^1.4.0",
+    "@slickgrid-universal/composite-editor-component": "^2.1.1",
+    "@slickgrid-universal/custom-tooltip-plugin": "^2.1.1",
+    "@slickgrid-universal/excel-export": "^2.1.1",
+    "@slickgrid-universal/graphql": "^2.1.1",
+    "@slickgrid-universal/odata": "^2.1.1",
+    "@slickgrid-universal/rxjs-observable": "^2.1.1",
+    "@slickgrid-universal/text-export": "^2.1.1",
     "@types/bluebird": "^3.5.36",
     "@types/dompurify": "^2.3.2",
     "@types/flatpickr": "^3.1.2",
@@ -123,6 +125,7 @@
     "@types/node": "^17.0.31",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
+    "@types/sortablejs": "^1.15.0",
     "@types/text-encoding-utf-8": "^1.0.2",
     "@types/webpack": "^5.28.0",
     "@typescript-eslint/eslint-plugin": "^5.44.0",
@@ -186,5 +189,8 @@
   "engines": {
     "node": ">=14.15.0",
     "npm": ">=6.14.8"
+  },
+  "resolutions": {
+    "caniuse-lite": "1.0.30001431"
   }
 }

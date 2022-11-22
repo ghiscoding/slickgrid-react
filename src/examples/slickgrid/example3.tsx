@@ -2,7 +2,7 @@
 import i18next from 'i18next';
 import {
   ReactGridInstance,
-  AutocompleteOption,
+  AutocompleterOption,
   Column,
   EditCommand,
   Editors,
@@ -333,7 +333,7 @@ export default class Example3 extends React.Component<Props, State> {
         sortable: true,
         minWidth: 100,
         editor: {
-          model: Editors.autoComplete,
+          model: Editors.autocompleter,
           placeholder: '🔎︎ search city',
 
           // We can use the autocomplete through 3 ways 'collection', 'collectionAsync' or with your own autocomplete options
@@ -342,9 +342,9 @@ export default class Example3 extends React.Component<Props, State> {
           editorOptions: {
             minLength: 3,
             forceUserInput: true,
-            source: (request, response) => {
+            fetch: (searchText: string, updateCallback: (items: false | any[]) => void) => {
               /** with FETCH, note this demo won't work because of CORS */
-              // this.httpFetch.fetch(`http://gd.geobytes.com/AutoCompleteCity?q=${request.term}`)
+              // this.httpFetch.fetch(`http://gd.geobytes.com/AutoCompleteCity?q=${searchText}`)
               //   .then(response => response.json())
               //   .then(data => response(data))
               //   .catch(error => console.log('fetch error:', error));
@@ -354,17 +354,18 @@ export default class Example3 extends React.Component<Props, State> {
                 url: 'http://gd.geobytes.com/AutoCompleteCity',
                 dataType: 'jsonp',
                 data: {
-                  q: request.term,
+                  q: searchText,
                 },
                 success: (data) => {
-                  response(data);
+                  const finalData = (data.length === 1 && data[0] === '') ? [] : data; // invalid result should be [] instead of [''] to show empty msg
+                  updateCallback(finalData);
                 },
               });
             },
-          } as AutocompleteOption,
+          } as AutocompleterOption,
         },
         filter: {
-          model: Filters.autoComplete,
+          model: Filters.autocompleter,
           // placeholder: '🔎︎ search city',
 
           // We can use the autocomplete through 3 ways 'collection', 'collectionAsync' or with your own autocomplete options
@@ -374,19 +375,20 @@ export default class Example3 extends React.Component<Props, State> {
           // here we use $.ajax just because I'm not sure how to configure React HttpClient with JSONP and CORS
           filterOptions: {
             minLength: 3,
-            source: (request, response) => {
+            fetch: (searchText: string, updateCallback: (items: false | any[]) => void) => {
               $.ajax({
                 url: 'http://gd.geobytes.com/AutoCompleteCity',
                 dataType: 'jsonp',
                 data: {
-                  q: request.term,
+                  q: searchText,
                 },
                 success: (data) => {
-                  response(data);
+                  const finalData = (data.length === 1 && data[0] === '') ? [] : data; // invalid result should be [] instead of [''] to show empty msg
+                  updateCallback(finalData);
                 },
               });
             },
-          } as AutocompleteOption,
+          } as AutocompleterOption,
         },
       },
       {
@@ -402,12 +404,12 @@ export default class Example3 extends React.Component<Props, State> {
         sortable: true,
         minWidth: 100,
         editor: {
-          model: Editors.autoComplete,
+          model: Editors.autocompleter,
           customStructure: { label: 'name', value: 'code' },
           collectionAsync: fetch(URL_COUNTRIES_COLLECTION),
         },
         filter: {
-          model: Filters.autoComplete,
+          model: Filters.autocompleter,
           customStructure: { label: 'name', value: 'code' },
           collectionAsync: fetch(URL_COUNTRIES_COLLECTION),
         },
@@ -420,11 +422,11 @@ export default class Example3 extends React.Component<Props, State> {
         sortable: true,
         minWidth: 100,
         editor: {
-          model: Editors.autoComplete,
+          model: Editors.autocompleter,
           collectionAsync: fetch(URL_COUNTRY_NAMES),
         },
         filter: {
-          model: Filters.autoComplete,
+          model: Filters.autocompleter,
           collectionAsync: fetch(URL_COUNTRY_NAMES),
         },
       },

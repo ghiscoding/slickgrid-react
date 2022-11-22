@@ -18,7 +18,7 @@ export default class Example14 extends React.Component {
   </ul>
   `;
 
-  angularGrid2!: ReactGridInstance;
+  reactGrid2!: ReactGridInstance;
   gridObj2: any;
   columnDefinitions1: Column[] = [];
   columnDefinitions2: Column[] = [];
@@ -42,7 +42,7 @@ export default class Example14 extends React.Component {
   }
 
   reactGridReady2(reactGrid: ReactGridInstance) {
-    this.angularGrid2 = reactGrid;
+    this.reactGrid2 = reactGrid;
     this.gridObj2 = reactGrid.slickGrid;
   }
 
@@ -109,7 +109,7 @@ export default class Example14 extends React.Component {
 
   getData(count: number) {
     // Set up some test columns.
-    const mockDataset = [];
+    const mockDataset: any[] = [];
     for (let i = 0; i < count; i++) {
       mockDataset[i] = {
         id: i,

@@ -1,19 +1,16 @@
 // import 3rd party vendor libs
-// also only import jQueryUI necessary widget (note autocomplete & slider are imported in their respective editors/filters)
 import * as $ from 'jquery';
-import 'jquery-ui/ui/widgets/draggable';
-import 'jquery-ui/ui/widgets/droppable';
-import 'jquery-ui/ui/widgets/sortable';
-import 'slickgrid/lib/jquery.event.drag-2.3.0';
-import 'slickgrid/lib/jquery.mousewheel';
-import 'slickgrid/slick.core';
-import 'slickgrid/slick.dataview';
-import 'slickgrid/slick.grid';
 import React from 'react';
+import 'slickgrid/dist/slick.core.min';
+import 'slickgrid/dist/slick.interactions.min';
+import 'slickgrid/dist/slick.grid.min';
+import 'slickgrid/dist/slick.dataview.min';
+import * as Sortable_ from 'sortablejs';
+const Sortable = ((Sortable_ as any)?.['default'] ?? Sortable_); // patch for rollup
 
 import {
   // interfaces/types
-  AutoCompleteEditor,
+  AutocompleterEditor,
   BackendServiceApi,
   BackendServiceOption,
   Column,
@@ -76,12 +73,14 @@ import {
 } from '../services/index';
 import { Subscription } from 'rxjs';
 
+import { SlickgridEventAggregator } from '../custom-elements/slickgridEventAggregator';
+import { GlobalContainerService, GlobalEventPubSubService } from '../services/singletons';
+
 // using external non-typed js libraries
 declare const Slick: SlickNamespace;
 
-import { SlickgridEventAggregator } from '../custom-elements/slickgridEventAggregator';
-
-import { GlobalContainerService, GlobalEventPubSubService } from '../services/singletons';
+// add Sortable to the window object so that SlickGrid lib can use globally
+(window as any).Sortable = Sortable;
 
 interface Props {
   reactUtilService: ReactUtilService;
@@ -396,6 +395,10 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     // save reference for all columns before they optionally become hidden/visible
     this.sharedService.allColumns = this._columnDefinitions;
     this.sharedService.visibleColumns = this._columnDefinitions;
+
+    // after subscribing to potential columns changed, we are ready to create these optional extensions
+    // when we did find some to create (RowMove, RowDetail, RowSelections), it will automatically modify column definitions (by previous subscribe)
+
     this.extensionService.createExtensionsBeforeGridCreation(this._columnDefinitions, this._gridOptions);
 
     // if user entered some Pinning/Frozen "presets", we need to apply them in the grid options
@@ -502,7 +505,6 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     // create the React Grid Instance with reference to all Services
     const reactElementInstance: ReactGridInstance = {
       element: this.elm,
-      eventPubSubService: this._eventPubSubService,
 
       // Slick Grid & DataView objects
       dataView: this.dataview,
@@ -513,6 +515,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
       // return all available Services (non-singleton)
       backendService: this._gridOptions?.backendServiceApi?.service,
+      eventPubSubService: this._eventPubSubService,
       filterService: this.filterService,
       gridEventService: this.gridEventService,
       gridStateService: this.gridStateService,
@@ -1200,8 +1203,8 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
             // from Fetch
             (response as Response).json().then(data => this.updateEditorCollection(column, data));
           }
-        } else if (response && response['content']) {
-          this.updateEditorCollection(column, response['content']); // from http-client
+        } else if (response?.content) {
+          this.updateEditorCollection(column, response.content); // from http-client
         }
       });
     } else if (this.rxjs?.isObservable(collectionAsync)) {
@@ -1510,7 +1513,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     }
 
     // get current Editor, remove it from the DOM then re-enable it and re-render it with the new collection.
-    const currentEditor = this.grid.getCellEditor() as AutoCompleteEditor | SelectEditor;
+    const currentEditor = this.grid.getCellEditor() as AutocompleterEditor | SelectEditor;
     if (currentEditor?.disable && currentEditor?.renderDomElement) {
       currentEditor.destroy();
       currentEditor.disable(false);

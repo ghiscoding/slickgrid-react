@@ -1,5 +1,7 @@
 import i18next from 'i18next';
 import * as moment from 'moment-mini';
+import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
+import { ExcelExportService } from '@slickgrid-universal/excel-export';
 
 import { CustomInputFilter } from './custom-inputFilter';
 import {
@@ -12,11 +14,11 @@ import {
   Formatters,
   GridOption,
   GridStateChange,
-  JQueryUiSliderOption,
   Metrics,
   MultipleSelectOption,
   OperatorType,
   SlickGrid,
+  SliderRangeOption,
   ReactSlickgridCustomElement
 } from '../../slickgrid-react';
 import React from 'react';
@@ -117,15 +119,18 @@ export default class Example23 extends React.Component {
       {
         id: 'percentComplete', name: '% Complete', field: 'percentComplete', nameKey: 'PERCENT_COMPLETE', minWidth: 120,
         sortable: true,
+        customTooltip: { position: 'center' },
         formatter: Formatters.progressBar,
         type: FieldType.number,
         filterable: true,
         filter: {
           model: Filters.sliderRange,
           maxValue: 100, // or you can use the filterOptions as well
-          operator: OperatorType.rangeInclusive, // defaults to exclusive
-          params: { hideSliderNumbers: false }, // you can hide/show the slider numbers on both side
-          filterOptions: { min: 0, step: 5 } as JQueryUiSliderOption // you can also optionally pass any option of the jQuery UI Slider
+          operator: OperatorType.rangeInclusive, // defaults to inclusive
+          filterOptions: {
+            hideSliderNumbers: false, // you can hide/show the slider numbers on both side
+            min: 0, step: 5
+          } as SliderRangeOption
         }
       },
       {
@@ -193,13 +198,14 @@ export default class Example23 extends React.Component {
           { columnId: 'percentComplete', direction: 'DESC' },
           { columnId: 'duration', direction: 'ASC' },
         ],
-      }
+      },
+      registerExternalResources: [new SlickCustomTooltip(), new ExcelExportService()],
     };
   }
 
   mockData(itemCount: number, startingIndex = 0): any[] {
     // mock a dataset
-    const tempDataset = [];
+    const tempDataset: any[] = [];
     for (let i = startingIndex; i < (startingIndex + itemCount); i++) {
       const randomDuration = randomBetween(0, 365);
       const randomYear = randomBetween(moment().year(), moment().year() + 1);
