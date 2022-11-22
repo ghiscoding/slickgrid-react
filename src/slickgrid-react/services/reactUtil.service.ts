@@ -5,10 +5,10 @@ import { ReactComponentOutput } from '../models/reactComponentOutput.interface';
 export class ReactUtilService {
   createReactComponentAppendToDom(component: any, targetElement?: HTMLElement | Element, clearTargetContent = false, props: any = undefined, children: ReactNode[] = []): ReactComponentOutput {
     const componentElement = React.createElement(component, props, children);
-    let componentInstance;
+    let componentInstance: any;
 
     // Append DOM element to the HTML element specified
-    if (targetElement && targetElement.appendChild) {
+    if (targetElement) {
       if (clearTargetContent && targetElement.innerHTML) {
         targetElement.innerHTML = '';
       }
