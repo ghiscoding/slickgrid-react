@@ -4,7 +4,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { HotModuleReplacementPlugin, ProvidePlugin } = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 // primary config:
 const title = 'React Navigation Skeleton';
@@ -118,8 +117,6 @@ module.exports = ({ production } = {}, { server } = {}) => ({
 
     // Note that the usage of following plugin cleans the webpack output directory before build.
     new CleanWebpackPlugin(),
-    new ForkTsCheckerWebpackPlugin(),
-    new ForkTsCheckerWebpackPlugin(),
     new HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.html'

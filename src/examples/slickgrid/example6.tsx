@@ -251,7 +251,7 @@ export default class Example6 extends React.Component<Props, State> {
   displaySpinner(isProcessing: boolean) {
     const newStatus = (isProcessing)
       ? { text: 'processing...', class: 'alert alert-danger' }
-      : { text: 'done', class: 'alert alert-success' };
+      : { text: 'finished', class: 'alert alert-success' };
 
     this.setState((state:any, props:any)=>{
       return {

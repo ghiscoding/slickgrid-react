@@ -180,6 +180,7 @@ export default class Example5 extends React.Component<Props,State> {
   defineGrid() {
     const columnDefinitions = this.getColumnDefinitions();
     const gridOptions = this.getGridDefinition();
+
     this.setState((state:any, props:Props)=>{
       return {
         ...state,
@@ -292,11 +293,14 @@ export default class Example5 extends React.Component<Props,State> {
             const fieldName = filterMatch![2].trim();
             (columnFilters as any)[fieldName] = { type: 'substring', term: filterMatch![1].trim() };
           }
-          if (filterBy.includes('eq')) {
-            const filterMatch = filterBy.match(/([a-zA-Z ]*) eq '(.*?)'/);
-            if (Array.isArray(filterMatch)) {
-              const fieldName = filterMatch![1].trim();
-              (columnFilters as any)[fieldName] = { type: 'equal', term: filterMatch![2].trim() };
+          for (const operator of ['eq', 'ne', 'le', 'lt', 'gt', 'ge']) {
+            if (filterBy.includes(operator)) {
+              const re = new RegExp(`([a-zA-Z ]*) ${operator} \'(.*?)\'`);
+              const filterMatch = re.exec(filterBy);
+              if (Array.isArray(filterMatch)) {
+                const fieldName = filterMatch[1].trim();
+                (columnFilters as any)[fieldName] = { type: operator, term: filterMatch[2].trim() };
+              }
             }
           }
           if (filterBy.includes('startswith')) {
@@ -377,10 +381,12 @@ export default class Example5 extends React.Component<Props,State> {
                   }
                   if (filterTerm) {
                     switch (filterType) {
-                      case 'equal': return filterTerm.toLowerCase() === searchTerm;
-                      case 'ends': return filterTerm.toLowerCase().endsWith(searchTerm);
-                      case 'starts': return filterTerm.toLowerCase().startsWith(searchTerm);
-                      case 'substring': return filterTerm.toLowerCase().includes(searchTerm);
+                      case 'eq': return filterTerm.toLowerCase() === searchTerm;
+                      case 'ne': return filterTerm.toLowerCase() !== searchTerm;
+                      case 'le': return filterTerm.toLowerCase() <= searchTerm;
+                      case 'lt': return filterTerm.toLowerCase() < searchTerm;
+                      case 'gt': return filterTerm.toLowerCase() > searchTerm;
+                      case 'ge': return filterTerm.toLowerCase() >= searchTerm;
                     }
                   }
                 });

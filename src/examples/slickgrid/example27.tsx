@@ -205,6 +205,28 @@ export default class Example27 extends React.Component {
     }
   }
 
+  updateFirstRow() {
+    // to update any of the grid rows, we CANNOT simply pass a new updated object
+    // we MUST read it from the DataView first (that will include all mutated Tree Data props, like `__treeLevel`, `__parentId`, ...) and then update it
+    const item = this.reactGrid.dataView.getItemById<any>(0);
+
+    // option 1
+    /*
+    // now that we have the extra Tree Data props, we can update any of the object properties (while keeping the Tree Data props)
+    item.duration = `11 days`;
+    item.percentComplete = 77;
+    item.start = new Date();
+    item.finish = new Date();
+    item.effortDriven = false;
+    // finally we can now update the item which includes our updated props + the Tree Data props (`__treeLevel`, ...)
+    this.reactGrid.gridService.updateItem(item);
+    */
+
+    // optiona 2 - alternative
+    // we could also simply use the spread operator directly
+    this.reactGrid.gridService.updateItem({ ...item, duration: `11 days`, percentComplete: 77, start: new Date(), finish: new Date(), effortDriven: false });
+  }
+
   collapseAll() {
     this.reactGrid.treeDataService.toggleTreeDataCollapse(true);
   }
@@ -242,8 +264,8 @@ export default class Example27 extends React.Component {
   loadData(rowCount: number) {
     this.isLargeDataset = rowCount > 5000; // we'll show a spinner when it's large, else don't show show since it should be fast enough
     let indent = 0;
-    const parents = [];
-    const data = [];
+    const parents: any[] = [];
+    const data: any[] = [];
 
     // prepare the data
     for (let i = 0; i < rowCount; i++) {
@@ -390,6 +412,10 @@ export default class Example27 extends React.Component {
             <button onClick={this.addNewRow} data-test="add-item-btn" className="btn btn-primary btn-sm">
               <span className="mdi mdi-plus color-white"></span>
               <span>Add New Item (in 1st group)</span>
+            </button>
+            <button onClick={this.updateFirstRow} data-test="update-item-btn" className="btn btn-outline-secondary btn-sm">
+              <span className="icon mdi mdi-pencil"></span>
+              <span>Update 1st Row Item</span>
             </button>
             <button onClick={this.collapseAll} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-sm">
               <span className="mdi mdi-arrow-collapse"></span>

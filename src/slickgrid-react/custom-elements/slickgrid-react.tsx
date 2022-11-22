@@ -232,8 +232,8 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
   constructor(public readonly props: Props) {
     super(props);
-
     const slickgridConfig = new SlickgridConfig();
+    this._eventHandler = new Slick.EventHandler();
 
     this.showPagination = false;
 
@@ -325,9 +325,6 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
       (this._eventPubSubService as CustomEventPubSubService).elementSource = this.elm.current;
     }
 
-    this._eventHandler = new Slick.EventHandler();
-    this.sharedService.gridContainerElement = this.elm.current as HTMLDivElement;
-
     this.initialization(this._eventHandler);
     this._isGridInitialized = true;
 
@@ -342,6 +339,10 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
   }
 
   initialization(eventHandler: SlickEventHandler) {
+    if (!this._gridOptions || !this._columnDefinitions) {
+      throw new Error('Using `<ReactSlickgridCustomElement>` requires columnDefinitions and gridOptions, it seems that you might have forgot to provide them since at least of them is undefined.');
+    }
+
     this._gridOptions.translater = this.props.translaterService;
     this._eventHandler = eventHandler;
 
@@ -406,6 +407,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     this.grid = new Slick.Grid(`#${this.props.gridId}`, this.props.customDataView || this.dataview, this._columnDefinitions, this._gridOptions);
     this.sharedService.dataView = this.dataview;
     this.sharedService.slickGrid = this.grid;
+    this.sharedService.gridContainerElement = this.elm.current as HTMLDivElement;
 
     this.extensionService.bindDifferentExtensions();
     this.bindDifferentHooks(this.grid, this._gridOptions, this.dataview);
@@ -443,8 +445,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
       // if you don't want the items that are not visible (due to being filtered out or being on a different page)
       // to stay selected, pass 'false' to the second arg
-      const selectionModel = this.grid?.getSelectionModel();
-      if (selectionModel && this._gridOptions?.dataView && this._gridOptions.dataView.hasOwnProperty('syncGridSelection')) {
+      if (this.grid?.getSelectionModel() && this._gridOptions?.dataView && this._gridOptions.dataView.hasOwnProperty('syncGridSelection')) {
         // if we are using a Backend Service, we will do an extra flag check, the reason is because it might have some unintended behaviors
         // with the BackendServiceApi because technically the data in the page changes the DataView on every page change.
         let preservedRowSelectionWithBackend = false;
@@ -825,7 +826,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
         // When data changes in the DataView, we need to refresh the metrics and/or display a warning if the dataset is empty
         this._eventHandler.subscribe(dataView.onRowCountChanged, () => {
           grid.invalidate();
-          this.handleOnItemCountChanged(dataView.getFilteredItemCount() || 0, dataView.getItemCount());
+          this.handleOnItemCountChanged(dataView.getFilteredItemCount() || 0, dataView.getItemCount() || 0);
         });
         this._eventHandler.subscribe(dataView.onSetItemsCalled, (_e, args) => {
           grid.invalidate();
@@ -837,17 +838,17 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
           }
         });
 
-        this._eventHandler.subscribe(dataView.onRowsChanged, (_e, args) => {
-          // filtering data with local dataset will not always show correctly unless we call this updateRow/render
-          // also don't use "invalidateRows" since it destroys the entire row and as bad user experience when updating a row
-          // see commit: https://github.com/ghiscoding/aurelia-slickgrid/commit/8c503a4d45fba11cbd8d8cc467fae8d177cc4f60
-          if (gridOptions?.enableFiltering && !gridOptions.enableRowDetailView) {
+        if (gridOptions?.enableFiltering && !gridOptions.enableRowDetailView) {
+          this._eventHandler.subscribe(dataView.onRowsChanged, (_e, args) => {
+            // filtering data with local dataset will not always show correctly unless we call this updateRow/render
+            // also don't use "invalidateRows" since it destroys the entire row and as bad user experience when updating a row
+            // see commit: https://github.com/ghiscoding/aurelia-slickgrid/commit/8c503a4d45fba11cbd8d8cc467fae8d177cc4f60
             if (args?.rows && Array.isArray(args.rows)) {
               args.rows.forEach((row: number) => grid.updateRow(row));
               grid.render();
             }
-          }
-        });
+          });
+        }
       }
     }
 
@@ -1272,9 +1273,8 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
   private loadRowSelectionPresetWhenExists() {
     // if user entered some Row Selections "presets"
     const presets = this._gridOptions?.presets;
-    const selectionModel = this.grid?.getSelectionModel();
     const enableRowSelection = this._gridOptions && (this._gridOptions.enableCheckboxSelector || this._gridOptions.enableRowSelection);
-    if (enableRowSelection && selectionModel && presets && presets.rowSelection && (Array.isArray(presets.rowSelection.gridRowIndexes) || Array.isArray(presets.rowSelection.dataContextIds))) {
+    if (enableRowSelection && this.grid?.getSelectionModel() && presets?.rowSelection && (Array.isArray(presets.rowSelection.gridRowIndexes) || Array.isArray(presets.rowSelection.dataContextIds))) {
       let dataContextIds = presets.rowSelection.dataContextIds;
       let gridRowIndexes = presets.rowSelection.gridRowIndexes;
 
@@ -1502,9 +1502,8 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     (column.editor as ColumnEditor).disabled = false;
 
     // find the new column reference pointer & re-assign the new editor to the internalColumnEditor
-    const columns = this.grid.getColumns();
-    if (Array.isArray(columns)) {
-      const columnRef = columns.find((col: Column) => col.id === column.id);
+    if (Array.isArray(this._columnDefinitions)) {
+      const columnRef = this._columnDefinitions.find((col: Column) => col.id === column.id);
       if (columnRef) {
         columnRef.internalColumnEditor = column.editor as ColumnEditor;
       }

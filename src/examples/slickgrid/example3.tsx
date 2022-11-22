@@ -703,10 +703,9 @@ export default class Example3 extends React.Component<Props, State> {
   }
 
   changeAutoCommit() {
-    this.state.gridOptions.autoCommitEdit =
-      !this.state.gridOptions.autoCommitEdit;
-    this.reactGrid.slickGrid.setOptions({
-      autoCommitEdit: this.state.gridOptions.autoCommitEdit,
+    this.state.gridOptions!.autoCommitEdit = !this.state.gridOptions!.autoCommitEdit;
+    this.reactGrid?.slickGrid.setOptions({
+      autoCommitEdit: this.state.gridOptions!.autoCommitEdit,
     });
     return true;
   }
@@ -897,7 +896,7 @@ export default class Example3 extends React.Component<Props, State> {
                   type='checkbox'
                   id='autoCommitEdit'
                   data-test='auto-commit'
-                  checked={this.state.gridOptions.autoCommitEdit}
+                    checked={this.state.gridOptions!.autoCommitEdit}
                   onChange={() => {
                     this.changeAutoCommit();
                   }}
