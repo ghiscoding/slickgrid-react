@@ -17,7 +17,7 @@ import { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
 import { SlickGrid } from '../models/index';
 
 export interface ReactGridInstance {
-  element: React.RefObject<HTMLDivElement>;
+  element: HTMLDivElement;
 
   /** Slick DataView object */
   dataView: SlickDataView;
@@ -36,7 +36,7 @@ export interface ReactGridInstance {
   /** Backend Service, when available */
   backendService?: BackendService;
 
-  /** EventPubSub Service instance that is used internal by the lib and could be used externally to subscribe to Aurelia-Slickgrid events */
+  /** EventPubSub Service instance that is used internal by the lib and could be used externally to subscribe to Slickgrid-React events */
   eventPubSubService?: EventPubSubService;
 
   /** Extension (Plugins & Controls) Service */

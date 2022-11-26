@@ -133,7 +133,7 @@ export const GlobalGridOptions: Partial<GridOption> = {
   enableMouseHoverHighlightRow: true,
   enableSorting: true,
   enableTextSelectionOnCells: true,
-  eventNamingStyle: EventNamingStyle.kebabCase,
+  eventNamingStyle: EventNamingStyle.camelCase,
   explicitInitialization: true,
   excelExportOptions: {
     addGroupIndentation: true,

@@ -68,50 +68,19 @@ import { ReactGridInstance, GridOption, } from '../models/index';
 import {
   ReactUtilService,
   disposeAllSubscriptions,
-  ContainerService,
   TranslaterService,
 } from '../services/index';
 import { Subscription } from 'rxjs';
 
 import { SlickgridEventAggregator } from '../custom-elements/slickgridEventAggregator';
 import { GlobalContainerService, GlobalEventPubSubService } from '../services/singletons';
+import { SlickgridReactProps } from './slickgridReactProps';
 
 // using external non-typed js libraries
 declare const Slick: SlickNamespace;
 
 // add Sortable to the window object so that SlickGrid lib can use globally
 (window as any).Sortable = Sortable;
-
-interface Props {
-  reactUtilService: ReactUtilService;
-  globalEa: SlickgridEventAggregator;
-  containerService: ContainerService;
-  translaterService: TranslaterService;
-  externalServices?: {
-    backendUtilityService?: BackendUtilityService,
-    collectionService?: CollectionService,
-    eventPubSubService?: EventPubSubService,
-    extensionService?: ExtensionService,
-    extensionUtility?: ExtensionUtility,
-    filterService?: FilterService,
-    gridEventService?: GridEventService,
-    gridService?: GridService,
-    gridStateService?: GridStateService,
-    groupingAndColspanService?: GroupingAndColspanService,
-    paginationService?: PaginationService,
-    resizerService?: ResizerService,
-    rxjs?: RxJsFacade,
-    sharedService?: SharedService,
-    sortService?: SortService,
-    treeDataService?: TreeDataService,
-  }
-  customDataView?: SlickDataView;
-  dataset: any[];
-  datasetHierarchical?: any[] | null;
-  gridId: string;
-  gridOptions: GridOption;
-  columnDefinitions: Column[];
-}
 
 interface State {
   showPagination: boolean;
@@ -125,9 +94,9 @@ class CustomEventPubSubService extends EventPubSubService {
   }
 }
 
-export class ReactSlickgridCustomElement extends React.Component<Props, State> {
+export class ReactSlickgridCustomElement extends React.Component<SlickgridReactProps, State> {
   private _mounted = false;
-  private setStateValue(key: string, value: any): void {
+  private setStateValue(key: string, value: any, callback?: () => void): void {
     if (this.state && this.state[key] === value) {
       return;
     }
@@ -142,12 +111,13 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
       const result = {};
       result[key] = value;
       return result;
-    });
+    }, callback);
   }
 
   private _columnDefinitions: Column[] = [];
   private _currentDatasetLength = 0;
   private _dataset: any[] | null = null;
+  private _elm?: HTMLDivElement | null;
   private _eventHandler!: SlickEventHandler;
   private _eventPubSubService!: EventPubSubService;
   private _hideHeaderRowAfterPageLoad = false;
@@ -169,12 +139,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
   backendServiceApi: BackendServiceApi | undefined;
   locales!: Locale;
   metrics?: Metrics;
-  private get showPagination(): boolean {
-    return this.state?.showPagination;
-  }
-  private set showPagination(value: boolean) {
-    this.setStateValue('showPagination', value);
-  }
+  showPagination = false;
   serviceList: any[] = [];
   subscriptions: Array<EventSubscription | Subscription> = [];
   paginationData?: {
@@ -217,8 +182,6 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
   extensions!: ExtensionList<any>;
   instances: ReactGridInstance | null = null;
 
-  private elm: React.RefObject<HTMLDivElement> = React.createRef();
-
   static defaultProps = {
     reactUtilService: new ReactUtilService(),
     globalEa: GlobalEventPubSubService,
@@ -229,7 +192,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     columnDefinitions: [],
   };
 
-  constructor(public readonly props: Props) {
+  constructor(public readonly props: SlickgridReactProps) {
     super(props);
     const slickgridConfig = new SlickgridConfig();
     this._eventHandler = new Slick.EventHandler();
@@ -297,7 +260,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     this.props.containerService.registerInstance('TranslaterService', this.props.translaterService);
     this.props.containerService.registerInstance('TreeDataService', this.treeDataService);
 
-    this._gridOptions = this.mergeGridOptions(this.props.gridOptions);
+    this._gridOptions = this.mergeGridOptions(this.props.gridOptions as GridOption);
   }
 
   get eventHandler(): SlickEventHandler {
@@ -320,11 +283,30 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
   componentDidMount() {
     this._mounted = true;
-    if (this.elm.current && this._eventPubSubService instanceof CustomEventPubSubService) {
-      (this._eventPubSubService as CustomEventPubSubService).elementSource = this.elm.current;
+    if (this._elm && this._eventPubSubService instanceof CustomEventPubSubService) {
+      (this._eventPubSubService as CustomEventPubSubService).elementSource = this._elm;
+
+      // React doesn't play well with Custom Events & also the render is called after the constructor which brings a second problem
+      // to fix both issues, we need to do the following:
+      // loop through all component and subscribe to all props that startsWith "on", assuming they are custom event 
+      // and call their listener with event is dispatching
+      for (const prop in this.props) {
+        if (prop.startsWith('on')) {
+          this.subscriptions.push(
+            this._eventPubSubService.subscribe(prop, (data: unknown) => {
+              const callback = this.props[prop];
+              const gridEventName = this._eventPubSubService.getEventNameByNamingConvention(prop, '');
+              typeof callback === 'function' && callback.call(null, new CustomEvent(gridEventName, { detail: data }));
+            })
+          );
+        }
+      }
     }
 
     this.initialization(this._eventHandler);
+    if (this.props.dataset?.length) {
+      this.datasetChanged(this.props.dataset, []);
+    }
     this._isGridInitialized = true;
 
     // recheck the empty warning message after grid is shown so that it works in every use case
@@ -398,7 +380,6 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
     // after subscribing to potential columns changed, we are ready to create these optional extensions
     // when we did find some to create (RowMove, RowDetail, RowSelections), it will automatically modify column definitions (by previous subscribe)
-
     this.extensionService.createExtensionsBeforeGridCreation(this._columnDefinitions, this._gridOptions);
 
     // if user entered some Pinning/Frozen "presets", we need to apply them in the grid options
@@ -410,7 +391,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     this.grid = new Slick.Grid(`#${this.props.gridId}`, this.props.customDataView || this.dataview, this._columnDefinitions, this._gridOptions);
     this.sharedService.dataView = this.dataview;
     this.sharedService.slickGrid = this.grid;
-    this.sharedService.gridContainerElement = this.elm.current as HTMLDivElement;
+    this.sharedService.gridContainerElement = this._elm as HTMLDivElement;
 
     this.extensionService.bindDifferentExtensions();
     this.bindDifferentHooks(this.grid, this._gridOptions, this.dataview);
@@ -429,7 +410,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
     // initialized the resizer service only after SlickGrid is initialized
     // if we don't we end up binding our resize to a grid element that doesn't yet exist in the DOM and the resizer service will fail silently (because it has a try/catch that unbinds the resize without throwing back)
-    const gridContainerElm = this.elm.current;
+    const gridContainerElm = this._elm;
     if (gridContainerElm) {
       this.resizerService.init(this.grid, gridContainerElm);
     }
@@ -504,7 +485,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
     // create the React Grid Instance with reference to all Services
     const reactElementInstance: ReactGridInstance = {
-      element: this.elm,
+      element: this._elm as HTMLDivElement,
 
       // Slick Grid & DataView objects
       dataView: this.dataview,
@@ -533,6 +514,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
     // all instances (SlickGrid, DataView & all Services)
     this.instances = reactElementInstance;
+    this.setStateValue('instances', reactElementInstance)
     this._eventPubSubService.publish(`onReactGridCreated`, reactElementInstance);
   }
 
@@ -599,7 +581,9 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
       (this.sharedService as any)[prop] = null;
     }
     this._dataset = null;
-    this.props.datasetHierarchical = null;
+    if (this.props.datasetHierarchical) {
+      this.props.datasetHierarchical = null;
+    }
     this._columnDefinitions = [];
   }
 
@@ -613,7 +597,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
     this.componentWillUnmount(shouldEmptyDomElementContainer);
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps: SlickgridReactProps) {
     // get the grid options (order of precedence is Global Options first, then user option which could overwrite the Global options)
     if (this.props.gridOptions !== prevProps.gridOptions) {
       this._gridOptions = { ...GlobalGridOptions, ...this._gridOptions };
@@ -1169,6 +1153,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
       this.paginationService.init(this.grid, paginationOptions, this.backendServiceApi);
       this.subscriptions.push(
         this._eventPubSubService.subscribe('onPaginationChanged', (paginationChanges: ServicePagination) => this.paginationChanged(paginationChanges)),
+        this._eventPubSubService.subscribe('onPaginationOptionsChanged', (paginationChanges: ServicePagination) => this.paginationOptionsChanged(paginationChanges)),
         this._eventPubSubService.subscribe('onPaginationVisibilityChanged', (visibility: { visible: boolean }) => {
           this.showPagination = visibility?.visible ?? false;
           if (this._gridOptions?.backendServiceApi) {
@@ -1413,7 +1398,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
   private renderPagination(showPagination = true) {
     if (this._gridOptions?.enablePagination && !this._isPaginationInitialized && showPagination) {
       this.slickPagination = new SlickPaginationComponent(this.paginationService, this._eventPubSubService, this.sharedService, this.props.translaterService);
-      this.slickPagination.renderPagination(this.elm.current as HTMLDivElement);
+      this.slickPagination.renderPagination(this._elm as HTMLDivElement);
       this._isPaginationInitialized = true;
     } else if (!showPagination) {
       if (this.slickPagination) {
@@ -1523,7 +1508,7 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
 
   render() {
     return (
-      <div id={`slickGridContainer-${this.props.gridId}`} className="grid-pane test3" ref={this.elm} >
+      <div id={`slickGridContainer-${this.props.gridId}`} className="grid-pane" ref={elm => this._elm = elm} >
         {/* <!-- Header slot if you need to create a complex custom header --> */}
         <slot name="slickgrid-header"></slot>
 
@@ -1533,6 +1518,6 @@ export class ReactSlickgridCustomElement extends React.Component<Props, State> {
         {/* <!--Footer slot if you need to create a complex custom footer-- > */}
         <slot name="slickgrid-footer"></slot>
       </div >
-    );
+    );    
   }
 }

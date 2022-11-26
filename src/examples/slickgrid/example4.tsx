@@ -1,22 +1,26 @@
+import moment from 'moment-mini';
+import React from 'react';
+
 import { CustomInputFilter } from './custom-inputFilter';
 import {
-  ReactGridInstance,
+  Column,
   FieldType,
   Filters,
   FlatpickrOption,
   Formatters,
+  GridOption,
   GridStateChange,
   Metrics,
   MultipleSelectOption,
   OperatorType,
+  ReactGridInstance,
   ReactSlickgridCustomElement,
 } from '../../slickgrid-react';
-import React from 'react';
 import BaseSlickGridState from './state-slick-grid-base';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface State extends BaseSlickGridState{
-  metrics: Metrics,
+  metrics?: Metrics,
 }
 
 function randomBetween(min: number, max: number) {
@@ -57,17 +61,16 @@ export default class Example4 extends React.Component<Props, State> {
   constructor(public readonly props: Props) {
     super(props);
     this.state = {
-      gridOptions: null,
+      gridOptions: undefined,
       columnDefinitions: [],
       dataset: [],
-      metrics: null
+      metrics: undefined
     };
   }
 
   componentDidMount() {
-    this.defineGrid();
     document.title = this.title;
-    // populate the dataset once the grid is ready
+    this.defineGrid();
   }
 
   componentWillUnmount() {
@@ -78,7 +81,7 @@ export default class Example4 extends React.Component<Props, State> {
     this.reactGrid = reactGrid;
   }
 
-  getColumns(){
+  getColumns(): Column[] {
     return [
       {
         id: 'title',
@@ -206,7 +209,7 @@ export default class Example4 extends React.Component<Props, State> {
     ];
   }
 
-  getGridOptions(){
+  getGridOptions(): GridOption {
     return {
       autoResize: {
         container: '#demo-container',
@@ -237,20 +240,19 @@ export default class Example4 extends React.Component<Props, State> {
   defineGrid() {
     const columnDefinitions = this.getColumns();
     const gridOptions = this.getGridOptions();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.setState((state:any, props:Props) => {
-      return {
+
+    this.setState((state: State) => ({
         ...state,
         columnDefinitions,
         gridOptions,
         dataset: this.mockData(NB_ITEMS),
-      };
-    });
+    }));
   }
 
   mockData(itemCount: number, startingIndex = 0): any[] {
     // mock a dataset
     const tempDataset: any[] = [];
+
     for (let i = startingIndex; i < (startingIndex + itemCount); i++) {
       const randomDuration = Math.round(Math.random() * 100);
       const randomYear = randomBetween(2000, 2035);
@@ -313,20 +315,17 @@ export default class Example4 extends React.Component<Props, State> {
   }
 
   refreshMetrics(_e: JQuery.Event, args: any) {
-    if (args && args.current >= 0) {
+    if (args?.current >= 0) {
       setTimeout(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        this.setState((state:State, props:Props)=>{
-          return {
+        this.setState((state: State) => ({
             ...state,
             metrics: {
               startTime: new Date(),
               endTime: new Date(),
-              itemCount: args && args.current || 0,
+              itemCount: args?.current || 0,
               totalItemCount: this.state.dataset?.length ?? 0
             }
-          };
-        });
+        }));
       });
     }
   }
@@ -355,17 +354,16 @@ export default class Example4 extends React.Component<Props, State> {
         <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <br />
-        {this.state.metrics && <span>
-          <b>Metrics:</b> {this.state.metrics.endTime} | {this.state.metrics.itemCount} of
-          {this.state.metrics.totalItemCount}
-          items
+        {this.state.metrics && <span><><b>Metrics:</b>
+          {moment(this.state.metrics.endTime).format('YYYY-MM-DD HH:mm:ss')}
+          | {this.state.metrics.itemCount} of {this.state.metrics.totalItemCount} items </>
         </span>}
 
-        <div className="btn-group" role="group" aria-label="...">
-          <button className="btn btn-sm btn-outline-secondary" data-test="scroll-top-btn" onClick={this.scrollGridTop}>
+        <div className="btn-group mx-1" role="group" aria-label="...">
+          <button className="btn btn-sm btn-outline-secondary" data-test="scroll-top-btn" onClick={() => this.scrollGridTop()}>
             <i className="fa fa-arrow-up"></i>
           </button>
-          <button className="btn btn-sm btn-outline-secondary" data-test="scroll-bottom-btn" onClick={this.scrollGridBottom}>
+          <button className="btn btn-sm btn-outline-secondary" data-test="scroll-bottom-btn" onClick={() => this.scrollGridBottom()}>
             <i className="fa fa-arrow-down"></i>
           </button>
         </div>
@@ -374,16 +372,16 @@ export default class Example4 extends React.Component<Props, State> {
           onClick={() => this.reactGrid.filterService.clearFilters()}>
           Clear Filters
         </button>
-        <button className="btn btn-outline-secondary btn-sm" data-test="clear-sorting"
+        <button className="btn btn-outline-secondary btn-sm mx-1" data-test="clear-sorting"
           onClick={() => this.reactGrid.sortService.clearSorting()}>
           Clear Sorting
         </button>
         <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-filter"
-          onClick={this.setFiltersDynamically}>
+          onClick={() => this.setFiltersDynamically()}>
           Set Filters Dynamically
         </button>
-        <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-sorting"
-          onClick={this.setSortingDynamically}>
+        <button className="btn btn-outline-secondary btn-sm mx-1" data-test="set-dynamic-sorting"
+          onClick={() => this.setSortingDynamically()}>
           Set Sorting Dynamically
         </button>
 
@@ -391,8 +389,8 @@ export default class Example4 extends React.Component<Props, State> {
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}
-          onReactGridCreated= {$event => this.reactGridReady($event.detail.args)}
-          onGridStateChanged= {$event => this.gridStateChanged($event.detail.args)}
+          onGridStateChanged={$event => this.gridStateChanged($event.detail)}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
           onRowCountChanged={$event => this.refreshMetrics($event.detail.eventData, $event.detail.args)}
         />
       </div>

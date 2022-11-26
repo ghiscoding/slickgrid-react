@@ -10,5 +10,8 @@ import { App } from './examples/slickgrid/App';
 import Backend from 'i18next-xhr-backend';
 import 'bootstrap';
 import { SlickgridConfig } from './slickgrid-react';
+import { createRoot } from 'react-dom/client';
 
-ReactDOM.render(<App />, document.getElementById('main'));
+const mainContainer = document.getElementById('main');
+const root = createRoot(mainContainer as HTMLElement);
+root.render(<App />);
