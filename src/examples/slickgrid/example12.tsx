@@ -1,9 +1,8 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { TextExportService } from '@slickgrid-universal/text-export';
-import i18next from 'i18next';
+import i18next, { TFunction } from 'i18next';
 import {
   ReactGridInstance,
-  Column,
   DelimiterType,
   FieldType,
   FileType,
@@ -13,27 +12,28 @@ import {
   GridOption,
   GridStateChange,
   SlickGrid,
-  ReactSlickgridCustomElement,
+  ReactSlickgridComponent,
 } from '../../slickgrid-react';
 import React from 'react';
-// import { i18n } from 'i18next';
+import { withTranslation } from 'react-i18next';
+import BaseSlickGridState from './state-slick-grid-base';
 
 const NB_ITEMS = 1500;
 
-// create a custom translate Formatter (typically you would move that a separate file, for separation of concerns)
-i18next.init({
-  lng: 'en',
-}
-);
 const taskTranslateFormatter: Formatter = (_row, _cell, value, _columnDef, _dataContext, grid) => {
   const gridOptions: GridOption = (grid && typeof grid.getOptions === 'function') ? grid.getOptions() : {};
 
   return gridOptions.i18n?.t('TASK_X', { x: value }) ?? '';
 };
 
-interface Props { }
+interface Props {
+  t: TFunction;
+}
+interface State extends BaseSlickGridState {
+  selectedLanguage: string,
+}
 
-export default class Example12 extends React.Component {
+class Example12 extends React.Component<Props, State> {
   title = 'Example 12: Localization (i18n)';
   subTitle = `Support multiple locales with the i18next plugin, following these steps.
     Take a look at the (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Localization" target="_blank">Wiki documentation</a>)
@@ -63,10 +63,6 @@ export default class Example12 extends React.Component {
     `;
 
   reactGrid!: ReactGridInstance;
-  gridOptions!: GridOption;
-  columnDefinitions: Column[] = [];
-  dataset: any[] = [];
-  selectedLanguage: string;
   duplicateTitleHeaderCount = 1;
   gridObj!: SlickGrid;
   excelExportService = new ExcelExportService();
@@ -75,21 +71,24 @@ export default class Example12 extends React.Component {
 
   constructor(public readonly props: Props) {
     super(props);
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-    this. componentDidMount();
 
     // always start with English for Cypress E2E tests to be consistent
     const defaultLang = 'en';
 
+    this.state = {
+      gridOptions: undefined,
+      columnDefinitions: [],
+      dataset: [],
+      selectedLanguage: defaultLang,
+    };
+
     i18next.changeLanguage(defaultLang);
-    this.selectedLanguage = defaultLang;
   }
 
   componentDidMount() {
     document.title = this.title;
-    // populate the dataset once the grid is ready
-    this.getData(NB_ITEMS);
+
+    this.defineGrid();
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
@@ -99,7 +98,7 @@ export default class Example12 extends React.Component {
 
   /* Define grid Options and Columns */
   defineGrid() {
-    this.columnDefinitions = [
+    const columnDefinitions = [
       {
         id: 'title', name: 'Title', field: 'id', nameKey: 'TITLE', minWidth: 100,
         formatter: taskTranslateFormatter,
@@ -149,7 +148,7 @@ export default class Example12 extends React.Component {
       // { id: 'completed', name: 'Completed', field: 'completed', nameKey: 'COMPLETED', formatter: translateFormatter, sortable: true, minWidth: 100 }
     ];
 
-    this.gridOptions = {
+    const gridOptions = {
       autoResize: {
         container: '#demo-container',
         rightPadding: 10
@@ -195,17 +194,24 @@ export default class Example12 extends React.Component {
       excelExportOptions: { exportWithFormatter: true, sanitizeDataExport: true },
       registerExternalResources: [this.excelExportService, this.textExportService],
     };
+
+    this.setState((state: State) => ({
+      ...state,
+      gridOptions,
+      columnDefinitions,
+      dataset: this.getData(NB_ITEMS),
+    }));
   }
 
   getData(count: number) {
     // mock a dataset
-    this.dataset = [];
+    const tmpData: any[] = [];
     for (let i = 0; i < count; i++) {
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomMonth = Math.floor(Math.random() * 11);
       const randomDay = Math.floor((Math.random() * 29));
 
-      this.dataset[i] = {
+      tmpData[i] = {
         id: i,
         description: (i % 5) ? 'desc ' + i : '🚀🦄 español', // also add some random to test NULL field
         duration: Math.round(Math.random() * 100) + '',
@@ -215,14 +221,20 @@ export default class Example12 extends React.Component {
         completed: (i % 5 === 0) ? 'TRUE' : 'FALSE'
       };
     }
+
+    return tmpData;
   }
 
   dynamicallyAddTitleHeader() {
     // you can dynamically add your column to your column definitions
     // and then use the spread operator [...cols] OR slice to force React to review the changes
     const newCol = { id: `title${this.duplicateTitleHeaderCount++}`, field: 'id', nameKey: 'TITLE', formatter: taskTranslateFormatter, sortable: true, minWidth: 100, filterable: true, params: { useFormatterOuputToFilter: true } };
-    this.columnDefinitions.push(newCol);
-    this.columnDefinitions = this.columnDefinitions.slice(); // or use spread operator [...cols]
+    this.state.columnDefinitions.push(newCol);
+
+    this.setState((state: State) => ({
+      ...state,
+      columnDefinitions: this.state.columnDefinitions.slice(), // or use spread operator [...cols]
+    }));
 
     // NOTE if you use an Extensions (Checkbox Selector, Row Detail, ...) that modifies the column definitions in any way
     // you MUST use "getAllColumnDefinitions()" from the GridService, using this will be ALL columns including the 1st column that is created internally
@@ -256,13 +268,14 @@ export default class Example12 extends React.Component {
   }
 
   async switchLanguage() {
-    const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
+    const nextLanguage = (this.state.selectedLanguage === 'en') ? 'fr' : 'en';
     await i18next.changeLanguage(nextLanguage);
-    this.selectedLanguage = nextLanguage;
+    this.setState((state: State) => ({ ...state, selectedLanguage: nextLanguage }));
   }
 
   render() {
-    return (
+    const { t } = this.props;
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -280,46 +293,47 @@ export default class Example12 extends React.Component {
 
         <div className="row">
           <div className="col-sm-12">
-            <button className="btn btn-outline-secondary btn-sm" data-test="language-button" onClick={this.switchLanguage}>
-              <i className="fa fa-language"></i>
+            <button className="btn btn-outline-secondary btn-sm me-1" data-test="language-button" onClick={() => this.switchLanguage()}>
+              <i className="fa fa-language me-1"></i>
               Switch Language
             </button>
             <label>Locale:</label>
-            <span style={{ fontStyle: 'italic;', width: '70px;' }} data-test="selected-locale">
-              {this.selectedLanguage + '.json'}
+            <span style={{ fontStyle: 'italic', width: '70px' }} data-test="selected-locale">
+              {this.state.selectedLanguage + '.json'}
             </span>
 
             <span style={{ marginLeft: '20px' }}>
               <button className="btn btn-outline-secondary btn-sm" onClick={() => this.exportToFile('csv')}>
-                <i className="fa fa-download"></i>
+                <i className="fa fa-download me-1"></i>
                 Download to CSV
               </button>
-              <button className="btn btn-outline-secondary btn-sm" onClick={() => this.exportToFile('txt')}>
-                <i className="fa fa-download"></i>
+              <button className="btn btn-outline-secondary btn-sm mx-1" onClick={() => this.exportToFile('txt')}>
+                <i className="fa fa-download me-1"></i>
                 Download to Text
               </button>
-              <button className="btn btn-outline-secondary btn-sm" onClick={this.exportToExcel}>
-                <i className="fa fa-file-excel-o text-success"></i>
+              <button className="btn btn-outline-secondary btn-sm" onClick={() => this.exportToExcel()}>
+                <i className="fa fa-file-excel-o text-success me-1"></i>
                 Download to Excel
               </button>
             </span>
             <span style={{ marginLeft: '10px' }}>
-              <button className="btn btn-outline-secondary btn-sm" onClick={this.dynamicallyAddTitleHeader}>
-                <i className="fa fa-plus"></i>
+              <button className="btn btn-outline-secondary btn-sm" onClick={() => this.dynamicallyAddTitleHeader()}>
+                <i className="fa fa-plus me-1"></i>
                 Dynamically Duplicate Title Column
               </button>
             </span>
           </div>
         </div>
-        <ReactSlickgridCustomElement gridId="grid12"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          customEvents={{
-            onReactGridCreated: $event => this.reactGridReady($event.detail),
-            onGridStateChanged: $event => this.gridStateChanged($event.detail),
-          }} />
+        <ReactSlickgridComponent gridId="grid12"
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions}
+          dataset={this.state.dataset}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+          onGridStateChanged={$event => this.gridStateChanged($event.detail)}
+        />
       </div>
     );
   }
 }
+
+export default withTranslation()(Example12);

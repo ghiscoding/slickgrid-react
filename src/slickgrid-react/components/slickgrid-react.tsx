@@ -1,5 +1,6 @@
 // import 3rd party vendor libs
 import * as $ from 'jquery';
+import i18next from 'i18next';
 import React from 'react';
 import 'slickgrid/dist/slick.core.min';
 import 'slickgrid/dist/slick.interactions.min';
@@ -72,8 +73,7 @@ import {
 } from '../services/index';
 import { Subscription } from 'rxjs';
 
-import { SlickgridEventAggregator } from '../custom-elements/slickgridEventAggregator';
-import { GlobalContainerService, GlobalEventPubSubService } from '../services/singletons';
+import { GlobalContainerService } from '../services/singletons';
 import { SlickgridReactProps } from './slickgridReactProps';
 
 // using external non-typed js libraries
@@ -94,7 +94,7 @@ class CustomEventPubSubService extends EventPubSubService {
   }
 }
 
-export class ReactSlickgridCustomElement extends React.Component<SlickgridReactProps, State> {
+export class ReactSlickgridComponent extends React.Component<SlickgridReactProps, State> {
   private _mounted = false;
   private setStateValue(key: string, value: any, callback?: () => void): void {
     if (this.state && this.state[key] === value) {
@@ -184,13 +184,42 @@ export class ReactSlickgridCustomElement extends React.Component<SlickgridReactP
 
   static defaultProps = {
     reactUtilService: new ReactUtilService(),
-    globalEa: GlobalEventPubSubService,
     containerService: GlobalContainerService,
     translaterService: new TranslaterService(),
     dataset: [],
     gridId: '',
     columnDefinitions: [],
   };
+
+  get datasetHierarchical(): any[] | undefined {
+    return this.sharedService.hierarchicalDataset;
+  }
+
+  set datasetHierarchical(newHierarchicalDataset: any[] | undefined) {
+    const isDatasetEqual = dequal(newHierarchicalDataset, this.sharedService?.hierarchicalDataset ?? []);
+    const prevFlatDatasetLn = this._currentDatasetLength;
+    this.sharedService.hierarchicalDataset = newHierarchicalDataset;
+
+    if (newHierarchicalDataset && this.props.columnDefinitions && this.filterService?.clearFilters) {
+      this.filterService.clearFilters();
+    }
+
+    // when a hierarchical dataset is set afterward, we can reset the flat dataset and call a tree data sort that will overwrite the flat dataset
+    if (newHierarchicalDataset && this.grid && this.sortService?.processTreeDataInitialSort) {
+      this.dataview.setItems([], this._gridOptions.datasetIdPropertyName ?? 'id');
+      this.sortService.processTreeDataInitialSort();
+
+      // we also need to reset/refresh the Tree Data filters because if we inserted new item(s) then it might not show up without doing this refresh
+      // however we need 1 cpu cycle before having the DataView refreshed, so we need to wrap this check in a setTimeout
+      setTimeout(() => {
+        const flatDatasetLn = this.dataview.getItemCount();
+        if (flatDatasetLn > 0 && (flatDatasetLn !== prevFlatDatasetLn || !isDatasetEqual)) {
+          this.filterService.refreshTreeDataFilters();
+        }
+      });
+      this._isDatasetHierarchicalInitialized = true;
+    }
+  }
 
   constructor(public readonly props: SlickgridReactProps) {
     super(props);
@@ -321,7 +350,7 @@ export class ReactSlickgridCustomElement extends React.Component<SlickgridReactP
 
   initialization(eventHandler: SlickEventHandler) {
     if (!this._gridOptions || !this._columnDefinitions) {
-      throw new Error('Using `<ReactSlickgridCustomElement>` requires columnDefinitions and gridOptions, it seems that you might have forgot to provide them since at least of them is undefined.');
+      throw new Error('Using `<ReactSlickgridComponent>` requires columnDefinitions and gridOptions, it seems that you might have forgot to provide them since at least of them is undefined.');
     }
 
     this._gridOptions.translater = this.props.translaterService;
@@ -521,6 +550,7 @@ export class ReactSlickgridCustomElement extends React.Component<SlickgridReactP
   componentWillUnmount(shouldEmptyDomElementContainer = false) {
     this._eventPubSubService.publish(`onBeforeGridDestroy`, this.grid);
     this._eventHandler?.unsubscribeAll();
+    i18next.off('languageChanged');
 
     // we could optionally also empty the content of the grid container DOM element
     if (shouldEmptyDomElementContainer) {
@@ -613,7 +643,7 @@ export class ReactSlickgridCustomElement extends React.Component<SlickgridReactP
     }
 
     if (this.props.datasetHierarchical && this.props.datasetHierarchical !== prevProps.datasetHierarchical) {
-      this.datasetHierarchicalChanged(this.props.datasetHierarchical);
+      this.datasetHierarchical = this.props.datasetHierarchical;
     }
   }
 
@@ -671,32 +701,6 @@ export class ReactSlickgridCustomElement extends React.Component<SlickgridReactP
     }
   }
 
-  datasetHierarchicalChanged(newHierarchicalDataset: any[] | undefined) {
-    const isDatasetEqual = dequal(newHierarchicalDataset, this.sharedService?.hierarchicalDataset ?? []);
-    const prevFlatDatasetLn = this._currentDatasetLength;
-    this.sharedService.hierarchicalDataset = newHierarchicalDataset;
-
-    if (newHierarchicalDataset && this.props.columnDefinitions && this.filterService?.clearFilters) {
-      this.filterService.clearFilters();
-    }
-
-    // when a hierarchical dataset is set afterward, we can reset the flat dataset and call a tree data sort that will overwrite the flat dataset
-    if (newHierarchicalDataset && this.grid && this.sortService?.processTreeDataInitialSort) {
-      this.dataview.setItems([], this._gridOptions.datasetIdPropertyName ?? 'id');
-      this.sortService.processTreeDataInitialSort();
-
-      // we also need to reset/refresh the Tree Data filters because if we inserted new item(s) then it might not show up without doing this refresh
-      // however we need 1 cpu cycle before having the DataView refreshed, so we need to wrap this check in a setTimeout
-      setTimeout(() => {
-        const flatDatasetLn = this.dataview.getItemCount();
-        if (flatDatasetLn > 0 && (flatDatasetLn !== prevFlatDatasetLn || !isDatasetEqual)) {
-          this.filterService.refreshTreeDataFilters();
-        }
-      });
-      this._isDatasetHierarchicalInitialized = true;
-    }
-  }
-
   /**
    * Define our internal Post Process callback, it will execute internally after we get back result from the Process backend call
    * For now, this is GraphQL Service ONLY feature and it will basically
@@ -730,21 +734,19 @@ export class ReactSlickgridCustomElement extends React.Component<SlickgridReactP
     }
 
     // on locale change, we have to manually translate the Headers, GridMenu
-    this.subscriptions.push(
-      this.props.globalEa.subscribe('i18n:locale:changed', () => {
-        // publish event of the same name that Slickgrid-Universal uses on a language change event
-        this._eventPubSubService.publish('onLanguageChange');
+    i18next.on('languageChanged', () => {
+      // publish event of the same name that Slickgrid-Universal uses on a language change event
+      this._eventPubSubService.publish('onLanguageChange');
 
-        if (gridOptions.enableTranslate) {
-          this.extensionService.translateAllExtensions();
-          this.translateColumnHeaderTitleKeys();
-          this.translateColumnGroupKeys();
-          if (gridOptions.createPreHeaderPanel && !gridOptions.enableDraggableGrouping) {
-            this.groupingService.translateGroupingAndColSpan();
-          }
+      if (gridOptions.enableTranslate) {
+        this.extensionService.translateAllExtensions();
+        this.translateColumnHeaderTitleKeys();
+        this.translateColumnGroupKeys();
+        if (gridOptions.createPreHeaderPanel && !gridOptions.enableDraggableGrouping) {
+          this.groupingService.translateGroupingAndColSpan();
         }
-      })
-    );
+      }
+    });
 
     // if user set an onInit Backend, we'll run it right away (and if so, we also need to run preProcess, internalPostProcess & postProcess)
     if (gridOptions.backendServiceApi) {
@@ -1420,13 +1422,14 @@ export class ReactSlickgridCustomElement extends React.Component<SlickgridReactP
     let flatDatasetOutput: any[] = [];
 
     // if the hierarchical dataset was already initialized then no need to re-convert it, we can use it directly from the shared service ref
-    if (this._isDatasetHierarchicalInitialized && this.props.datasetHierarchical) {
-      sortedDatasetResult = this.treeDataService.sortHierarchicalDataset(this.props.datasetHierarchical);
+    if (this._isDatasetHierarchicalInitialized && this.datasetHierarchical) {
+      sortedDatasetResult = this.treeDataService.sortHierarchicalDataset(this.datasetHierarchical);
       flatDatasetOutput = sortedDatasetResult.flat;
     } else if (Array.isArray(flatDatasetInput) && flatDatasetInput.length > 0) {
       if (this._gridOptions?.treeDataOptions?.initialSort) {
         // else we need to first convert the flat dataset to a hierarchical dataset and then sort
         sortedDatasetResult = this.treeDataService.convertFlatParentChildToTreeDatasetAndSort(flatDatasetInput, this._columnDefinitions, this._gridOptions);
+        console.log('flatDatasetInput', flatDatasetInput, this._gridOptions, sortedDatasetResult)
         this.sharedService.hierarchicalDataset = sortedDatasetResult.hierarchical;
         flatDatasetOutput = sortedDatasetResult.flat;
       } else {
@@ -1518,6 +1521,6 @@ export class ReactSlickgridCustomElement extends React.Component<SlickgridReactP
         {/* <!--Footer slot if you need to create a complex custom footer-- > */}
         <slot name="slickgrid-footer"></slot>
       </div >
-    );    
+    );
   }
 }

@@ -1,0 +1,53 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Library",
+      "type": "shell",
+      "command": "yarn run build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build GitHub Demo (prod build)",
+      "type": "shell",
+      "command": "yarn run build:demo",
+      "problemMatcher": []
+    },
+    {
+      "label": "Cypress Open GUI",
+      "type": "shell",
+      "command": "yarn run cypress:open",
+      "problemMatcher": []
+    },
+    {
+      "label": "Cypress CI (mochawesome)",
+      "type": "shell",
+      "command": "yarn run cypress:ci",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Jest Tests with Coverage",
+      "type": "shell",
+      "command": "yarn test:jest:coverage",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Jest Watch",
+      "type": "shell",
+      "command": "yarn test:jest",
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Library Development",
+      "type": "shell",
+      "command": "yarn start:dev",
+      "problemMatcher": []
+    },
+    {
+      "label": "Release new Version (prompt)",
+      "type": "shell",
+      "command": "npm run release",
+      "problemMatcher": []
+    }
+  ]
+}
