@@ -17,47 +17,52 @@ import {
   Grouping,
   SlickDataView,
   SlickGrid,
-  ReactSlickgridCustomElement
+  ReactSlickgridComponent
 } from '../../slickgrid-react';
 import React from 'react';
+import BaseSlickGridState from './state-slick-grid-base';
 
 interface Props { }
+interface State extends BaseSlickGridState {
+  durationOrderByCount: boolean;
+  processing: boolean;
+  selectedGroupingFields: Array<string | GroupingGetterFunction>;
+}
 
-export default class Example18 extends React.Component {
+export default class Example18 extends React.Component<Props, State> {
   title = 'Example 18: Draggable Grouping & Aggregators';
   subTitle = `
   <ul>
-  <li><a href="https://github.com/ghiscoding/slickgrid-react/wiki/Grouping-&-Aggregators" target="_blank">Wiki docs</a></li>
-  <li>This example shows 3 ways of grouping</li>
-  <ol>
-  <li>Drag any Column Header on the top placeholder to group by that column (support moti-columns grouping by adding more columns to the drop area).</li>
-  <li>Use buttons and defined functions to group by whichever field you want</li>
-  <li>Use the Select dropdown to group, the position of the Selects represent the grouping level</li>
-  </ol>
-  <li>Fully dynamic and interactive multi-level grouping with filtering and aggregates ovor 50'000 items</li>
-  <li>Each grouping level can have its own aggregates (over child rows, child groups, or all descendant rows)..</li>
-  <li>Use "Aggregators" and "GroupTotalFormatters" directly from Slickgrid-React</li>
+    <li>This example shows 3 ways of grouping <a href="https://github.com/ghiscoding/slickgrid-react/wiki/Grouping-&-Aggregators" target="_blank">Wiki docs</a></li>
+    <ol>
+      <li>Drag any Column Header on the top placeholder to group by that column (support moti-columns grouping by adding more columns to the drop area).</li>
+      <li>Use buttons and defined functions to group by whichever field you want</li>
+      <li>Use the Select dropdown to group, the position of the Selects represent the grouping level</li>
+    </ol>
+    <li>Fully dynamic and interactive multi-level grouping with filtering and aggregates ovor 50'000 items</li>
+    <li>Each grouping level can have its own aggregates (over child rows, child groups, or all descendant rows)..</li>
+    <li>Use "Aggregators" and "GroupTotalFormatters" directly from Slickgrid-React</li>
   </ul>
   `;
 
   reactGrid!: ReactGridInstance;
-  columnDefinitions: Column[] = [];
-  dataset: any[] = [];
   dataviewObj!: SlickDataView;
   draggableGroupingPlugin: any;
-  durationOrderByCount = false;
   gridObj!: SlickGrid;
-  gridOptions!: GridOption;
-  processing = false;
-  selectedGroupingFields: Array<string | GroupingGetterFunction> = ['', '', ''];
   excelExportService = new ExcelExportService();
   textExportService = new TextExportService();
 
   constructor(public readonly props: Props) {
     super(props);
-    // define the grid options & columns and then create the grid itself
-    this.loadData(500);
-    this.defineGrid();
+
+    this.state = {
+      gridOptions: undefined,
+      columnDefinitions: [],
+      dataset: [],
+      durationOrderByCount: false,
+      processing: false,
+      selectedGroupingFields: ['', '', ''],
+    }
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
@@ -66,9 +71,13 @@ export default class Example18 extends React.Component {
     this.dataviewObj = reactGrid.dataView;
   }
 
+  componentDidMount() {
+    this.defineGrid();
+  }
+
   /* Define grid Options and Columns */
   defineGrid() {
-    this.columnDefinitions = [
+    const columnDefinitions: Column[] = [
       {
         id: 'title', name: 'Title', field: 'title',
         width: 70, minWidth: 50,
@@ -97,7 +106,7 @@ export default class Example18 extends React.Component {
           getter: 'duration',
           formatter: (g) => `Duration: ${g.value}  <span style="color:green">(${g.count} items)</span>`,
           comparer: (a, b) => {
-            return this.durationOrderByCount ? (a.count - b.count) : SortComparers.numeric(a.value, b.value, SortDirectionNumber.asc);
+            return this.state.durationOrderByCount ? (a.count - b.count) : SortComparers.numeric(a.value, b.value, SortDirectionNumber.asc);
           },
           aggregators: [
             new Aggregators.Sum('cost')
@@ -206,7 +215,7 @@ export default class Example18 extends React.Component {
       }
     ];
 
-    this.gridOptions = {
+    const gridOptions: GridOption = {
       autoResize: {
         container: '#demo-container',
         rightPadding: 10
@@ -241,18 +250,25 @@ export default class Example18 extends React.Component {
       textExportOptions: { sanitizeDataExport: true },
       registerExternalResources: [this.excelExportService, this.textExportService],
     };
+
+    this.setState((state: State) => ({
+      ...state,
+      gridOptions,
+      columnDefinitions,
+      dataset: this.loadData(500)
+    }));
   }
 
   loadData(rowCount: number) {
     // mock a dataset
-    this.dataset = [];
+    const tmpData: any[] = [];
     for (let i = 0; i < rowCount; i++) {
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomMonth = Math.floor(Math.random() * 11);
       const randomDay = Math.floor((Math.random() * 29));
       const randomPercent = Math.round(Math.random() * 100);
 
-      this.dataset[i] = {
+      tmpData[i] = {
         id: 'id_' + i,
         num: i,
         title: 'Task ' + i,
@@ -265,6 +281,14 @@ export default class Example18 extends React.Component {
         effortDriven: (i % 5 === 0)
       };
     }
+    return tmpData;
+  }
+
+  setData(rowCount: number) {
+    this.setState((state: State, props: Props) => ({
+      ...state,
+      dataset: this.loadData(rowCount)
+    }));
   }
 
   clearGroupsAndSelects() {
@@ -273,12 +297,42 @@ export default class Example18 extends React.Component {
   }
 
   clearGroupingSelects() {
-    this.selectedGroupingFields.forEach((_g, i) => this.selectedGroupingFields[i] = '');
-    this.selectedGroupingFields = [...this.selectedGroupingFields]; // force dirty checking
+    this.state.selectedGroupingFields.forEach((_g, i) => this.state.selectedGroupingFields[i] = '');
+    this.setState((state: State) => ({
+      ...state,
+      selectedGroupingFields: ['', '', ''], // force dirty checking
+    }));
+
+    // reset all select dropdown using JS
+    this.state.selectedGroupingFields.forEach((_val, index) => this.dynamicallyChangeSelectGroupByValue(index, ''));
+  }
+
+  changeSelectedGroupByField(e: React.ChangeEvent<HTMLSelectElement>, index: number) {
+    const val = (e.target as HTMLSelectElement).value;
+    this.updateSelectGroupFieldsArray(index, val, () => this.groupByFieldName());
+  }
+
+  /** Change the select dropdown group using pure JS */
+  dynamicallyChangeSelectGroupByValue(selectGroupIndex = 0, val = '') {
+    const selectElm = document.querySelector<HTMLSelectElement>(`.select-group-${selectGroupIndex}`);
+    if (selectElm) {
+      selectElm.selectedIndex = Array.from(selectElm.options).findIndex(o => o.value === val);
+      this.updateSelectGroupFieldsArray(selectGroupIndex, val);
+    }
+  }
+
+  /** update grouping field array React state */
+  updateSelectGroupFieldsArray(index: number, val: string, setStateCallback?: () => void) {
+    const tmpSelectedGroupingFields = this.state.selectedGroupingFields;
+    tmpSelectedGroupingFields[index] = val;
+    this.setState((state: State) => ({
+      ...state,
+      selectedGroupingFields: [...tmpSelectedGroupingFields], // force dirty checking
+    }), setStateCallback);
   }
 
   clearGrouping() {
-    if (this.draggableGroupingPlugin && this.draggableGroupingPlugin.setDroppedGroups) {
+    if (this.draggableGroupingPlugin?.setDroppedGroups) {
       this.draggableGroupingPlugin.clearDroppedGroups();
     }
     this.gridObj.invalidate(); // invalidate all rows and re-render
@@ -309,15 +363,20 @@ export default class Example18 extends React.Component {
 
   groupByDuration() {
     this.clearGrouping();
-    if (this.draggableGroupingPlugin && this.draggableGroupingPlugin.setDroppedGroups) {
+    this.clearGroupingSelects();
+
+    if (this.draggableGroupingPlugin) {
       this.showPreHeader();
       this.draggableGroupingPlugin.setDroppedGroups('duration');
       this.gridObj.invalidate(); // invalidate all rows and re-render
     }
+    // use JS to change 1st select dropdown value
+    this.dynamicallyChangeSelectGroupByValue(0, 'duration');
   }
 
   groupByDurationOrderByCount(sortedByCount = false) {
-    this.durationOrderByCount = sortedByCount;
+    this.setState((state: State) => ({ ...state, durationOrderByCount: sortedByCount }));
+
     this.clearGrouping();
     this.groupByDuration();
 
@@ -329,24 +388,28 @@ export default class Example18 extends React.Component {
 
   groupByDurationEffortDriven() {
     this.clearGrouping();
-    if (this.draggableGroupingPlugin && this.draggableGroupingPlugin.setDroppedGroups) {
+    if (this.draggableGroupingPlugin) {
       this.showPreHeader();
-      this.draggableGroupingPlugin.setDroppedGroups(['duration', 'effortDriven']);
+      const groupingFields = ['duration', 'effortDriven'];
+      this.draggableGroupingPlugin.setDroppedGroups(groupingFields);
       this.gridObj.invalidate(); // invalidate all rows and re-render
 
       // you need to manually add the sort icon(s) in UI
       const sortColumns = [{ columnId: 'duration', sortAsc: true }];
       this.reactGrid.filterService.setSortColumnIcons(sortColumns);
+
+      // use JS to change 1st select dropdown value
+      groupingFields.forEach((groupingVal, index) => this.dynamicallyChangeSelectGroupByValue(index, groupingVal));
     }
   }
 
   groupByFieldName() {
     this.clearGrouping();
-    if (this.draggableGroupingPlugin && this.draggableGroupingPlugin.setDroppedGroups) {
+    if (this.draggableGroupingPlugin?.setDroppedGroups) {
       this.showPreHeader();
 
       // get the field names from Group By select(s) dropdown, but filter out any empty fields
-      const groupedFields = this.selectedGroupingFields.filter((g) => g !== '');
+      const groupedFields = this.state.selectedGroupingFields.filter((g) => g !== '');
       if (groupedFields.length === 0) {
         this.clearGrouping();
       } else {
@@ -357,13 +420,15 @@ export default class Example18 extends React.Component {
   }
 
   onGroupChanged(change: { caller?: string; groupColumns: Grouping[] }) {
+    console.log('onGroupChanged', change);
     const caller = change && change.caller || [];
     const groups = change && change.groupColumns || [];
+    const tmpSelectedGroupingFields = this.state.selectedGroupingFields;
 
-    if (Array.isArray(this.selectedGroupingFields) && Array.isArray(groups) && groups.length > 0) {
+    if (Array.isArray(tmpSelectedGroupingFields) && Array.isArray(groups) && groups.length > 0) {
       // update all Group By select dropdown
-      this.selectedGroupingFields.forEach((_g, i) => this.selectedGroupingFields[i] = groups[i] && groups[i].getter || '');
-      this.selectedGroupingFields = [...this.selectedGroupingFields]; // force dirty checking
+      tmpSelectedGroupingFields.forEach((_g, i) => tmpSelectedGroupingFields[i] = groups[i]?.getter ?? '');
+      this.setState((state: State) => ({ ...state, selectedGroupingFields: [...tmpSelectedGroupingFields] }));
     } else if (groups.length === 0 && caller === 'remove-group') {
       this.clearGroupingSelects();
     }
@@ -394,7 +459,7 @@ export default class Example18 extends React.Component {
   }
 
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -408,30 +473,28 @@ export default class Example18 extends React.Component {
         </h2>
         <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
-        <form className="form-inline">
+        <form className="form-inline" onSubmit={(e) => e.preventDefault()}>
           <div className="row">
             <div className="col-sm-12">
-              <button className="btn btn-outline-secondary btn-xs" data-test="add-500-rows-btn" onClick={() => this.loadData(500)}>
+              <button className="btn btn-outline-secondary btn-xs" data-test="add-500-rows-btn" onClick={() => this.setData(500)}>
                 500 rows
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="add-50k-rows-btn" onClick={() => this.loadData(50000)}>
+              <button className="btn btn-outline-secondary btn-xs" data-test="add-50k-rows-btn" onClick={() => this.setData(50000)}>
                 50k rows
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="clear-grouping-btn"
-                onClick={this.clearGroupsAndSelects}>
+              <button className="btn btn-outline-secondary btn-xs" data-test="clear-grouping-btn" onClick={() => this.clearGroupsAndSelects()}>
                 <i className="fa fa-times"></i> Clear grouping
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="collapse-all-btn"
-                onClick={this.collapseAllGroups}>
+              <button className="btn btn-outline-secondary btn-xs" data-test="collapse-all-btn" onClick={() => this.collapseAllGroups()}>
                 <i className="fa fa-compress"></i> Collapse all groups
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="expand-all-btn" onClick={this.expandAllGroups}>
+              <button className="btn btn-outline-secondary btn-xs" data-test="expand-all-btn" onClick={() => this.expandAllGroups()}>
                 <i className="fa fa-expand"></i> Expand all groups
               </button>
-              <button className="btn btn-outline-secondary btn-xs" onClick={this.toggleDraggableGroupingRow}>
+              <button className="btn btn-outline-secondary btn-xs" onClick={() => this.toggleDraggableGroupingRow()}>
                 Toggle Draggable Grouping Row
               </button>
-              <button className="btn btn-outline-secondary btn-xs" onClick={this.exportToExcel}>
+              <button className="btn btn-outline-secondary btn-xs" onClick={() => this.exportToExcel()}>
                 <i className="fa fa-file-excel-o text-success"></i> Export to Excel
               </button>
             </div>
@@ -448,15 +511,15 @@ export default class Example18 extends React.Component {
                 Group by duration &amp; sort groups by count
               </button>
               <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-effort-btn"
-                onClick={this.groupByDurationEffortDriven}>
+                onClick={() => this.groupByDurationEffortDriven()}>
                 Group by Duration then Effort-Driven
               </button>
               <button className="btn btn-outline-secondary btn-xs" data-test="set-dynamic-filter"
-                onClick={this.setFiltersDynamically}>
+                onClick={() => this.setFiltersDynamically()}>
                 Set Filters Dynamically
               </button>
               <button className="btn btn-outline-secondary btn-xs" data-test="set-dynamic-sorting"
-                onClick={this.setSortingDynamically}>
+                onClick={() => this.setSortingDynamically()}>
                 Set Sorting Dynamically
               </button>
             </div>
@@ -468,14 +531,13 @@ export default class Example18 extends React.Component {
                 <div className="row form-group">
                   <label htmlFor="field1" className="col-sm-3 mb-2">Group by field(s)</label>
                   {
-                    this.selectedGroupingFields.map((groupField) =>
-                      <div className="form-group col-md-3" key={groupField.toString()}>
-                        <select className="form-select" onChange={() => this.groupByFieldName()}
-                          value={this.selectedGroupingFields.toString()}>
+                    this.state.selectedGroupingFields.map((groupField, index) =>
+                      <div className="form-group col-md-3" key={index}>
+                        <select className={`form-select select-group-${index}`} data-test="search-column-list" onChange={($event) => this.changeSelectedGroupByField($event, index)}>
                           <option value="''">...</option>
                           {
-                            this.columnDefinitions.map((column) =>
-                              <option value={column.id} key={column.id}></option>
+                            this.state.columnDefinitions.map((column) =>
+                              <option value={column.id} key={column.id}>{column.id}</option>
                             )
                           }
                         </select>
@@ -492,13 +554,12 @@ export default class Example18 extends React.Component {
           <hr />
         </div>
 
-        <ReactSlickgridCustomElement gridId="grid18"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          customEvents={{
-            onReactGridCreated: $event => this.reactGridReady($event.detail)
-          }} />
+        <ReactSlickgridComponent gridId="grid18"
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions}
+          dataset={this.state.dataset}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+        />
       </div>
     );
   }

@@ -8,10 +8,11 @@ import {
   Metrics,
   MultipleSelectOption,
   OperatorType,
-  ReactSlickgridCustomElement
+  ReactSlickgridComponent
 } from '../../slickgrid-react';
 import React from 'react';
 import './example25.scss'; // provide custom CSS/SASS styling
+import BaseSlickGridState from './state-slick-grid-base';
 
 const COUNTRIES_API = 'https://countries.trevorblades.com/';
 
@@ -28,10 +29,19 @@ export interface Country {
   languageName: string;
   languageNative: string;
 }
+interface Status { text: string, class: string }
 
 interface Props { }
+interface State extends BaseSlickGridState {
+  metrics?: Metrics;
+  graphqlQuery: string;
+  isWithCursor: boolean;
+  processing: boolean;
+  selectedLanguage: string;
+  status: Status;
+}
 
-export default class Example25 extends React.Component {
+export default class Example25 extends React.Component<Props, State> {
   title = 'Example 25: GraphQL Basic API without Pagination';
   subTitle = `
   Use basic GraphQL query with any external public APIs (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/GraphQL" target="_blank">Wiki docs</a>).
@@ -48,25 +58,29 @@ export default class Example25 extends React.Component {
   `;
 
   reactGrid!: ReactGridInstance;
-  columnDefinitions: Column[] = [];
-  gridOptions!: GridOption;
-  dataset = [];
-  metrics!: Metrics;
-
-  isWithCursor = false;
-  graphqlQuery = '';
-  processing = false;
-  selectedLanguage = '';
-  status = { text: '', class: '' };
 
   constructor(public readonly props: Props) {
     super(props);
+
+    this.state = {
+      gridOptions: undefined,
+      columnDefinitions: [],
+      isWithCursor: false,
+      graphqlQuery: '',
+      metrics: undefined,
+      processing: false,
+      selectedLanguage: '',
+      status: { text: '', class: '' },
+    }
+  }
+
+  async componentDidMount() {
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
   }
 
   defineGrid() {
-    this.columnDefinitions = [
+    const columnDefinitions: Column[] = [
       { id: 'countryCode', field: 'code', name: 'Code', maxWidth: 90, sortable: true, filterable: true, columnGroup: 'Country' },
       { id: 'countryName', field: 'name', name: 'Name', width: 60, sortable: true, filterable: true, columnGroup: 'Country' },
       { id: 'countryNative', field: 'native', name: 'Native', width: 60, sortable: true, filterable: true, columnGroup: 'Country' },
@@ -169,7 +183,7 @@ export default class Example25 extends React.Component {
       },
     ];
 
-    this.gridOptions = {
+    const gridOptions: GridOption = {
       autoResize: {
         container: '#demo-container',
         rightPadding: 10
@@ -197,18 +211,29 @@ export default class Example25 extends React.Component {
         preProcess: () => this.displaySpinner(true),
         process: (query) => this.getCountries(query),
         postProcess: (result: GraphqlResult<Country>) => {
-          this.metrics = result.metrics as Metrics;
+          this.setState((state: State, props: Props) => ({ ...state, metrics: result.metrics }));
           this.displaySpinner(false);
         }
       } as GraphqlServiceApi
     };
+
+    this.setState((state: State, props: Props) => ({
+      ...state,
+      gridOptions,
+      columnDefinitions,
+    }));
   }
 
   displaySpinner(isProcessing: boolean) {
-    this.processing = isProcessing;
-    this.status = (isProcessing)
+    const newStatus = (isProcessing)
       ? { text: 'processing...', class: 'alert alert-danger' }
       : { text: 'finished', class: 'alert alert-success' };
+
+    this.setState((state: State, props: any) => ({
+      ...state,
+      status: newStatus,
+      processing: isProcessing,
+    }));
   }
 
   // --
@@ -222,7 +247,8 @@ export default class Example25 extends React.Component {
     return new Promise(async resolve => {
       const response = await fetch(COUNTRIES_API, {
         method: 'post',
-        body: json({ query })
+        body: JSON.stringify({ query }),
+        headers: { "Content-type": "application/json; charset=UTF-8" }
       });
       resolve(response.json());
     });
@@ -238,7 +264,8 @@ export default class Example25 extends React.Component {
     return new Promise(async resolve => {
       const response = await fetch(COUNTRIES_API, {
         method: 'post',
-        body: json({ query: continentQuery })
+        body: JSON.stringify({ query: continentQuery }),
+        headers: { "Content-type": "application/json; charset=UTF-8" }
       });
       resolve(response.json());
     });
@@ -251,10 +278,12 @@ export default class Example25 extends React.Component {
    */
   getLanguages(): Promise<GraphqlResult<{ code: string; name: string; native: string; }>> {
     const languageQuery = `query { languages { code, name, native  }}`;
+    console.log('GET LANG', JSON.stringify({ query: languageQuery }))
     return new Promise(async resolve => {
       const response = await fetch(COUNTRIES_API, {
         method: 'post',
-        body: json({ query: languageQuery })
+        body: JSON.stringify({ query: languageQuery }),
+        headers: { "Content-type": "application/json; charset=UTF-8" }
       });
       resolve(response.json());
     });
@@ -276,7 +305,7 @@ export default class Example25 extends React.Component {
   }
 
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -292,19 +321,19 @@ export default class Example25 extends React.Component {
 
         <div className="row">
           <div className="col-xs-6 col-sm-3">
-            <div className={this.status.class} role="alert" data-test="status">
-              <strong>Status: </strong> {this.status.text}
-              {!this.processing && <span>
+            <div className={this.state.status.class} role="alert" data-test="status">
+              <strong>Status: </strong> {this.state.status.text}
+              {this.state.processing ? <span>
                 <i className="fa fa-refresh fa-spin fa-lg fa-fw"></i>
-              </span>}
+              </span> : ''}
             </div>
           </div>
         </div>
 
-        <ReactSlickgridCustomElement gridId="grid25"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset} />
+        <ReactSlickgridComponent gridId="grid25"
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions}
+          dataset={this.state.dataset} />
       </div>
     );
   }

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
-import { ReactGridInstance, Formatter, SlickGrid, ReactSlickgridCustomElement } from '../../slickgrid-react';
+import { ReactGridInstance, Formatter, SlickGrid, ReactSlickgridComponent } from '../../slickgrid-react';
 import BaseSlickGridState from './state-slick-grid-base';
 
 const columnsWithHighlightingById: any = {};
@@ -51,7 +51,7 @@ export default class Example7 extends React.Component<Props, State> {
     this.state = {
       columnDefinitions: [],
       dataset: [],
-      gridOptions:{}
+      gridOptions: undefined
     };
   }
 
@@ -115,7 +115,7 @@ export default class Example7 extends React.Component<Props, State> {
 
   getData() {
     // Set up some test columns.
-    const columnDefinitions = [];
+    const columnDefinitions: any[] = [];
     for (let i = 0; i < 10; i++) {
       columnDefinitions.push({
         id: i,
@@ -196,7 +196,7 @@ export default class Example7 extends React.Component<Props, State> {
     };
 
     // mock a dataset
-    const mockDataset = [];
+    const mockDataset: any[] = [];
     for (let i = 0; i < 100; i++) {
       const d = (mockDataset[i] = {});
       (d as any)['id'] = i;
@@ -216,7 +216,7 @@ export default class Example7 extends React.Component<Props, State> {
   }
 
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -230,11 +230,11 @@ export default class Example7 extends React.Component<Props, State> {
         </h2>
         <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
-        <ReactSlickgridCustomElement gridId="grid7"
+        <ReactSlickgridComponent gridId="grid7"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}
-          onReactGridCreated= {$event => this.reactGridReady($event.detail.args)}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
         />
       </div>
     );

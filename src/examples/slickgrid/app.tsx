@@ -1,4 +1,7 @@
 import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+import { NavBar } from '../../NavBar';
 import Example1 from './example1';
 import Example2 from './example2';
 import Example3 from './example3';
@@ -30,43 +33,44 @@ import Example29 from './example29';
 import Example30 from './example30';
 import Example31 from './example31';
 import Example32 from './example32';
-import Router from './Router';
-import { Redirect, Route, Switch } from 'react-router-dom';
-import { NavBar } from '../../NavBar';
+// import Example33 from './example33';
 
-const routes = [
-  { route: '/example1', component: Example1, title: '1- Basic Grid / 2 Grids' },
-  { route: '/example2', component: Example2, title: '2- Formatters' },
-  { route: '/example3', component: Example3, title: '3- Editors / Delete' },
-  { route: '/example4', component: Example4, title: '4- Client Side Sort/Filter' },
-  { route: '/example5', component: Example5, title: '5- Backend OData Service' },
-  { route: '/example6', component: Example6, title: '6- Backend GraphQL Service' },
-  { route: '/example7', component: Example7, title: '7- Header Button Plugin' },
-  { route: '/example8', component: Example8, title: '8- Header Menu Plugin' },
-  { route: '/example9', component: Example9, title: '9- Grid Menu Control' },
-  { route: '/example10', component: Example10, title: '10- Row Selection / 2 Grids' },
-  { route: '/example11', component: Example11, title: '11- Add/Update Grid Item' },
-  { route: '/example12', component: Example12, title: '12- Localization (i18n)' },
-  { route: '/example13', component: Example13, title: '13- Grouping & Aggregators' },
-  { route: '/example14', component: Example14, title: '14- Column Span & Header Grouping' },
-  { route: '/example15', component: Example15, title: '15- Grid State & Local Storage' },
-  { route: '/example16', component: Example16, title: '16- Row Move Plugin' },
-  { route: '/example17', component: Example17, title: '17- Remote Model' },
-  { route: '/example18', component: Example18, title: '18- Draggable Grouping' },
-  { route: '/example19', component: Example19, title: '19- Row Detail View' },
-  { route: '/example20', component: Example20, title: '20- Pinned Columns/Rows' },
-  { route: '/example21', component: Example21, title: '21- Grid AutoHeight (full height)' },
-  { route: '/example22', component: Example22, title: '22- with Bootstrap Tabs' },
-  { route: '/example23', component: Example23, title: '23- Filter by Range of Values' },
-  { route: '/example24', component: Example24, title: '24- Cell & Context Menu' },
-  { route: '/example25', component: Example25, title: '25- GraphQL without Pagination' },
-  // { route: '/example26', component: Example26, title: '26- Use of Aurelia Components' },
-  { route: '/example27', component: Example27, title: '27- Tree Data (Parent/Child)' },
-  { route: '/example28', component: Example28, title: '28- Tree Data (Hierarchical set)' },
-  { route: '/example29', component: Example29, title: '29- Grid with header and footer slots' },
-  { route: '/example30', component: Example30, title: '30- Composite Editor Modal' },
-  { route: '/example31', component: Example31, title: '31- Backend OData with RxJS' },
-  { route: '/example32', component: Example32, title: '32- Columns Resize by Content' },
+const routes: Array<{ route: string; component: any; title: string; }> = [
+  // { route: '/example1', component: React.lazy(() => import('./example1')), title: '1- Basic Grid / 2 Grids' },
+  { route: '/example1', component: <Example1 />, title: '1- Basic Grid / 2 Grids' },
+  { route: '/example2', component: <Example2 />, title: '2- Formatters' },
+  { route: '/example3', component: <Example3 />, title: '3- Editors / Delete' },
+  { route: '/example4', component: <Example4 />, title: '4- Client Side Sort/Filter' },
+  { route: '/example5', component: <Example5 />, title: '5- Backend OData Service' },
+  { route: '/example6', component: <Example6 />, title: '6- Backend GraphQL Service' },
+  { route: '/example7', component: <Example7 />, title: '7- Header Button Plugin' },
+  { route: '/example8', component: <Example8 />, title: '8- Header Menu Plugin' },
+  { route: '/example9', component: <Example9 />, title: '9- Grid Menu Control' },
+  { route: '/example10', component: <Example10 />, title: '10- Row Selection / 2 Grids' },
+  { route: '/example11', component: <Example11 />, title: '11- Add/Update Grid Item' },
+  { route: '/example12', component: <Example12 />, title: '12- Localization (i18n)' },
+  { route: '/example13', component: <Example13 />, title: '13- Grouping & Aggregators' },
+  { route: '/example14', component: <Example14 />, title: '14- Column Span & Header Grouping' },
+  { route: '/example15', component: <Example15 />, title: '15- Grid State & Local Storage' },
+  { route: '/example16', component: <Example16 />, title: '16- Row Move Plugin' },
+  { route: '/example17', component: <Example17 />, title: '17- Remote Model' },
+  { route: '/example18', component: <Example18 />, title: '18- Draggable Grouping' },
+  { route: '/example19', component: <Example19 />, title: '19- Row Detail View' },
+  { route: '/example20', component: <Example20 />, title: '20- Pinned Columns/Rows' },
+  { route: '/example21', component: <Example21 />, title: '21- Grid AutoHeight (full height)' },
+  { route: '/example22', component: <Example22 />, title: '22- with Bootstrap Tabs' },
+  { route: '/example23', component: <Example23 />, title: '23- Filter by Range of Values' },
+  { route: '/example24', component: <Example24 />, title: '24- Cell & Context Menu' },
+  { route: '/example25', component: <Example25 />, title: '25- GraphQL without Pagination' },
+  // { route: '/example26', component: <Example26/>, title: '26- Use of React Components' },
+  { route: '/example27', component: <Example27 />, title: '27- Tree Data (Parent/Child)' },
+  { route: '/example28', component: <Example28 />, title: '28- Tree Data (Hierarchical set)' },
+  { route: '/example29', component: <Example29 />, title: '29- Grid with header and footer slots' },
+  { route: '/example30', component: <Example30 />, title: '30- Composite Editor Modal' },
+  { route: '/example31', component: <Example31 />, title: '31- Backend OData with RxJS' },
+  { route: '/example32', component: <Example32 />, title: '32- Columns Resize by Content' },
+  // { route: '/example33', component: <Example33 />, title: '33- Regular & Custom Tooltip' },
+  // { route: '/example34', component: <Example34 />, title: '34- Real-Time Trading Platform' },
 ];
 
 
@@ -91,16 +95,15 @@ export class App extends React.Component {
             </section>
             <section className="panel-wm-content">
               <div id="demo-container">
-                <Router>
-                  <Switch>
+                <BrowserRouter>
+                  <Routes>
                     {
                       routes.map(row =>
-                        <Route path={row.route} component={row.component} key={row.route} />
+                        <Route path={row.route} element={row.component} key={row.route} />
                       )
                     }
-                    <Redirect to="/example1" />
-                  </Switch>
-                </Router>
+                  </Routes>
+                </BrowserRouter>
               </div>
             </section>
           </div>

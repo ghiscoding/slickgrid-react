@@ -1,10 +1,19 @@
-import { ReactGridInstance, Column, FieldType, Filters, Formatters, GridOption, GridStateChange, ReactSlickgridCustomElement } from '../../slickgrid-react';
+import { ReactGridInstance, Column, FieldType, Filters, Formatters, GridOption, GridStateChange, ReactSlickgridComponent } from '../../slickgrid-react';
 import React from 'react';
 import './example10.scss'; // provide custom CSS/SASS styling
 
 interface Props { }
-
-export default class Example10 extends React.Component {
+interface State {
+  dataset1?: any[];
+  dataset2?: any[];
+  gridOptions1?: GridOption;
+  gridOptions2?: GridOption;
+  columnDefinitions1?: Column[];
+  columnDefinitions2?: Column[];
+  selectedTitle: string;
+  selectedTitles: any[];
+}
+export default class Example10 extends React.Component<Props, State> {
   title = 'Example 10: Multiple Grids with Row Selection';
   subTitle = `
     Row selection, single or multi-select (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Row-Selection" target="_blank">Wiki docs</a>).
@@ -14,32 +23,33 @@ export default class Example10 extends React.Component {
       <li>NOTE: Any Row Selection(s) will be reset when using Pagination and changing Page (you will need to set it back manually if you want it back)</li>
     </ul>
   `;
+  isMounted = false;
   isGrid2WithPagination = true;
 
   reactGrid1!: ReactGridInstance;
   reactGrid2!: ReactGridInstance;
-  columnDefinitions1: Column[] = [];
-  columnDefinitions2: Column[] = [];
-  gridOptions1!: GridOption;
-  gridOptions2!: GridOption;
-  dataset1: any[] = [];
-  dataset2: any[] = [];
-  selectedTitles: any[] = [];
-  selectedTitle = '';
   selectedGrid2IDs: number[] = [];
 
   constructor(public readonly props: Props) {
     super(props);
-    this.componentDidMount();
-    // define the grid options & columns and then create the grid itself
-    this.defineGrids();
+
+    this.state = {
+      gridOptions1: undefined,
+      gridOptions2: undefined,
+      columnDefinitions1: [],
+      columnDefinitions2: [],
+      dataset1: [],
+      dataset2: [],
+      selectedTitle: '',
+      selectedTitles: [],
+    };
   }
 
   componentDidMount() {
     document.title = this.title;
-    // populate the dataset once the grid is ready
-    this.dataset1 = this.prepareData(495);
-    this.dataset2 = this.prepareData(525);
+
+    // define the grid options & columns and then create the grid itself
+    this.defineGrids();
   }
 
   reactGrid1Ready(reactGrid: ReactGridInstance) {
@@ -52,7 +62,7 @@ export default class Example10 extends React.Component {
 
   /* Define grid Options and Columns */
   defineGrids() {
-    this.columnDefinitions1 = [
+    const columnDefinitions1 = [
       { id: 'title', name: 'Title', field: 'title', sortable: true, type: FieldType.string, filterable: true },
       { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true, type: FieldType.number, filterable: true },
       { id: 'complete', name: '% Complete', field: 'percentComplete', formatter: Formatters.percentCompleteBar, type: FieldType.number, filterable: true, sortable: true },
@@ -77,7 +87,7 @@ export default class Example10 extends React.Component {
       }
     ];
 
-    this.columnDefinitions2 = [
+    const columnDefinitions2 = [
       { id: 'title', name: 'Title', field: 'title', sortable: true, type: FieldType.string, filterable: true },
       { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true, type: FieldType.number, filterable: true },
       { id: 'complete', name: '% Complete', field: 'percentComplete', formatter: Formatters.percentCompleteBar, type: FieldType.number, filterable: true, sortable: true },
@@ -102,7 +112,7 @@ export default class Example10 extends React.Component {
       }
     ];
 
-    this.gridOptions1 = {
+    const gridOptions1: GridOption = {
       enableAutoResize: false,
       enableCellNavigation: true,
       enableRowSelection: true,
@@ -140,7 +150,7 @@ export default class Example10 extends React.Component {
       },
     };
 
-    this.gridOptions2 = {
+    const gridOptions2: GridOption = {
       enableAutoResize: false,
       enableCellNavigation: true,
       enableFiltering: true,
@@ -179,11 +189,22 @@ export default class Example10 extends React.Component {
         }
       },
     };
+    this.isMounted = true;
+
+    this.setState((state: State) => ({
+      ...state,
+      gridOptions1,
+      gridOptions2,
+      columnDefinitions1,
+      columnDefinitions2,
+      dataset1: this.prepareData(495),
+      dataset2: this.prepareData(525)
+    }));
   }
 
   prepareData(count: number) {
     // mock a dataset
-    const mockDataset = [];
+    const mockDataset: any[] = [];
     for (let i = 0; i < count; i++) {
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomMonth = Math.floor(Math.random() * 11);
@@ -234,29 +255,41 @@ export default class Example10 extends React.Component {
     if (gridStateChanges.gridState!.rowSelection) {
       this.selectedGrid2IDs = (gridStateChanges.gridState!.rowSelection.filteredDataContextIds || []) as number[];
       this.selectedGrid2IDs = this.selectedGrid2IDs.sort((a, b) => a - b); // sort by ID
-      this.selectedTitles = this.selectedGrid2IDs.map(dataContextId => `Task ${dataContextId}`);
+      this.setState((state: State) => ({
+        ...state,
+        selectedTitles: this.selectedGrid2IDs.map(dataContextId => `Task ${dataContextId}`).join(','),
+      }));
     }
   }
 
   // Toggle the Pagination of Grid2
   // IMPORTANT, the Pagination MUST BE CREATED on initial page load before you can start toggling it
   // Basically you cannot toggle a Pagination that doesn't exist (must created at the time as the grid)
-  isGrid2WithPaginationChanged() {
-    this.reactGrid2.paginationService!.togglePaginationVisibility(this.isGrid2WithPagination);
+  showGrid2Pagination(showPagination: boolean) {
+    console.log('toggle grid2 pagination', showPagination)
+    this.reactGrid2.paginationService!.togglePaginationVisibility(showPagination);
   }
 
   onGrid1SelectedRowsChanged(_e: Event, args: any) {
     const grid = args && args.grid;
     if (Array.isArray(args.rows)) {
-      this.selectedTitle = args.rows.map((idx: number) => {
-        const item = grid.getDataItem(idx);
-        return item && item.title || '';
-      });
+      this.setState((state: State) => ({
+        ...state,
+        selectedTitle: args.rows.map((idx: number) => {
+          const item = grid.getDataItem(idx);
+          return item && item.title || '';
+        })
+      }));
     }
   }
 
+  onGrid2PaginationCheckChanged() {
+    this.isGrid2WithPagination = !this.isGrid2WithPagination;
+    this.showGrid2Pagination(this.isGrid2WithPagination);
+  }
+
   render() {
-    return (
+    return this.state.gridOptions1 && (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -274,31 +307,30 @@ export default class Example10 extends React.Component {
           <div className="col-sm-4" style={{ maxWidth: '170px' }}>
             Pagination
             <button className="btn btn-outline-secondary btn-xs" data-test="goto-first-page"
-              onClick={this.goToGrid1FirstPage}>
+              onClick={() => this.goToGrid1FirstPage()}>
               <i className="fa fa-caret-left fa-lg"></i>
             </button>
-            <button className="btn btn-outline-secondary btn-xs" data-test="goto-last-page" onClick={this.goToGrid1LastPage}>
+            <button className="btn btn-outline-secondary btn-xs" data-test="goto-last-page" onClick={() => this.goToGrid1LastPage()}>
               <i className="fa fa-caret-right fa-lg"></i>
             </button>
           </div>
           <div className="col-sm-8">
             <div className="alert alert-success">
               <strong>(single select) Selected Row:</strong>
-              <span data-test="grid1-selections">{this.selectedTitle}</span>
+              <span data-test="grid1-selections">{this.state.selectedTitle}</span>
             </div>
           </div>
         </div>
 
         <div className="overflow-hidden">
-          <ReactSlickgridCustomElement gridId="grid1"
-            columnDefinitions={this.columnDefinitions1}
-            gridOptions={this.gridOptions1}
-            dataset={this.dataset1}
-            customEvents={{
-              onReactGridCreated: $event => this.reactGrid1Ready($event),
-              onGridStateChanged: $event => this.grid1StateChanged($event),
-              onSelectedRowsChanged: $event => this.onGrid1SelectedRowsChanged($event.detail.eventData, $event.detail.args)
-            }} />
+          <ReactSlickgridComponent gridId="grid1"
+            columnDefinitions={this.state.columnDefinitions1}
+            gridOptions={this.state.gridOptions1!}
+            dataset={this.state.dataset1}
+            onReactGridCreated={$event => this.reactGrid1Ready($event.detail)}
+            onGridStateChanged={$event => this.grid1StateChanged($event.detail)}
+            onSelectedRowsChanged={$event => this.onGrid1SelectedRowsChanged($event.detail.eventData, $event.detail.args)}
+          />
         </div>
 
         <hr className="col-md-6 offset-md-1" />
@@ -308,16 +340,17 @@ export default class Example10 extends React.Component {
             <label htmlFor="enableGrid2Pagination">
               Pagination:
               <input type="checkbox" id="enableGrid2Pagination"
-                checked={this.isGrid2WithPagination}
+                defaultChecked={this.isGrid2WithPagination}
+                onChange={() => this.onGrid2PaginationCheckChanged()}
                 data-test="toggle-pagination-grid2" />
             </label>
             {this.isGrid2WithPagination && <span style={{ marginLeft: '5px' }}>
               <button className="btn btn-outline-secondary btn-xs" data-test="goto-first-page"
-                onClick={this.goToGrid2FirstPage}>
+                onClick={() => this.goToGrid2FirstPage()}>
                 <i className="fa fa-caret-left fa-lg"></i>
               </button>
               <button className="btn btn-outline-secondary btn-xs" data-test="goto-last-page"
-                onClick={this.goToGrid2LastPage}>
+                onClick={() => this.goToGrid2LastPage()}>
                 <i className="fa fa-caret-right fa-lg"></i>
               </button>
             </span>}
@@ -325,22 +358,18 @@ export default class Example10 extends React.Component {
           <div className="col-sm-7">
             <div className="alert alert-success">
               <strong>(multi-select) Selected Row(s):</strong>
-              <span data-test="grid2-selections">{this.selectedTitles}</span>
+              <span data-test="grid2-selections">{this.state.selectedTitles}</span>
             </div>
           </div>
         </div>
 
         <div className="overflow-hidden">
-
-
-          <ReactSlickgridCustomElement gridId="grid2"
-            columnDefinitions={this.columnDefinitions2}
-            gridOptions={this.gridOptions2}
-            dataset={this.dataset2}
-            customEvents={{
-              onReactGridCreated: $event => this.reactGrid2Ready($event.detail),
-              onGridStateChanged: $event => this.grid2StateChanged($event.detail)
-            }}/>
+          <ReactSlickgridComponent gridId="grid2"
+            columnDefinitions={this.state.columnDefinitions2}
+            gridOptions={this.state.gridOptions2!}
+            dataset={this.state.dataset2}
+            onReactGridCreated={$event => this.reactGrid2Ready($event.detail)}
+            onGridStateChanged={$event => this.grid2StateChanged($event.detail)} />
         </div>
       </div>
     );

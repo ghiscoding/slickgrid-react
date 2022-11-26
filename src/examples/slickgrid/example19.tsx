@@ -1,4 +1,3 @@
-import { Subscription } from 'react-event-aggregator';
 import {
   ReactGridInstance,
   Column,
@@ -7,7 +6,7 @@ import {
   Filters,
   Formatters,
   GridOption,
-  ReactSlickgridCustomElement,
+  ReactSlickgridComponent,
 } from '../../slickgrid-react';
 import React from 'react';
 
@@ -29,10 +28,9 @@ export default class Example19 extends React.Component {
   gridOptions!: GridOption;
   columnDefinitions: Column[] = [];
   dataset: any[] = [];
-  extensions!: ExtensionList<any, any>;
+  extensions!: ExtensionList<any>;
   flashAlertType = 'info';
   message = '';
-  subscriptions: Subscription[] = [];
 
   constructor(public readonly props: Props) {
     super(props);
@@ -48,13 +46,17 @@ export default class Example19 extends React.Component {
     return this.extensions.rowDetailView.instance || {};
 
     // OR options 2
-    // return this.reactGrid && this.reactGrid.extensionService.getSlickgridAddonInstance(ExtensionName.rowDetailView) || {};
+    // return this.reactGrid && this.reactGrid.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView) || {};
   }
 
   componentDidMount() {
     document.title = this.title;
     // populate the dataset once the grid is ready
     this.getData();
+  }
+
+  reactGridReady(reactGrid: ReactGridInstance) {
+    this.reactGrid = reactGrid;
   }
 
   /* Define grid Options and Columns */
@@ -208,7 +210,7 @@ export default class Example19 extends React.Component {
         <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <div className="col-sm-6">
-          <button className="btn btn-outline-secondary btn-sm" onClick={this.closeAllRowDetail} data-test="close-all-btn">
+          <button className="btn btn-outline-secondary btn-sm" onClick={() => this.closeAllRowDetail()} data-test="close-all-btn">
             Close all Row Details
           </button>
           &nbsp;&nbsp;
@@ -216,7 +218,7 @@ export default class Example19 extends React.Component {
           <label htmlFor="">Detail View Rows Shown: </label>
           <input type="number" value="detailViewRowCount" style={{ height: '26px;' }} />
           <button className="btn btn-outline-secondary btn-xs" style={{ height: '26px;' }}
-            onClick={this.changeDetailViewRowCount}
+            onClick={() => this.changeDetailViewRowCount()}
             data-test="set-count-btn">
             Set
           </button>
@@ -225,12 +227,13 @@ export default class Example19 extends React.Component {
 
         <hr />
 
-        <ReactSlickgridCustomElement gridId="grid19"
+        <ReactSlickgridComponent gridId="grid19"
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}
           extensions={this.extensions}
-          instances={this.reactGrid} />
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+        />
       </div>
     );
   }

@@ -1,19 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import i18next from 'i18next';
-import { ReactGridInstance, Column, Formatters, SlickDataView, SlickGrid, ReactSlickgridCustomElement } from '../../slickgrid-react';
+import i18next, { TFunction } from 'i18next';
+import { ReactGridInstance, Column, Formatters, SlickDataView, SlickGrid, ReactSlickgridComponent } from '../../slickgrid-react';
 import './example8.scss'; // provide custom CSS/SASS styling
 import React from 'react';
 import BaseSlickGridState from './state-slick-grid-base';
+import { withTranslation } from 'react-i18next';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Props { }
+interface Props {
+  t: TFunction;
+}
 
 interface State extends BaseSlickGridState{
   selectedLanguage:string,
   visibleColumns: Column[]
 }
 
-export default class Example8 extends React.Component<Props, State> {
+class Example8 extends React.Component<Props, State> {
   title = 'Example 8: Header Menu Plugin';
   subTitle = `
     This example demonstrates using the <b>Slick.Plugins.HeaderMenu</b> plugin to easily add menus to colum headers.<br/>
@@ -45,7 +48,7 @@ export default class Example8 extends React.Component<Props, State> {
     this.state = {
       columnDefinitions: [],
       dataset: [],
-      gridOptions: {},
+      gridOptions: undefined,
       selectedLanguage: i18next.language || 'en',
       visibleColumns: []
     };
@@ -123,7 +126,7 @@ export default class Example8 extends React.Component<Props, State> {
     return columnDefinitions;
   }
 
-  getGridOptions(){
+  getGridOptions() {
     return {
       enableAutoResize: true,
       enableHeaderMenu: true,
@@ -149,7 +152,6 @@ export default class Example8 extends React.Component<Props, State> {
   }
 
   defineGrid() {
-
     const gridOptions = this.getGridOptions();
     const columnDefinitions = this.getColumnDefinitions();
 
@@ -164,7 +166,7 @@ export default class Example8 extends React.Component<Props, State> {
 
   getData() {
     // Set up some test columns.
-    const mockDataset = [];
+    const mockDataset: any[] = [];
     for (let i = 0; i < 1000; i++) {
       mockDataset[i] = {
         id: i,
@@ -197,7 +199,7 @@ export default class Example8 extends React.Component<Props, State> {
   }
 
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -211,19 +213,21 @@ export default class Example8 extends React.Component<Props, State> {
         </h2>
         <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
-        <button className="btn btn-outline-secondary btn-sm" onClick={this.switchLanguage}>
-          <i className="fa fa-language"></i>
+        <button className="btn btn-outline-secondary btn-sm me-1" onClick={() => this.switchLanguage()}>
+          <i className="fa fa-language me-1"></i>
           Switch Language
         </button>
         <b>Locale:</b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{this.state.selectedLanguage + '.json'}</span>
 
-        <ReactSlickgridCustomElement gridId="grid8"
+        <ReactSlickgridComponent gridId="grid8"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}
-          onReactGridCreated= {$event => this.reactGridReady($event.detail.args)}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
         />
       </div>
     );
   }
 }
+
+export default withTranslation()(Example8);

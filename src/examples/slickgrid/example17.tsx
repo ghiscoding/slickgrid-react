@@ -8,7 +8,7 @@ import {
   Formatter,
   GridOption,
   SlickNamespace,
-  ReactSlickgridCustomElement
+  ReactSlickgridComponent
 } from '../../slickgrid-react';
 import React from 'react';
 
@@ -193,16 +193,15 @@ export default class Example17 extends React.Component {
           <span>Loading...</span>
         </div>}
 
-        <ReactSlickgridCustomElement gridId="grid1"
+        <ReactSlickgridComponent gridId="grid1"
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}
           customDataView={this.customDataView}
-          customEvents={{
-            onReactGridCreated: $event => this.reactGridReady($event.detail),
-            onViewportChanged: $event => this.onViewportChanged($event.detail.eventData, $event.detail.args),
-            onSort: $event => this.onSort($event.detail.eventData, $event.detail.args)
-          }} />
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+          onViewportChanged={$event => this.onViewportChanged()}
+          onSort={$event => this.onSort($event.detail.eventData, $event.detail.args)}
+        />
       </div>
     );
   }

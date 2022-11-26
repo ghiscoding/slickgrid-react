@@ -1,4 +1,4 @@
-import i18next from 'i18next';
+import i18next, { TFunction } from 'i18next';
 import * as moment from 'moment-mini';
 import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
@@ -19,13 +19,25 @@ import {
   OperatorType,
   SlickGrid,
   SliderRangeOption,
-  ReactSlickgridCustomElement
+  ReactSlickgridComponent,
+  GroupingGetterFunction
 } from '../../slickgrid-react';
 import React from 'react';
-i18next.init({
-  lng: 'en',
+import BaseSlickGridState from './state-slick-grid-base';
+import { withTranslation } from 'react-i18next';
+
+interface Props {
+  t: TFunction;
 }
-);
+
+interface State extends BaseSlickGridState {
+  selectedLanguage: string;
+  metrics?: Metrics;
+  selectedGroupingFields: Array<string | GroupingGetterFunction>;
+  selectedPredefinedFilter: string;
+  filterList: Array<{ value: string; label: string; }>;
+}
+
 const NB_ITEMS = 1500;
 
 function randomBetween(min: number, max: number): number {
@@ -39,9 +51,7 @@ const taskTranslateFormatter: Formatter = (_row, _cell, value, _columnDef, _data
   return gridOptions.i18n?.t('TASK_X', { x: value }) ?? '';
 };
 
-interface Props { }
-
-export default class Example23 extends React.Component {
+class Example23 extends React.Component<Props, State> {
   title = 'Example 23: Filtering from Range of Search Values';
   subTitle = `
     This demo shows how to use Filters with Range of Search Values (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Range-Filters" target="_blank">Wiki docs</a>)
@@ -63,44 +73,48 @@ export default class Example23 extends React.Component {
   `;
 
   reactGrid!: ReactGridInstance;
-  columnDefinitions: Column[] = [];
-  gridOptions!: GridOption;
-  dataset: any[] = [];
-  selectedLanguage: string;
-  metrics!: Metrics;
-  selectedGroupingFields: Array<string | GroupingGetterFunction> = ['', '', ''];
-  filterList = [
-    { value: '', label: '' },
-    { value: 'currentYearTasks', label: 'Current Year Completed Tasks' },
-    { value: 'nextYearTasks', label: 'Next Year Active Tasks' }
-  ];
-  selectedPredefinedFilter = '';
-  private i18n: i18n;
+  // private i18n: i18n;
 
   constructor(public readonly props: Props) {
     super(props);
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-   this.componentDidMount();
+
     // always start with English for Cypress E2E tests to be consistent
     const defaultLang = 'en';
     i18next.changeLanguage(defaultLang);
-    this.selectedLanguage = defaultLang;
+
+    this.state = {
+      gridOptions: undefined,
+      columnDefinitions: [],
+      selectedLanguage: 'en',
+      metrics: undefined,
+      selectedGroupingFields: ['', '', ''],
+      selectedPredefinedFilter: '',
+      filterList: [
+        { value: '', label: '...' },
+        { value: 'currentYearTasks', label: 'Current Year Completed Tasks' },
+        { value: 'nextYearTasks', label: 'Next Year Active Tasks' }
+      ]
+    }
   }
 
   componentDidMount() {
     document.title = this.title;
-    // populate the dataset once the grid is ready
-    this.dataset = this.mockData(NB_ITEMS);
+
+    // define the grid options & columns and then create the grid itself
+    this.defineGrid();
   }
 
   componentWillUnmount() {
     this.saveCurrentGridState();
   }
 
+  reactGridReady(reactGrid: ReactGridInstance) {
+    this.reactGrid = reactGrid;
+  }
+
   /* Define grid Options and Columns */
   defineGrid() {
-    this.columnDefinitions = [
+    const columnDefinitions: Column[] = [
       {
         id: 'title', name: 'Title', field: 'id', nameKey: 'TITLE', minWidth: 100,
         formatter: taskTranslateFormatter,
@@ -170,7 +184,7 @@ export default class Example23 extends React.Component {
     const presetLowestDay = moment().add(-2, 'days').format('YYYY-MM-DD');
     const presetHighestDay = moment().add(20, 'days').format('YYYY-MM-DD');
 
-    this.gridOptions = {
+    const gridOptions: GridOption = {
       autoResize: {
         container: '#demo-container',
         rightPadding: 10
@@ -179,7 +193,7 @@ export default class Example23 extends React.Component {
       enableFiltering: true,
       // enableFilterTrimWhiteSpace: true,
       enableTranslate: true,
-      i18n: this.i18n,
+      // i18n: this.i18n,
 
       // use columnDef searchTerms OR use presets as shown below
       presets: {
@@ -201,6 +215,13 @@ export default class Example23 extends React.Component {
       },
       registerExternalResources: [new SlickCustomTooltip(), new ExcelExportService()],
     };
+
+    this.setState((state: State, props: Props) => ({
+      ...state,
+      gridOptions,
+      columnDefinitions,
+      dataset: this.mockData(NB_ITEMS)
+    }));
   }
 
   mockData(itemCount: number, startingIndex = 0): any[] {
@@ -230,8 +251,12 @@ export default class Example23 extends React.Component {
   }
 
   clearFilters() {
-    this.selectedPredefinedFilter = '';
-    this.reactGrid.filterService.clearFilters();
+    this.setState((state: State, props: Props) => {
+      return {
+        ...state,
+        selectedPredefinedFilter: ''
+      }
+    }, () => this.reactGrid.filterService.clearFilters());
   }
 
   /** Dispatched event of a Grid State Changed event */
@@ -247,13 +272,30 @@ export default class Example23 extends React.Component {
   refreshMetrics(_e: Event, args: any) {
     if (args && args.current >= 0) {
       setTimeout(() => {
-        this.metrics = {
-          startTime: new Date(),
-          itemCount: args && args.current || 0,
-          totalItemCount: this.dataset.length || 0
-        };
+        this.setState((state: State, props: Props) => {
+          return {
+            ...state,
+            metrics: {
+              startTime: new Date(),
+              itemCount: args?.current ?? 0,
+              totalItemCount: state.dataset?.length || 0
+            }
+          }
+        });
       });
     }
+  }
+
+  selectedColumnChanged(e: React.ChangeEvent<HTMLSelectElement>) {
+    const selectedVal = (e.target as HTMLSelectElement)?.value ?? '';
+    const selectedColumn = this.state.columnDefinitions.find(c => c.id === selectedVal);
+
+    this.setState((state: State, props: Props) => {
+      return {
+        ...state,
+        selectedColumn: selectedColumn,
+      };
+    });
   }
 
   setFiltersDynamically() {
@@ -277,12 +319,13 @@ export default class Example23 extends React.Component {
   }
 
   async switchLanguage() {
-    const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
-    await this.i18n.changeLanguage(nextLanguage);
-    this.selectedLanguage = nextLanguage;
+    const nextLanguage = (this.state.selectedLanguage === 'en') ? 'fr' : 'en';
+    await i18next.changeLanguage(nextLanguage);
+    this.setState((state: State) => ({ ...state, selectedLanguage: nextLanguage }));
   }
 
-  predefinedFilterChanged(newPredefinedFilter: string) {
+  predefinedFilterChanged(e: React.ChangeEvent<HTMLSelectElement>) {
+    const newPredefinedFilter = (e.target as HTMLSelectElement)?.value ?? '';
     let filters: CurrentFilter[] = [];
     const currentYear = moment().year();
 
@@ -301,7 +344,7 @@ export default class Example23 extends React.Component {
   }
 
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -317,12 +360,12 @@ export default class Example23 extends React.Component {
 
         <br />
 
-        {this.metrics && <span>
-          <b>Metrics:</b>
-          {this.metrics.endTime} | {this.metrics.itemCount} of {this.metrics.totalItemCount} items
+        {this.state.metrics && <span><><b>Metrics:</b>
+          {moment(this.state.metrics.endTime).format('YYYY-MM-DD HH:mm:ss')}
+          | {this.state.metrics.itemCount} of {this.state.metrics.totalItemCount} items </>
         </span>}
 
-        <form className="row row-cols-lg-auto g-1 align-items-center">
+        <form className="row row-cols-lg-auto g-1 align-items-center" onSubmit={(e) => e.preventDefault()}>
           <div className="col">
             <button className="btn btn-outline-secondary btn-sm" data-test="clear-filters"
               onClick={() => this.reactGrid.filterService.clearFilters}>
@@ -337,13 +380,13 @@ export default class Example23 extends React.Component {
           </div>
           <div className="col">
             <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-filter"
-              onClick={this.setFiltersDynamically}>
+              onClick={() => this.setFiltersDynamically()}>
               Set Filters Dynamically
             </button>
           </div>
           <div className="col">
             <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-sorting"
-              onClick={this.setSortingDynamically}>
+              onClick={() => this.setSortingDynamically()}>
               Set Sorting Dynamically
             </button>
           </div>
@@ -351,12 +394,10 @@ export default class Example23 extends React.Component {
             <label htmlFor="selectedFilter" style={{ marginLeft: '10px' }}>Predefined Filters</label>
           </div>
           <div className="col">
-          <select className="form-select" data-test="search-column-list" name="selectedColumn"
-              value={this.selectedGroupingFields.toString()}>
-              <option value="''">...</option>
+            <select className="form-select" data-test="select-dynamic-filter" name="selectedFilter" onChange={($event) => this.predefinedFilterChanged($event)}>
               {
-                this.columnDefinitions.map((column) =>
-                  <option value={column.id} key={column.id}></option>
+                this.state.filterList.map((filter) =>
+                  <option value={filter.value} key={filter.value}>{filter.label}</option>
                 )
               }
             </select>
@@ -365,25 +406,25 @@ export default class Example23 extends React.Component {
 
         <div className="row mt-2">
           <div className="col">
-            <button className="btn btn-outline-secondary btn-sm" data-test="language" onClick={this.switchLanguage}>
-              <i className="fa fa-language"></i>
+            <button className="btn btn-outline-secondary btn-sm me-1" data-test="language" onClick={() => this.switchLanguage()}>
+              <i className="fa fa-language me-1"></i>
               Switch Language
             </button>
-            <b>Locale:</b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{this.selectedLanguage + '.json'}</span>
+            <b>Locale: </b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{this.state.selectedLanguage + '.json'}</span>
           </div>
         </div>
 
-        <ReactSlickgridCustomElement gridId="grid23"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          instances={this.reactGrid}
-          customEvents={{
-            onGridStateChanged: $event => this.gridStateChanged($event.detail),
-            onRowCountChanged: $event => this.refreshMetrics($event.detail.eventData, $event.detail.args)
-          }}
+        <ReactSlickgridComponent gridId="grid23"
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions}
+          dataset={this.state.dataset}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+          onGridStateChanged={$event => this.gridStateChanged($event.detail)}
+          onRowCountChanged={$event => this.refreshMetrics($event.detail.eventData, $event.detail.args)}
         />
       </div>
     );
   }
 }
+
+export default withTranslation()(Example23);

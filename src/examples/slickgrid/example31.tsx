@@ -2,6 +2,7 @@
 import { GridOdataService, OdataServiceApi, OdataOption } from '@slickgrid-universal/odata';
 import { RxJsResource } from '@slickgrid-universal/rxjs-observable';
 import { Observable, of, Subject } from 'rxjs';
+import moment from 'moment-mini';
 
 import {
   Column,
@@ -14,56 +15,71 @@ import {
   OperatorType,
   Pagination,
   ReactGridInstance,
-  ReactSlickgridCustomElement,
+  ReactSlickgridComponent,
 } from '../../slickgrid-react';
 import React from 'react';
-import './example31.scss'; // provide custom CSS/SASS styling
+import BaseSlickGridState from './state-slick-grid-base';
 
 const defaultPageSize = 20;
 const sampleDataRoot = 'assets/data';
 
+interface Status { text: string, class: string }
+
+interface State extends BaseSlickGridState {
+  paginationOptions?: Pagination;
+  metrics: Metrics;
+  isCountEnabled: boolean;
+  isSelectEnabled: boolean;
+  isExpandEnabled: boolean;
+  odataVersion: number;
+  odataQuery: string;
+  processing: boolean;
+  errorStatus: string;
+  status: Status;
+  genderCollection: Array<{ value: string; label: string; }>;
+}
 interface Props { }
 
-export default class Example31 extends React.Component {
+export default class Example31 extends React.Component<Props, State> {
   title = 'Example 31: Grid with OData Backend Service using RxJS Observables';
   subTitle = `
     Optionally use RxJS instead of Promises, you would typically use this with a Backend Service API (OData/GraphQL)
   `;
 
   reactGrid!: ReactGridInstance;
-  columnDefinitions: Column[] = [];
-  gridOptions!: GridOption;
-  dataset = [] = [];
-  metrics!: Metrics;
-  paginationOptions!: Pagination;
-
-  isCountEnabled = true;
-  isSelectEnabled = false;
-  isExpandEnabled = false;
-  odataVersion = 2;
-  odataQuery = '';
-  processing = false;
-  errorStatus = '';
-  isPageErrorTest = false;
-  status = { text: '', class: '' };
   isOtherGenderAdded = false;
-  genderCollection = [{ value: 'male', label: 'male' }, { value: 'female', label: 'female' }];
 
   constructor(public readonly props: Props) {
     super(props);
-    this.initializeGrid();
+    this.state = {
+      gridOptions: undefined,
+      columnDefinitions: [],
+      dataset: [],
+      paginationOptions: undefined,
+      errorStatus: '',
+      isCountEnabled: true,
+      isSelectEnabled: false,
+      isExpandEnabled: false,
+      metrics: {} as Metrics,
+      status: { class: '', text: '' },
+      odataVersion: 2,
+      odataQuery: '',
+      processing: false,
+      genderCollection: [{ value: 'male', label: 'male' }, { value: 'female', label: 'female' }],
+    };
   }
 
   componentDidMount() {
-    document.title = this.title;
+    this.defineGrid();
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
+    console.log('reactGridReady', reactGrid)
     this.reactGrid = reactGrid;
   }
 
-  initializeGrid() {
-    this.columnDefinitions = [
+  defineGrid() {
+    const columnDefinitions: Column[] = [
       {
         id: 'name', name: 'Name', field: 'name', sortable: true,
         type: FieldType.string,
@@ -77,11 +93,11 @@ export default class Example31 extends React.Component {
         editor: {
           model: Editors.singleSelect,
           // collection: this.genderCollection,
-          collectionAsync: of(this.genderCollection)
+          collectionAsync: of(this.state.genderCollection)
         },
         filter: {
           model: Filters.singleSelect,
-          collectionAsync: of(this.genderCollection),
+          collectionAsync: of(this.state.genderCollection),
           collectionOptions: {
             addBlankEntry: true
           }
@@ -91,7 +107,7 @@ export default class Example31 extends React.Component {
       { id: 'category_name', name: 'Category', field: 'category/name', filterable: true, sortable: true },
     ];
 
-    this.gridOptions = {
+    const gridOptions: GridOption = {
       enableAutoResize: true,
       autoResize: {
         container: '#demo-container',
@@ -115,11 +131,11 @@ export default class Example31 extends React.Component {
       pagination: {
         pageSizes: [10, 20, 50, 100, 500],
         pageSize: defaultPageSize,
+        totalItems: 0
       },
       presets: {
         // you can also type operator as string, e.g.: operator: 'EQ'
         filters: [
-          // { columnId: 'name', searchTerms: ['w'], operator: OperatorType.startsWith },
           { columnId: 'gender', searchTerms: ['male'], operator: OperatorType.equal },
         ],
         sorters: [
@@ -131,26 +147,37 @@ export default class Example31 extends React.Component {
       backendServiceApi: {
         service: new GridOdataService(),
         options: {
-          enableCount: this.isCountEnabled, // add the count in the OData query, which will return a property named "__count" (v2) or "@odata.count" (v4)
-          enableSelect: this.isSelectEnabled,
-          enableExpand: this.isExpandEnabled,
-          version: this.odataVersion        // defaults to 2, the query string is slightly different between OData 2 and 4
+          enableCount: this.state.isCountEnabled, // add the count in the OData query, which will return a property named "__count" (v2) or "@odata.count" (v4)
+          enableSelect: this.state.isSelectEnabled,
+          enableExpand: this.state.isExpandEnabled,
+          version: this.state.odataVersion        // defaults to 2, the query string is slightly different between OData 2 and 4
         },
-        preProcess: () => this.displaySpinner(true),
+        preProcess: () => {
+          this.setState((state: State) => ({ ...state, errorStatus: '' }));
+          this.displaySpinner(true);
+        },
         process: (query) => this.getCustomerApiCall(query),
         postProcess: (response) => {
-          this.metrics = response.metrics;
+          this.setState(
+            (state: State) => ({ ...state, metrics: response.metrics }),
+            () => this.getCustomerCallback(response)
+          );
           this.displaySpinner(false);
-          this.getCustomerCallback(response);
         }
       } as OdataServiceApi,
       registerExternalResources: [new RxJsResource()]
     };
+
+    this.setState((state: State) => ({
+      ...state,
+      columnDefinitions,
+      gridOptions,
+    }));
   }
 
   addOtherGender() {
     const newGender = { value: 'other', label: 'other' };
-    const genderColumn = this.columnDefinitions.find((column: Column) => column.id === 'gender');
+    const genderColumn = this.state.columnDefinitions.find((column: Column) => column.id === 'gender');
 
     if (genderColumn) {
       let editorCollection = genderColumn.editor!.collection;
@@ -163,7 +190,7 @@ export default class Example31 extends React.Component {
         // editorCollection.push(newGender);
 
         // 2. or replace the entire "collection"
-        genderColumn.editor!.collection = [...this.genderCollection, newGender];
+        genderColumn.editor!.collection = [...this.state.genderCollection, newGender];
         editorCollection = genderColumn.editor!.collection;
 
         // However, for the Filter only, we have to trigger an RxJS/Subject change with the new collection
@@ -179,26 +206,36 @@ export default class Example31 extends React.Component {
   }
 
   displaySpinner(isProcessing: boolean) {
-    this.processing = isProcessing;
-    this.status = (isProcessing)
+    const newStatus = (isProcessing)
       ? { text: 'loading...', class: 'col-md-2 alert alert-warning' }
       : { text: 'finished!!', class: 'col-md-2 alert alert-success' };
+
+    this.setState((state: State) => ({
+      ...state,
+      processing: isProcessing,
+      status: newStatus
+    }));
   }
 
   getCustomerCallback(data: any) {
     // totalItems property needs to be filled for pagination to work correctly
     // however we need to force React to do a dirty check, doing a clone object will do just that
     let totalItemCount: number = data['totalRecordCount']; // you can use "totalRecordCount" or any name or "odata.count" when "enableCount" is set
-    if (this.isCountEnabled) {
-      totalItemCount = (this.odataVersion === 4) ? data['@odata.count'] : data['d']['__count'];
-    }
-    if (this.metrics) {
-      this.metrics.totalItemCount = totalItemCount;
+    if (this.state.isCountEnabled) {
+      totalItemCount = (this.state.odataVersion === 4) ? data['@odata.count'] : data['d']['__count'];
     }
 
-    this.paginationOptions = { ...this.gridOptions.pagination, totalItems: totalItemCount } as Pagination;
-    this.dataset = this.odataVersion === 4 ? data.value : data.d.results;
-    this.odataQuery = data['query'];
+    // once pagination totalItems is filled, we can update the dataset
+    this.setState((state: State) => ({
+      ...state,
+      paginationOptions: { ...state.gridOptions!.pagination, totalItems: totalItemCount } as Pagination,
+      dataset: state.odataVersion === 4 ? data.value : data.d.results,
+      odataQuery: data['query'],
+      metrics: { ...state.metrics, totalItemCount }
+    }));
+
+    // Slickgrid-React requires the user to update pagination via this pubsub publish
+    this.reactGrid.eventPubSubService?.publish('onPaginationOptionsChanged', { ...this.state.gridOptions!.pagination, totalItems: totalItemCount } as Pagination, 1);
   }
 
   getCustomerApiCall(query: string) {
@@ -335,18 +372,18 @@ export default class Example31 extends React.Component {
 
           setTimeout(() => {
             const backendResult: any = { query };
-            if (!this.isCountEnabled) {
+            if (!this.state.isCountEnabled) {
               backendResult['totalRecordCount'] = countTotalItems;
             }
 
-            if (this.odataVersion === 4) {
+            if (this.state.odataVersion === 4) {
               backendResult['value'] = updatedData;
-              if (this.isCountEnabled) {
+              if (this.state.isCountEnabled) {
                 backendResult['@odata.count'] = countTotalItems;
               }
             } else {
               backendResult['d'] = { results: updatedData };
-              if (this.isCountEnabled) {
+              if (this.state.isCountEnabled) {
                 backendResult['d']['__count'] = countTotalItems;
               }
             }
@@ -364,11 +401,11 @@ export default class Example31 extends React.Component {
   }
 
   goToFirstPage() {
-    this.reactGrid?.paginationService?.goToFirstPage();
+    this.reactGrid.paginationService!.goToFirstPage();
   }
 
   goToLastPage() {
-    this.reactGrid?.paginationService?.goToLastPage();
+    this.reactGrid.paginationService!.goToLastPage();
   }
 
   /** Dispatched event of a Grid State Changed event */
@@ -379,14 +416,14 @@ export default class Example31 extends React.Component {
 
   setFiltersDynamically() {
     // we can Set Filters Dynamically (or different filters) afterward through the FilterService
-    this.reactGrid?.filterService.updateFilters([
+    this.reactGrid.filterService.updateFilters([
       // { columnId: 'gender', searchTerms: ['male'], operator: OperatorType.equal },
       { columnId: 'name', searchTerms: ['A'], operator: 'a*' },
     ]);
   }
 
   setSortingDynamically() {
-    this.reactGrid?.sortService.updateSorting([
+    this.reactGrid.sortService.updateSorting([
       { columnId: 'name', direction: 'DESC' },
     ]);
   }
@@ -415,38 +452,41 @@ export default class Example31 extends React.Component {
   // ---
 
   changeCountEnableFlag() {
-    this.isCountEnabled = !this.isCountEnabled;
-    this.resetOptions({ enableCount: this.isCountEnabled });
+    const isCountEnabled = !this.state.isCountEnabled;
+    this.setState((state: State) => ({ ...state, isCountEnabled }));
+    this.resetOptions({ enableCount: isCountEnabled });
     return true;
   }
 
   changeEnableSelectFlag() {
-    this.isSelectEnabled = !this.isSelectEnabled;
-    this.resetOptions({ enableSelect: this.isSelectEnabled });
+    const isSelectEnabled = !this.state.isSelectEnabled;
+    this.setState((state: State) => ({ ...state, isSelectEnabled }));
+    this.resetOptions({ enableSelect: isSelectEnabled });
     return true;
   }
 
   changeEnableExpandFlag() {
-    this.isExpandEnabled = !this.isExpandEnabled;
-    this.resetOptions({ enableExpand: this.isExpandEnabled });
+    const isExpandEnabled = !this.state.isExpandEnabled;
+    this.setState((state: State) => ({ ...state, isExpandEnabled }));
+    this.resetOptions({ enableExpand: isExpandEnabled });
     return true;
   }
 
   setOdataVersion(version: number) {
-    this.odataVersion = version;
-    this.resetOptions({ version: this.odataVersion });
+    this.setState((state: State) => ({ ...state, odataVersion: version }));
+    this.resetOptions({ version });
     return true;
   }
 
   private resetOptions(options: Partial<OdataOption>) {
-    const odataService = this.gridOptions.backendServiceApi!.service as GridOdataService;
+    const odataService = this.state.gridOptions?.backendServiceApi?.service as GridOdataService;
     odataService.updateOptions(options);
     odataService.clearFilters();
     this.reactGrid?.filterService.clearFilters();
   }
 
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -463,20 +503,21 @@ export default class Example31 extends React.Component {
         <div className="row">
           <div className="col-md-12" aria-label="Basic Editing Commands">
             <button className="btn btn-outline-secondary btn-sm" data-test="clear-filters-sorting"
-              onClick={this.clearAllFiltersAndSorts} title="Clear all Filters & Sorts">
+              onClick={() => this.clearAllFiltersAndSorts()} title="Clear all Filters & Sorts">
               <span className="mdi mdi-close"></span>
               <span>Clear all Filter & Sorts</span>
             </button>
-            <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-filter"
-              onClick={this.setFiltersDynamically}>
+
+            <button className="btn btn-outline-secondary btn-sm mx-1" data-test="set-dynamic-filter"
+              onClick={() => this.setFiltersDynamically()}>
               Set Filters Dynamically
             </button>
             <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-sorting"
-              onClick={this.setSortingDynamically}>
+              onClick={() => this.setSortingDynamically()}>
               Set Sorting Dynamically
             </button>
-            <button className="btn btn-outline-secondary btn-sm" style={{ marginLeft: '10px' }} data-test="add-gender-button"
-              onClick={this.addOtherGender} disabled={this.isOtherGenderAdded}>
+            <button className="btn btn-outline-secondary btn-sm mx-1" style={{ marginLeft: '10px' }} data-test="add-gender-button"
+              onClick={() => this.addOtherGender()} disabled={this.isOtherGenderAdded}>
               Add Other Gender via RxJS
             </button>
           </div>
@@ -487,40 +528,40 @@ export default class Example31 extends React.Component {
         <div>
           <span>
             <label>Programmatically go to first/last page:</label>
-            <button className="btn btn-outline-secondary btn-xs" data-test="goto-first-page" onClick={this.goToFirstPage}>
+            <button className="btn btn-outline-secondary btn-xs" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
               <i className="fa fa-caret-left fa-lg"></i>
             </button>
-            <button className="btn btn-outline-secondary btn-xs" data-test="goto-last-page" onClick={this.goToLastPage}>
+            <button className="btn btn-outline-secondary btn-xs" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
               <i className="fa fa-caret-right fa-lg"></i>
             </button>
           </span>
 
           <span style={{ marginLeft: '10px' }}>
-            <label>OData Version: </label>
+            <label>OData Version:&nbsp;</label>
             <span data-test="radioVersion">
               <label className="radio-inline control-label" htmlFor="radio2">
-                <input type="radio" name="inlineRadioOptions" data-test="version2" id="radio2" checked value="2"
-                  onChange={() => this.setOdataVersion(2)} /> 2
+                <input type="radio" name="inlineRadioOptions" data-test="version2" id="radio2" defaultChecked={true} value="2"
+                  onChange={() => this.setOdataVersion(2)} /> 2&nbsp;
               </label>
               <label className="radio-inline control-label" htmlFor="radio4">
                 <input type="radio" name="inlineRadioOptions" data-test="version4" id="radio4" value="4"
-                  onChange={() => this.setOdataVersion(4)} /> 4
+                  onChange={() => this.setOdataVersion(4)} /> 4 
               </label>
             </span>
             <label className="checkbox-inline control-label" htmlFor="enableCount" style={{ marginLeft: '20px' }}>
-              <input type="checkbox" id="enableCount" data-test="enable-count" checked={this.isCountEnabled}
-                onChange={this.changeCountEnableFlag} />
-              <span style={{ fontWeight: 'bold' }}>Enable Count</span> (add to OData query)
+              <input type="checkbox" id="enableCount" data-test="enable-count" defaultChecked={this.state.isCountEnabled}
+                onChange={() => this.changeCountEnableFlag()} />
+              <span style={{ fontWeight: 'bold' }}> Enable Count</span> (add to OData query)
             </label>
             <label className="checkbox-inline control-label" htmlFor="enableSelect" style={{ marginLeft: '20px' }}>
-              <input type="checkbox" id="enableSelect" data-test="enable-select" checked={this.isSelectEnabled}
+              <input type="checkbox" id="enableSelect" data-test="enable-select" defaultChecked={this.state.isSelectEnabled}
                 onChange={() => this.changeEnableSelectFlag()} />
-              <span style={{ fontWeight: 'bold' }}>Enable Select</span> (add to OData query)
+              <span style={{ fontWeight: 'bold' }}> Enable Select</span> (add to OData query)
             </label>
             <label className="checkbox-inline control-label" htmlFor="enableExpand" style={{ marginLeft: '20px' }}>
-              <input type="checkbox" id="enableExpand" data-test="enable-expand" checked={this.isExpandEnabled}
+              <input type="checkbox" id="enableExpand" data-test="enable-expand" defaultChecked={this.state.isExpandEnabled}
                 onChange={() => this.changeEnableExpandFlag()} />
-              <span style={{ fontWeight: 'bold' }}>Enable Expand</span> (add to OData query)
+              <span style={{ fontWeight: 'bold' }}> Enable Expand</span> (add to OData query)
             </label>
           </span>
         </div>
@@ -528,21 +569,25 @@ export default class Example31 extends React.Component {
         <div className="row" style={{ marginTop: '5px' }}>
           <div className="col-md-10">
             <div className="alert alert-info" data-test="alert-odata-query">
-              <strong>OData Query:</strong> <span data-test="odata-query-result">{this.odataQuery}</span>
+              <strong>OData Query:</strong> <span data-test="odata-query-result">{this.state.odataQuery}</span>
             </div>
           </div>
-          <div className={this.status.class} role="alert" data-test="status">
-            <strong>Status: </strong> {this.status.text}
+          <div className={this.state.status.class} role="alert" data-test="status">
+            <strong>Status: </strong> {this.state.status.text}
           </div>
         </div>
 
-        <ReactSlickgridCustomElement gridId="grid31"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          paginationOptions={this.paginationOptions}
+        <ReactSlickgridComponent gridId="grid31"
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions}
+          dataset={this.state.dataset}
+          paginationOptions={this.state.paginationOptions}
           onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          onGridStateChanged={$event => this.gridStateChanged($event.detail)} />
+          onGridStateChanged={$event => this.gridStateChanged($event.detail)}
+          onBeforeSort={$event => this.handleOnBeforeSort($event.detail.eventData)}
+          onBeforeSearchChange={$event => this.handleOnBeforeSearchChange($event.detail.eventData)}
+          onBeforePaginationChange={$event => this.handleOnBeforePaginationChange($event.detail.eventData)}
+        />
       </div>
     );
   }

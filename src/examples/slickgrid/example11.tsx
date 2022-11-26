@@ -9,7 +9,7 @@ import {
   OnEventArgs,
   SlickDataView,
   SlickGrid,
-  ReactSlickgridCustomElement,
+  ReactSlickgridComponent,
 } from '../../slickgrid-react';
 import React from 'react';
 import './example11.scss';
@@ -154,7 +154,7 @@ export default class Example11 extends React.Component {
 
   mockData(itemCount: number) {
     // mock a dataset
-    const mockedDataset = [];
+    const mockedDataset: any[] = [];
     for (let i = 0; i < itemCount; i++) {
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomMonth = Math.floor(Math.random() * 11);
@@ -296,41 +296,40 @@ export default class Example11 extends React.Component {
         <div className="col-sm-12">
           <span>
             <label>Scroll: </label>
-            <div className="btn-group" role="group" aria-label="...">
-              <button className="btn btn-sm btn-outline-secondary" data-test="scroll-top-btn" onClick={this.scrollGridTop}>
+            <div className="btn-group mx-1" role="group" aria-label="...">
+              <button className="btn btn-sm btn-outline-secondary" data-test="scroll-top-btn" onClick={() => this.scrollGridTop()}>
                 <i className="fa fa-arrow-up"></i>
               </button>
               <button className="btn btn-sm btn-outline-secondary" data-test="scroll-bottom-btn"
-                onClick={this.scrollGridBottom}>
+                onClick={() => this.scrollGridBottom()}>
                 <i className="fa fa-arrow-down"></i>
               </button>
             </div>
             <button className="btn btn-sm btn-outline-secondary" data-test="add-new-item-top-btn"
-              onClick={() => this.addNewItem}>Add New Mocked Item (top)</button>
-            <button className="btn btn-sm btn-outline-secondary" data-test="add-new-item-bottom-btn"
+              onClick={() => this.addNewItem('top')}>Add New Mocked Item (top)</button>
+            <button className="btn btn-sm btn-outline-secondary mx-1" data-test="add-new-item-bottom-btn"
               onClick={() => this.addNewItem('bottom')}>Add New Mocked Item
               (bottom)</button>
             <button className="btn btn-sm btn-outline-secondary" data-test="update-second-item-btn"
-              onClick={this.updateSecondItem}>
+              onClick={() => this.updateSecondItem()}>
               Update 2nd Row Item with Random Duration
             </button>
-            <button className="btn btn-sm btn-outline-secondary" data-test="highlight-row5-btn"
-              onClick={this.highlighFifthRow}>Highlight 5th Row</button>
+            <button className="btn btn-sm btn-outline-secondary mx-1" data-test="highlight-row5-btn"
+              onClick={() => this.highlighFifthRow()}>Highlight 5th Row</button>
             <button className="btn btn-sm btn-outline-secondary" data-test="highlight-duration40-btn"
-              onClick={this.changeDurationBackgroundColor}>
+              onClick={() => this.changeDurationBackgroundColor()}>
               Highlight Rows with Duration over 50
             </button>
           </span>
           <hr />
         </div>
 
-        <ReactSlickgridCustomElement gridId="grid11"
+        <ReactSlickgridComponent gridId="grid11"
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}
-          customEvents={{
-            onReactGridCreated: $event => this.reactGridReady($event.detail),
-          }} />
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+        />
       </div>
     );
   }

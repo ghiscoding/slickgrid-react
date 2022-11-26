@@ -15,9 +15,10 @@ import {
   SortComparers,
 } from '@slickgrid-universal/common';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-
-import { ReactGridInstance, ReactSlickgridCustomElement } from '../../slickgrid-react';
 import React from 'react';
+
+import BaseSlickGridState from './state-slick-grid-base';
+import { ReactGridInstance, ReactSlickgridComponent } from '../../slickgrid-react';
 import './example32.scss'; // provide custom CSS/SASS styling
 
 const NB_ITEMS = 5000;
@@ -76,47 +77,48 @@ const myCustomTitleValidator = (value: any, args: any) => {
 };
 
 interface Props { }
+interface State extends BaseSlickGridState {
+  isUsingDefaultResize: boolean;
+  isGridEditable: boolean;
+  complexityLevelList: Array<{ value: number; label: string; }>;
+}
 
-export default class Example32 extends React.Component {
+export default class Example32 extends React.Component<Props, State> {
   title = 'Example 32: Columns Resize by Content';
   subTitle = `The grid below uses the optional resize by cell content (with a fixed 950px for demo purposes), you can click on the 2 buttons to see the difference. The "autosizeColumns" is really the default option used by SlickGrid-Universal, the resize by cell content is optional because it requires to read the first thousand rows and do extra width calculation.`;
-
-  reactGrid!: ReactGridInstance;
-  gridOptions!: GridOption;
-  columnDefinitions: Column[] = [];
-  dataset: any[] = [];
   editQueue: any[] = [];
   editedItems: any = {};
-  isUsingDefaultResize = false;
-  isGridEditable = true;
-  isCompositeDisabled = false;
-  isMassSelectionDisabled = true;
-  complexityLevelList = [
-    { value: 0, label: 'Very Simple' },
-    { value: 1, label: 'Simple' },
-    { value: 2, label: 'Straightforward' },
-    { value: 3, label: 'Complex' },
-    { value: 4, label: 'Very Complex' },
-  ];
+  reactGrid!: ReactGridInstance;
 
   constructor(public readonly props: Props) {
     super(props);
-    this.initializeGrid();
-    this.componentDidMount();
+
+    this.state = {
+      gridOptions: undefined,
+      columnDefinitions: [],
+      isUsingDefaultResize: false,
+      isGridEditable: true,
+      complexityLevelList: [
+        { value: 0, label: 'Very Simple' },
+        { value: 1, label: 'Simple' },
+        { value: 2, label: 'Straightforward' },
+        { value: 3, label: 'Complex' },
+        { value: 4, label: 'Very Complex' },
+      ],
+    }
   }
 
   componentDidMount() {
     document.title = this.title;
-    // mock some data (different in each dataset)
-    this.dataset = this.loadData(NB_ITEMS);
+    this.defineGrid();
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
     this.reactGrid = reactGrid;
   }
 
-  initializeGrid() {
-    this.columnDefinitions = [
+  defineGrid() {
+    const columnDefinitions: Column[] = [
       {
         id: 'title', name: 'Title', field: 'title', sortable: true, type: FieldType.string, minWidth: 65,
         // you can adjust the resize calculation via multiple options
@@ -172,15 +174,15 @@ export default class Example32 extends React.Component {
         id: 'complexity', name: 'Complexity', field: 'complexity',
         resizeCalcWidthRatio: 0.9, // default calc ratio is 1 or ~0.9 for field type of string
         sortable: true, filterable: true, columnGroup: 'Analysis',
-        formatter: (_row, _cell, value) => this.complexityLevelList[value].label,
-        exportCustomFormatter: (_row, _cell, value) => this.complexityLevelList[value].label,
+        formatter: (_row, _cell, value) => this.state.complexityLevelList[value].label,
+        exportCustomFormatter: (_row, _cell, value) => this.state.complexityLevelList[value].label,
         filter: {
           model: Filters.multipleSelect,
-          collection: this.complexityLevelList
+          collection: this.state.complexityLevelList
         },
         editor: {
           model: Editors.singleSelect,
-          collection: this.complexityLevelList,
+          collection: this.state.complexityLevelList,
         },
       },
       {
@@ -323,7 +325,7 @@ export default class Example32 extends React.Component {
       },
     ];
 
-    this.gridOptions = {
+    const gridOptions: GridOption = {
       editable: true,
       autoAddCustomEditorFormatter: customEditableInputFormatter,
       enableCellNavigation: true,
@@ -375,7 +377,7 @@ export default class Example32 extends React.Component {
         // composite editors values are saved as array, so let's convert to array in any case and we'll loop through these values
         const prevSerializedValues = Array.isArray(editCommand.prevSerializedValue) ? editCommand.prevSerializedValue : [editCommand.prevSerializedValue];
         const serializedValues = Array.isArray(editCommand.serializedValue) ? editCommand.serializedValue : [editCommand.serializedValue];
-        const editorColumns = this.columnDefinitions.filter((col) => col.editor !== undefined);
+        const editorColumns = this.state.columnDefinitions.filter((col) => col.editor !== undefined);
 
         const modifiedColumns: Column[] = [];
         prevSerializedValues.forEach((_val, index) => {
@@ -384,7 +386,7 @@ export default class Example32 extends React.Component {
 
           if (prevSerializedValue !== serializedValue) {
             const finalColumn = Array.isArray(editCommand.prevSerializedValue) ? editorColumns[index] : column;
-            this.editedItems[this.gridOptions.datasetIdPropertyName || 'id'] = item; // keep items by their row indexes, if the row got edited twice then we'll keep only the last change
+            this.editedItems[this.state.gridOptions?.datasetIdPropertyName ?? 'id'] = item; // keep items by their row indexes, if the row got edited twice then we'll keep only the last change
             this.reactGrid.slickGrid.invalidate();
             editCommand.execute();
 
@@ -401,6 +403,13 @@ export default class Example32 extends React.Component {
       // when using the cellMenu, you can change some of the default options and all use some of the callback methods
       enableCellMenu: true,
     };
+
+    this.setState((state: State) => ({
+      ...state,
+      gridOptions,
+      columnDefinitions,
+      dataset: this.loadData(NB_ITEMS)
+    }));
   }
 
   loadData(count: number) {
@@ -499,12 +508,12 @@ export default class Example32 extends React.Component {
     columns.forEach(col => col.width = col.originalWidth);
     this.reactGrid.slickGrid.setColumns(columns);
     this.reactGrid.slickGrid.autosizeColumns();
-    this.isUsingDefaultResize = true;
+    this.setState((state: State) => ({ ...state, isUsingDefaultResize: true }));
   }
 
   handleNewResizeColumns() {
     this.reactGrid.resizerService.resizeColumnsByCellContent(true);
-    this.isUsingDefaultResize = false;
+    this.setState((state: State) => ({ ...state, isUsingDefaultResize: false }));
   }
 
   toggleGridEditReadonly() {
@@ -512,13 +521,11 @@ export default class Example32 extends React.Component {
     this.undoAllEdits();
 
     // then change a single grid options to make the grid non-editable (readonly)
-    this.isGridEditable = !this.isGridEditable;
-    this.isCompositeDisabled = !this.isGridEditable;
-    if (!this.isGridEditable) {
-      this.isMassSelectionDisabled = true;
-    }
+    const isGridEditable = !this.state.isGridEditable;
+    this.setState((state: State) => ({ ...state, isGridEditable }));
+
     // dynamically change SlickGrid editable grid option
-    this.reactGrid.slickGrid.setOptions({ editable: this.isGridEditable });
+    this.reactGrid.slickGrid.setOptions({ editable: isGridEditable });
   }
 
   removeUnsavedStylingFromCell(_item: any, column: Column, row: number) {
@@ -823,7 +830,7 @@ export default class Example32 extends React.Component {
   }
 
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -842,18 +849,18 @@ export default class Example32 extends React.Component {
         <div className="row">
           <div className="ml-2 mb-2 mr-2">
             <div className="btn-group btn-group-toggle" data-bs-toggle="buttons">
-              <label className="btn btn-sm btn-outline-secondary" className={this.isUsingDefaultResize ? 'active' : ''}
-                data-test="autosize-columns-btn">
+              <label className={'btn btn-sm btn-outline-secondary ' + (this.state.isUsingDefaultResize ? 'active' : '')} data-test="autosize-columns-btn">
                 <input type="radio" className="btn-check" name="options"
-                  checked={this.isUsingDefaultResize}
-                  onClick={this.handleDefaultResizeColumns} />
+                  defaultChecked={this.state.isUsingDefaultResize}
+                  onClick={() => this.handleDefaultResizeColumns()}
+                />
                 <i className="fa fa-expand"></i> (default resize) by "autosizeColumns"
               </label>
-              <label className="btn btn-sm btn-outline-secondary" className={this.isUsingDefaultResize ? '' : 'active'}
+              <label className={'btn btn-sm btn-outline-secondary ' + (this.state.isUsingDefaultResize ? '' : 'active')}
                 data-test="resize-by-content-btn">
                 <input type="radio" className="btn-check" name="options"
-                  checked={!this.isUsingDefaultResize}
-                  onClick={this.handleNewResizeColumns} />
+                  defaultChecked={!this.state.isUsingDefaultResize}
+                  onClick={() => this.handleNewResizeColumns()} />
                 <i className="fa fa-expand"></i> Resize by Cell Content
               </label>
             </div>
@@ -862,15 +869,15 @@ export default class Example32 extends React.Component {
           <div className="mb-2">
             <div className="btn-group btn-group-sm" role="group" aria-label="Basic Editing Commands">
               <button type="button" className="btn btn-outline-secondary" data-test="toggle-readonly-btn"
-                onClick={this.toggleGridEditReadonly}>
+                onClick={() => this.toggleGridEditReadonly()}>
                 <i className="fa fa-table"></i> Toggle Edit/Readonly Grid
               </button>
               <button type="button" className="btn btn-outline-secondary" data-test="undo-last-edit-btn"
-                onClick={() => this.undoLastEdit}>
+                onClick={() => this.undoLastEdit()}>
                 <i className="fa fa-undo"></i> Undo Last Edit
               </button>
               <button type="button" className="btn btn-outline-secondary" data-test="save-all-btn"
-                onClick={this.saveAll}>
+                onClick={() => this.saveAll()}>
                 <i className="fa fa-save"></i> Save All
               </button>
             </div>
@@ -878,15 +885,11 @@ export default class Example32 extends React.Component {
         </div>
 
         <div id="smaller-container" style={{ width: '950px' }}>
-          <ReactSlickgridCustomElement gridId="grid32"
-            columnDefinitions={this.columnDefinitions}
-            gridOptions={this.gridOptions}
-            dataset={this.dataset}
-            paginationOptions={this.paginationOptions}
-            customEvents={{
-              onReactGridCreated: $event => this.reactGridReady($event.detail),
-              onGridStateChanged: $event => this.gridStateChanged($event.detail)
-            }}
+          <ReactSlickgridComponent gridId="grid32"
+            columnDefinitions={this.state.columnDefinitions}
+            gridOptions={this.state.gridOptions}
+            dataset={this.state.dataset}
+            onReactGridCreated={$event => this.reactGridReady($event.detail)}
           />
         </div>
       </div>

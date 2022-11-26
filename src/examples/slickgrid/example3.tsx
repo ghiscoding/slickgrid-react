@@ -1,5 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import * as $ from 'jquery';
 import i18next from 'i18next';
+import React from 'react';
+
 import {
   ReactGridInstance,
   AutocompleterOption,
@@ -15,22 +17,16 @@ import {
   OperatorType,
   SlickNamespace,
   SortComparers,
-  ReactSlickgridCustomElement,
+  ReactSlickgridComponent,
+  GridOption,
 } from '../../slickgrid-react';
-import React from 'react';
 import { CustomInputEditor } from './custom-inputEditor';
 import { CustomInputFilter } from './custom-inputFilter';
-import * as $ from 'jquery';
 import BaseSlickGridState from './state-slick-grid-base';
 
 // using external non-typed js libraries
 declare const Slick: SlickNamespace;
 
-i18next.init({
-  lng: 'en',
-});
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}
 
 const NB_ITEMS = 100;
@@ -81,7 +77,7 @@ interface State extends BaseSlickGridState {
 export default class Example3 extends React.Component<Props, State> {
   title = 'Example 3: Editors / Delete';
   subTitle = `
-  Grid with Inline Editors and onCellClick actions (<a href='https://github.com/ghiscoding/Angular-Slickgrid/wiki/Editors' target='_blank'>Wiki docs</a>).
+  Grid with Inline Editors and onCellClick actions (<a href='https://github.com/ghiscoding/slickgrid-react/wiki/Editors' target='_blank'>Wiki docs</a>).
   <ul>
     <li>Multiple Editors & Filters are available: AutoComplete, Checkbox, Date, Slider, SingleSelect, MultipleSelect, Float, Text, LongText... even Custom Editor</li>
     <li>When using 'enableCellNavigation: true', clicking on a cell will automatically make it active &amp; selected.</li>
@@ -107,7 +103,7 @@ export default class Example3 extends React.Component<Props, State> {
     super(props);
     this.selectedLanguage = i18next.language;
     this.state = {
-      gridOptions: null,
+      gridOptions: undefined,
       columnDefinitions: [],
       dataset: [],
       isAutoEdit: true,
@@ -122,18 +118,15 @@ export default class Example3 extends React.Component<Props, State> {
     const options = this.getGridOptions();
     const columns = this.getColumns();
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.setState((state: any, props: Props) => {
-      return {
+    this.setState((state: State) => ({
         ...state,
         dataset: this.mockData(NB_ITEMS),
         gridOptions: options,
         columnDefinitions: columns,
-      };
-    });
+    }));
   }
 
-  getColumns() {
+  getColumns(): Column[] {
     return [
       {
         id: 'edit',
@@ -145,16 +138,14 @@ export default class Example3 extends React.Component<Props, State> {
         minWidth: 30,
         maxWidth: 30,
         // use onCellClick OR grid.onClick.subscribe which you can see down below
-        onCellClick: (_e: JQuery.Event, args: OnEventArgs) => {
+        onCellClick: (_e: any, args: OnEventArgs) => {
           console.log(args);
 
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          this.setState((state:State, props:Props)=>{
-            return{
+          this.setState((state: State, props: Props) => ({
               ...state,
               alertWarning:  `Editing: ${args.dataContext.title}`
-            };
-          });
+          }));
           this.reactGrid.gridService.highlightRow(args.row, 1500);
           this.reactGrid.gridService.setSelectedRow(args.row);
         },
@@ -193,12 +184,10 @@ export default class Example3 extends React.Component<Props, State> {
         onCellChange: (_e: Event, args: OnEventArgs) => {
 
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          this.setState((state:State, props:Props)=>{
-            return {
+          this.setState((state: State, props: Props) => ({
               ...state,
               alertWarning: `Updated Title: ${args.dataContext.title}`
-            };
-          });
+          }));
         },
       },
       {
@@ -525,7 +514,7 @@ export default class Example3 extends React.Component<Props, State> {
     ];
   }
 
-  getGridOptions() {
+  getGridOptions(): GridOption {
     return {
       autoEdit: this.state.isAutoEdit,
       autoCommitEdit: false,
@@ -547,13 +536,13 @@ export default class Example3 extends React.Component<Props, State> {
 
   /** Add a new row to the grid and refresh the Filter collection */
   addItem() {
-    const lastRowIndex = this.state.dataset.length;
+    const lastRowIndex = this.state.dataset?.length;
     const newRows = this.mockData(1, lastRowIndex);
 
     // wrap into a timer to simulate a backend async call
     setTimeout(() => {
       // at any time, we can poke the 'collection' property and modify it
-      const requisiteColumnDef = this.state.columnDefinitions.find(
+      const requisiteColumnDef = this.state.columnDefinitions?.find(
         (column: Column) => column.id === 'prerequisites'
       );
       if (requisiteColumnDef) {
@@ -595,7 +584,7 @@ export default class Example3 extends React.Component<Props, State> {
 
   /** Delete last inserted row */
   deleteItem() {
-    const requisiteColumnDef = this.state.columnDefinitions.find(
+    const requisiteColumnDef = this.state.columnDefinitions?.find(
       (column: Column) => column.id === 'prerequisites'
     );
     if (requisiteColumnDef) {
@@ -618,7 +607,7 @@ export default class Example3 extends React.Component<Props, State> {
 
   mockData(itemCount: number, startingIndex = 0) {
     // mock a dataset
-    const tempDataset = [];
+    const tempDataset: any[] = [];
     for (let i = startingIndex; i < startingIndex + itemCount; i++) {
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomFinishYear =
@@ -656,28 +645,21 @@ export default class Example3 extends React.Component<Props, State> {
 
   onCellChanged(_e: JQuery.Event, args: any) {
     console.log('onCellChange', args);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.setState((state: State, props: Props) => {
-      return {
+    this.setState((state: State, props: Props) => ({
         ...state,
         updatedObject: { ...args.item },
-      };
-    });
+    }));
   }
 
   onCellClicked(_e: JQuery.Event, args: any) {
-    const metadata =
-      this.reactGrid.gridService.getColumnFromEventArguments(args);
+    const metadata = this.reactGrid.gridService.getColumnFromEventArguments(args);
     console.log(metadata);
 
     if (metadata.columnDef.id === 'edit') {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      this.setState((state: State, props: Props) => {
-        return {
+      this.setState((state: State, props: Props) => ({
           ...state,
           alertWarning: `Open a modal window to edit: ${metadata.dataContext.title}`,
-        };
-      });
+      }));
 
       // highlight the row, to customize the color, you can change the SASS variable $row-highlight-background-color
       this.reactGrid.gridService.highlightRow(args.row, 1500);
@@ -688,12 +670,10 @@ export default class Example3 extends React.Component<Props, State> {
       if (confirm('Are you sure?')) {
         this.reactGrid.gridService.deleteItemById(metadata.dataContext.id);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        this.setState((state: State, props: Props) => {
-          return {
+        this.setState((state: State, props: Props) => ({
             ...state,
             alertWarning: `Deleted: ${metadata.dataContext.title}`,
-          };
-        });
+        }));
       }
     }
   }
@@ -730,12 +710,10 @@ export default class Example3 extends React.Component<Props, State> {
     // you can dynamically add your column to your column definitions
     // and then use the spread operator [...cols] OR slice to force React to review the changes
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.setState((state: any, props: Props) => {
-      return {
+    this.setState((state: State, props: Props) => ({
         ...state,
-        columnDefinitions: [...this.state.columnDefinitions, newCol],
-      };
-    });
+      columnDefinitions: [...this.state.columnDefinitions!, newCol],
+    }));
 
     // NOTE if you use an Extensions (Checkbox Selector, Row Detail, ...) that modifies the column definitions in any way
     // you MUST use 'getAllColumnDefinitions()' from the GridService, using this will be ALL columns including the 1st column that is created internally
@@ -748,21 +726,16 @@ export default class Example3 extends React.Component<Props, State> {
   }
 
   dynamicallyRemoveLastColumn() {
-    const lastColumn =
-      this.state.columnDefinitions[this.state.columnDefinitions.length - 1];
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.setState((state: any, props: Props) => {
-      return {
+    this.state.columnDefinitions.pop();
+
+    this.setState((state: State, props: Props) => ({
         ...state,
-        columnDefinitions: this.state.columnDefinitions.filter(
-          (x) => x.id !== lastColumn.id
-        ),
-      };
-    });
+      columnDefinitions: this.state.columnDefinitions.slice(),
+    }));
 
     // NOTE if you use an Extensions (Checkbox Selector, Row Detail, ...) that modifies the column definitions in any way
     // you MUST use the code below, first you must reassign the Editor facade (from the internalColumnEditor back to the editor)
-    // in other words, SlickGrid is not using the same as Slickgrid-React uses (editor with a 'model' and other properties are a facade, SlickGrid only uses what is inside the model)
+    // in other words, SlickGrid is not using the same as Slickgrid-React uses (editor with a "model" and other properties are a facade, SlickGrid only uses what is inside the model)
     /*
     const allColumns = this.reactGrid.gridService.getAllColumnDefinitions();
     const allOriginalColumns = allColumns.map((column) => {
@@ -777,13 +750,7 @@ export default class Example3 extends React.Component<Props, State> {
   }
 
   setAutoEdit(isAutoEdit: boolean) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.setState((state: any, props: Props) => {
-      return {
-        ...state,
-        isAutoEdit,
-      };
-    });
+    this.setState((state: State) => ({ ...state, isAutoEdit }));
 
     this.reactGrid.slickGrid.setOptions({
       autoEdit: isAutoEdit,
@@ -795,12 +762,6 @@ export default class Example3 extends React.Component<Props, State> {
     this.reactGrid = reactGrid;
   }
 
-  async switchLanguage() {
-    const nextLanguage = this.selectedLanguage === 'en' ? 'fr' : 'en';
-    await i18next.changeLanguage(nextLanguage);
-    this.selectedLanguage = nextLanguage;
-  }
-
   undo() {
     const command = this._commandQueue.pop();
     if (command && Slick.GlobalEditorLock.cancelCurrentEdit()) {
@@ -810,7 +771,7 @@ export default class Example3 extends React.Component<Props, State> {
   }
 
   render() {
-    let objectAlert = null;
+    let objectAlert: any = null;
     if (this.state.updatedObject) {
       objectAlert = (
         <div className='alert alert-info'>
@@ -819,7 +780,7 @@ export default class Example3 extends React.Component<Props, State> {
         </div>
       );
     }
-    let alertWarning = null;
+    let alertWarning: any = null;
     if (this.state.alertWarning) {
       alertWarning = (
         <div className='alert alert-warning'>
@@ -833,9 +794,7 @@ export default class Example3 extends React.Component<Props, State> {
 
     const marginTop5px = { marginTop: '5px' };
 
-    return this.state.gridOptions === null ? (
-      ''
-    ) : (
+    return !this.state.gridOptions ? '' : (
       <div id='demo-container' className='container-fluid'>
         <h2>
           {this.title}
@@ -852,17 +811,15 @@ export default class Example3 extends React.Component<Props, State> {
         <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
         <div className='col-sm-6'>
-          <label>autoEdit setting: </label>
+          <label className="me-1">autoEdit setting:</label>
           <span id='radioAutoEdit'>
-            <label className='radio-inline control-label' htmlFor='radioTrue'>
+            <label className='radio-inline control-label me-1' htmlFor='radioTrue'>
               <input
                 type='radio'
                 name='inlineRadioOptions'
                 id='radioTrue'
-                checked={this.state.isAutoEdit}
-                onChange={() => {
-                  this.setAutoEdit(true);
-                }}
+                defaultChecked={this.state.isAutoEdit}
+                onInput={() => this.setAutoEdit(true)}
               />{' '}
               ON (single-click)
             </label>
@@ -871,37 +828,23 @@ export default class Example3 extends React.Component<Props, State> {
                 type='radio'
                 name='inlineRadioOptions'
                 id='radioFalse'
-                checked={this.state.isAutoEdit}
-                onChange={() => {
-                  this.setAutoEdit(false);
-                }}
+                onInput={() => this.setAutoEdit(false)}
               />{' '}
               OFF (double-click)
             </label>
           </span>
           <div className='row col-sm-12'>
             <span>
-              <button
-                className='btn btn-outline-secondary btn-sm'
-                onClick={() => {
-                  this.undo();
-                }}
-              >
-                <i className='fa fa-undo'></i>
+              <button className='btn btn-outline-secondary btn-sm me-1' onClick={() => this.undo()}>
+                <i className='fa fa-undo me-1'></i>
                 Undo last edit(s)
               </button>
-              <label
-                className='checkbox-inline control-label'
-                htmlFor='autoCommitEdit'
-              >
+              <label className='checkbox-inline control-label me-1' htmlFor='autoCommitEdit'>
                 <input
                   type='checkbox'
                   id='autoCommitEdit'
                   data-test='auto-commit'
-                    checked={this.state.gridOptions!.autoCommitEdit}
-                  onChange={() => {
-                    this.changeAutoCommit();
-                  }}
+                  onChange={() => this.changeAutoCommit()}
                 />
                 Auto Commit Edit
               </label>
@@ -909,36 +852,23 @@ export default class Example3 extends React.Component<Props, State> {
           </div>
           <div className='row' style={marginTop5px}>
             <div className='col-sm-12'>
-              <button
-                className='btn btn-outline-secondary btn-sm'
-                onClick={() => {
-                  this.reactGrid.filterService.clearFilters();
-                }}
-              >
+              <button className='btn btn-outline-secondary btn-sm' onClick={() => this.reactGrid.filterService.clearFilters()}>
                 Clear Filters
               </button>
               <button
-                className='btn btn-outline-secondary btn-sm'
-                onClick={() => {
-                  this.reactGrid.sortService.clearSorting();
-                }}
-              >
+                className='btn btn-outline-secondary btn-sm mx-1' onClick={() => this.reactGrid.sortService.clearSorting()}>
                 Clear Sorting
               </button>
               <button
-                className='btn btn-sm btn-outline-primary'
-                onClick={() => {
-                  this.addItem();
-                }}
+                className='btn btn-sm btn-outline-primary' 
+                onClick={() => this.addItem()}
                 title='Clear Filters &amp; Sorting to see it better'
               >
                 Add item
               </button>
               <button
-                className='btn btn-sm btn-outline-danger'
-                onClick={() => {
-                  this.deleteItem();
-                }}
+                className='btn btn-sm btn-outline-danger mx-1'
+                onClick={() => this.deleteItem()}
               >
                 Delete item
               </button>
@@ -949,21 +879,17 @@ export default class Example3 extends React.Component<Props, State> {
               <button
                 className='btn btn-outline-secondary btn-sm'
                 data-test='add-title-column'
-                onClick={() => {
-                  this.dynamicallyAddTitleHeader();
-                }}
+                onClick={() => this.dynamicallyAddTitleHeader()}
               >
-                <i className='fa fa-plus'></i>
+                <i className='fa fa-plus me-1'></i>
                 Dynamically Duplicate Title Column
               </button>
               <button
-                className='btn btn-outline-secondary btn-sm'
+                className='btn btn-outline-secondary btn-sm mx-1'
                 data-test='remove-title-column'
-                onClick={() => {
-                  this.dynamicallyRemoveLastColumn();
-                }}
+                onClick={() => this.dynamicallyRemoveLastColumn()}
               >
-                <i className='fa fa-minus'></i>
+                <i className='fa fa-minus me-1'></i>
                 Dynamically Remove Last Column
               </button>
             </div>
@@ -976,16 +902,15 @@ export default class Example3 extends React.Component<Props, State> {
         </div>
 
         <div className='col-sm-12'>
-          <ReactSlickgridCustomElement
+          <ReactSlickgridComponent
             gridId='grid3'
             columnDefinitions={this.state.columnDefinitions}
             gridOptions={this.state.gridOptions}
             dataset={this.state.dataset}
-            onReactGridCreated={e=>{this.reactGridReady(e.detail.args);}}
-            onActiveCellChanged={e=>{this.onCellChanged(e.detail.eventData, e.detail.args);}}
+            onReactGridCreated={e => { this.reactGridReady(e.detail); }}
+            onCellChange={e => { this.onCellChanged(e.detail.eventData, e.detail.args); }}
             onClick={e=>{this.onCellClicked(e.detail.eventData, e.detail.args);}}
-            onValidationError={e=>{this.onCellValidationError(e.detail.eventData, e.detail.args);}}
-
+            onValidationError={e => { this.onCellValidationError(e.detail.eventData, e.detail.args); }}
           />
         </div>
       </div>

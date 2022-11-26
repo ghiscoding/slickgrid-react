@@ -10,16 +10,24 @@ import {
   GridStateType,
   TreeToggledItem,
   TreeToggleStateChange,
-  ReactSlickgridCustomElement,
+  ReactSlickgridComponent,
 } from '../../slickgrid-react';
 import React from 'react';
 import './example27.scss'; // provide custom CSS/SASS styling
+import BaseSlickGridState from './state-slick-grid-base';
 
 const NB_ITEMS = 500;
 
 interface Props { }
+interface State extends BaseSlickGridState {
+  datasetHierarchical?: any[];
+  loadingClass: string;
+  isLargeDataset: boolean;
+  hasNoExpandCollapseChanged: boolean;
+  treeToggleItems: TreeToggledItem[];
+}
 
-export default class Example27 extends React.Component {
+export default class Example27 extends React.Component<Props, State> {
   title = 'Example 27: Tree Data <small>(from a flat dataset with <code>parentId</code> references)</small>';
   subTitle = `<ul>
     <li>It is assumed that your dataset will have Parent/Child references AND also Tree Level (indent) property.</li>
@@ -35,31 +43,36 @@ export default class Example27 extends React.Component {
     </ul>
   </ul>`;
   reactGrid!: ReactGridInstance;
-  gridOptions!: GridOption;
-  columnDefinitions: Column[] = [];
-  dataset: any[] = [];
-  datasetHierarchical: any[] = [];
-  loadingClass = '';
-  isLargeDataset = false;
-  hasNoExpandCollapseChanged = true;
-  treeToggleItems: TreeToggledItem[] = [];
 
   constructor(public readonly props: Props) {
     super(props);
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-    this.componentDidMount();
+
+    this.state = {
+      gridOptions: undefined,
+      columnDefinitions: [],
+      dataset: [],
+      datasetHierarchical: undefined,
+      loadingClass: '',
+      isLargeDataset: false,
+      hasNoExpandCollapseChanged: true,
+      treeToggleItems: [],
+    }
   }
 
   componentDidMount() {
     document.title = this.title;
-    // populate the dataset once the grid is ready
-    this.dataset = this.loadData(NB_ITEMS);
+
+    // define the grid options & columns and then create the grid itself
+    this.defineGrid();
+  }
+
+  reactGridReady(reactGrid: ReactGridInstance) {
+    this.reactGrid = reactGrid;
   }
 
   /* Define grid Options and Columns */
   defineGrid() {
-    this.columnDefinitions = [
+    const columnDefinitions: Column[] = [
       {
         id: 'title', name: 'Title', field: 'title', width: 220, cssClass: 'cell-title',
         filterable: true, sortable: true, exportWithFormatter: false,
@@ -98,7 +111,7 @@ export default class Example27 extends React.Component {
       }
     ];
 
-    this.gridOptions = {
+    const gridOptions: GridOption = {
       autoResize: {
         container: '#demo-container',
         rightPadding: 10
@@ -172,6 +185,15 @@ export default class Example27 extends React.Component {
         iconColumnHideCommand: 'mdi mdi-close',
       }
     };
+
+    this.setState((state: State, props: Props) => {
+      return {
+        ...state,
+        gridOptions,
+        columnDefinitions,
+        dataset: this.loadData(10),
+      };
+    });
   }
 
   /**
@@ -184,7 +206,7 @@ export default class Example27 extends React.Component {
     const treeLevelPropName = 'treeLevel'; // if undefined in your options, the default prop name is "__treeLevel"
     const newTreeLevel = 1;
     // find first parent object and add the new item as a child
-    const childItemFound = this.dataset.find((item) => item[treeLevelPropName] === newTreeLevel);
+    const childItemFound = this.state.dataset?.find((item) => item[treeLevelPropName] === newTreeLevel);
     const parentItemFound = this.reactGrid.dataView.getItemByIdx(childItemFound[parentPropName]);
 
     if (childItemFound && parentItemFound) {
@@ -252,17 +274,18 @@ export default class Example27 extends React.Component {
   }
 
   hideSpinner() {
-    setTimeout(() => this.loadingClass = '', 200); // delay the hide spinner a bit to avoid show/hide too quickly
+    setTimeout(() => {
+      this.setState((state: State, props: Props) => ({ ...state, loadingClass: '' }));
+    }, 200); // delay the hide spinner a bit to avoid show/hide too quickly
   }
 
   showSpinner() {
-    if (this.isLargeDataset) {
-      this.loadingClass = 'mdi mdi-load mdi-spin-1s mdi-24px color-alt-success';
+    if (this.state.isLargeDataset) {
+      this.setState((state: State, props: Props) => ({ ...state, loadingClass: 'mdi mdi-load mdi-spin-1s mdi-24px color-alt-success' }));
     }
   }
 
   loadData(rowCount: number) {
-    this.isLargeDataset = rowCount > 5000; // we'll show a spinner when it's large, else don't show show since it should be fast enough
     let indent = 0;
     const parents: any[] = [];
     const data: any[] = [];
@@ -313,8 +336,15 @@ export default class Example27 extends React.Component {
       item['finish'] = new Date(randomYear, (randomMonth + 1), randomDay);
       item['effortDriven'] = (i % 5 === 0);
     }
-    this.dataset = data;
+    console.log('data', data)
     return data;
+  }
+
+  setData(rowCount: number) {
+    this.setState((state: State, props: Props) => ({
+      ...state,
+      dataset: this.loadData(rowCount)
+    }));
   }
 
   handleOnTreeFullToggleEnd(treeToggleExecution: TreeToggleStateChange) {
@@ -324,17 +354,27 @@ export default class Example27 extends React.Component {
 
   /** Whenever a parent is being toggled, we'll keep a reference of all of these changes so that we can reapply them whenever we want */
   handleOnTreeItemToggled(treeToggleExecution: TreeToggleStateChange) {
-    this.hasNoExpandCollapseChanged = false;
-    this.treeToggleItems = treeToggleExecution.toggledItems as TreeToggledItem[];
+    console.log('Tree Item Toggled!!!', treeToggleExecution)
+    this.setState((state: State, props: Props) => ({
+      ...state,
+      hasNoExpandCollapseChanged: false,
+      treeToggleItems: treeToggleExecution.toggledItems as TreeToggledItem[],
+    }));
     console.log('Tree Data changes', treeToggleExecution);
   }
 
   handleOnGridStateChanged(gridStateChange: GridStateChange) {
-    this.hasNoExpandCollapseChanged = false;
+    this.setState((state: State, props: Props) => ({
+      ...state,
+      hasNoExpandCollapseChanged: false,
+    }));
 
     if (gridStateChange?.change?.type === GridStateType.treeData) {
       console.log('Tree Data gridStateChange', gridStateChange?.gridState?.treeData);
-      this.treeToggleItems = gridStateChange?.gridState?.treeData?.toggledItems as TreeToggledItem[];
+      this.setState((state: State, props: Props) => ({
+        ...state,
+        treeToggleItems: gridStateChange?.gridState?.treeData?.toggledItems as TreeToggledItem[],
+      }));
     }
   }
 
@@ -348,7 +388,7 @@ export default class Example27 extends React.Component {
     const newTreeLevel = 1;
 
     // find first parent object and toggle it
-    const childItemFound = this.dataset.find((item) => item[treeLevelPropName] === newTreeLevel);
+    const childItemFound = this.state.dataset?.find((item) => item[treeLevelPropName] === newTreeLevel);
     const parentItemFound = this.reactGrid.dataView.getItemByIdx(childItemFound[parentPropName]);
 
     if (childItemFound && parentItemFound) {
@@ -357,11 +397,11 @@ export default class Example27 extends React.Component {
   }
 
   reapplyToggledItems() {
-    this.reactGrid.treeDataService.applyToggledItemStateChanges(this.treeToggleItems);
+    this.reactGrid.treeDataService.applyToggledItemStateChanges(this.state.treeToggleItems);
   }
 
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           <span>{this.title}</span>
@@ -377,58 +417,58 @@ export default class Example27 extends React.Component {
 
         <div className="row" style={{ marginBottom: '4px' }}>
           <div className="col-md-12">
-            <button className="btn btn-outline-secondary btn-sm" data-test="add-500-rows-btn" onClick={() => this.loadData(500)}>
+            <button className="btn btn-outline-secondary btn-sm" data-test="add-500-rows-btn" onClick={() => this.setData(500)}>
               500 rows
             </button>
-            <button className="btn btn-outline-secondary btn-sm" data-test="add-50k-rows-btn" onClick={() => this.loadData(25000)}>
+            <button className="btn btn-outline-secondary btn-sm" data-test="add-50k-rows-btn" onClick={() => this.setData(25000)}>
               25k rows
             </button>
-            <button onClick={this.dynamicallyChangeFilter} className="btn btn-outline-secondary btn-sm"
+            <button onClick={() => this.dynamicallyChangeFilter()} className="btn btn-outline-secondary btn-sm"
               data-test="change-filter-dynamically">
               <span className="mdi mdi-filter-outline"></span>
               <span>Dynamically Change Filter (% complete &lt; 40)</span>
             </button>
-            <button onClick={this.collapseAllWithoutEvent} className="btn btn-outline-secondary btn-sm"
+            <button onClick={() => this.collapseAllWithoutEvent()} className="btn btn-outline-secondary btn-sm"
               data-test="collapse-all-noevent-btn">
               <span className="mdi mdi-arrow-collapse"></span>
               <span>Collapse All (without triggering event)</span>
             </button>
-            <button onClick={this.dynamicallyToggledFirstParent} className="btn btn-outline-secondary btn-sm"
+            <button onClick={() => this.dynamicallyToggledFirstParent()} className="btn btn-outline-secondary btn-sm"
               data-test="dynamically-toggle-first-parent-btn">
               <span>Dynamically Toggle First Parent</span>
             </button>
-            <button onClick={this.reapplyToggledItems} data-test="reapply-toggled-items-btn"
+            <button onClick={() => this.reapplyToggledItems()} data-test="reapply-toggled-items-btn"
               className="btn btn-outline-secondary btn-sm"
-              disabled={this.hasNoExpandCollapseChanged}>
+              disabled={this.state.hasNoExpandCollapseChanged}>
               <span className="mdi mdi-history"></span>
               <span>Reapply Previous Toggled Items</span>
             </button>
-            <div className={this.loadingClass}></div>
+            <div className={this.state.loadingClass}></div>
           </div>
         </div>
 
         <div className="row">
           <div className="col-md-12">
-            <button onClick={this.addNewRow} data-test="add-item-btn" className="btn btn-primary btn-sm">
+            <button onClick={() => this.addNewRow()} data-test="add-item-btn" className="btn btn-primary btn-sm">
               <span className="mdi mdi-plus color-white"></span>
               <span>Add New Item (in 1st group)</span>
             </button>
-            <button onClick={this.updateFirstRow} data-test="update-item-btn" className="btn btn-outline-secondary btn-sm">
+            <button onClick={() => this.updateFirstRow()} data-test="update-item-btn" className="btn btn-outline-secondary btn-sm">
               <span className="icon mdi mdi-pencil"></span>
               <span>Update 1st Row Item</span>
             </button>
-            <button onClick={this.collapseAll} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-sm">
+            <button onClick={() => this.collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-sm">
               <span className="mdi mdi-arrow-collapse"></span>
               <span>Collapse All</span>
             </button>
-            <button onClick={this.expandAll} data-test="expand-all-btn" className="btn btn-outline-secondary btn-sm">
+            <button onClick={() => this.expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-sm">
               <span className="mdi mdi-arrow-expand"></span>
               <span>Expand All</span>
             </button>
-            <button onClick={this.logFlatStructure} className="btn btn-outline-secondary btn-sm">
+            <button onClick={() => this.logFlatStructure()} className="btn btn-outline-secondary btn-sm">
               <span>Log Flat Structure</span>
             </button>
-            <button onClick={this.logHierarchicalStructure} className="btn btn-outline-secondary btn-sm">
+            <button onClick={() => this.logHierarchicalStructure()} className="btn btn-outline-secondary btn-sm">
               <span>Log Hierarchical Structure</span>
             </button>
           </div>
@@ -437,11 +477,10 @@ export default class Example27 extends React.Component {
         <br />
 
         <div id="grid-container" className="col-sm-12">
-          <ReactSlickgridCustomElement gridId="grid27"
-            columnDefinitions={this.columnDefinitions}
-            gridOptions={this.gridOptions}
-            dataset={this.dataset}
-            instances={this.reactGrid}
+          <ReactSlickgridComponent gridId="grid27"
+            columnDefinitions={this.state.columnDefinitions}
+            gridOptions={this.state.gridOptions}
+            dataset={this.state.dataset}
             onBeforeFilterChange={this.showSpinner}
             onFilterChanged={this.hideSpinner}
             onBeforeFilterClear={this.showSpinner}
@@ -452,7 +491,9 @@ export default class Example27 extends React.Component {
             onToggleTreeCollapsed={this.hideSpinner}
             onTreeFullToggleStart={this.showSpinner}
             onTreeFullToggleEnd={$event => this.handleOnTreeFullToggleEnd($event.detail)}
-            onTreeItemToggled={$event => this.handleOnTreeItemToggled($event.detail)} />
+            onTreeItemToggled={$event => this.handleOnTreeItemToggled($event.detail)}
+            onReactGridCreated={$event => this.reactGridReady($event.detail)}
+          />
         </div>
       </div>
     );

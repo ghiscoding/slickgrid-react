@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { GridOdataService, OdataServiceApi, OdataOption } from '@slickgrid-universal/odata';
+import moment from 'moment-mini';
+
 import {
   ReactGridInstance,
   FieldType,
@@ -8,7 +10,9 @@ import {
   Metrics,
   OperatorType,
   Pagination,
-  ReactSlickgridCustomElement,
+  ReactSlickgridComponent,
+  GridOption,
+  Column,
 } from '../../slickgrid-react';
 import React from 'react';
 import BaseSlickGridState from './state-slick-grid-base';
@@ -19,17 +23,17 @@ const sampleDataRoot = 'assets/data';
 interface Status { text: string, class: string }
 
 interface State extends BaseSlickGridState{
-  paginationOptions:Pagination,
-  metrics: Metrics,
-  isCountEnabled: boolean,
-  isSelectEnabled: boolean,
-  isExpandEnabled: boolean,
-  odataVersion: number,
-  odataQuery: string,
-  processing: boolean,
-  errorStatus: string,
-  isPageErrorTest: boolean,
-  status:Status
+  paginationOptions?: Pagination;
+  metrics: Metrics;
+  isCountEnabled: boolean;
+  isSelectEnabled: boolean;
+  isExpandEnabled: boolean;
+  odataVersion: number;
+  odataQuery: string;
+  processing: boolean;
+  errorStatus: string;
+  isPageErrorTest: boolean;
+  status: Status;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -63,17 +67,17 @@ export default class Example5 extends React.Component<Props,State> {
   constructor(public readonly props: Props) {
     super(props);
     this.state = {
-      gridOptions: {},
+      gridOptions: undefined,
       columnDefinitions: [],
       dataset: [],
-      paginationOptions: null,
+      paginationOptions: undefined,
       errorStatus: '',
-      isCountEnabled: false,
+      isCountEnabled: true,
       isSelectEnabled: false,
       isExpandEnabled: false,
       metrics: {} as Metrics,
       status: {class:'', text:''},
-      odataVersion: 0,
+      odataVersion: 2,
       odataQuery:'',
       processing:false,
       isPageErrorTest:false
@@ -85,10 +89,11 @@ export default class Example5 extends React.Component<Props,State> {
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
+    console.log('reactGridReady', reactGrid)
     this.reactGrid = reactGrid;
   }
 
-  getGridDefinition() {
+  getGridDefinition(): GridOption {
     return {
       enableAutoResize: true,
       autoResize: {
@@ -130,32 +135,26 @@ export default class Example5 extends React.Component<Props,State> {
           version: this.state.odataVersion        // defaults to 2, the query string is slightly different between OData 2 and 4
         },
         onError: (error: Error) => {
-          this.setState((state:State, props:Props)=>{
-            return { ...state, errorStatus: error.message };
-          });
+          this.setState((state: State) => ({ ...state, errorStatus: error.message }));
           this.displaySpinner(false, true);
         },
         preProcess: () => {
-          this.setState((state:State, props:Props)=>{
-            return { ...state, errorStatus: '' };
-          });
+          this.setState((state: State) => ({ ...state, errorStatus: '' }));
           this.displaySpinner(true);
         },
-        process: (query) => {
-          this.getCustomerApiCall(query);
-        },
+        process: (query) => this.getCustomerApiCall(query),
         postProcess: (response) => {
-          this.setState((state: State, props: Props) => {
-            return { ...state, metrics: response.metrics };
-          });
+          this.setState(
+            (state: State) => ({ ...state, metrics: response.metrics }),
+            () => this.getCustomerCallback(response)
+          );
           this.displaySpinner(false);
-          this.getCustomerCallback(response);
         }
       } as OdataServiceApi
     };
   }
 
-  getColumnDefinitions() {
+  getColumnDefinitions(): Column[] {
     return [
       {
         id: 'name', name: 'Name', field: 'name', sortable: true,
@@ -181,32 +180,25 @@ export default class Example5 extends React.Component<Props,State> {
     const columnDefinitions = this.getColumnDefinitions();
     const gridOptions = this.getGridDefinition();
 
-    this.setState((state:any, props:Props)=>{
-      return {
+    this.setState((state: State) => ({
         ...state,
         columnDefinitions,
         gridOptions,
-      };
-    });
+    }));
   }
 
   displaySpinner(isProcessing: boolean, isError?: boolean) {
-    this.setState((state:State, props:Props)=>{
-      return { ...state, processing: isProcessing };
-    });
+    this.setState((state: State) => ({ ...state, processing: isProcessing }));
+
     if (isError) {
-      this.setState((state:State, props:Props)=>{
-        return { ...state, status: { text: 'ERROR!!!', class: 'alert alert-danger' } };
-      });
+      this.setState((state: State) => ({ ...state, status: { text: 'ERROR!!!', class: 'alert alert-danger' } }));
     } else {
-      this.setState((state:State, props:Props)=>{
-        return {
-          ...state,
-          status: (isProcessing)
-            ? { text: 'loading', class: 'alert alert-warning' }
-            : { text: 'finished', class: 'alert alert-success' }
-        };
-      });
+      this.setState((state: State) => ({
+        ...state,
+        status: (isProcessing)
+          ? { text: 'loading', class: 'alert alert-warning' }
+          : { text: 'finished', class: 'alert alert-success' }
+      }));
     }
   }
 
@@ -217,25 +209,18 @@ export default class Example5 extends React.Component<Props,State> {
     if (this.state.isCountEnabled) {
       totalItemCount = (this.state.odataVersion === 4) ? data['@odata.count'] : data['d']['__count'];
     }
-    this.setState((state: State, props: Props) => {
-      return {
-        ...state,
-        paginationOptions: { ...state.gridOptions!.pagination, totalItems: totalItemCount } as Pagination
-      };
-    });
-    if (this.state.metrics) {
-      this.state.metrics.totalItemCount = totalItemCount;
-    }
 
     // once pagination totalItems is filled, we can update the dataset
-    this.setState((state: State, props: Props) => {
-      return {
+    this.setState((state: State) => ({
         ...state,
         paginationOptions: { ...state.gridOptions!.pagination, totalItems: totalItemCount } as Pagination,
         dataset: state.odataVersion === 4 ? data.value : data.d.results,
-        odataQuery: data['query']
-      };
-    });
+      odataQuery: data['query'],
+      metrics: { ...state.metrics, totalItemCount }
+    }));
+
+    // Slickgrid-React requires the user to update pagination via this pubsub publish
+    this.reactGrid.eventPubSubService?.publish('onPaginationOptionsChanged', { ...this.state.gridOptions!.pagination, totalItems: totalItemCount } as Pagination, 1);
   }
 
   getCustomerApiCall(query: string) {
@@ -259,12 +244,7 @@ export default class Example5 extends React.Component<Props,State> {
       const columnFilters = {};
 
       if (this.state.isPageErrorTest) {
-        this.setState((state:State, props:Props)=>{
-          return {
-            ...state,
-            isPageErrorTest: false,
-          };
-        });
+        this.setState((state: State) => ({ ...state, isPageErrorTest: false }));
         throw new Error('Server timed out trying to retrieve data for the last page');
       }
 
@@ -387,6 +367,9 @@ export default class Example5 extends React.Component<Props,State> {
                       case 'lt': return filterTerm.toLowerCase() < searchTerm;
                       case 'gt': return filterTerm.toLowerCase() > searchTerm;
                       case 'ge': return filterTerm.toLowerCase() >= searchTerm;
+                      case 'ends': return filterTerm.toLowerCase().endsWith(searchTerm);
+                      case 'starts': return filterTerm.toLowerCase().startsWith(searchTerm);
+                      case 'substring': return filterTerm.toLowerCase().includes(searchTerm);
                     }
                   }
                 });
@@ -425,6 +408,7 @@ export default class Example5 extends React.Component<Props,State> {
   }
 
   goToLastPage() {
+    console.log('goto last page', this.reactGrid.paginationService)
     this.reactGrid.paginationService!.goToLastPage();
   }
 
@@ -449,13 +433,10 @@ export default class Example5 extends React.Component<Props,State> {
   }
 
   throwPageChangeError() {
-    this.setState((state:State, props:Props)=>{
-      return {
-        ...state,
-        isPageErrorTest: true,
-      };
-    });
-    this.reactGrid?.paginationService?.goToLastPage();
+    this.setState(
+      (state: State) => ({ ...state, isPageErrorTest: true }),
+      () => this.reactGrid?.paginationService?.goToLastPage()
+    );
   }
 
   // YOU CAN CHOOSE TO PREVENT EVENT FROM BUBBLING IN THE FOLLOWING 3x EVENTS
@@ -482,46 +463,29 @@ export default class Example5 extends React.Component<Props,State> {
   // ---
 
   changeCountEnableFlag() {
-    this.setState((state:State, props:Props)=>{
-      return {
-        ...state,
-        isCountEnabled: !this.state.isCountEnabled,
-      };
-    });
-    this.resetOptions({ enableCount: this.state.isCountEnabled });
+    const isCountEnabled = !this.state.isCountEnabled;
+    this.setState((state: State) => ({ ...state, isCountEnabled }));
+    this.resetOptions({ enableCount: isCountEnabled });
     return true;
   }
 
   changeEnableSelectFlag() {
-    this.setState((state: State, props: Props) => {
-      return {
-        ...state,
-        isSelectEnabled: !this.state.isSelectEnabled,
-      };
-    });
-    this.resetOptions({ enableSelect: this.state.isSelectEnabled });
+    const isSelectEnabled = !this.state.isSelectEnabled;
+    this.setState((state: State) => ({ ...state, isSelectEnabled }));
+    this.resetOptions({ enableSelect: isSelectEnabled });
     return true;
   }
 
   changeEnableExpandFlag() {
-    this.setState((state: State, props: Props) => {
-      return {
-        ...state,
-        isExpandEnabled: !this.state.isExpandEnabled,
-      };
-    });
-    this.resetOptions({ enableExpand: this.state.isExpandEnabled });
+    const isExpandEnabled = !this.state.isExpandEnabled;
+    this.setState((state: State) => ({ ...state, isExpandEnabled }));
+    this.resetOptions({ enableExpand: isExpandEnabled });
     return true;
   }
 
   setOdataVersion(version: number) {
-    this.setState((state:State, props:Props)=>{
-      return {
-        ...state,
-        odataVersion: version,
-      };
-    });
-    this.resetOptions({ version: this.state.odataVersion });
+    this.setState((state: State) => ({ ...state, odataVersion: version }));
+    this.resetOptions({ version });
     return true;
   }
 
@@ -533,7 +497,7 @@ export default class Example5 extends React.Component<Props,State> {
   }
 
   render() {
-    return  (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -575,76 +539,74 @@ export default class Example5 extends React.Component<Props,State> {
         <div className="row">
           <div className="col-sm-4">
 
-            <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-filter"
-              onChange={this.setFiltersDynamically}>
+            <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-filter" onClick={() => this.setFiltersDynamically()}>
               Set Filters Dynamically
             </button>
-            <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-sorting"
-              onChange={this.setSortingDynamically}>
+            <button className="btn btn-outline-secondary btn-sm mx-1" data-test="set-dynamic-sorting" onClick={() => this.setSortingDynamically()}>
               Set Sorting Dynamically
             </button>
             <br />
-            {this.state.metrics && <span>
-              <b>Metrics:</b> {this.state.metrics.endTime} | {this.state.metrics.executionTime}ms |
-              {this.state.metrics.totalItemCount}
-              items
+            {this.state.metrics && <span><><b>Metrics:</b>
+              {moment(this.state.metrics.endTime).format('YYYY-MM-DD HH:mm:ss')}
+              | {this.state.metrics.itemCount} of {this.state.metrics.totalItemCount} items </>
             </span>}
           </div>
           <div className="col-sm-8">
-            <label>OData Version: </label>
+            <label>OData Version:&nbsp;</label>
             <span data-test="radioVersion">
               <label className="radio-inline control-label" htmlFor="radio2">
-                <input type="radio" name="inlineRadioOptions" data-test="version2" id="radio2" checked value="2"
-                  onChange={() => this.setOdataVersion(2)} /> 2
+                <input type="radio" name="inlineRadioOptions" data-test="version2" id="radio2" defaultChecked={true} value="2"
+                  onChange={() => this.setOdataVersion(2)} /> 2&nbsp;
               </label>
               <label className="radio-inline control-label" htmlFor="radio4">
                 <input type="radio" name="inlineRadioOptions" data-test="version4" id="radio4" value="4"
-                  onChange={() =>this.setOdataVersion(4)} /> 4
+                  onChange={() => this.setOdataVersion(4)} /> 4 
               </label>
             </span>
             <label className="checkbox-inline control-label" htmlFor="enableCount" style={{ marginLeft: '20px' }}>
-              <input type="checkbox" id="enableCount" data-test="enable-count" checked={this.state.isCountEnabled}
-                onChange={this.changeCountEnableFlag} />
-              <span style={{ fontWeight: 'bold' }}>Enable Count</span> (add to OData query)
+              <input type="checkbox" id="enableCount" data-test="enable-count" defaultChecked={this.state.isCountEnabled}
+                onChange={() => this.changeCountEnableFlag()} />
+              <span style={{ fontWeight: 'bold' }}> Enable Count</span> (add to OData query)
             </label>
             <label className="checkbox-inline control-label" htmlFor="enableSelect" style={{ marginLeft: '20px' }}>
-              <input type="checkbox" id="enableSelect" data-test="enable-select" checked={this.state.isSelectEnabled}
-                onChange={this.changeEnableSelectFlag} />
-              <span style={{ fontWeight: 'bold' }}>Enable Select</span> (add to OData query)
+              <input type="checkbox" id="enableSelect" data-test="enable-select" defaultChecked={this.state.isSelectEnabled}
+                onChange={() => this.changeEnableSelectFlag()} />
+              <span style={{ fontWeight: 'bold' }}> Enable Select</span> (add to OData query)
             </label>
             <label className="checkbox-inline control-label" htmlFor="enableExpand" style={{ marginLeft: '20px' }}>
-              <input type="checkbox" id="enableExpand" data-test="enable-expand" checked={this.state.isExpandEnabled}
-                onChange={this.changeEnableExpandFlag} />
-              <span style={{ fontWeight: 'bold' }}>Enable Expand</span> (add to OData query)
+              <input type="checkbox" id="enableExpand" data-test="enable-expand" defaultChecked={this.state.isExpandEnabled}
+                onChange={() => this.changeEnableExpandFlag()} />
+              <span style={{ fontWeight: 'bold' }}> Enable Expand</span> (add to OData query)
             </label>
           </div >
         </div >
         <div className="row mt-2 mb-1">
           <div className="col-md-12">
             <button className="btn btn-outline-danger btn-sm" data-test="throw-page-error-btn"
-              onClick={this.throwPageChangeError}>
+              onClick={() => this.throwPageChangeError()}>
               <span>Throw Error Going to Last Page... </span>
               <i className="mdi mdi-page-last"></i>
             </button>
 
             <span className="ms-2">
               <label>Programmatically go to first/last page:</label>
-              <button className="btn btn-outline-secondary btn-xs" data-test="goto-first-page" onChange={this.goToFirstPage}>
+              <button className="btn btn-outline-secondary btn-xs" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
                 <i className="fa fa-caret-left fa-lg"></i>
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="goto-last-page" onChange={this.goToLastPage}>
+              <button className="btn btn-outline-secondary btn-xs" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
                 <i className="fa fa-caret-right fa-lg"></i>
               </button>
             </span>
           </div>
         </div>
 
-        <ReactSlickgridCustomElement gridId="grid5"
+        <ReactSlickgridComponent gridId="grid5"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}
-          onReactGridCreated= {$event => this.reactGridReady($event.detail.args)}
-          onGridStateChanged={$event => this.gridStateChanged($event.detail.args)}
+          paginationOptions={this.state.paginationOptions}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+          onGridStateChanged={$event => this.gridStateChanged($event.detail)}
           onBeforeSort={$event => this.handleOnBeforeSort($event.detail.eventData)}
           onBeforeSearchChange= {$event => this.handleOnBeforeSearchChange($event.detail.eventData)}
           onBeforePaginationChange= {$event => this.handleOnBeforePaginationChange($event.detail.eventData)}

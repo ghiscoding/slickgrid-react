@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { GraphqlService, GraphqlPaginatedResult, GraphqlServiceApi, } from '@slickgrid-universal/graphql';
-import i18next from 'i18next';
+import i18next, { TFunction } from 'i18next';
 import * as moment from 'moment-mini';
 import {
   ReactGridInstance,
@@ -12,35 +12,30 @@ import {
   MultipleSelectOption,
   OperatorType,
   SortDirection,
-  ReactSlickgridCustomElement,
+  ReactSlickgridComponent,
 } from '../../slickgrid-react';
 import React from 'react';
 import BaseSlickGridState from './state-slick-grid-base';
+import { withTranslation } from 'react-i18next';
+
+interface Status { text: string, class: string }
+interface Props {
+  t: TFunction;
+}
+
+interface State extends BaseSlickGridState{
+  graphqlQuery: string,
+  isWithCursor: boolean,
+  processing: boolean,
+  selectedLanguage: string,
+  metrics?: Metrics,
+  status: Status,
+}
 
 const defaultPageSize = 20;
 const GRAPHQL_QUERY_DATASET_NAME = 'users';
 
-i18next.init({
-  lng: 'en',
-}
-);
-
-interface Status { text: string, class: string }
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Props { }
-
-interface State extends BaseSlickGridState{
-  graphqlQuery:string,
-  isWithCursor:boolean,
-  processing:boolean,
-  selectedLanguage:string,
-  metrics: Metrics,
-  status: Status,
-
-}
-
-export default class Example6 extends React.Component<Props, State> {
+class Example6 extends React.Component<Props, State> {
   title = 'Example 6: Grid with Backend GraphQL Service';
   subTitle = `
   Use it when you need to support Pagination with a GraphQL endpoint (for simple JSON, use a regular grid).
@@ -66,13 +61,13 @@ export default class Example6 extends React.Component<Props, State> {
     const defaultLang = 'en';
 
     this.state = {
-      gridOptions: {},
+      gridOptions: undefined,
       columnDefinitions: [],
       dataset: [],
-      metrics: null,
-      processing:false,
+      metrics: undefined,
+      processing: false,
       graphqlQuery: '',
-      isWithCursor:false,
+      isWithCursor: false,
       selectedLanguage: defaultLang,
       status: {} as Status,
     };
@@ -80,7 +75,7 @@ export default class Example6 extends React.Component<Props, State> {
     i18next.changeLanguage(defaultLang);
   }
 
-  componentDidMount(): void {
+  componentDidMount() {
     this.defineGrid();
   }
 
@@ -89,6 +84,7 @@ export default class Example6 extends React.Component<Props, State> {
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
+    console.log('reactGridReady', reactGrid)
     this.reactGrid = reactGrid;
   }
 
@@ -159,7 +155,6 @@ export default class Example6 extends React.Component<Props, State> {
         gridOptions
       };
     });
-
   }
 
   getGridOptions(){
@@ -230,12 +225,10 @@ export default class Example6 extends React.Component<Props, State> {
         postProcess: (result: GraphqlPaginatedResult) => {
           const metrics = result.metrics as Metrics;
 
-          this.setState((state:any, props) => {
-            return {
+          this.setState((state: State) => ({
               ...state,
               metrics,
-            };
-          });
+          }));
 
           this.displaySpinner(false);
         }
@@ -243,7 +236,7 @@ export default class Example6 extends React.Component<Props, State> {
     };
   }
   clearAllFiltersAndSorts() {
-    if (this.reactGrid && this.reactGrid.gridService) {
+    if (this.reactGrid?.gridService) {
       this.reactGrid.gridService.clearAllFiltersAndSorts();
     }
   }
@@ -256,7 +249,7 @@ export default class Example6 extends React.Component<Props, State> {
     this.setState((state:any, props:any)=>{
       return {
         ...state,
-        status:newStatus,
+        status: newStatus,
         processing: isProcessing,
       };
     });
@@ -295,11 +288,11 @@ export default class Example6 extends React.Component<Props, State> {
   }
 
   goToFirstPage() {
-    this.reactGrid.paginationService!.goToFirstPage();
+    this.reactGrid?.paginationService!.goToFirstPage();
   }
 
   goToLastPage() {
-    this.reactGrid.paginationService!.goToLastPage();
+    this.reactGrid?.paginationService!.goToLastPage();
   }
 
   /** Dispatched event of a Grid State Changed event */
@@ -308,7 +301,7 @@ export default class Example6 extends React.Component<Props, State> {
   }
 
   saveCurrentGridState() {
-    console.log('GraphQL current grid state', this.reactGrid.gridStateService.getCurrentGridState());
+    console.log('GraphQL current grid state', this.reactGrid?.gridStateService.getCurrentGridState());
   }
 
   setFiltersDynamically() {
@@ -316,7 +309,7 @@ export default class Example6 extends React.Component<Props, State> {
     const presetHighestDay = moment().add(20, 'days').format('YYYY-MM-DD');
 
     // we can Set Filters Dynamically (or different filters) afterward through the FilterService
-    this.reactGrid.filterService.updateFilters([
+    this.reactGrid?.filterService.updateFilters([
       { columnId: 'gender', searchTerms: ['female'], operator: OperatorType.equal },
       { columnId: 'name', searchTerms: ['Jane'], operator: OperatorType.startsWith },
       { columnId: 'company', searchTerms: ['acme'], operator: 'IN' },
@@ -326,7 +319,7 @@ export default class Example6 extends React.Component<Props, State> {
   }
 
   setSortingDynamically() {
-    this.reactGrid.sortService.updateSorting([
+    this.reactGrid?.sortService.updateSorting([
       // orders matter, whichever is first in array will be the first sorted column
       { columnId: 'billingAddressZip', direction: 'DESC' },
       { columnId: 'company', direction: 'ASC' },
@@ -336,16 +329,11 @@ export default class Example6 extends React.Component<Props, State> {
   async switchLanguage() {
     const nextLanguage = (this.state.selectedLanguage === 'en') ? 'fr' : 'en';
     await i18next.changeLanguage(nextLanguage);
-    this.setState((state:any, props:any)=>{
-      return {
-        ...state,
-        selectedLanguage: nextLanguage,
-      };
-    });
+    this.setState((state: State) => ({ ...state, selectedLanguage: nextLanguage }));
   }
 
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -363,24 +351,24 @@ export default class Example6 extends React.Component<Props, State> {
           <div className="col-sm-5">
             <div className={this.state.status.class} role="alert" data-test="status">
               <strong>Status: </strong> {this.state.status.text}
-              {!this.state.processing && <span>
+              {this.state.processing ? <span>
                 <i className="fa fa-refresh fa-spin fa-lg fa-fw"></i>
-              </span>}
+              </span> : ''}
             </div>
 
             <div className="row">
               <div className="col-md-12">
                 <button className="btn btn-outline-secondary btn-sm" data-test="clear-filters-sorting"
-                  onClick={this.clearAllFiltersAndSorts} title="Clear all Filters & Sorts">
-                  <i className="fa fa-filter text-danger"></i>
+                  onClick={() => this.clearAllFiltersAndSorts()} title="Clear all Filters & Sorts">
+                  <i className="fa fa-filter text-danger me-1"></i>
                   Clear all Filter & Sorts
                 </button>
-                <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-filter"
-                  onClick={this.setFiltersDynamically}>
+                <button className="btn btn-outline-secondary btn-sm mx-1" data-test="set-dynamic-filter"
+                  onClick={() => this.setFiltersDynamically()}>
                   Set Filters Dynamically
                 </button>
                 <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-sorting"
-                  onClick={this.setSortingDynamically}>
+                  onClick={() => this.setSortingDynamically()}>
                   Set Sorting Dynamically
                 </button>
               </div>
@@ -390,30 +378,31 @@ export default class Example6 extends React.Component<Props, State> {
 
             <div className="row">
               <div className="col-md-12">
-                <button className="btn btn-outline-secondary btn-sm" onClick={this.switchLanguage}
+                <button className="btn btn-outline-secondary btn-sm mx-1" onClick={() => this.switchLanguage()}
                   data-test="language-button">
-                  <i className="fa fa-language"></i>
+                  <i className="fa fa-language me-1"></i>
                   Switch Language
                 </button>
-                <b>Locale:</b>
+                <b>Locale: </b>
                 <span style={{ fontStyle: 'italic' }} data-test="selected-locale">
                   {this.state.selectedLanguage + '.json'}
                 </span>
               </div>
             </div>
             <br />
-            {this.state.metrics && <div style={{ margin: '10px 0px' }}>
-              <b>Metrics:</b> {this.state.metrics.endTime} | {this.state.metrics.executionTime}ms |
-              {this.state.metrics.totalItemCount}
-              items
-            </div>}
+            {this.state.metrics && <span><><b>Metrics: </b>
+              {moment(this.state.metrics.endTime).format('YYYY-MM-DD HH:mm:ss')}
+              | {this.state.metrics.executionTime}ms
+              | {this.state.metrics.totalItemCount} items </>
+            </span>}
+
             <div className="row" style={{ marginBottom: '5px' }}>
               <div className="col-md-12">
                 <label>Programmatically go to first/last page:</label>
-                <button className="btn btn-outline-secondary btn-xs" data-test="goto-first-page" onClick={this.goToFirstPage}>
+                <button className="btn btn-outline-secondary btn-xs" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
                   <i className="fa fa-caret-left fa-lg"></i>
                 </button>
-                <button className="btn btn-outline-secondary btn-xs" data-test="goto-last-page" onClick={this.goToLastPage}>
+                <button className="btn btn-outline-secondary btn-xs" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
                   <i className="fa fa-caret-right fa-lg"></i>
                 </button>
               </div>
@@ -428,14 +417,16 @@ export default class Example6 extends React.Component<Props, State> {
 
         <hr />
 
-        <ReactSlickgridCustomElement gridId="grid6"
+        <ReactSlickgridComponent gridId="grid6"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}
-          onReactGridCreated= {$event => this.reactGridReady($event.detail.args)}
-          onGridStateChanged= {$event => this.gridStateChanged($event.detail.args)}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+          onGridStateChanged={$event => this.gridStateChanged($event.detail)}
         />
       </div>
     );
   }
 }
+
+export default withTranslation()(Example6);

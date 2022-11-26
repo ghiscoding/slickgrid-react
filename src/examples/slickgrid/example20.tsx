@@ -10,16 +10,23 @@ import {
   GridOption,
   SlickGrid,
   SlickNamespace,
-  ReactSlickgridCustomElement
+  ReactSlickgridComponent,
+  DOMEvent
 } from '../../slickgrid-react';
 import React from 'react';
 import './example20.scss'; // provide custom CSS/SASS styling
+import BaseSlickGridState from './state-slick-grid-base';
 
 declare const Slick: SlickNamespace;
 
 interface Props { }
+interface State extends BaseSlickGridState {
+  frozenColumnCount: number;
+  frozenRowCount: number;
+  isFrozenBottom: boolean;
+}
 
-export default class Example20 extends React.Component {
+export default class Example20 extends React.Component<Props, State> {
   title = 'Example 20: Pinned (frozen) Columns/Rows';
   subTitle = `
     This example demonstrates the use of Pinned (aka frozen) Columns and/or Rows (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Pinned-(aka-Frozen)-Columns-Rows" target="_blank">Wiki docs</a>)
@@ -32,20 +39,20 @@ export default class Example20 extends React.Component {
   `;
 
   reactGrid!: ReactGridInstance;
-  columnDefinitions: Column[] = [];
   gridObj!: SlickGrid;
-  gridOptions!: GridOption;
-  frozenColumnCount = 2;
-  frozenRowCount = 3;
-  isFrozenBottom = false;
-  dataset: any[] = [];
   slickEventHandler: any;
 
   constructor(public readonly props: Props) {
     super(props);
-    this.defineGrid();
-    this.componentDidMount();
     this.slickEventHandler = new Slick.EventHandler();
+
+    this.state = {
+      gridOptions: undefined,
+      columnDefinitions: [],
+      frozenColumnCount: 2,
+      frozenRowCount: 3,
+      isFrozenBottom: false,
+    }
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
@@ -61,15 +68,15 @@ export default class Example20 extends React.Component {
 
   highlightRow(event: Event, isMouseEnter: boolean) {
     const cell = this.gridObj.getCellFromEvent(event);
-    const rows = isMouseEnter ? [cell.row] : [];
+    const rows = isMouseEnter ? [cell?.row ?? 0] : [];
     this.gridObj.setSelectedRows(rows); // highlight current row
     event.preventDefault();
   }
 
   componentDidMount() {
     document.title = this.title;
-    // populate the dataset once the grid is ready
-    this.getData();
+
+    this.defineGrid();
   }
 
   componentWillUnmount() {
@@ -79,7 +86,7 @@ export default class Example20 extends React.Component {
 
   /* Define grid Options and Columns */
   defineGrid() {
-    this.columnDefinitions = [
+    const columnDefinitions: Column[] = [
       {
         id: 'sel', name: '#', field: 'id',
         minWidth: 40, width: 40, maxWidth: 40,
@@ -224,7 +231,7 @@ export default class Example20 extends React.Component {
       }
     ];
 
-    this.gridOptions = {
+    const gridOptions: GridOption = {
       autoResize: {
         container: '#demo-container',
         rightPadding: 10
@@ -234,19 +241,26 @@ export default class Example20 extends React.Component {
       editable: true,
       autoEdit: true,
       enableExcelCopyBuffer: true,
-      frozenColumn: this.frozenColumnCount,
-      frozenRow: this.frozenRowCount,
+      frozenColumn: 2,
+      frozenRow: 3,
       // frozenBottom: true, // if you want to freeze the bottom instead of the top, you can enable this property
 
       // show both Frozen Columns in HeaderMenu & GridMenu, these are opt-in commands so they're disabled by default
       gridMenu: { hideClearFrozenColumnsCommand: false },
       headerMenu: { hideFreezeColumnsCommand: false }
     };
+
+    this.setState((state: State) => ({
+      ...state,
+      gridOptions,
+      columnDefinitions,
+      dataset: this.getData()
+    }));
   }
 
   getData() {
     // Set up some test columns.
-    const mockDataset = [];
+    const mockDataset: any[] = [];
     for (let i = 0; i < 500; i++) {
       mockDataset[i] = {
         id: i,
@@ -263,25 +277,35 @@ export default class Example20 extends React.Component {
         title4: `Some Text ${Math.round(Math.random() * 25)}`,
       };
     }
-    this.dataset = mockDataset;
+    return mockDataset;
   }
 
   /** change dynamically, through slickgrid "setOptions()" the number of pinned columns */
-  changeFrozenColumnCount() {
-    if (this.gridObj && this.gridObj.setOptions) {
-      this.gridObj.setOptions({
-        frozenColumn: this.frozenColumnCount
-      });
-    }
+  changeFrozenColumnCount(e: React.FormEvent<HTMLInputElement>) {
+    this.setState((state: State) => ({
+      ...state,
+      frozenColumnCount: +((e.target as HTMLInputElement)?.value ?? 0),
+    }));
+  }
+
+  setFrozenColumnCount() {
+    this.gridObj?.setOptions({
+      frozenColumn: this.state.frozenColumnCount
+    });
   }
 
   /** change dynamically, through slickgrid "setOptions()" the number of pinned rows */
-  changeFrozenRowCount() {
-    if (this.gridObj && this.gridObj.setOptions) {
-      this.gridObj.setOptions({
-        frozenRow: this.frozenRowCount
-      });
-    }
+  changeFrozenRowCount(e: React.FormEvent<HTMLInputElement>) {
+    this.setState((state: State) => ({
+      ...state,
+      frozenRowCount: +((e.target as HTMLInputElement)?.value ?? 0),
+    }));
+  }
+
+  setFrozenRowCount() {
+    this.gridObj?.setOptions({
+      frozenRow: this.state.frozenRowCount
+    });
   }
 
   costDurationFormatter(_row: number, _cell: number, _value: any, _columnDef: Column, dataContext: any) {
@@ -303,21 +327,29 @@ export default class Example20 extends React.Component {
 
   setFrozenColumns(frozenCols: number) {
     this.gridObj.setOptions({ frozenColumn: frozenCols });
-    this.gridOptions = this.gridObj.getOptions();
+
+    this.setState((state: State) => ({
+      ...state,
+      gridOptions: this.gridObj.getOptions(),
+    }));
   }
 
   /** toggle dynamically, through slickgrid "setOptions()" the top/bottom pinned location */
   toggleFrozenBottomRows() {
     if (this.gridObj && this.gridObj.setOptions) {
       this.gridObj.setOptions({
-        frozenBottom: !this.isFrozenBottom
+        frozenBottom: !this.state.isFrozenBottom
       });
-      this.isFrozenBottom = !this.isFrozenBottom; // toggle the variable
+
+      this.setState((state: State) => ({
+        ...state,
+        isFrozenBottom: !state.isFrozenBottom,
+      }));
     }
   }
 
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -337,19 +369,15 @@ export default class Example20 extends React.Component {
           <div className="col-sm-12">
             <span>
               <label htmlFor="">Pinned Rows: </label>
-              <input type="number"
-                value="frozenRowCount" />
-              <button className="btn btn-outline-secondary btn-xs"
-                onClick={this.changeFrozenRowCount}>
+              <input type="number" defaultValue={this.state.frozenRowCount} onInput={($event) => this.changeFrozenRowCount($event)} />
+              <button className="btn btn-outline-secondary btn-xs" onClick={() => this.setFrozenRowCount()}>
                 Set
               </button>
             </span>
             <span style={{ marginLeft: '10px' }}>
               <label htmlFor="">Pinned Columns: </label>
-              <input type="number"
-                value="frozenColumnCount" />
-              <button className="btn btn-outline-secondary btn-xs"
-                onClick={this.changeFrozenColumnCount}>
+              <input type="number" defaultValue={this.state.frozenColumnCount} onInput={($event) => this.changeFrozenColumnCount($event)} />
+              <button className="btn btn-outline-secondary btn-xs" onClick={() => this.setFrozenColumnCount()}>
                 Set
               </button>
             </span>
@@ -367,10 +395,10 @@ export default class Example20 extends React.Component {
               <i className="fa fa-thumb-tack fa-lg"></i> Set 3 Frozen Columns
             </button>
             <span style={{ marginLeft: '15px' }}>
-              <button className="btn btn-outline-secondary btn-sm" onClick={this.toggleFrozenBottomRows}>
+              <button className="btn btn-outline-secondary btn-sm" onClick={() => this.toggleFrozenBottomRows()}>
                 <i className="fa fa-random fa-lg"></i> Toggle Pinned Rows
               </button>
-              <span style={{ fontWeight: 'bold' }}>: {this.isFrozenBottom ? 'Bottom' : 'Top'}</span>
+              <span style={{ fontWeight: 'bold' }}>: {this.state.isFrozenBottom ? 'Bottom' : 'Top'}</span>
             </span>
           </div>
         </div>
@@ -379,14 +407,12 @@ export default class Example20 extends React.Component {
           <hr />
         </div>
 
-        <ReactSlickgridCustomElement gridId="grid20"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          customEvents={{
-            onValidationError: $event => this.onCellValidationError($event.detail.eventData, $event.detail.args),
-            onReactGridCreated: $event => this.reactGridReady($event.detail)
-          }}
+        <ReactSlickgridComponent gridId="grid20"
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions}
+          dataset={this.state.dataset}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+          onValidationError={$event => this.onCellValidationError($event.detail.eventData, $event.detail.args)}
         />
       </div>
     );

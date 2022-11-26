@@ -16,13 +16,18 @@ import {
   SortComparers,
   SlickDataView,
   SlickGrid,
-  ReactSlickgridCustomElement,
+  ReactSlickgridComponent,
 } from '../../slickgrid-react';
 import React from 'react';
+import BaseSlickGridState from './state-slick-grid-base';
 
 interface Props { }
+interface State extends BaseSlickGridState {
+  dataset: any[],
+  processing: boolean;
+}
 
-export default class Example13 extends React.Component {
+export default class Example13 extends React.Component<Props, State> {
   title = 'Example 13: Grouping & Aggregators';
   subTitle = `
     <ul>
@@ -34,26 +39,39 @@ export default class Example13 extends React.Component {
   `;
 
   reactGrid!: ReactGridInstance;
-  columnDefinitions: Column[] = [];
-  gridOptions!: GridOption;
-  dataset: any[] = [];
   dataviewObj!: SlickDataView;
   gridObj!: SlickGrid;
-  processing = false;
   excelExportService = new ExcelExportService();
   textExportService = new TextExportService();
 
   constructor(public readonly props: Props) {
     super(props);
-    this.componentDidMount();
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
+
+    this.state = {
+      columnDefinitions: [],
+      gridOptions: undefined,
+      processing: false,
+      dataset: this.loadData(500),
+    }
   }
 
   componentDidMount() {
     document.title = this.title;
+
+    // define the grid options & columns and then create the grid itself
+    this.defineGrid();
+
+    // this.initDataLoad();
+  }
+
+  initDataLoad() {
     // populate the dataset once the grid is ready
-    this.loadData(500);
+    this.setState((state: State, props: Props) => {
+      return {
+        ...state,
+        dataset: this.loadData(500)
+      };
+    });
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
@@ -64,7 +82,7 @@ export default class Example13 extends React.Component {
 
   /* Define grid Options and Columns */
   defineGrid() {
-    this.columnDefinitions = [
+    const columnDefinitions: Column[] = [
       {
         id: 'sel', name: '#', field: 'num', width: 40,
         excludeFromExport: true,
@@ -154,7 +172,7 @@ export default class Example13 extends React.Component {
       }
     ];
 
-    this.gridOptions = {
+    const gridOptions: GridOption = {
       autoResize: {
         container: '#demo-container',
         rightPadding: 10
@@ -169,18 +187,26 @@ export default class Example13 extends React.Component {
       textExportOptions: { sanitizeDataExport: true },
       registerExternalResources: [this.excelExportService, this.textExportService],
     };
+
+    this.setState((state: State, props: Props) => {
+      return {
+        ...state,
+        columnDefinitions,
+        gridOptions,
+      }
+    });
   }
 
   loadData(rowCount: number) {
     // mock a dataset
-    this.dataset = [];
+    const dataset: any[] = [];
     for (let i = 0; i < rowCount; i++) {
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomMonth = Math.floor(Math.random() * 11);
       const randomDay = Math.floor((Math.random() * 29));
       const randomPercent = Math.round(Math.random() * 100);
 
-      this.dataset[i] = {
+      dataset[i] = {
         id: 'id_' + i,
         num: i,
         title: 'Task ' + i,
@@ -193,6 +219,17 @@ export default class Example13 extends React.Component {
         effortDriven: (i % 5 === 0)
       };
     }
+
+    return dataset;
+  }
+
+  updateData(rowCount: number) {
+    this.setState((state: State, props: Props) => {
+      return {
+        ...state,
+        dataset: this.loadData(rowCount),
+      }
+    });
   }
 
   clearGrouping() {
@@ -335,8 +372,17 @@ export default class Example13 extends React.Component {
     this.gridObj.invalidate(); // invalidate all rows and re-render
   }
 
+  changeProcessing(isProcessing: boolean) {
+    this.setState((state: State, props: Props) => {
+      return {
+        ...state,
+        processing: isProcessing
+      }
+    });
+  }
+
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -352,23 +398,22 @@ export default class Example13 extends React.Component {
 
         <div className="row">
           <div className="col-sm-12">
-            <button className="btn btn-outline-secondary btn-xs" data-test="add-500-rows-btn" onClick={() => this.loadData(500)}>
+            <button className="btn btn-outline-secondary btn-xs" data-test="add-500-rows-btn" onClick={() => this.updateData(500)}>
               500 rows
             </button>
-            <button className="btn btn-outline-secondary btn-xs" data-test="add-50k-rows-btn" onClick={() => this.loadData(50000)}>
+            <button className="btn btn-outline-secondary btn-xs" data-test="add-50k-rows-btn" onClick={() => this.updateData(50000)}>
               50k rows
             </button>
-            <button className="btn btn-outline-secondary btn-xs" data-test="clear-grouping-btn" onClick={this.clearGrouping}>
+            <button className="btn btn-outline-secondary btn-xs" data-test="clear-grouping-btn" onClick={() => this.clearGrouping()}>
               <i className="fa fa-times"></i> Clear grouping
             </button>
-            <button className="btn btn-outline-secondary btn-xs" data-test="collapse-all-btn"
-              onClick={this.collapseAllGroups}>
+            <button className="btn btn-outline-secondary btn-xs" data-test="collapse-all-btn" onClick={() => this.collapseAllGroups()}>
               <i className="fa fa-compress"></i> Collapse all groups
             </button>
-            <button className="btn btn-outline-secondary btn-xs" data-test="expand-all-btn" onClick={this.expandAllGroups}>
+            <button className="btn btn-outline-secondary btn-xs" data-test="expand-all-btn" onClick={() => this.expandAllGroups()}>
               <i className="fa fa-expand"></i> Expand all groups
             </button>
-            <button className="btn btn-outline-secondary btn-xs" data-test="export-excel-btn" onClick={this.exportToExcel}>
+            <button className="btn btn-outline-secondary btn-xs" data-test="export-excel-btn" onClick={() => this.exportToExcel()}>
               <i className="fa fa-file-excel-o text-success"></i> Export to Excel
             </button>
           </div>
@@ -379,7 +424,7 @@ export default class Example13 extends React.Component {
         <div className="row">
           <div className="col-sm-12">
             <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-sort-value-btn"
-              onClick={this.groupByDuration}>
+              onClick={() => this.groupByDuration()}>
               Group by Duration &amp; sort groups by value
             </button>
             <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-sort-count-btn"
@@ -394,29 +439,28 @@ export default class Example13 extends React.Component {
                 Group by Duration &amp; sort groups by count, aggregate collapsed
               </button>
               <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-effort-btn"
-                onClick={this.groupByDurationEffortDriven}>
+                onClick={() => this.groupByDurationEffortDriven()}>
                 Group by Duration then Effort-Driven
               </button>
               <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-effort-percent-btn"
-                onClick={this.groupByDurationEffortDrivenPercent}>
+                onClick={() => this.groupByDurationEffortDrivenPercent()}>
                 Group by Duration then Effort-Driven then Percent.
               </button>
-              {!this.processing && <span>
+              {this.state.processing && <span>
                 <i className="fa fa-refresh fa-spin fa-lg fa-fw"></i>
               </span>}
             </div>
           </div>
         </div>
 
-        <ReactSlickgridCustomElement gridId="grid13"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          customEvents={{
-            onBeforeExportToExcel: this.processing = true,
-            onAfterExportToExcel: this.processing = false,
-            onReactGridCreated: $event => this.reactGridReady($event.detail),
-          }} />
+        <ReactSlickgridComponent gridId="grid13"
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions!}
+          dataset={this.state.dataset}
+          onBeforeExportToExcel={() => this.changeProcessing(true)}
+          onAfterExportToExcel={() => this.changeProcessing(false)}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+        />
       </div>
     );
   }

@@ -1,5 +1,7 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-import i18next from 'i18next';
+import i18next, { TFunction } from 'i18next';
+import React from 'react';
+import { withTranslation } from 'react-i18next';
 
 import {
   ReactGridInstance,
@@ -12,14 +14,18 @@ import {
   Formatters,
   GridOption,
   SlickGrid,
-  ReactSlickgridCustomElement,
+  ReactSlickgridComponent,
 } from '../../slickgrid-react';
-import React from 'react';
+import BaseSlickGridState from './state-slick-grid-base';
 import './example24.scss'; // provide custom CSS/SASS styling
-i18next.init({
-  lng: 'en',
+
+interface Props {
+  t: TFunction;
 }
-);
+interface State extends BaseSlickGridState {
+  selectedLanguage: string;
+}
+
 const actionFormatter: Formatter = (_row, _cell, _value, _columnDef, dataContext) => {
   if (dataContext.priority === 3) { // option 3 is High
     return `<div class="fake-hyperlink">Action <i class="fa fa-caret-down"></i></div>`;
@@ -62,9 +68,7 @@ const taskTranslateFormatter: Formatter = (_row, _cell, value, _columnDef, _data
   return i18n?.t('TASK_X', { x: value }) ?? '';
 };
 
-interface Props { }
-
-export default class Example24 extends React.Component {
+class Example24 extends React.Component<Props, State> {
   title = 'Example 24: Cell Menu & Context Menu Plugins';
   subTitle = `Add Cell Menu and Context Menu
     <ul>
@@ -93,41 +97,44 @@ export default class Example24 extends React.Component {
     </ul>`;
 
   reactGrid!: ReactGridInstance;
-  gridOptions!: GridOption;
-  columnDefinitions: Column[] = [];
-  dataset: any[] = [];
-  selectedLanguage: string;
-  // private i18n: i18n;
 
   constructor(public readonly props: Props) {
     super(props);
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
 
     // always start with English for Cypress E2E tests to be consistent
     const defaultLang = 'en';
     i18next.changeLanguage(defaultLang);
-    this.selectedLanguage = defaultLang;
-    this.componentDidMount();
+
+    this.state = {
+      gridOptions: undefined,
+      columnDefinitions: [],
+      dataset: [],
+      selectedLanguage: 'en',
+    }
   }
 
   get cellMenuInstance(): any {
-    return this.reactGrid && this.reactGrid.extensionService.getSlickgridAddonInstance(ExtensionName.cellMenu) || {};
+    return this.reactGrid && this.reactGrid.extensionService.getExtensionInstanceByName(ExtensionName.cellMenu) || {};
   }
 
   get contextMenuInstance(): any {
-    return this.reactGrid && this.reactGrid.extensionService.getSlickgridAddonInstance(ExtensionName.contextMenu) || {};
+    return this.reactGrid && this.reactGrid.extensionService.getExtensionInstanceByName(ExtensionName.contextMenu) || {};
   }
 
   componentDidMount() {
     document.title = this.title;
-    // populate the dataset once the grid is ready
-    this.dataset = this.getData(1000);
+
+    // define the grid options & columns and then create the grid itself
+    this.defineGrid();
+  }
+
+  reactGridReady(reactGrid: ReactGridInstance) {
+    this.reactGrid = reactGrid;
   }
 
   /* Define grid Options and Columns */
   defineGrid() {
-    this.columnDefinitions = [
+    const columnDefinitions: Column[] = [
       { id: 'id', name: '#', field: 'id', maxWidth: 45, sortable: true, filterable: true },
       {
         id: 'title', name: 'Title', field: 'id', nameKey: 'TITLE', minWidth: 100,
@@ -256,7 +263,7 @@ export default class Example24 extends React.Component {
       },
     ];
 
-    this.gridOptions = {
+    const gridOptions: GridOption = {
       autoResize: {
         container: '#demo-container',
         rightPadding: 10
@@ -303,6 +310,13 @@ export default class Example24 extends React.Component {
       // load Context Menu structure
       contextMenu: this.getContextMenuOptions(),
     };
+
+    this.setState((state: State) => ({
+      ...state,
+      gridOptions,
+      columnDefinitions,
+      dataset: this.getData(1000)
+    }));
   }
 
   executeCommand(_e: Event, args: any) {
@@ -320,7 +334,7 @@ export default class Example24 extends React.Component {
         alert('Please help!');
         break;
       case 'delete-row':
-        if (confirm(`Do you really want to delete row ${args.row + 1} with ${this.i18n.t('TASK_X', { x: dataContext.id })}`)) {
+        if (confirm(`Do you really want to delete row ${args.row + 1} with ${i18next?.t('TASK_X', { x: dataContext.id })}`)) {
           this.reactGrid.dataView.deleteItem(dataContext.id);
         }
         break;
@@ -329,7 +343,7 @@ export default class Example24 extends React.Component {
 
   getData(count: number): any[] {
     // mock a dataset
-    const tmpData = [];
+    const tmpData: any[] = [];
     for (let i = 0; i < count; i++) {
       const randomYear = 2000 + Math.floor(Math.random() * 30);
       const randomMonth = Math.floor(Math.random() * 11);
@@ -463,13 +477,13 @@ export default class Example24 extends React.Component {
   }
 
   async switchLanguage() {
-    const nextLanguage = (this.selectedLanguage === 'en') ? 'fr' : 'en';
+    const nextLanguage = (this.state.selectedLanguage === 'en') ? 'fr' : 'en';
     await i18next.changeLanguage(nextLanguage);
-    this.selectedLanguage = nextLanguage;
+    this.setState((state: State) => ({ ...state, selectedLanguage: nextLanguage }));
   }
 
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -511,23 +525,26 @@ export default class Example24 extends React.Component {
 
         <div className="row locale">
           <div className="col-12">
-            <button className="btn btn-outline-secondary btn-xs" onClick={this.switchLanguage} data-test="language-button">
-              <i className="fa fa-language"></i>
+            <button className="btn btn-outline-secondary btn-xs me-1" onClick={() => this.switchLanguage()} data-test="language-button">
+              <i className="fa fa-language me-1"></i>
               Switch Language
             </button>
-            <label>Locale:</label>
+            <label>Locale: </label>
             <span style={{ fontStyle: 'italic' }} data-test="selected-locale">
-              {this.selectedLanguage + '.json'}
+              {this.state.selectedLanguage + '.json'}
             </span>
           </div>
         </div>
 
-        <ReactSlickgridCustomElement gridId="grid24"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          instances={this.reactGrid} />
+        <ReactSlickgridComponent gridId="grid24"
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions}
+          dataset={this.state.dataset}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+        />
       </div>
     );
   }
 }
+
+export default withTranslation()(Example24);

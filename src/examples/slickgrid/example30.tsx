@@ -21,10 +21,11 @@ import {
   SlickGrid,
   SlickNamespace,
   SortComparers,
-  ReactSlickgridCustomElement,
+  ReactSlickgridComponent,
 } from '../../slickgrid-react';
 import React from 'react';
 import './example30.scss'; // provide custom CSS/SASS styling
+import BaseSlickGridState from './state-slick-grid-base';
 
 const NB_ITEMS = 500;
 const URL_COUNTRIES_COLLECTION = 'assets/data/countries.json';
@@ -83,48 +84,56 @@ const myCustomTitleValidator = (value: any, args: any) => {
 };
 
 interface Props { }
-
-export default class Example30 extends React.Component {
+interface State extends BaseSlickGridState {
+  isGridEditable: boolean;
+  isCompositeDisabled: boolean;
+  isMassSelectionDisabled: boolean;
+  cellCssStyleQueue: string[];
+  complexityLevelList: Array<{ value: number; label: string; }>;
+}
+export default class Example30 extends React.Component<Props, State> {
   title = 'Example 30: Composite Editor Modal';
   subTitle = `Composite Editor allows you to Create, Clone, Edit, Mass Update & Mass Selection Changes inside a nice Modal Window.
   <br>The modal is simply populated by looping through your column definition list and also uses a lot of the same logic as inline editing (see <a href="https://github.com/ghiscoding/slickgrid-react/wiki/Composite-Editor-Modal" target="_blank">Composite Editor - Wiki</a>.)`;
 
-  reactGrid!: ReactGridInstance;
   compositeEditorInstance: SlickCompositeEditorComponent;
-  gridOptions!: GridOption;
-  columnDefinitions: Column[] = [];
-  dataset: any[] = [];
+  reactGrid!: ReactGridInstance;
   editQueue: any[] = [];
   editedItems: any = {};
-  isGridEditable = true;
-  isCompositeDisabled = false;
-  isMassSelectionDisabled = true;
   cellCssStyleQueue: string[] = [];
-  complexityLevelList = [
-    { value: 0, label: 'Very Simple' },
-    { value: 1, label: 'Simple' },
-    { value: 2, label: 'Straightforward' },
-    { value: 3, label: 'Complex' },
-    { value: 4, label: 'Very Complex' },
-  ];
 
   constructor(public readonly props: Props) {
     super(props);
     this.compositeEditorInstance = new SlickCompositeEditorComponent();
-    this.componentDidMount();
-    // define the grid options & columns and then create the grid itself
-    this.defineGrids();
+
+    this.state = {
+      gridOptions: undefined,
+      columnDefinitions: [],
+      dataset: [],
+      isGridEditable: true,
+      isCompositeDisabled: false,
+      isMassSelectionDisabled: true,
+      cellCssStyleQueue: [],
+      complexityLevelList: [
+        { value: 0, label: 'Very Simple' },
+        { value: 1, label: 'Simple' },
+        { value: 2, label: 'Straightforward' },
+        { value: 3, label: 'Complex' },
+        { value: 4, label: 'Very Complex' },
+      ],
+    }
   }
 
   componentDidMount() {
     document.title = this.title;
-    // mock some data (different in each dataset)
-    this.dataset = this.loadData(NB_ITEMS);
+
+    // define the grid options & columns and then create the grid itself
+    this.defineGrids();
   }
 
   /* Define grid Options and Columns */
   defineGrids() {
-    this.columnDefinitions = [
+    const columnDefinitions: Column[] = [
       {
         id: 'title', name: 'Title', field: 'title', sortable: true, type: FieldType.string, minWidth: 75,
         filterable: true, columnGroup: 'Common Factor',
@@ -200,15 +209,15 @@ export default class Example30 extends React.Component {
         id: 'complexity', name: 'Complexity', field: 'complexity', minWidth: 100,
         type: FieldType.number,
         sortable: true, filterable: true, columnGroup: 'Analysis',
-        formatter: (_row, _cell, value) => this.complexityLevelList[value].label,
-        exportCustomFormatter: (_row, _cell, value) => this.complexityLevelList[value].label,
+        formatter: (_row, _cell, value) => this.state.complexityLevelList[value].label,
+        exportCustomFormatter: (_row, _cell, value) => this.state.complexityLevelList[value].label,
         filter: {
           model: Filters.multipleSelect,
-          collection: this.complexityLevelList
+          collection: this.state.complexityLevelList
         },
         editor: {
           model: Editors.singleSelect,
-          collection: this.complexityLevelList,
+          collection: this.state.complexityLevelList,
           massUpdate: true
         },
       },
@@ -370,7 +379,7 @@ export default class Example30 extends React.Component {
       },
     ];
 
-    this.gridOptions = {
+    const gridOptions: GridOption = {
       enableAddRow: true, // <-- this flag is required to work with the (create & clone) modal types
       enableCellNavigation: true,
       asyncEditorLoading: false,
@@ -415,7 +424,7 @@ export default class Example30 extends React.Component {
         // composite editors values are saved as array, so let's convert to array in any case and we'll loop through these values
         const prevSerializedValues = Array.isArray(editCommand.prevSerializedValue) ? editCommand.prevSerializedValue : [editCommand.prevSerializedValue];
         const serializedValues = Array.isArray(editCommand.serializedValue) ? editCommand.serializedValue : [editCommand.serializedValue];
-        const editorColumns = this.columnDefinitions.filter((col) => col.editor !== undefined);
+        const editorColumns = this.state.columnDefinitions?.filter((col) => col.editor !== undefined);
 
         const modifiedColumns: Column[] = [];
         prevSerializedValues.forEach((_val, index) => {
@@ -424,7 +433,7 @@ export default class Example30 extends React.Component {
 
           if (prevSerializedValue !== serializedValue || serializedValue === '') {
             const finalColumn = Array.isArray(editCommand.prevSerializedValue) ? editorColumns[index] : column;
-            this.editedItems[this.gridOptions.datasetIdPropertyName || 'id'] = item; // keep items by their row indexes, if the row got edited twice then we'll keep only the last change
+            this.editedItems[this.state.gridOptions?.datasetIdPropertyName || 'id'] = item; // keep items by their row indexes, if the row got edited twice then we'll keep only the last change
             this.reactGrid.slickGrid.invalidate();
             editCommand.execute();
 
@@ -441,6 +450,13 @@ export default class Example30 extends React.Component {
       // when using the cellMenu, you can change some of the default options and all use some of the callback methods
       enableCellMenu: true,
     };
+
+    this.setState((state: State) => ({
+      ...state,
+      gridOptions,
+      columnDefinitions,
+      dataset: this.loadData(NB_ITEMS),
+    }));
   }
 
   loadData(count: number) {
@@ -510,8 +526,8 @@ export default class Example30 extends React.Component {
     return false;
   }
 
-  handleItemDeleted(_e: Event, args: any) {
-    console.log('item deleted with id:', args.itemId);
+  handleItemDeleted(itemId: string) {
+    console.log('item deleted with id:', itemId);
   }
 
   handleOnBeforeEditCell(e: Event, args: any) {
@@ -584,7 +600,10 @@ export default class Example30 extends React.Component {
 
   handleOnGridStateChanged(gridStateChanges: GridStateChange) {
     if (Array.isArray(gridStateChanges.gridState?.rowSelection?.dataContextIds)) {
-      this.isMassSelectionDisabled = gridStateChanges.gridState?.rowSelection?.dataContextIds.length === 0;
+      this.setState((state: State) => ({
+        ...state,
+        isMassSelectionDisabled: gridStateChanges.gridState?.rowSelection?.dataContextIds?.length === 0,
+      }));
     }
   }
 
@@ -654,13 +673,15 @@ export default class Example30 extends React.Component {
     this.undoAllEdits();
 
     // then change a single grid options to make the grid non-editable (readonly)
-    this.isGridEditable = !this.isGridEditable;
-    this.isCompositeDisabled = !this.isGridEditable;
-    if (!this.isGridEditable) {
-      this.isMassSelectionDisabled = true;
-    }
+    this.setState((state: State) => ({
+      ...state,
+      isGridEditable: !state.isGridEditable,
+      isCompositeDisabled: !state.isGridEditable,
+      isMassSelectionDisabled: !state.isGridEditable,
+    }));
+
     // dynamically change SlickGrid editable grid option
-    this.reactGrid.slickGrid.setOptions({ editable: this.isGridEditable });
+    this.reactGrid.slickGrid.setOptions({ editable: this.state.isGridEditable });
   }
 
   removeUnsavedStylingFromCell(_item: any, column: Column, row: number) {
@@ -966,7 +987,7 @@ export default class Example30 extends React.Component {
   }
 
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -983,11 +1004,11 @@ export default class Example30 extends React.Component {
         <div className="mb-2">
           <div className="btn-group btn-group-sm" role="group" aria-label="Basic Editing Commands">
             <button type="button" className="btn btn-outline-secondary" data-test="toggle-readonly-btn"
-              onClick={this.toggleGridEditReadonly}>
+              onClick={() => this.toggleGridEditReadonly()}>
               <i className="fa fa-table"></i> Toggle Edit/Readonly Grid
             </button>
             <button type="button" className="btn btn-outline-secondary" data-test="undo-last-edit-btn"
-              onClick={() => this.undoLastEdit}>
+              onClick={() => this.undoLastEdit()}>
               <i className="fa fa-undo"></i> Undo Last Edit
             </button>
             <button type="button" className="btn btn-outline-secondary" data-test="undo-open-editor-btn"
@@ -995,11 +1016,11 @@ export default class Example30 extends React.Component {
               <i className="fa fa-undo"></i> Undo Last Edit &amp; Open Editor
             </button>
             <button type="button" className="btn btn-outline-secondary" data-test="undo-all-edits-btn"
-              onClick={this.undoAllEdits}>
+              onClick={() => this.undoAllEdits()}>
               <i className="fa fa-history"></i> Undo All Edits
             </button>
             <button type="button" className="btn btn-outline-secondary" data-test="save-all-btn"
-              onClick={this.saveAll}>
+              onClick={() => this.saveAll()}>
               <i className="fa fa-save"></i> Save All
             </button>
           </div>
@@ -1008,44 +1029,42 @@ export default class Example30 extends React.Component {
         <div className="mb-3">
           <div className="btn-group btn-group-sm" role="group" aria-label="Basic example">
             <button type="button" className="btn btn-outline-secondary" data-test="open-modal-create-btn"
-              onClick={() => this.openCompositeModal('create')} disabled={this.isCompositeDisabled}>
+              onClick={() => this.openCompositeModal('create')} disabled={this.state.isCompositeDisabled}>
               <i className="fa fa-plus"></i> Item Create
             </button>
             <button type="button" className="btn btn-outline-secondary" data-test="open-modal-clone-btn"
-              onClick={() => this.openCompositeModal('clone')} disabled={this.isCompositeDisabled}>
+              onClick={() => this.openCompositeModal('clone')} disabled={this.state.isCompositeDisabled}>
               <i className="fa fa-clone"></i> Item Clone
             </button>
             <button type="button" className="btn btn-outline-secondary" data-test="open-modal-edit-btn"
-              onClick={() => this.openCompositeModal('edit')} disabled={this.isCompositeDisabled}>
+              onClick={() => this.openCompositeModal('edit')} disabled={this.state.isCompositeDisabled}>
               <i className="fa fa-pencil"></i> Item Edit
             </button>
             <button type="button" className="btn btn-outline-secondary" data-test="open-modal-mass-update-btn"
-              onClick={() => this.openCompositeModal('mass-update')} disabled={this.isCompositeDisabled}>
+              onClick={() => this.openCompositeModal('mass-update')} disabled={this.state.isCompositeDisabled}>
               <i className="fa fa-pencil-square-o"></i> Mass Update
             </button>
             <button type="button" className="btn btn-outline-secondary" data-test="open-modal-mass-selection-btn"
-              onClick={() => this.openCompositeModal('mass-selection')} disabled={this.isMassSelectionDisabled}>
+              onClick={() => this.openCompositeModal('mass-selection')} disabled={this.state.isMassSelectionDisabled}>
               <i className="fa fa-check-square-o"></i> Update Selected
             </button>
           </div>
         </div>
 
-        <ReactSlickgridCustomElement gridId="grid30"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          customEvents={{
-            onReactGridCreated: $event => this.reactGridReady($event.detail),
-            onBeforeEditCell: $event => this.handleOnBeforeEditCell($event.detail.eventData, $event.detail.args),
-            onCellChange: $event => this.handleOnCellChange($event.detail.eventData, $event.detail.args),
-            onOnClick: $event => this.handleOnCellClicked($event.detail.eventData, $event.detail.args),
-            onCompositeEditorChange: $event => this.handleOnCompositeEditorChange($event.detail.eventData, $event.detail.args),
-            onItemDeleted: $event => this.handleItemDeleted($event.detail.eventData, $event.detail.args),
-            onGridStateChanged: $event => this.handleOnGridStateChanged($event.detail),
-            onFilterChanged: this.handleReRenderUnsavedStyling,
-            onPaginationChanged: this.handleReRenderUnsavedStyling,
-            onValidationError: $event => this.handleValidationError($event.detail.eventData, $event.detail.args)
-          }}
+        <ReactSlickgridComponent gridId="grid30"
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions}
+          dataset={this.state.dataset}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+          onBeforeEditCell={$event => this.handleOnBeforeEditCell($event.detail.eventData, $event.detail.args)}
+          onCellChange={$event => this.handleOnCellChange($event.detail.eventData, $event.detail.args)}
+          onClick={$event => this.handleOnCellClicked($event.detail.eventData, $event.detail.args)}
+          onCompositeEditorChange={$event => this.handleOnCompositeEditorChange($event.detail.eventData, $event.detail.args)}
+          onItemDeleted={$event => this.handleItemDeleted($event.detail)}
+          onGridStateChanged={$event => this.handleOnGridStateChanged($event.detail)}
+          onFilterChanged={() => this.handleReRenderUnsavedStyling()}
+          onPaginationChanged={() => this.handleReRenderUnsavedStyling()}
+          onValidationError={$event => this.handleValidationError($event.detail.eventData, $event.detail.args)}
         />
       </div>
     );

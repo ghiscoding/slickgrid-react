@@ -11,11 +11,12 @@ import {
   GridOption,
   OnEventArgs,
   OperatorType,
-  ReactSlickgridCustomElement
+  ReactSlickgridComponent
 } from '../../slickgrid-react';
-import { CustomReactViewModelEditor } from './custom-reactViewModelEditor';
-import { CustomReactViewModelFilter } from './custom-reactViewModelFilter';
+import { CustomInputEditor } from './custom-inputEditor';
+import { CustomInputFilter } from './custom-inputFilter';
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 
 // using external non-typed js libraries
 declare const Slick: any;
@@ -24,7 +25,7 @@ const NB_ITEMS = 100;
 
 interface Props { }
 
-export default class Example26 extends React.Component {
+class Example26 extends React.Component {
   title = 'Example 26: Use of React Custom Elements';
   subTitle = `
   <h3>Filters, Editors, AsyncPostRender with React Custom Elements</h3>
@@ -78,6 +79,10 @@ export default class Example26 extends React.Component {
     this.dataset = this.mockData(NB_ITEMS);
   }
 
+  reactGridReady(reactGrid: ReactGridInstance) {
+    this.reactGrid = reactGrid;
+  }
+
   /* Define grid Options and Columns */
   defineGrid() {
     this.columnDefinitions = [
@@ -106,14 +111,14 @@ export default class Example26 extends React.Component {
         filterable: true,
         sortable: true,
         filter: {
-          model: new CustomReactViewModelFilter(),
+          model: new CustomAureliaViewModelFilter(),
           collection: this.assignees,
           params: {
-            reactUtilService: this.reactUtilService, // pass the reactUtilService here OR in the grid option params
+            aureliaUtilService: this.aureliaUtilService, // pass the aureliaUtilService here OR in the grid option params
             templateUrl: PLATFORM.moduleName('examples/slickgrid/filter-select') // FilterSelect,
           }
         },
-        queryFieldFilter: 'assignee.id', // for a complex object it's important to tell the Filter which field to query and our CustomReactComponentFilter returns the "id" property
+        queryFieldFilter: 'assignee.id', // for a complex object it's important to tell the Filter which field to query and our CustomAureliaComponentFilter returns the "id" property
         queryFieldSorter: 'assignee.name',
         formatter: Formatters.complexObject,
         params: {
@@ -121,10 +126,10 @@ export default class Example26 extends React.Component {
         },
         exportWithFormatter: true,
         editor: {
-          model: CustomReactViewModelEditor,
+          model: CustomAureliaViewModelEditor,
           collection: this.assignees,
           params: {
-            reactUtilService: this.reactUtilService, // pass the reactUtilService here OR in the grid option params
+            aureliaUtilService: this.aureliaUtilService, // pass the aureliaUtilService here OR in the grid option params
             templateUrl: PLATFORM.moduleName('examples/slickgrid/editor-select') // EditorSelect,
           }
         },
@@ -134,29 +139,29 @@ export default class Example26 extends React.Component {
         }
       }, {
         id: 'assignee2',
-        name: 'Assignee with React Component',
+        name: 'Assignee with Aurelia Component',
         field: 'assignee',
         minWidth: 125,
         filterable: true,
         sortable: true,
         filter: {
-          model: new CustomReactViewModelFilter(),
+          model: new CustomAureliaViewModelFilter(),
           collection: this.assignees,
           params: {
-            reactUtilService: this.reactUtilService, // pass the reactUtilService here OR in the grid option params
+            aureliaUtilService: this.aureliaUtilService, // pass the aureliaUtilService here OR in the grid option params
             templateUrl: PLATFORM.moduleName('examples/slickgrid/filter-select') // FilterSelect,
           }
         },
-        queryFieldFilter: 'assignee.id', // for a complex object it's important to tell the Filter which field to query and our CustomReactComponentFilter returns the "id" property
+        queryFieldFilter: 'assignee.id', // for a complex object it's important to tell the Filter which field to query and our CustomAureliaComponentFilter returns the "id" property
         queryFieldSorter: 'assignee.name',
 
         // loading formatter, text to display while Post Render gets processed
         formatter: () => '...',
 
-        // to load an React Custom Element, you cannot use a Formatter since React needs at least 1 cycle to render everything
+        // to load an Aurelia Custom Element, you cannot use a Formatter since Aurelia needs at least 1 cycle to render everything
         // you can use a PostRenderer but you will visually see the data appearing,
-        // which is why it's still better to use regular Formatter (with jQuery if need be) instead of React Custom Element
-        asyncPostRender: this.renderReactComponent.bind(this),
+        // which is why it's still better to use regular Formatter (with jQuery if need be) instead of Aurelia Custom Element
+        asyncPostRender: this.renderAureliaComponent.bind(this),
         params: {
           templateUrl: PLATFORM.moduleName('examples/slickgrid/custom-title-formatter'), // CustomTitleFormatterCustomElement,
           complexFieldLabel: 'assignee.name' // for the exportCustomFormatter
@@ -278,7 +283,7 @@ export default class Example26 extends React.Component {
 
   mockData(itemCount: number, startingIndex = 0) {
     // mock a dataset
-    const tempDataset = [];
+    const tempDataset: any[] = [];
     for (let i = startingIndex; i < (startingIndex + itemCount); i++) {
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomMonth = Math.floor(Math.random() * 11);
@@ -338,9 +343,9 @@ export default class Example26 extends React.Component {
   }
 
   renderReactComponent(cellNode: JQuery<HTMLElement>, _row: number, dataContext: any, colDef: Column) {
-    if (colDef.params.templateUrl && cellNode.length) {
-      this.reactUtilService.createReactViewModelAddToSlot(colDef.params.templateUrl, { model: dataContext }, cellNode[0], true);
-    }
+    // if (colDef.params.templateUrl && cellNode.length) {
+    //   this.reactUtilService.createReactViewModelAddToSlot(colDef.params.templateUrl, { model: dataContext }, cellNode[0], true);
+    // }
   }
 
   setAutoEdit(isAutoEdit: boolean) {
@@ -399,13 +404,13 @@ export default class Example26 extends React.Component {
             </div>
             <div className="row">
               <div className="col">
-                <button className="btn btn-outline-secondary btn-sm" onClick={this.undo}>
+                <button className="btn btn-outline-secondary btn-sm" onClick={() => this.undo()}>
                   <i className="fa fa-undo"></i>
                   Undo last edit(s)
                 </button>
                 <label className="checkbox-inline control-label" htmlFor="autoCommitEdit">
                   <input type="checkbox" id="autoCommitEdit" value="gridOptions.autoCommitEdit"
-                    onClick={this.changeAutoCommit} />
+                    onClick={() => this.changeAutoCommit()} />
                   Auto Commit Edit
                 </label>
               </div>
@@ -431,19 +436,18 @@ export default class Example26 extends React.Component {
         </div>
 
         <div id="grid-container" className="col-sm-12">
-          <ReactSlickgridCustomElement gridId="grid26"
+          <ReactSlickgridComponent gridId="grid26"
             columnDefinitions={this.columnDefinitions}
             gridOptions={this.gridOptions}
             dataset={this.dataset}
-            instances={this.reactGrid}
-            customEvents={{
-              onCellChange: $event => this.onCellChanged($event.detail.eventData, $event.detail.args),
-              onClick: $event => this.onCellClicked($event.detail.eventData, $event.detail.args),
-              onValidationError: $event => this.onCellValidationError($event.detail.eventData, $event.detail.args)
-            }}
+            onReactGridCreated={$event => this.reactGridReady($event.detail)}
+            onCellChange={$event => this.onCellChanged($event.detail.eventData, $event.detail.args)}
+            onClick={$event => this.onCellClicked($event.detail.eventData, $event.detail.args)}
           />
         </div>
       </div>
     );
   }
 }
+
+export default withTranslation()(Example26);

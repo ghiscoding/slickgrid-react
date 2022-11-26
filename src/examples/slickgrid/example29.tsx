@@ -1,7 +1,9 @@
-import { Column, GridOption, Formatters, ReactSlickgridCustomElement} from '../../slickgrid-react';
+import { Column, GridOption, Formatters, ReactSlickgridComponent } from '../../slickgrid-react';
 import React from 'react';
 
 const NB_ITEMS = 995;
+
+interface Props { }
 
 export default class Example29 extends React.Component {
   title = 'Example 29: Grid with Header and Footer slot';
@@ -45,7 +47,7 @@ export default class Example29 extends React.Component {
 
   mockData(count: number) {
     // mock a dataset
-    const mockDataset = [];
+    const mockDataset: any[] = [];
     for (let i = 0; i < count; i++) {
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomMonth = Math.floor(Math.random() * 11);
@@ -82,7 +84,7 @@ export default class Example29 extends React.Component {
         <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
 
-        <ReactSlickgridCustomElement gridId="grid"
+        <ReactSlickgridComponent gridId="grid"
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset} />

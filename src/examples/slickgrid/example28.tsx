@@ -8,7 +8,7 @@ import {
   GridOption,
   findItemInTreeStructure,
   Formatter,
-  ReactSlickgridCustomElement
+  ReactSlickgridComponent
 } from '../../slickgrid-react';
 import React from 'react';
 import './example28.scss'; // provide custom CSS/SASS styling
@@ -43,6 +43,10 @@ export default class Example28 extends React.Component {
     document.title = this.title;
     // populate the dataset once the grid is ready
     this.datasetHierarchical = this.mockDataset();
+  }
+
+  reactGridReady(reactGrid: ReactGridInstance) {
+    this.reactGrid = reactGrid;
   }
 
   /* Define grid Options and Columns */
@@ -273,22 +277,22 @@ export default class Example28 extends React.Component {
 
         <div className="row">
           <div className="col-md-7">
-            <button onClick={this.addNewFile} data-test="add-item-btn" className="btn btn-sm btn-primary">
+            <button onClick={() => this.addNewFile()} data-test="add-item-btn" className="btn btn-sm btn-primary">
               <span className="mdi mdi-plus color-white"></span>
               <span>Add New Pop Song</span>
             </button>
-            <button onClick={this.collapseAll} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-sm">
+            <button onClick={() => this.collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-sm">
               <span className="mdi mdi-arrow-collapse"></span>
               <span>Collapse All</span>
             </button>
-            <button onClick={this.expandAll} data-test="expand-all-btn" className="btn btn-outline-secondary btn-sm">
+            <button onClick={() => this.expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-sm">
               <span className="mdi mdi-arrow-expand"></span>
               <span>Expand All</span>
             </button>
-            <button onClick={this.logFlatStructure} className="btn btn-outline-secondary btn-sm">
+            <button onClick={() => this.logFlatStructure()} className="btn btn-outline-secondary btn-sm">
               <span>Log Flat Structure</span>
             </button>
-            <button onClick={this.logHierarchicalStructure} className="btn btn-outline-secondary btn-sm">
+            <button onClick={() => this.logHierarchicalStructure()} className="btn btn-outline-secondary btn-sm">
               <span>Log Hierarchical Structure</span>
             </button>
           </div>
@@ -297,7 +301,7 @@ export default class Example28 extends React.Component {
             <div className="input-group input-group-sm">
               <input type="text" className="form-control search-string" data-test="search-string" value={this.searchString} />
               <button className="btn btn-sm btn-outline-secondary d-flex align-items-center" data-test="clear-search-string"
-                onClick={this.clearSearch}>
+                onClick={() => this.clearSearch()}>
                 <span className="icon mdi mdi-close-thick"></span>
               </button>
             </div>
@@ -307,11 +311,12 @@ export default class Example28 extends React.Component {
         <br />
 
         <div id="grid-container" className="col-sm-12">
-          <ReactSlickgridCustomElement gridId="grid28"
+          <ReactSlickgridComponent gridId="grid28"
             columnDefinitions={this.columnDefinitions}
             gridOptions={this.gridOptions}
             datasetHierarchical={this.datasetHierarchical}
-            instances={this.reactGrid} />
+            onReactGridCreated={$event => this.reactGridReady($event.detail)}
+          />
         </div>
       </div>
     );

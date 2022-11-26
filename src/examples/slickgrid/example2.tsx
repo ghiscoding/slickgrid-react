@@ -6,9 +6,10 @@ import {
   Formatter,
   Formatters,
   GridOption,
-  ReactSlickgridCustomElement,
+  ReactSlickgridComponent,
 } from '../../slickgrid-react';
 import React from 'react';
+import BaseSlickGridState from './state-slick-grid-base';
 
 interface DataItem {
   id: number;
@@ -22,12 +23,7 @@ interface DataItem {
   phone: string;
   completed: number;
 }
-
-interface State {
-  gridOptions: GridOption;
-  columnDefinitions: Column[];
-  dataset: any[];
-}
+interface State extends BaseSlickGridState { }
 
 // create my custom Formatter with the Formatter type
 const myCustomCheckmarkFormatter: Formatter<DataItem> = (_row, _cell, value) => {
@@ -47,9 +43,10 @@ const customEnableButtonFormatter: Formatter<DataItem> = (_row: number, _cell: n
 interface Props {}
 
 export default class Example2 extends React.Component<Props, State> {
+  isGridMounted = false;
   title = 'Example 2: Grid with Formatters';
   subTitle = `
-    Grid with Custom and/or included Slickgrid Formatters (<a href="https://github.com/ghiscoding/aurelia-slickgrid/wiki/Formatters" target="_blank">Wiki docs</a>).
+    Grid with Custom and/or included Slickgrid Formatters (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Formatters" target="_blank">Wiki docs</a>).
     <ul>
       <li>The 2 last columns are using Custom Formatters</li>
       <ul><li>The "Completed" column uses a the "onCellClick" event and a formatter to simulate a toggle action</li></ul>
@@ -79,19 +76,21 @@ export default class Example2 extends React.Component<Props, State> {
 
   componentDidMount() {
     document.title = this.title;
+
     // populate the dataset once the grid is ready
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.setState((state: any, props: Props) => {
-      return {
+    this.setState((state: State, props: Props) => ({
         dataset: this.getData(),
-      };
-    });
+    }));
+  }
+
+  reactGridReady(reactGrid: ReactGridInstance) {
+    this.reactGrid = reactGrid;
   }
 
   /* Define grid Options and Columns */
   defineGrid() {
     // the columns field property is type-safe, try to add a different string not representing one of DataItems properties
-    const columns = [
+    const columns: Column[] = [
       { id: 'title', name: 'Title', field: 'title', sortable: true, type: FieldType.string, width: 70 },
       { id: 'phone', name: 'Phone Number using mask', field: 'phone', sortable: true, type: FieldType.number, minWidth: 100, formatter: Formatters.mask, params: { mask: '(000) 000-0000' } },
       { id: 'duration', name: 'Duration (days)', field: 'duration', formatter: Formatters.decimal, params: { minDecimal: 1, maxDecimal: 2 }, sortable: true, type: FieldType.number, minWidth: 90, exportWithFormatter: true },
@@ -109,7 +108,7 @@ export default class Example2 extends React.Component<Props, State> {
       }
     ];
 
-    const gridOptions = {
+    const gridOptions: GridOption = {
       autoResize: {
         container: '#demo-container',
         rightPadding: 10
@@ -150,11 +149,13 @@ export default class Example2 extends React.Component<Props, State> {
       columnDefinitions : columns,
       gridOptions,
     };
+    this.isGridMounted = true;
   }
 
+  // mock a dataset
   getData() {
-    // mock a dataset
-    const mockDataset = [];
+    const mockDataset: any[] = [];
+
     for (let i = 0; i < 500; i++) {
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomMonth = Math.floor(Math.random() * 11);
@@ -177,7 +178,7 @@ export default class Example2 extends React.Component<Props, State> {
     return mockDataset;
   }
 
-  generatePhoneNumber() {
+  generatePhoneNumber(): string {
     let phone = '';
     for (let i = 0; i < 10; i++) {
       phone += Math.round(Math.random() * 9) + '';
@@ -187,7 +188,7 @@ export default class Example2 extends React.Component<Props, State> {
 
   togglePauseResizer() {
     this.resizerPaused = !this.resizerPaused;
-    this.reactGrid.resizerService.pauseResizer(this.resizerPaused);
+    this.reactGrid?.resizerService.pauseResizer(this.resizerPaused);
   }
 
   toggleCompletedProperty(item: any) {
@@ -197,13 +198,13 @@ export default class Example2 extends React.Component<Props, State> {
 
       // simulate a backend http call and refresh the grid row after delay
       setTimeout(() => {
-        this.reactGrid.gridService.updateItemById(item.id, item, { highlightRow: false });
+        this.reactGrid?.gridService.updateItemById(item.id, item, { highlightRow: false });
       }, 250);
     }
   }
 
   render() {
-    return (
+    return !this.isGridMounted ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -217,14 +218,16 @@ export default class Example2 extends React.Component<Props, State> {
         </h2>
         <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
         <button className="btn btn-outline-secondary btn-sm"
-          onClick={this.togglePauseResizer}>
+          onClick={() => this.togglePauseResizer()}>
           Pause auto-resize: <b>{this.resizerPaused}</b>
         </button>
 
-        <ReactSlickgridCustomElement gridId="grid2"
+        <ReactSlickgridComponent gridId="grid2"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset} />
+          dataset={this.state.dataset}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+        />
       </div>
     );
   }

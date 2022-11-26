@@ -1,5 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import i18next from 'i18next';
+import i18next, { TFunction } from 'i18next';
+import React from 'react';
+import { withTranslation } from 'react-i18next';
+
 import {
   ReactGridInstance,
   ExtensionName,
@@ -8,20 +10,20 @@ import {
   Formatters,
   SlickDataView,
   SlickGrid,
-  ReactSlickgridCustomElement,
+  ReactSlickgridComponent,
 } from '../../slickgrid-react';
-import React from 'react';
-import './example9.scss'; // provide custom CSS/SASS styling
 import BaseSlickGridState from './state-slick-grid-base';
+import './example9.scss'; // provide custom CSS/SASS styling
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Props { }
+interface Props {
+  t: TFunction;
+}
 
 interface State extends BaseSlickGridState{
   selectedLanguage:string,
 }
 
-export default class Example9 extends React.Component<Props, State> {
+class Example9 extends React.Component<Props, State> {
   title = 'Example 9: Grid Menu Control';
   subTitle = `
     This example demonstrates using the <b>Slick.Controls.GridMenu</b> plugin to easily add a Grid Menu (aka hamburger menu) on the top right corner of the grid.<br/>
@@ -51,7 +53,7 @@ export default class Example9 extends React.Component<Props, State> {
     this.state = {
       columnDefinitions: [],
       dataset: [],
-      gridOptions: {},
+      gridOptions: undefined,
       selectedLanguage: defaultLang
     };
   }
@@ -217,7 +219,7 @@ export default class Example9 extends React.Component<Props, State> {
 
   getData() {
     // Set up some test columns.
-    const mockDataset = [];
+    const mockDataset: any[] = [];
     for (let i = 0; i < 500; i++) {
       mockDataset[i] = {
         id: i,
@@ -274,7 +276,7 @@ export default class Example9 extends React.Component<Props, State> {
   }
 
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -290,22 +292,24 @@ export default class Example9 extends React.Component<Props, State> {
 
         <button className="btn btn-outline-secondary btn-sm" data-test="external-gridmenu"
           onClick={$event => this.toggleGridMenu($event.nativeEvent)}>
-          <i className="fa fa-bars"></i>
+          <i className="fa fa-bars me-1"></i>
           Grid Menu
         </button>
-        <button className="btn btn-outline-secondary btn-sm" data-test="language" onClick={this.switchLanguage}>
-          <i className="fa fa-language"></i>
+        <button className="btn btn-outline-secondary btn-sm mx-1" data-test="language" onClick={() => this.switchLanguage()}>
+          <i className="fa fa-language me-1"></i>
           Switch Language
         </button>
         <b>Locale:</b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{this.state.selectedLanguage + '.json'}</span>
 
-        <ReactSlickgridCustomElement gridId="grid9"
+        <ReactSlickgridComponent gridId="grid9"
           columnDefinitions={this.state.columnDefinitions}
           dataset={this.state.dataset}
           gridOptions={this.state.gridOptions}
-          onReactGridCreated= {$event => this.reactGridReady($event.detail.args)}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
         />
       </div>
     );
   }
 }
+
+export default withTranslation()(Example9);

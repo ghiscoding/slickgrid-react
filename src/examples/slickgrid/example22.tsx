@@ -1,13 +1,21 @@
-import { HttpClient } from 'react-fetch-client';
-import { ReactGridInstance, Column, Filters, GridOption, ReactSlickgridCustomElement } from '../../slickgrid-react';
+import { ReactGridInstance, Column, Filters, GridOption, ReactSlickgridComponent } from '../../slickgrid-react';
 import React from 'react';
 import './example22.scss';
+import BaseSlickGridState from './state-slick-grid-base';
 
 const URL_CUSTOMERS = 'assets/data/customers_100.json';
 
 interface Props { }
+interface State {
+  gridOptions1?: GridOption;
+  gridOptions2?: GridOption;
+  columnDefinitions1: Column[];
+  columnDefinitions2: Column[];
+  dataset1: any[];
+  dataset2: any[];
+}
 
-export default class Example22 extends React.Component {
+export default class Example22 extends React.Component<Props, State> {
   title = 'Example 22: Grids in Bootstrap Tabs';
   subTitle = `This example demonstrate the creation of multiple grids in Bootstrap Tabs
    <ol>
@@ -16,20 +24,20 @@ export default class Example22 extends React.Component {
   </ol>`;
 
   reactGrid2!: ReactGridInstance;
-  gridOptions1!: GridOption;
-  gridOptions2!: GridOption;
-  columnDefinitions1: Column[] = [];
-  columnDefinitions2: Column[] = [];
-  dataset1: any[] = [];
-  dataset2: any[] = [];
+  isGrid2DataLoaded = false;
   isGrid2Resize = false;
 
-  constructor(public readonly props: Props, private http: HttpClient) {
+  constructor(public readonly props: Props) {
     super(props);
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid1();
-    this.defineGrid2();
-    this.componentDidMount();
+
+    this.state = {
+      gridOptions1: undefined,
+      gridOptions2: undefined,
+      columnDefinitions1: [],
+      columnDefinitions2: [],
+      dataset1: [],
+      dataset2: [],
+    }
   }
 
   reactGrid2Ready(reactGrid: ReactGridInstance) {
@@ -38,17 +46,14 @@ export default class Example22 extends React.Component {
 
   async componentDidMount() {
     document.title = this.title;
-    // mock some data with JavaScript
-    this.dataset1 = this.mockData();
 
-    // load data with Fetch-Client
-    const response2 = await this.http.fetch(URL_CUSTOMERS);
-    this.dataset2 = await response2['json']();
+    this.defineGrids();
   }
 
   // Grid2 definition
-  defineGrid1() {
-    this.columnDefinitions1 = [
+  defineGrids() {
+    // grid 1
+    const columnDefinitions1 = [
       { id: 'title', name: 'Title', field: 'title', sortable: true, minWidth: 100 },
       { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true, minWidth: 100 },
       { id: '%', name: '% Complete', field: 'percentComplete', sortable: true, minWidth: 100 },
@@ -56,7 +61,7 @@ export default class Example22 extends React.Component {
       { id: 'finish', name: 'Finish', field: 'finish', minWidth: 100 },
       { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven', sortable: true, minWidth: 100 }
     ];
-    this.gridOptions1 = {
+    const gridOptions1: GridOption = {
       enableAutoResize: true,
       autoResize: {
         container: '#demo-container',
@@ -65,11 +70,8 @@ export default class Example22 extends React.Component {
       enableSorting: true
     };
 
-  }
-
-  // Grid2 definition
-  defineGrid2() {
-    this.columnDefinitions2 = [
+    // grid 2
+    const columnDefinitions2 = [
       { id: 'name', name: 'Name', field: 'name', filterable: true, sortable: true, },
       {
         id: 'gender', name: 'Gender', field: 'gender', filterable: true, sortable: true,
@@ -81,7 +83,7 @@ export default class Example22 extends React.Component {
       { id: 'company', name: 'Company', field: 'company', filterable: true, sortable: true }
     ];
 
-    this.gridOptions2 = {
+    const gridOptions2: GridOption = {
       enableAutoResize: true,
       autoResize: {
         container: '#demo-container',
@@ -91,11 +93,35 @@ export default class Example22 extends React.Component {
       enableSorting: true
     };
 
+    this.setState((state: State, props: Props) => {
+      return {
+        ...state,
+        gridOptions1,
+        gridOptions2,
+        columnDefinitions1,
+        columnDefinitions2,
+        dataset1: this.mockData(),
+      };
+    });
+  }
+
+  async loadGrid2Data() {
+    // load data with Fetch-Client
+    const response2 = await fetch(URL_CUSTOMERS);
+    const dataset2 = await response2['json']();
+
+    this.setState((state: State, props: Props) => {
+      return {
+        ...state,
+        dataset2,
+      }
+    });
+    this.isGrid2DataLoaded = true;
   }
 
   mockData() {
     // mock a dataset
-    const mockDataset = [];
+    const mockDataset: any[] = [];
     for (let i = 0; i < 1000; i++) {
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomMonth = Math.floor(Math.random() * 11);
@@ -121,14 +147,17 @@ export default class Example22 extends React.Component {
    * We need to do this (only once) because SlickGrid relies on the grid being visible in the DOM for it to be sized properly
    * and if it's not (like our use case) we need to resize the grid ourselve and we just need to do that once.
    */
-  resizeGrid2() {
+  async resizeGrid2() {
+    if (!this.isGrid2DataLoaded) {
+      await this.loadGrid2Data();
+    }
     if (!this.isGrid2Resize) {
-      this.reactGrid2.resizerService.resizeGrid(150);
+      this.reactGrid2?.resizerService.resizeGrid(150);
     }
   }
 
   render() {
-    return (
+    return !this.state.gridOptions1 ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -163,7 +192,7 @@ export default class Example22 extends React.Component {
                 role="tab"
                 aria-controls="fetch"
                 aria-selected="false"
-                onClick={this.resizeGrid2}>Fetch-Client</a>
+                onClick={() => this.resizeGrid2()}>Fetch-Client</a>
             </li>
           </ul>
 
@@ -174,23 +203,21 @@ export default class Example22 extends React.Component {
               role="tabpanel"
               aria-labelledby="javascript-tab">
               <h4>Grid 1 - Load Local Data</h4>
-              <ReactSlickgridCustomElement gridId="grid1"
-                columnDefinitions={this.columnDefinitions1}
-                gridOptions={this.gridOptions1}
-                dataset={this.dataset1} />
+              <ReactSlickgridComponent gridId="grid1"
+                columnDefinitions={this.state.columnDefinitions1}
+                gridOptions={this.state.gridOptions1}
+                dataset={this.state.dataset1} />
             </div>
             <div className="tab-pane fade"
               id="fetch"
               role="tabpanel"
               aria-labelledby="fetch-tab">
               <h4>Grid 2 - Load a JSON dataset through Fetch-Client</h4>
-              <ReactSlickgridCustomElement gridId="grid2"
-                columnDefinitions={this.columnDefinitions2}
-                gridOptions={this.gridOptions2}
-                dataset={this.dataset2}
-                customEvents={{
-                  onReactGridCreated: $event => this.reactGrid2Ready($event.detail)
-                }}
+              <ReactSlickgridComponent gridId="grid2"
+                columnDefinitions={this.state.columnDefinitions2}
+                gridOptions={this.state.gridOptions2}
+                dataset={this.state.dataset2}
+                onReactGridCreated={$event => this.reactGrid2Ready($event.detail)}
               />
             </div>
           </div>

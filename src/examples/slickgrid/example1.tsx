@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { Column, Formatters, GridOption, ReactSlickgridCustomElement } from '../../slickgrid-react';
 import React from 'react';
+
+import { Column, Formatters, GridOption, ReactSlickgridComponent } from '../../slickgrid-react';
 
 const NB_ITEMS = 995;
 
@@ -10,8 +10,8 @@ interface Props { }
 interface State {
   title: string;
   subTitle: string;
-  gridOptions1: GridOption;
-  gridOptions2: GridOption;
+  gridOptions1?: GridOption;
+  gridOptions2?: GridOption;
   columnDefinitions1: Column[];
   columnDefinitions2: Column[];
   dataset1: any[];
@@ -32,26 +32,24 @@ export default class Example1 extends React.Component<Props, State> {
       dataset1: [],
       dataset2: []
     };
-
-    // define the grid options & columns and then create the grid itself
-    this.defineGrids();
   }
 
   componentDidMount() {
     document.title = this.state.title;
+
+    // define the grid options & columns and then create the grid itself
+    this.defineGrids();
+
     // mock some data (different in each dataset)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.setState((state: any, props: Props) => {
-      return {
+    this.setState((state: State, props: Props) => ({
         dataset1: this.mockData(NB_ITEMS),
         dataset2: this.mockData(NB_ITEMS)
-      };
-    });
+    }));
   }
 
   /* Define grid Options and Columns */
   defineGrids() {
-    const columns = [
+    const columns: Column[] = [
       { id: 'title', name: 'Title', field: 'title', sortable: true, minWidth: 100 },
       { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true, minWidth: 100 },
       { id: '%', name: '% Complete', field: 'percentComplete', sortable: true, minWidth: 100 },
@@ -59,7 +57,7 @@ export default class Example1 extends React.Component<Props, State> {
       { id: 'finish', name: 'Finish', field: 'finish', formatter: Formatters.dateIso },
       { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven', sortable: true, minWidth: 100 }
     ];
-    const gridOptions1 = {
+    const gridOptions1: GridOption = {
       gridHeight: 225,
       gridWidth: 800,
       enableAutoResize: false,
@@ -68,7 +66,7 @@ export default class Example1 extends React.Component<Props, State> {
 
     // copy the same Grid Options and Column Definitions to 2nd grid
     // but also add Pagination in this grid
-    const gridOptions2 = {
+    const gridOptions2: GridOption = {
       ...gridOptions1,
       ...{
         enablePagination: true,
@@ -79,18 +77,18 @@ export default class Example1 extends React.Component<Props, State> {
       }
     };
 
-    this.state = {
-      ...this.state,
+    this.setState((state: State) => ({
+      ...state,
       columnDefinitions1: columns,
       columnDefinitions2: columns,
       gridOptions1,
       gridOptions2
-    };
+    }));
   }
 
   mockData(count: number) {
     // mock a dataset
-    const mockDataset = [];
+    const mockDataset: any[] = [];
     for (let i = 0; i < count; i++) {
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomMonth = Math.floor(Math.random() * 11);
@@ -112,7 +110,7 @@ export default class Example1 extends React.Component<Props, State> {
   }
 
   render() {
-    return (
+    return !this.state.gridOptions1 ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.state.title}
@@ -127,17 +125,17 @@ export default class Example1 extends React.Component<Props, State> {
         <div className="subtitle">{this.state.subTitle}</div>
 
         <h3>Grid 1</h3>
-        <ReactSlickgridCustomElement gridId="grid1"
+        <ReactSlickgridComponent gridId="grid1"
           columnDefinitions={this.state.columnDefinitions1}
-          gridOptions={this.state.gridOptions1}
+          gridOptions={this.state.gridOptions1!}
           dataset={this.state.dataset1} />
 
         <hr />
 
         <h3>Grid 2 <small>(with local Pagination)</small></h3>
-        <ReactSlickgridCustomElement gridId="grid2"
+        <ReactSlickgridComponent gridId="grid2"
           columnDefinitions={this.state.columnDefinitions2}
-          gridOptions={this.state.gridOptions2}
+          gridOptions={this.state.gridOptions2!}
           dataset={this.state.dataset2} />
       </div>
     );

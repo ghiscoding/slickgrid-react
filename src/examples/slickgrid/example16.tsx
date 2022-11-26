@@ -1,9 +1,11 @@
-import { ReactGridInstance, Column, ExtensionName, Filters, Formatters, GridOption, ReactSlickgridCustomElement } from '../../slickgrid-react';
+import { ReactGridInstance, Column, ExtensionName, Filters, Formatters, GridOption, ReactSlickgridComponent } from '../../slickgrid-react';
 import React from 'react';
+import BaseSlickGridState from './state-slick-grid-base';
 
 interface Props { }
+interface State extends BaseSlickGridState { }
 
-export default class Example16 extends React.Component {
+export default class Example16 extends React.Component<Props, State> {
   title = 'Example 16: Row Move & Checkbox Selector';
   subTitle = `
     This example demonstrates using the <b>Slick.Plugins.RowMoveManager</b> plugin to easily move a row in the grid.<br/>
@@ -21,15 +23,17 @@ export default class Example16 extends React.Component {
       </ul>
     </ul>
   `;
-
   reactGrid!: ReactGridInstance;
-  columnDefinitions: Column[] = [];
-  gridOptions!: GridOption;
-  dataset: any[] = [];
 
   constructor(public readonly props: Props) {
     super(props);
-    this.componentDidMount();
+
+    this.state = {
+      gridOptions: undefined,
+      columnDefinitions: [],
+      dataset: [],
+    };
+
     this.defineGrid();
   }
 
@@ -38,18 +42,23 @@ export default class Example16 extends React.Component {
   }
 
   get rowMoveInstance(): any {
-    return this.reactGrid && this.reactGrid.extensionService.getSlickgridAddonInstance(ExtensionName.rowMoveManager) || {};
+    return this.reactGrid?.extensionService?.getExtensionInstanceByName(ExtensionName.rowMoveManager) || {};
   }
 
   componentDidMount() {
     document.title = this.title;
+
     // populate the dataset once the grid is ready
-    this.getData();
+    this.setState((state: State, props: Props) => {
+      return {
+        dataset: this.getData(),
+      };
+    });
   }
 
   /* Define grid Options and Columns */
   defineGrid() {
-    this.columnDefinitions = [
+    const columnDefinitions: Column[] = [
       { id: 'title', name: 'Title', field: 'title', filterable: true, },
       { id: 'duration', name: 'Duration', field: 'duration', filterable: true, sortable: true },
       { id: '%', name: '% Complete', field: 'percentComplete', filterable: true, sortable: true },
@@ -73,7 +82,7 @@ export default class Example16 extends React.Component {
       }
     ];
 
-    this.gridOptions = {
+    const gridOptions: GridOption = {
       enableAutoResize: true,
       autoResize: {
         container: '#demo-container',
@@ -126,11 +135,17 @@ export default class Example16 extends React.Component {
         }
       },
     };
+
+    this.state = {
+      ...this.state,
+      columnDefinitions,
+      gridOptions,
+    };
   }
 
   getData() {
     // Set up some test columns.
-    const mockDataset = [];
+    const mockDataset: any[] = [];
     for (let i = 0; i < 500; i++) {
       mockDataset[i] = {
         id: i,
@@ -142,7 +157,7 @@ export default class Example16 extends React.Component {
         effortDriven: (i % 5 === 0)
       };
     }
-    this.dataset = mockDataset;
+    return mockDataset;
   }
 
   onBeforeMoveRow(e: Event, data: { rows: number[]; insertBefore: number; }) {
@@ -157,12 +172,13 @@ export default class Example16 extends React.Component {
   }
 
   onMoveRows(_e: Event, args: any) {
+    console.log('onMoveRows', _e, args)
     // rows and insertBefore references,
     // note that these references are assuming that the dataset isn't filtered at all
     // which is not always the case so we will recalcualte them and we won't use these reference afterward
     const rows = args.rows as number[];
     const insertBefore = args.insertBefore;
-    const extractedRows = [];
+    const extractedRows: number[] = [];
 
     // when moving rows, we need to cancel any sorting that might happen
     // we can do this by providing an undefined sort comparer
@@ -205,7 +221,12 @@ export default class Example16 extends React.Component {
 
     // final updated dataset, we need to overwrite the DataView dataset (and our local one) with this new dataset that has a new order
     const finalDataset = left.concat(extractedRows.concat(right));
-    this.dataset = finalDataset; // update dataset and re-render the grid
+
+    this.setState((state: State, props: Props) => {
+      return {
+        dataset: finalDataset,
+      };
+    });
   }
 
   hideDurationColumnDynamically() {
@@ -259,26 +280,26 @@ export default class Example16 extends React.Component {
         <div className="row">
           <div className="col-sm-12">
             <button className="btn btn-outline-secondary btn-sm" data-test="hide-duration-btn"
-              onClick={this.hideDurationColumnDynamically}>
-              <i className="fa fa-eye-slash"></i>
+              onClick={() => this.hideDurationColumnDynamically()}>
+              <i className="fa fa-eye-slash me-1"></i>
               Dynamically Hide "Duration"
             </button>
-            <button className="btn btn-outline-secondary btn-sm" data-test="disable-filters-btn"
-              onClick={this.disableFilters}>
-              <i className="fa fa-times"></i>
+            <button className="btn btn-outline-secondary btn-sm mx-1" data-test="disable-filters-btn"
+              onClick={() => this.disableFilters()}>
+              <i className="fa fa-times me-1"></i>
               Disable Filters
             </button>
             <button className="btn btn-outline-secondary btn-sm" data-test="disable-sorting-btn"
-              onClick={this.disableSorting}>
-              <i className="fa fa-times"></i>
+              onClick={() => this.disableSorting()}>
+              <i className="fa fa-times me-1"></i>
               Disable Sorting
             </button>
-            <button className="btn btn-outline-secondary btn-sm" data-test="toggle-filtering-btn" onClick={this.toggleFilter}>
-              <i className="fa fa-random"></i>
+            <button className="btn btn-outline-secondary btn-sm mx-1" data-test="toggle-filtering-btn" onClick={() => this.toggleFilter()}>
+              <i className="fa fa-random me-1"></i>
               Toggle Filtering
             </button>
-            <button className="btn btn-outline-secondary btn-sm" data-test="toggle-sorting-btn" onClick={this.toggleSorting}>
-              <i className="fa fa-random"></i>
+            <button className="btn btn-outline-secondary btn-sm" data-test="toggle-sorting-btn" onClick={() => this.toggleSorting()}>
+              <i className="fa fa-random me-1"></i>
               Toggle Sorting
             </button>
           </div>
@@ -286,13 +307,12 @@ export default class Example16 extends React.Component {
 
         <br />
 
-        <ReactSlickgridCustomElement gridId="grid16"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          customEvents={{
-            onReactGridCreated: $event => this.reactGridReady($event.detail)
-          }} />
+        <ReactSlickgridComponent gridId="grid16"
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions!}
+          dataset={this.state.dataset}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+        />
       </div>
     );
   }
