@@ -105,6 +105,8 @@
     "web-vitals": "^3.1.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
+    "@fnando/sparkline": "^0.3.10",
     "@popperjs/core": "^2.11.6",
     "@release-it/conventional-changelog": "^5.1.1",
     "@slickgrid-universal/composite-editor-component": "^2.1.1",
@@ -117,6 +119,7 @@
     "@types/bluebird": "^3.5.37",
     "@types/dompurify": "^2.4.0",
     "@types/flatpickr": "^3.1.2",
+    "@types/fnando__sparkline": "^0.3.4",
     "@types/i18next-xhr-backend": "^1.4.2",
     "@types/jest": "^29.2.3",
     "@types/jquery": "^3.5.14",

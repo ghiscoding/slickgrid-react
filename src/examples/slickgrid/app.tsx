@@ -33,7 +33,8 @@ import Example29 from './example29';
 import Example30 from './example30';
 import Example31 from './example31';
 import Example32 from './example32';
-// import Example33 from './example33';
+import Example33 from './example33';
+import Example34 from './example34';
 
 const routes: Array<{ route: string; component: any; title: string; }> = [
   // { route: '/example1', component: React.lazy(() => import('./example1')), title: '1- Basic Grid / 2 Grids' },
@@ -69,8 +70,8 @@ const routes: Array<{ route: string; component: any; title: string; }> = [
   { route: '/example30', component: <Example30 />, title: '30- Composite Editor Modal' },
   { route: '/example31', component: <Example31 />, title: '31- Backend OData with RxJS' },
   { route: '/example32', component: <Example32 />, title: '32- Columns Resize by Content' },
-  // { route: '/example33', component: <Example33 />, title: '33- Regular & Custom Tooltip' },
-  // { route: '/example34', component: <Example34 />, title: '34- Real-Time Trading Platform' },
+  { route: '/example33', component: <Example33 />, title: '33- Regular & Custom Tooltip' },
+  { route: '/example34', component: <Example34 />, title: '34- Real-Time Trading Platform' },
 ];
 
 
