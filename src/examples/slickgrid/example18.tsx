@@ -420,15 +420,18 @@ export default class Example18 extends React.Component<Props, State> {
   }
 
   onGroupChanged(change: { caller?: string; groupColumns: Grouping[] }) {
-    console.log('onGroupChanged', change);
-    const caller = change && change.caller || [];
-    const groups = change && change.groupColumns || [];
+    const caller = change?.caller ?? [];
+    const groups = change?.groupColumns ?? [];
     const tmpSelectedGroupingFields = this.state.selectedGroupingFields;
 
     if (Array.isArray(tmpSelectedGroupingFields) && Array.isArray(groups) && groups.length > 0) {
       // update all Group By select dropdown
       tmpSelectedGroupingFields.forEach((_g, i) => tmpSelectedGroupingFields[i] = groups[i]?.getter ?? '');
       this.setState((state: State) => ({ ...state, selectedGroupingFields: [...tmpSelectedGroupingFields] }));
+
+      // use JS to change select dropdown value
+      // TODO: this should be removed in the future and only use setState
+      tmpSelectedGroupingFields.forEach((val, index) => this.dynamicallyChangeSelectGroupByValue(index, val as string));
     } else if (groups.length === 0 && caller === 'remove-group') {
       this.clearGroupingSelects();
     }
