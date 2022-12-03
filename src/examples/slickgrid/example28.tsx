@@ -7,15 +7,27 @@ import {
   Formatters,
   GridOption,
   findItemInTreeStructure,
-  Formatter,
-  ReactSlickgridComponent
+  ReactSlickgridComponent,
+  SlickGrid,
+  TreeToggledItem,
 } from '../../slickgrid-react';
 import React from 'react';
 import './example28.scss'; // provide custom CSS/SASS styling
+import BaseSlickGridState from './state-slick-grid-base';
 
 interface Props { }
+interface State extends BaseSlickGridState {
+  datasetHierarchical?: any[];
+  loadingClass: string;
+  isLargeDataset: boolean;
+  hasNoExpandCollapseChanged: boolean;
+  searchString: string;
+  treeToggleItems: TreeToggledItem[];
+  isExcludingChildWhenFiltering: boolean;
+  isAutoApproveParentItemWhenTreeColumnIsValid: boolean;
+}
 
-export default class Example28 extends React.Component {
+export default class Example28 extends React.Component<Props, State> {
   title = 'Example 28: Tree Data <small>(from a Hierarchical Dataset)</small>';
   subTitle = `<ul>
     <li><b>NOTE:</b> The grid will automatically sort Ascending with the column that has the Tree Data, you could add a "sortByFieldId" in your column "treeData" option if you wish to sort on a different column</li>
@@ -27,22 +39,29 @@ export default class Example28 extends React.Component {
     </ul>
   `;
   reactGrid!: ReactGridInstance;
-  gridOptions!: GridOption;
-  columnDefinitions: Column[] = [];
-  datasetHierarchical: any[] = [];
-  searchString = '';
 
   constructor(public readonly props: Props) {
     super(props);
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-    this.componentDidMount();
+
+    this.state = {
+      gridOptions: undefined,
+      columnDefinitions: [],
+      datasetHierarchical: undefined,
+      isExcludingChildWhenFiltering: false,
+      isAutoApproveParentItemWhenTreeColumnIsValid: true,
+      isLargeDataset: false,
+      hasNoExpandCollapseChanged: true,
+      loadingClass: '',
+      treeToggleItems: [],
+      searchString: '',
+    }
   }
 
   componentDidMount() {
     document.title = this.title;
-    // populate the dataset once the grid is ready
-    this.datasetHierarchical = this.mockDataset();
+
+    // define the grid options & columns and then create the grid itself
+    this.defineGrid();
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
@@ -51,16 +70,20 @@ export default class Example28 extends React.Component {
 
   /* Define grid Options and Columns */
   defineGrid() {
-    this.columnDefinitions = [
+    const columnDefinitions: Column[] = [
       {
         id: 'file', name: 'Files', field: 'file',
-        type: FieldType.string, width: 150, formatter: this.treeFormatter,
+        type: FieldType.string, width: 150, formatter: this.treeFormatter.bind(this),
         filterable: true, sortable: true,
       },
       {
         id: 'dateModified', name: 'Date Modified', field: 'dateModified',
         formatter: Formatters.dateIso, type: FieldType.dateUtc, outputType: FieldType.dateIso, minWidth: 90,
         exportWithFormatter: true, filterable: true, filter: { model: Filters.compoundDate }
+      },
+      {
+        id: 'description', name: 'Description', field: 'description', minWidth: 90,
+        filterable: true, sortable: true,
       },
       {
         id: 'size', name: 'Size', field: 'size', minWidth: 90,
@@ -70,20 +93,33 @@ export default class Example28 extends React.Component {
       },
     ];
 
-    this.gridOptions = {
+    const gridOptions: GridOption = {
       autoResize: {
         container: '#demo-container',
         rightPadding: 10
       },
       enableAutoSizeColumns: true,
       enableAutoResize: true,
+      enableExcelExport: true,
+      excelExportOptions: {
+        exportWithFormatter: true,
+        sanitizeDataExport: true
+      },
+      registerExternalResources: [new ExcelExportService()],
       enableFiltering: true,
       enableTreeData: true, // you must enable this flag for the filtering & sorting to work as expected
-      multiColumnSort: false,
+      multiColumnSort: false, // multi-column sorting is not supported with Tree Data, so you need to disable it
       treeDataOptions: {
         columnId: 'file',
         childrenPropName: 'files',
-        // you can optionally sort by a different column and/or sort direction
+        excludeChildrenWhenFilteringTree: this.state.isExcludingChildWhenFiltering, // defaults to false
+
+        // skip any other filter criteria(s) if the column holding the Tree (file) passes its own filter criteria
+        // (e.g. filtering with "Files = music AND Size > 7", the row "Music" and children will only show up when this flag is enabled
+        // this flag only works with the other flag set to `excludeChildrenWhenFilteringTree: false`
+        autoApproveParentItemWhenTreeColumnIsValid: this.state.isAutoApproveParentItemWhenTreeColumnIsValid,
+
+        // you can also optionally sort by a different column and/or change sort direction
         // initialSort: {
         //   columnId: 'file',
         //   direction: 'DESC'
@@ -92,53 +128,55 @@ export default class Example28 extends React.Component {
       // change header/cell row height for salesforce theme
       headerRowHeight: 35,
       rowHeight: 33,
-      enableExcelExport: true,
-      registerExternalResources: [new ExcelExportService()],
+      showCustomFooter: true,
 
-      // use Material Design SVG icons
-      contextMenu: {
-        iconCollapseAllGroupsCommand: 'mdi mdi-arrow-collapse',
-        iconExpandAllGroupsCommand: 'mdi mdi-arrow-expand',
-        iconClearGroupingCommand: 'mdi mdi-close',
-        iconCopyCellValueCommand: 'mdi mdi-content-copy',
-        iconExportCsvCommand: 'mdi mdi-download',
-        iconExportExcelCommand: 'fa fa-file-excel-o mdi mdi-file-excel-outline',
-        iconExportTextDelimitedCommand: 'mdi mdi-download',
+      // we can also preset collapsed items via Grid Presets (parentId: 4 => is the "pdf" folder)
+      presets: {
+        treeData: { toggledItems: [{ itemId: 4, isCollapsed: true }] },
       },
-      gridMenu: {
-        iconCssClass: 'mdi mdi-menu',
-        iconClearAllFiltersCommand: 'mdi mdi-filter-remove-outline',
-        iconClearAllSortingCommand: 'mdi mdi-swap-vertical',
-        iconExportCsvCommand: 'mdi mdi-download',
-        iconExportExcelCommand: 'mdi mdi-file-excel-outline',
-        iconExportTextDelimitedCommand: 'mdi mdi-download',
-        iconRefreshDatasetCommand: 'mdi mdi-sync',
-        iconToggleFilterCommand: 'mdi mdi-flip-vertical',
-        iconTogglePreHeaderCommand: 'mdi mdi-flip-vertical',
-      },
-      headerMenu: {
-        iconClearFilterCommand: 'mdi mdi mdi-filter-remove-outline',
-        iconClearSortCommand: 'mdi mdi-swap-vertical',
-        iconSortAscCommand: 'mdi mdi-sort-ascending',
-        iconSortDescCommand: 'mdi mdi-flip-v mdi-sort-descending',
-        iconColumnHideCommand: 'mdi mdi-close',
-      }
     };
+
+    this.setState((state: State) => ({
+      ...state,
+      gridOptions,
+      columnDefinitions,
+      datasetHierarchical: this.mockDataset(),
+    }));
+  }
+
+  changeAutoApproveParentItem() {
+    const isAutoApproveParentItemWhenTreeColumnIsValid = !this.state.isAutoApproveParentItemWhenTreeColumnIsValid;
+    this.setState((state: State) => ({ ...state, isAutoApproveParentItemWhenTreeColumnIsValid }));
+
+    this.state.gridOptions!.treeDataOptions!.autoApproveParentItemWhenTreeColumnIsValid = isAutoApproveParentItemWhenTreeColumnIsValid;
+    this.reactGrid.slickGrid.setOptions(this.state.gridOptions!);
+    this.reactGrid.filterService.refreshTreeDataFilters();
+    return true;
+  }
+
+  changeExcludeChildWhenFiltering() {
+    const isExcludingChildWhenFiltering = !this.state.isExcludingChildWhenFiltering;
+    this.setState((state: State) => ({ ...state, isExcludingChildWhenFiltering }));
+    this.state.gridOptions!.treeDataOptions!.excludeChildrenWhenFilteringTree = isExcludingChildWhenFiltering;
+    this.reactGrid.slickGrid.setOptions(this.state.gridOptions!);
+    this.reactGrid.filterService.refreshTreeDataFilters();
+    return true;
   }
 
   clearSearch() {
-    this.searchString = '';
+    this.setState((state: State) => ({ ...state, searchString: '' }));
   }
 
-  searchStringChanged() {
-    this.updateFilter();
+  searchStringChanged(val: string) {
+    this.setState((state: State) => ({ ...state, searchString: val }));
+    this.updateFilter(val);
   }
 
-  updateFilter() {
-    this.reactGrid.filterService.updateFilters([{ columnId: 'file', searchTerms: [this.searchString] }], true, false, true);
+  updateFilter(val: string) {
+    this.reactGrid.filterService.updateFilters([{ columnId: 'file', searchTerms: [val] }], true, false, true);
   }
 
-  treeFormatter: Formatter = (_row, _cell, value, _columnDef, dataContext, grid) => {
+  treeFormatter(_row: number, _cell: number, value: any, _columnDef: Column, dataContext: any, grid: SlickGrid) {
     const gridOptions = grid.getOptions() as GridOption;
     const treeLevelPropName = gridOptions.treeDataOptions && gridOptions.treeDataOptions.levelPropName || '__treeLevel';
     if (value === null || value === undefined || dataContext === undefined) {
@@ -154,7 +192,7 @@ export default class Example28 extends React.Component {
     const spacer = `<span style="display:inline-block; width:${(15 * dataContext[treeLevelPropName])}px;"></span>`;
 
     if (data[idx + 1] && data[idx + 1][treeLevelPropName] > data[idx][treeLevelPropName]) {
-      const folderPrefix = `<span class="mdi icon color-alt-warning ${dataContext.__collapsed ? 'mdi-folder' : 'mdi-folder-open'}"></span>`;
+      const folderPrefix = `<span class="text-warning fa ${dataContext.__collapsed ? 'fa-folder' : 'fa-folder-open'}"></span>`;
       if (dataContext.__collapsed) {
         return `${spacer} <span class="slick-group-toggle collapsed" level="${dataContext[treeLevelPropName]}"></span>${folderPrefix} ${prefix}&nbsp;${value}`;
       } else {
@@ -168,13 +206,13 @@ export default class Example28 extends React.Component {
   getFileIcon(value: string) {
     let prefix = '';
     if (value.includes('.pdf')) {
-      prefix = '<span class="mdi icon mdi-file-pdf-outline color-danger"></span>';
+      prefix = '<span class="fa fa-file-pdf-o text-danger"></span>';
     } else if (value.includes('.txt')) {
-      prefix = '<span class="mdi icon mdi-file-document-outline color-muted-light"></span>';
+      prefix = '<span class="fa fa-file-text-o"></span>';
     } else if (value.includes('.xls')) {
-      prefix = '<span class="mdi icon mdi-file-excel-outline color-succes"></span>';
+      prefix = '<span class="fa fa-file-excel-o text-primary"></span>';
     } else if (value.includes('.mp3')) {
-      prefix = '<span class="mdi icon mdi-file-music-outline color-info"></span>';
+      prefix = '<span class="fa fa-file-audio-o text-info"></span>';
     }
     return prefix;
   }
@@ -187,7 +225,7 @@ export default class Example28 extends React.Component {
     const newId = this.reactGrid.dataView.getLength() + 100;
 
     // find first parent object and add the new item as a child
-    const tmpDatasetHierarchical = [...this.datasetHierarchical];
+    const tmpDatasetHierarchical = [...this.state?.datasetHierarchical ?? []];
     const popItem = findItemInTreeStructure(tmpDatasetHierarchical, x => x.file === 'pop', 'files');
 
     if (popItem && Array.isArray(popItem.files)) {
@@ -199,7 +237,7 @@ export default class Example28 extends React.Component {
       });
 
       // overwrite hierarchical dataset which will also trigger a grid sort and rendering
-      this.datasetHierarchical = tmpDatasetHierarchical;
+      this.setState((state: State) => ({ ...state, datasetHierarchical: tmpDatasetHierarchical }));
 
       // scroll into the position, after insertion cycle, where the item was added
       setTimeout(() => {
@@ -261,15 +299,15 @@ export default class Example28 extends React.Component {
   }
 
   render() {
-    return (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
-          <span>{this.title}</span>
+          <span dangerouslySetInnerHTML={{ __html: this.title }}></span>
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example28.ts">
-              <span className="mdi mdi-link mdi-v-align-sub"></span> code
+              <span className="fa fa-link"></span> code
             </a>
           </span>
         </h2>
@@ -278,18 +316,18 @@ export default class Example28 extends React.Component {
         <div className="row">
           <div className="col-md-7">
             <button onClick={() => this.addNewFile()} data-test="add-item-btn" className="btn btn-sm btn-primary">
-              <span className="mdi mdi-plus color-white"></span>
+              <span className="fa fa-plus me-1"></span>
               <span>Add New Pop Song</span>
             </button>
-            <button onClick={() => this.collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-sm">
-              <span className="mdi mdi-arrow-collapse"></span>
+            <button onClick={() => this.collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-sm mx-1">
+              <span className="fa fa-compress me-1"></span>
               <span>Collapse All</span>
             </button>
             <button onClick={() => this.expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-sm">
-              <span className="mdi mdi-arrow-expand"></span>
+              <span className="fa fa-expand me-1"></span>
               <span>Expand All</span>
             </button>
-            <button onClick={() => this.logFlatStructure()} className="btn btn-outline-secondary btn-sm">
+            <button onClick={() => this.logFlatStructure()} className="btn btn-outline-secondary btn-sm mx-1">
               <span>Log Flat Structure</span>
             </button>
             <button onClick={() => this.logHierarchicalStructure()} className="btn btn-outline-secondary btn-sm">
@@ -299,22 +337,45 @@ export default class Example28 extends React.Component {
 
           <div className="col-md-5">
             <div className="input-group input-group-sm">
-              <input type="text" className="form-control search-string" data-test="search-string" value={this.searchString} />
+              <input type="text" className="form-control search-string" data-test="search-string" defaultValue={this.state.searchString} onInput={($event) => this.searchStringChanged(($event.target as HTMLInputElement).value)} />
               <button className="btn btn-sm btn-outline-secondary d-flex align-items-center" data-test="clear-search-string"
                 onClick={() => this.clearSearch()}>
-                <span className="icon mdi mdi-close-thick"></span>
+                <span className="icon fa fa-times"></span>
               </button>
             </div>
           </div>
+        </div>
+
+        <div>
+          <label className="checkbox-inline control-label" htmlFor="excludeChildWhenFiltering" style={{ marginLeft: '20px' }}>
+            <input type="checkbox" id="excludeChildWhenFiltering" data-test="exclude-child-when-filtering" className="me-1"
+              defaultChecked={this.state.isExcludingChildWhenFiltering}
+              onClick={() => this.changeExcludeChildWhenFiltering()} />
+            <span
+              title="for example if we filter the word 'pop' and we exclude children, then only the folder 'pop' will show up without any content unless we uncheck this flag">
+              Exclude Children when Filtering Tree
+            </span>
+          </label>
+          <label className="checkbox-inline control-label" htmlFor="autoApproveParentItem" style={{ marginLeft: '20px' }}>
+            <input type="checkbox" id="autoApproveParentItem" data-test="auto-approve-parent-item" className="me-1"
+              defaultChecked={this.state.isAutoApproveParentItemWhenTreeColumnIsValid}
+              onClick={() => this.changeAutoApproveParentItem()} />
+            <span
+              title="for example in this demo if we filter with 'music' and size '> 70' nothing will show up unless we have this flag enabled
+            because none of the files have both criteria at the same time, however the column with the tree 'file' does pass the filter criteria 'music'
+            and with this flag we tell the lib to skip any other filter(s) as soon as the with the tree (file in this demo) passes its own filter criteria">
+              Skip Other Filter Criteria when Parent with Tree is valid
+            </span>
+          </label>
         </div>
 
         <br />
 
         <div id="grid-container" className="col-sm-12">
           <ReactSlickgridComponent gridId="grid28"
-            columnDefinitions={this.columnDefinitions}
-            gridOptions={this.gridOptions}
-            datasetHierarchical={this.datasetHierarchical}
+            columnDefinitions={this.state.columnDefinitions}
+            gridOptions={this.state.gridOptions}
+            datasetHierarchical={this.state.datasetHierarchical}
             onReactGridCreated={$event => this.reactGridReady($event.detail)}
           />
         </div>

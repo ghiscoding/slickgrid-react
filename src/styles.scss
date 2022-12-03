@@ -1,6 +1,21 @@
 $navbar-height: 56px;
 $side-menu-width: 250px;
 
+.bold {
+  font-weight: bold;
+}
+.italic {
+  font-style: italic;
+}
+.faded {
+  opacity: 0.2;
+}
+.faded:hover {
+  opacity: 0.5;
+}
+.btn {
+  padding: 5px;
+}
 .btn-group-xs > .btn, .btn-xs {
   padding  : 6px 2px;
   font-size  : .875rem;
@@ -17,6 +32,12 @@ $side-menu-width: 250px;
 }
 .red {
   color: red;
+}
+.subtitle {
+  font-size: 15px;
+  font-style: italic;
+  color: grey;
+  margin-bottom: 10px;
 }
 .faded {
     opacity: 0.2;
@@ -70,4 +91,10 @@ section {
     overflow-y: auto;
     width: $side-menu-width;
   }
+}
+
+.github-button-container {
+  position: relative;
+  top: 6px;
+  margin: 0 5px;
 }

@@ -191,7 +191,7 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
   sortService: SortService;
   treeDataService: TreeDataService;
 
-  dataview!: SlickDataView;
+  dataView!: SlickDataView;
   grid!: SlickGrid;
   totalItems = 0;
 
@@ -207,6 +207,33 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
     columnDefinitions: [],
   };
 
+  get dataset(): any[] {
+    return this.dataView?.getItems() || [];
+  }
+  set dataset(newDataset: any[]) {
+    console.log('setter dataset', newDataset)
+    const prevDatasetLn = this._currentDatasetLength;
+    const isDatasetEqual = dequal(newDataset, this.dataset || []);
+    const isDeepCopyDataOnPageLoadEnabled = !!(this._gridOptions?.enableDeepCopyDatasetOnPageLoad);
+    let data = isDeepCopyDataOnPageLoadEnabled ? $.extend(true, [], newDataset) : newDataset;
+
+    // when Tree Data is enabled and we don't yet have the hierarchical dataset filled, we can force a convert+sort of the array
+    if (this.grid && this.gridOptions?.enableTreeData && Array.isArray(newDataset) && (newDataset.length > 0 || newDataset.length !== prevDatasetLn || !isDatasetEqual)) {
+      this._isDatasetHierarchicalInitialized = false;
+      console.log('sorting tree data', newDataset);
+      data = this.sortTreeDataset(newDataset, !isDatasetEqual); // if dataset changed, then force a refresh anyway
+    }
+
+    this.refreshGridData(data || []);
+    this._currentDatasetLength = (newDataset || []).length;
+
+    // expand/autofit columns on first page load
+    // we can assume that if the prevDataset was empty then we are on first load
+    if (this.grid && this.gridOptions.autoFitColumnsOnFirstLoad && prevDatasetLn === 0) {
+      this.grid.autosizeColumns();
+    }
+  }
+
   get datasetHierarchical(): any[] | undefined {
     return this.sharedService.hierarchicalDataset;
   }
@@ -221,20 +248,21 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
     }
 
     // when a hierarchical dataset is set afterward, we can reset the flat dataset and call a tree data sort that will overwrite the flat dataset
-    if (newHierarchicalDataset && this.grid && this.sortService?.processTreeDataInitialSort) {
-      this.dataview.setItems([], this._gridOptions?.datasetIdPropertyName ?? 'id');
+    if (this.dataView && newHierarchicalDataset && this.grid && this.sortService?.processTreeDataInitialSort) {
+      this.dataView.setItems([], this._gridOptions?.datasetIdPropertyName ?? 'id');
       this.sortService.processTreeDataInitialSort();
 
       // we also need to reset/refresh the Tree Data filters because if we inserted new item(s) then it might not show up without doing this refresh
       // however we need 1 cpu cycle before having the DataView refreshed, so we need to wrap this check in a setTimeout
       setTimeout(() => {
-        const flatDatasetLn = this.dataview.getItemCount();
+        const flatDatasetLn = this.dataView?.getItemCount() ?? 0;
         if (flatDatasetLn > 0 && (flatDatasetLn !== prevFlatDatasetLn || !isDatasetEqual)) {
           this.filterService.refreshTreeDataFilters();
         }
       });
-      this._isDatasetHierarchicalInitialized = true;
     }
+
+    this._isDatasetHierarchicalInitialized = true;
   }
 
   constructor(public readonly props: SlickgridReactProps) {
@@ -292,6 +320,10 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
       this.sortService,
       this.treeDataService,
     ];
+
+    if (this.props.datasetHierarchical) {
+      this.sharedService.hierarchicalDataset = this.props.datasetHierarchical || [];
+    }
 
     // register all Service instances in the container
     this.props.containerService.registerInstance('ExtensionUtility', this.extensionUtility);
@@ -353,9 +385,6 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
     }
 
     this.initialization(this._eventHandler);
-    if (this.props.dataset?.length) {
-      this.datasetChanged(this.props.dataset, []);
-    }
     this._isGridInitialized = true;
 
     // recheck the empty warning message after grid is shown so that it works in every use case
@@ -404,8 +433,8 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
         this.sharedService.groupItemMetadataProvider = this.groupItemMetadataProvider;
         dataViewOptions = { ...dataViewOptions, groupItemMetadataProvider: this.groupItemMetadataProvider };
       }
-      this.dataview = new Slick.Data.DataView(dataViewOptions);
-      this._eventPubSubService.publish(`onDataviewCreated`, this.dataview);
+      this.dataView = new Slick.Data.DataView(dataViewOptions);
+      this._eventPubSubService.publish(`onDataviewCreated`, this.dataView);
     }
 
     // get any possible Services that user want to register which don't require SlickGrid to be instantiated
@@ -437,13 +466,13 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
     }
 
     // build SlickGrid Grid, also user might optionally pass a custom dataview (e.g. remote model)
-    this.grid = new Slick.Grid(`#${this.props.gridId}`, this.props.customDataView || this.dataview, this._columnDefinitions, this._gridOptions);
-    this.sharedService.dataView = this.dataview;
+    this.grid = new Slick.Grid(`#${this.props.gridId}`, this.props.customDataView || this.dataView, this._columnDefinitions, this._gridOptions);
+    this.sharedService.dataView = this.dataView;
     this.sharedService.slickGrid = this.grid;
     this.sharedService.gridContainerElement = this._elm as HTMLDivElement;
 
     this.extensionService.bindDifferentExtensions();
-    this.bindDifferentHooks(this.grid, this._gridOptions, this.dataview);
+    this.bindDifferentHooks(this.grid, this._gridOptions, this.dataView);
 
     // when it's a frozen grid, we need to keep the frozen column id for reference if we ever show/hide column from ColumnPicker/GridMenu afterward
     const frozenColumnIndex = this._gridOptions?.frozenColumn ?? -1;
@@ -470,10 +499,10 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
       this.slickFooter.renderFooter(gridContainerElm as HTMLDivElement);
     }
 
-    if (!this.props.customDataView && this.dataview) {
+    if (!this.props.customDataView && this.dataView) {
       const initialDataset = this._gridOptions?.enableTreeData ? this.sortTreeDataset(this.props.dataset) : this.props.dataset;
       if (Array.isArray(initialDataset)) {
-        this.dataview.setItems(initialDataset, this._gridOptions.datasetIdPropertyName ?? 'id');
+        this.dataView.setItems(initialDataset, this._gridOptions.datasetIdPropertyName ?? 'id');
       }
 
       // if you don't want the items that are not visible (due to being filtered out or being on a different page)
@@ -493,9 +522,9 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
             // when using BackendServiceApi, we'll be using the "syncGridSelectionWithBackendService" flag BUT "syncGridSelection" must also be set to True
             preservedRowSelection = syncGridSelection && preservedRowSelectionWithBackend;
           }
-          this.dataview.syncGridSelection(this.grid, preservedRowSelection);
+          this.dataView.syncGridSelection(this.grid, preservedRowSelection);
         } else if (typeof syncGridSelection === 'object') {
-          this.dataview.syncGridSelection(this.grid, syncGridSelection.preserveHidden, syncGridSelection.preserveHiddenOnSelectionChange);
+          this.dataView.syncGridSelection(this.grid, syncGridSelection.preserveHidden, syncGridSelection.preserveHiddenOnSelectionChange);
         }
       }
 
@@ -537,7 +566,7 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
       element: this._elm as HTMLDivElement,
 
       // Slick Grid & DataView objects
-      dataView: this.dataview,
+      dataView: this.dataView,
       slickGrid: this.grid,
 
       // public methods
@@ -603,12 +632,12 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
     this.slickFooter?.dispose();
     this.slickPagination?.dispose();
 
-    if (this.dataview) {
-      if (this.dataview.setItems) {
-        this.dataview.setItems([]);
+    if (this.dataView) {
+      if (this.dataView.setItems) {
+        this.dataView.setItems([]);
       }
-      if (this.dataview.destroy) {
-        this.dataview.destroy();
+      if (this.dataView.destroy) {
+        this.dataView.destroy();
       }
     }
     if (this.grid?.destroy) {
@@ -659,7 +688,7 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
     }
 
     if (this.props.dataset !== prevProps.dataset) {
-      this.datasetChanged(this.props.dataset, prevProps.dataset);
+      this.dataset = this.props.dataset = prevProps.dataset;
     }
 
     if (this.props.datasetHierarchical && this.props.datasetHierarchical !== prevProps.datasetHierarchical) {
@@ -696,28 +725,6 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
           this.grid.getEditorLock().commitCurrentEdit();
         }
       });
-    }
-  }
-
-  datasetChanged(newDataset: any[], oldValue: any[]) {
-    const prevDatasetLn = this._currentDatasetLength;
-    const isDatasetEqual = dequal(newDataset, this._dataset || []);
-    let data = newDataset;
-
-    // when Tree Data is enabled and we don't yet have the hierarchical dataset filled, we can force a convert+sort of the array
-    if (this.grid && this._gridOptions?.enableTreeData && Array.isArray(newDataset) && (newDataset.length > 0 || newDataset.length !== prevDatasetLn || !isDatasetEqual)) {
-      this._isDatasetHierarchicalInitialized = false;
-      data = this.sortTreeDataset(newDataset, !isDatasetEqual); // if dataset changed, then force a refresh anyway
-    }
-
-    this._dataset = data;
-    this.refreshGridData(data || []);
-    this._currentDatasetLength = (newDataset || []).length;
-
-    // expand/autofit columns on first page load
-    // we can assume that if the oldValue was empty then we are on first load
-    if (this.gridOptions.autoFitColumnsOnFirstLoad && (!oldValue || oldValue.length < 1)) {
-      this.grid.autosizeColumns();
     }
   }
 
@@ -1028,10 +1035,10 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
         this.displayEmptyDataWarning(finalTotalCount < 1);
       }
 
-      if (Array.isArray(dataset) && this.grid && this.dataview?.setItems) {
-        this.dataview.setItems(dataset, this._gridOptions.datasetIdPropertyName ?? 'id');
+      if (Array.isArray(dataset) && this.grid && this.dataView?.setItems) {
+        this.dataView.setItems(dataset, this._gridOptions.datasetIdPropertyName ?? 'id');
         if (!this._gridOptions.backendServiceApi && !this._gridOptions.enableTreeData) {
-          this.dataview.reSort();
+          this.dataView.reSort();
         }
 
         if (dataset.length > 0) {
@@ -1290,8 +1297,8 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
   protected loadLocalGridPagination(dataset?: any[]) {
     if (this._gridOptions && this._paginationOptions) {
       this.totalItems = Array.isArray(dataset) ? dataset.length : 0;
-      if (this._paginationOptions && this.dataview?.getPagingInfo) {
-        const slickPagingInfo = this.dataview.getPagingInfo();
+      if (this._paginationOptions && this.dataView?.getPagingInfo) {
+        const slickPagingInfo = this.dataView.getPagingInfo();
         if (slickPagingInfo?.hasOwnProperty('totalRows') && this._paginationOptions.totalItems !== slickPagingInfo.totalRows) {
           this.totalItems = slickPagingInfo.totalRows || 0;
         }
@@ -1313,9 +1320,9 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
 
       // maps the IDs to the Grid Rows and vice versa, the "dataContextIds" has precedence over the other
       if (Array.isArray(dataContextIds) && dataContextIds.length > 0) {
-        gridRowIndexes = this.dataview.mapIdsToRows(dataContextIds) || [];
+        gridRowIndexes = this.dataView.mapIdsToRows(dataContextIds) || [];
       } else if (Array.isArray(gridRowIndexes) && gridRowIndexes.length > 0) {
-        dataContextIds = this.dataview.mapRowsToIds(gridRowIndexes) || [];
+        dataContextIds = this.dataView.mapRowsToIds(gridRowIndexes) || [];
       }
       this.gridStateService.selectedRowDataContextIds = dataContextIds;
 

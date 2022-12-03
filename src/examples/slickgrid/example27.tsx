@@ -155,45 +155,14 @@ export default class Example27 extends React.Component<Props, State> {
       enableExcelExport: true,
       excelExportOptions: { exportWithFormatter: true, sanitizeDataExport: true },
       registerExternalResources: [new ExcelExportService()],
-
-      // use Material Design SVG icons
-      contextMenu: {
-        iconCollapseAllGroupsCommand: 'mdi mdi-arrow-collapse',
-        iconExpandAllGroupsCommand: 'mdi mdi-arrow-expand',
-        iconClearGroupingCommand: 'mdi mdi-close',
-        iconCopyCellValueCommand: 'mdi mdi-content-copy',
-        iconExportCsvCommand: 'mdi mdi-download',
-        iconExportExcelCommand: 'mdi mdi-file-excel-outline',
-        iconExportTextDelimitedCommand: 'mdi mdi-download',
-      },
-      gridMenu: {
-        iconCssClass: 'mdi mdi-menu',
-        iconClearAllFiltersCommand: 'mdi mdi-filter-remove-outline',
-        iconClearAllSortingCommand: 'mdi mdi-swap-vertical',
-        iconExportCsvCommand: 'mdi mdi-download',
-        iconExportExcelCommand: 'mdi mdi-file-excel-outline',
-        iconExportTextDelimitedCommand: 'mdi mdi-download',
-        iconRefreshDatasetCommand: 'mdi mdi-sync',
-        iconToggleFilterCommand: 'mdi mdi-flip-vertical',
-        iconTogglePreHeaderCommand: 'mdi mdi-flip-vertical',
-      },
-      headerMenu: {
-        iconClearFilterCommand: 'mdi mdi mdi-filter-remove-outline',
-        iconClearSortCommand: 'mdi mdi-swap-vertical',
-        iconSortAscCommand: 'mdi mdi-sort-ascending',
-        iconSortDescCommand: 'mdi mdi-flip-v mdi-sort-descending',
-        iconColumnHideCommand: 'mdi mdi-close',
-      }
     };
 
-    this.setState((state: State, props: Props) => {
-      return {
+    this.setState((state: State) => ({
         ...state,
         gridOptions,
         columnDefinitions,
-        dataset: this.loadData(10),
-      };
-    });
+      dataset: this.loadData(NB_ITEMS),
+    }));
   }
 
   /**
@@ -275,13 +244,13 @@ export default class Example27 extends React.Component<Props, State> {
 
   hideSpinner() {
     setTimeout(() => {
-      this.setState((state: State, props: Props) => ({ ...state, loadingClass: '' }));
+      this.setState((state: State) => ({ ...state, loadingClass: '' }));
     }, 200); // delay the hide spinner a bit to avoid show/hide too quickly
   }
 
   showSpinner() {
     if (this.state.isLargeDataset) {
-      this.setState((state: State, props: Props) => ({ ...state, loadingClass: 'mdi mdi-load mdi-spin-1s mdi-24px color-alt-success' }));
+      this.setState((state: State) => ({ ...state, loadingClass: 'fa fa-refresh fa-spin' }));
     }
   }
 
@@ -336,42 +305,37 @@ export default class Example27 extends React.Component<Props, State> {
       item['finish'] = new Date(randomYear, (randomMonth + 1), randomDay);
       item['effortDriven'] = (i % 5 === 0);
     }
-    console.log('data', data)
     return data;
   }
 
   setData(rowCount: number) {
-    this.setState((state: State, props: Props) => ({
+    this.setState((state: State) => ({
       ...state,
       dataset: this.loadData(rowCount)
     }));
   }
 
   handleOnTreeFullToggleEnd(treeToggleExecution: TreeToggleStateChange) {
-    console.log('Tree Data changes', treeToggleExecution);
     this.hideSpinner();
   }
 
   /** Whenever a parent is being toggled, we'll keep a reference of all of these changes so that we can reapply them whenever we want */
   handleOnTreeItemToggled(treeToggleExecution: TreeToggleStateChange) {
-    console.log('Tree Item Toggled!!!', treeToggleExecution)
-    this.setState((state: State, props: Props) => ({
+    this.setState((state: State) => ({
       ...state,
       hasNoExpandCollapseChanged: false,
       treeToggleItems: treeToggleExecution.toggledItems as TreeToggledItem[],
     }));
-    console.log('Tree Data changes', treeToggleExecution);
   }
 
   handleOnGridStateChanged(gridStateChange: GridStateChange) {
-    this.setState((state: State, props: Props) => ({
+    this.setState((state: State) => ({
       ...state,
       hasNoExpandCollapseChanged: false,
     }));
 
     if (gridStateChange?.change?.type === GridStateType.treeData) {
-      console.log('Tree Data gridStateChange', gridStateChange?.gridState?.treeData);
-      this.setState((state: State, props: Props) => ({
+      this.setState((state: State) => ({
         ...state,
         treeToggleItems: gridStateChange?.gridState?.treeData?.toggledItems as TreeToggledItem[],
       }));
@@ -404,12 +368,12 @@ export default class Example27 extends React.Component<Props, State> {
     return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
-          <span>{this.title}</span>
+          <span dangerouslySetInnerHTML={{ __html: this.title }}></span>
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example27.ts">
-              <span className="mdi mdi-link mdi-v-align-sub"></span> code
+              <span className="fa fa-link"></span> code
             </a>
           </span>
         </h2>
@@ -420,17 +384,17 @@ export default class Example27 extends React.Component<Props, State> {
             <button className="btn btn-outline-secondary btn-sm" data-test="add-500-rows-btn" onClick={() => this.setData(500)}>
               500 rows
             </button>
-            <button className="btn btn-outline-secondary btn-sm" data-test="add-50k-rows-btn" onClick={() => this.setData(25000)}>
+            <button className="btn btn-outline-secondary btn-sm mx-1" data-test="add-50k-rows-btn" onClick={() => this.setData(25000)}>
               25k rows
             </button>
             <button onClick={() => this.dynamicallyChangeFilter()} className="btn btn-outline-secondary btn-sm"
-              data-test="change-filter-dynamically">
-              <span className="mdi mdi-filter-outline"></span>
+              data-test="change-filter-dynamically me-1">
+              <span className="fa fa-filter me-1"></span>
               <span>Dynamically Change Filter (% complete &lt; 40)</span>
             </button>
-            <button onClick={() => this.collapseAllWithoutEvent()} className="btn btn-outline-secondary btn-sm"
+            <button onClick={() => this.collapseAllWithoutEvent()} className="btn btn-outline-secondary btn-sm mx-1"
               data-test="collapse-all-noevent-btn">
-              <span className="mdi mdi-arrow-collapse"></span>
+              <span className="fa fa-compress me-1"></span>
               <span>Collapse All (without triggering event)</span>
             </button>
             <button onClick={() => this.dynamicallyToggledFirstParent()} className="btn btn-outline-secondary btn-sm"
@@ -438,9 +402,9 @@ export default class Example27 extends React.Component<Props, State> {
               <span>Dynamically Toggle First Parent</span>
             </button>
             <button onClick={() => this.reapplyToggledItems()} data-test="reapply-toggled-items-btn"
-              className="btn btn-outline-secondary btn-sm"
+              className="btn btn-outline-secondary btn-sm ms-1"
               disabled={this.state.hasNoExpandCollapseChanged}>
-              <span className="mdi mdi-history"></span>
+              <span className="fa fa-history me-1"></span>
               <span>Reapply Previous Toggled Items</span>
             </button>
             <div className={this.state.loadingClass}></div>
@@ -450,25 +414,25 @@ export default class Example27 extends React.Component<Props, State> {
         <div className="row">
           <div className="col-md-12">
             <button onClick={() => this.addNewRow()} data-test="add-item-btn" className="btn btn-primary btn-sm">
-              <span className="mdi mdi-plus color-white"></span>
+              <span className="fa fa-plus color-white me-1"></span>
               <span>Add New Item (in 1st group)</span>
             </button>
-            <button onClick={() => this.updateFirstRow()} data-test="update-item-btn" className="btn btn-outline-secondary btn-sm">
-              <span className="icon mdi mdi-pencil"></span>
+            <button onClick={() => this.updateFirstRow()} data-test="update-item-btn" className="btn btn-outline-secondary btn-sm mx-1">
+              <span className="icon fa fa-pencil me-1"></span>
               <span>Update 1st Row Item</span>
             </button>
             <button onClick={() => this.collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-sm">
-              <span className="mdi mdi-arrow-collapse"></span>
+              <span className="fa fa-compress me-1"></span>
               <span>Collapse All</span>
             </button>
-            <button onClick={() => this.expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-sm">
-              <span className="mdi mdi-arrow-expand"></span>
+            <button onClick={() => this.expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-sm mx-1">
+              <span className="fa fa-expand me-1"></span>
               <span>Expand All</span>
             </button>
             <button onClick={() => this.logFlatStructure()} className="btn btn-outline-secondary btn-sm">
               <span>Log Flat Structure</span>
             </button>
-            <button onClick={() => this.logHierarchicalStructure()} className="btn btn-outline-secondary btn-sm">
+            <button onClick={() => this.logHierarchicalStructure()} className="btn btn-outline-secondary btn-sm ms-1">
               <span>Log Hierarchical Structure</span>
             </button>
           </div>
@@ -481,15 +445,15 @@ export default class Example27 extends React.Component<Props, State> {
             columnDefinitions={this.state.columnDefinitions}
             gridOptions={this.state.gridOptions}
             dataset={this.state.dataset}
-            onBeforeFilterChange={this.showSpinner}
-            onFilterChanged={this.hideSpinner}
-            onBeforeFilterClear={this.showSpinner}
-            onFilterCleared={this.hideSpinner}
-            onBeforeSortChange={this.showSpinner}
-            onSortChanged={this.hideSpinner}
-            onBeforeToggleTreeCollapse={this.showSpinner}
-            onToggleTreeCollapsed={this.hideSpinner}
-            onTreeFullToggleStart={this.showSpinner}
+            onBeforeFilterChange={() => this.showSpinner()}
+            onFilterChanged={() => this.hideSpinner()}
+            onBeforeFilterClear={() => this.showSpinner()}
+            onFilterCleared={() => this.hideSpinner()}
+            onBeforeSortChange={() => this.showSpinner()}
+            onSortChanged={() => this.hideSpinner()}
+            onBeforeToggleTreeCollapse={() => this.showSpinner()}
+            onToggleTreeCollapsed={() => this.hideSpinner()}
+            onTreeFullToggleStart={() => this.showSpinner()}
             onTreeFullToggleEnd={$event => this.handleOnTreeFullToggleEnd($event.detail)}
             onTreeItemToggled={$event => this.handleOnTreeItemToggled($event.detail)}
             onReactGridCreated={$event => this.reactGridReady($event.detail)}
