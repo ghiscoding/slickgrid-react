@@ -73,6 +73,8 @@ import { ReactGridInstance } from 'slickgrid-react/models';
 import { ReactUtilService } from 'slickgrid-react/services';
 
 export interface SlickgridReactProps {
+    header?: JSX.Element;
+    footer?: JSX.Element;
     reactUtilService: ReactUtilService;
     containerService: ContainerService;
     translaterService: TranslaterService;

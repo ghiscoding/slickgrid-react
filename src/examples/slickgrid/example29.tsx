@@ -5,6 +5,19 @@ const NB_ITEMS = 995;
 
 interface Props { }
 
+const Header = () => <h5>Header Slot</h5>;
+const Footer = () => {
+  const [state, setState] = React.useState({ clickedTimes: 0 });
+  const buttonClick = () => setState({ ...state, clickedTimes: state.clickedTimes + 1 })
+  return (
+    <div>
+      <h5>Footer Slot</h5>
+      <button onClick={() => buttonClick()}>I'm a button in Slickgrid-React footer (click me)</button>
+      {state.clickedTimes > 0 && <div>You've clicked me {state.clickedTimes} time(s)</div>}
+    </div>
+  )
+}
+
 export default class Example29 extends React.Component {
   title = 'Example 29: Grid with Header and Footer slot';
   subTitle = `Simple Grids with a custom header and footer via named slots`;
@@ -41,7 +54,6 @@ export default class Example29 extends React.Component {
       enableSorting: true,
       gridHeight: 225,
       gridWidth: 800,
-      showCustomFooter: true,
     };
   }
 
@@ -83,17 +95,15 @@ export default class Example29 extends React.Component {
         </h2>
         <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
+        <hr />
 
         <ReactSlickgridComponent gridId="grid"
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
-          dataset={this.dataset} />
-        <div slot="slickgrid-header">
-          <h3>Grid with header and footer slot</h3>
-        </div>
-        {/* <CustomFooter className="slick-custom-footer"
-          slot="slickgrid-footer">
-        </CustomFooter> */}
+          dataset={this.dataset}
+          header={<Header />}
+          footer={<Footer />}
+        />
       </div>
     );
   }

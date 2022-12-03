@@ -243,6 +243,11 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
     this._eventHandler = new Slick.EventHandler();
 
     this.showPagination = false;
+
+    // check if the user wants to hide the header row from the start
+    // we only want to do this check once in the constructor
+    this._hideHeaderRowAfterPageLoad = (props.gridOptions?.showHeaderRow === false);
+
     this._gridOptions = this.mergeGridOptions(props.gridOptions || {});
 
     // initialize and assign all Service Dependencies
@@ -305,8 +310,6 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
     this.props.containerService.registerInstance('PubSubService', this._eventPubSubService);
     this.props.containerService.registerInstance('TranslaterService', this.props.translaterService);
     this.props.containerService.registerInstance('TreeDataService', this.treeDataService);
-
-    this._gridOptions = this.mergeGridOptions(this.props.gridOptions as GridOption);
   }
 
   get eventHandler(): SlickEventHandler {
@@ -1336,6 +1339,11 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
     options.gridId = this.props.gridId;
     options.gridContainerId = `slickGridContainer-${this.props.gridId}`;
 
+    // also make sure to show the header row if user have enabled filtering
+    if (options.enableFiltering && !options.showHeaderRow) {
+      options.showHeaderRow = options.enableFiltering;
+    }
+
     // if we have a backendServiceApi and the enablePagination is undefined, we'll assume that we do want to see it, else get that defined value
     options.enablePagination = ((gridOptions.backendServiceApi && gridOptions.enablePagination === undefined) ? true : gridOptions.enablePagination) || false;
 
@@ -1346,15 +1354,9 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
       options.pagination.pageSizes = gridOptions.pagination.pageSizes;
     }
 
-    // also make sure to show the header row if user have enabled filtering
-    this._hideHeaderRowAfterPageLoad = (options.showHeaderRow === false);
-    if (options.enableFiltering && !options.showHeaderRow) {
-      options.showHeaderRow = options.enableFiltering;
-    }
-
     // when we use Pagination on Local Grid, it doesn't seem to work without enableFiltering
     // so we'll enable the filtering but we'll keep the header row hidden
-    if (options && !options.enableFiltering && options.enablePagination && this._isLocalGrid) {
+    if (!options.enableFiltering && options.enablePagination && this._isLocalGrid) {
       options.enableFiltering = true;
       options.showHeaderRow = false;
       this._hideHeaderRowAfterPageLoad = true;
@@ -1533,14 +1535,14 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
   render() {
     return (
       <div id={`slickGridContainer-${this.props.gridId}`} className="grid-pane" ref={elm => this._elm = elm} >
-        {/* <!-- Header slot if you need to create a complex custom header --> */}
-        <slot name="slickgrid-header"></slot>
+        {/*<!-- Header slot if you need to create a complex custom header -->*/}
+        {this.props.header && <div className="header">{this.props.header}</div>}
 
         <div id={`${this.props.gridId}`} className="slickgrid-container" style={{ width: '100%' }} onBlur={$event => this.commitEdit($event.target)}>
         </div>
 
         {/* <!--Footer slot if you need to create a complex custom footer-- > */}
-        <slot name="slickgrid-footer"></slot>
+        {this.props.footer && <div className="footer">{this.props.footer}</div>}
       </div >
     );
   }
