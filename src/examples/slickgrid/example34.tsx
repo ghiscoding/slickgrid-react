@@ -427,14 +427,14 @@ export default class Example34 extends React.Component<Props, State> {
               </div>
             </div>
           </div>
-        </div>
 
-        <ReactSlickgridComponent gridId="grid34"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        />
+          <ReactSlickgridComponent gridId="grid34"
+            columnDefinitions={this.state.columnDefinitions}
+            gridOptions={this.state.gridOptions}
+            dataset={this.state.dataset}
+            onReactGridCreated={$event => this.reactGridReady($event.detail)}
+          />
+        </div>
       </div>
     );
   }
