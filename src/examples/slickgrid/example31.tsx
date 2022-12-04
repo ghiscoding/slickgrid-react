@@ -74,7 +74,6 @@ export default class Example31 extends React.Component<Props, State> {
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
-    console.log('reactGridReady', reactGrid)
     this.reactGrid = reactGrid;
   }
 
@@ -388,7 +387,6 @@ export default class Example31 extends React.Component<Props, State> {
               }
             }
 
-            // console.log('Backend Result', backendResult);
             observer.next(backendResult);
             observer.complete();
           }, 150);
@@ -493,7 +491,7 @@ export default class Example31 extends React.Component<Props, State> {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example31.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example31.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

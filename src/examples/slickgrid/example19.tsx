@@ -119,10 +119,10 @@ export default class Example19 extends React.Component {
         // expandableOverride: (row: number, dataContext: any, grid: SlickGrid) => (dataContext.id % 2 === 1),
 
         // // Preload View Template
-        // preloadView: PLATFORM.moduleName('examples/slickgrid/example19-preload.html'),
+        // preloadView: PLATFORM.moduleName('examples/example19-preload.html'),
 
         // // ViewModel Template to load when row detail data is ready
-        // viewModel: PLATFORM.moduleName('examples/slickgrid/example19-detail-view'),
+        // viewModel: PLATFORM.moduleName('examples/example19-detail-view'),
 
         // Optionally pass your Parent Component reference to your Child Component (row detail component)
         parent: this
@@ -202,7 +202,7 @@ export default class Example19 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example19.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example19.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

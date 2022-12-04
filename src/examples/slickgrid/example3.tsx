@@ -861,6 +861,7 @@ export default class Example3 extends React.Component<Props, State> {
               </button>
               <button
                 className='btn btn-sm btn-outline-primary' 
+                data-test="add-item-btn"
                 onClick={() => this.addItem()}
                 title='Clear Filters &amp; Sorting to see it better'
               >
@@ -868,6 +869,7 @@ export default class Example3 extends React.Component<Props, State> {
               </button>
               <button
                 className='btn btn-sm btn-outline-danger mx-1'
+                data-test="delete-item-btn"
                 onClick={() => this.deleteItem()}
               >
                 Delete item

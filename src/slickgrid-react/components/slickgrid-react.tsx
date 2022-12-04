@@ -211,7 +211,6 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
     return this.dataView?.getItems() || [];
   }
   set dataset(newDataset: any[]) {
-    console.log('setter dataset', newDataset)
     const prevDatasetLn = this._currentDatasetLength;
     const isDatasetEqual = dequal(newDataset, this.dataset || []);
     const isDeepCopyDataOnPageLoadEnabled = !!(this._gridOptions?.enableDeepCopyDatasetOnPageLoad);
@@ -220,7 +219,6 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
     // when Tree Data is enabled and we don't yet have the hierarchical dataset filled, we can force a convert+sort of the array
     if (this.grid && this.gridOptions?.enableTreeData && Array.isArray(newDataset) && (newDataset.length > 0 || newDataset.length !== prevDatasetLn || !isDatasetEqual)) {
       this._isDatasetHierarchicalInitialized = false;
-      console.log('sorting tree data', newDataset);
       data = this.sortTreeDataset(newDataset, !isDatasetEqual); // if dataset changed, then force a refresh anyway
     }
 
@@ -688,7 +686,7 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
     }
 
     if (this.props.dataset !== prevProps.dataset) {
-      this.dataset = this.props.dataset = prevProps.dataset;
+      this.dataset = this.props.dataset || prevProps.dataset;
     }
 
     if (this.props.datasetHierarchical && this.props.datasetHierarchical !== prevProps.datasetHierarchical) {
@@ -1459,7 +1457,6 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
       if (this._gridOptions?.treeDataOptions?.initialSort) {
         // else we need to first convert the flat dataset to a hierarchical dataset and then sort
         sortedDatasetResult = this.treeDataService.convertFlatParentChildToTreeDatasetAndSort(flatDatasetInput, this._columnDefinitions, this._gridOptions);
-        console.log('flatDatasetInput', flatDatasetInput, this._gridOptions, sortedDatasetResult)
         this.sharedService.hierarchicalDataset = sortedDatasetResult.hierarchical;
         flatDatasetOutput = sortedDatasetResult.flat;
       } else {

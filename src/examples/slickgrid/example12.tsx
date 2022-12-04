@@ -282,7 +282,7 @@ class Example12 extends React.Component<Props, State> {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example12.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example12.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

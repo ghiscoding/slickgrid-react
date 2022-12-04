@@ -43,7 +43,6 @@ const customEnableButtonFormatter: Formatter<DataItem> = (_row: number, _cell: n
 interface Props {}
 
 export default class Example2 extends React.Component<Props, State> {
-  isGridMounted = false;
   title = 'Example 2: Grid with Formatters';
   subTitle = `
     Grid with Custom and/or included Slickgrid Formatters (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Formatters" target="_blank">Wiki docs</a>).
@@ -69,18 +68,13 @@ export default class Example2 extends React.Component<Props, State> {
       columnDefinitions: [],
       dataset: [],
     };
-
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
   }
 
   componentDidMount() {
     document.title = this.title;
 
-    // populate the dataset once the grid is ready
-    this.setState((state: State, props: Props) => ({
-        dataset: this.getData(),
-    }));
+    // define the grid options & columns and then create the grid itself
+    this.defineGrid();
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
@@ -144,12 +138,12 @@ export default class Example2 extends React.Component<Props, State> {
       // }
     };
 
-    this.state = {
+    this.setState((state: State, props: Props) => ({
       ...this.state,
       columnDefinitions : columns,
       gridOptions,
-    };
-    this.isGridMounted = true;
+      dataset: this.getData(),
+    }));
   }
 
   // mock a dataset
@@ -204,7 +198,7 @@ export default class Example2 extends React.Component<Props, State> {
   }
 
   render() {
-    return !this.isGridMounted ? '' : (
+    return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}

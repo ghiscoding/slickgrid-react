@@ -67,14 +67,15 @@ export default class Example1 extends React.Component<Props, State> {
     // copy the same Grid Options and Column Definitions to 2nd grid
     // but also add Pagination in this grid
     const gridOptions2: GridOption = {
-      ...gridOptions1,
-      ...{
-        enablePagination: true,
-        pagination: {
-          pageSizes: [5, 10, 20, 25, 50],
-          pageSize: 5
-        },
-      }
+      gridHeight: 225,
+      gridWidth: 800,
+      enableAutoResize: false,
+      enableSorting: true,
+      enablePagination: true,
+      pagination: {
+        pageSizes: [5, 10, 20, 25, 50],
+        pageSize: 5
+      },
     };
 
     this.setState((state: State) => ({

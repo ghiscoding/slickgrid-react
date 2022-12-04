@@ -49,7 +49,7 @@ export default class Example17 extends React.Component {
         for Sorting, Filtering, etc...
       </li>
       <li>
-        Soure code for this example is available <a href="https://github.com/ghiscoding/slickgrid-react/blob/master/doc/github-demo/src/examples/slickgrid/example17.ts" target="_blank">here</a>
+        Soure code for this example is available <a href="https://github.com/ghiscoding/slickgrid-react/blob/master/doc/github-demo/src/examples/slickgrid/example17.tsx" target="_blank">here</a>
       </li>
     </ul>
   `;
@@ -163,7 +163,7 @@ export default class Example17 extends React.Component {
           <span className="float-right">
             <a style={{ fontSize: '18px' }}
               target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example17.ts">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example17.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
