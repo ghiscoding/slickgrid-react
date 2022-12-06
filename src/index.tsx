@@ -12,7 +12,7 @@ import { initReactI18next } from 'react-i18next';
 import { BrowserRouter, HashRouter } from 'react-router-dom';
 import { SlickgridConfig } from './slickgrid-react';
 
-import App from './examples/slickgrid/App';
+import App from './examples/slickgrid/app';
 import localeEn from './assets/locales/en/translation.json';
 import localeFr from './assets/locales/fr/translation.json';
 import './styles.scss';
