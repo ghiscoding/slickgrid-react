@@ -78,8 +78,7 @@ jobs:
       # and the commit message contains the text "chore: release"
       - name: Deploy to gh-pages
         if: |
-          github.ref == 'refs/heads/master' &&
-          contains(github.event.head_commit.message, 'chore: release')
+          github.ref == 'refs/heads/master'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

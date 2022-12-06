@@ -9,7 +9,7 @@ import Backend from 'i18next-http-backend';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { initReactI18next } from 'react-i18next';
-import { BrowserRouter, HashRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { SlickgridConfig } from './slickgrid-react';
 
 import App from './examples/slickgrid/app';
