@@ -1,0 +1,85 @@
+name: CI Build
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the master branch on Push and any branches on PR
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  run:
+    name: Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [16]
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 3
+
+      - name: Set Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+      - run: node --version
+      - run: npm --version
+
+      - name: Install root dependencies
+        uses: bahmutov/npm-install@v1
+
+      # - name: Run Jest unit tests
+      #   run: yarn test:ci
+
+      # - name: Upload Jest coverage to Codecov
+      #   if: "!contains(github.event.head_commit.message, 'chore: release')"
+      #   uses: codecov/codecov-action@v3
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     directory: test/jest-coverage
+      #     verbose: true
+
+      - name: Website Prod Build (GitHub demo site)
+        run: yarn build:demo
+
+      - name: Run Cypress E2E tests
+        uses: cypress-io/github-action@v2
+        with:
+          install: false
+          # working-directory: packages/dnd
+          start: yarn serve:demo
+          wait-on: 'http://localhost:8080'
+          config-file: test/cypress.config.ts
+          browser: chrome
+          record: true
+          headless: true
+        env:
+          # pass the Dashboard record key as an environment variable
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          # pass GitHub token to allow accurately detecting a build vs a re-run build
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          Cypress_extended: true
+
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: test/cypress/screenshots
+
+      # deploy (re-publish) GitHub demo page with a Prod build but only when merging to "master" branch
+      # and the commit message contains the text "chore: release"
+      - name: Deploy to gh-pages
+        if: |
+          github.ref == 'refs/heads/master'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
