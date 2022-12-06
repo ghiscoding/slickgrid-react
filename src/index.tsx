@@ -9,7 +9,7 @@ import Backend from 'i18next-http-backend';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { initReactI18next } from 'react-i18next';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, HashRouter } from 'react-router-dom';
 import { SlickgridConfig } from './slickgrid-react';
 
 import App from './examples/slickgrid/App';
@@ -43,9 +43,9 @@ i18n
 const mainContainer = document.getElementById('main');
 const root = createRoot(mainContainer as HTMLElement);
 root.render(
-    <BrowserRouter>
+    <HashRouter>
         <App />
-    </BrowserRouter>
+    </HashRouter>
 );
 
 // load necessary Flatpickr Locale(s), but make sure it's imported AFTER loading Slickgrid-React plugin
