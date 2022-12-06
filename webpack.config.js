@@ -110,7 +110,6 @@ module.exports = ({ production } = {}, { server } = {}) => ({
     }),
     new CopyWebpackPlugin({
       patterns: [
-        { from: `${srcDir}/favicon.ico`, to: 'favicon.ico' },
         { from: `${srcDir}/assets`, to: 'assets' }
       ]
     }),
@@ -119,6 +118,7 @@ module.exports = ({ production } = {}, { server } = {}) => ({
     new CleanWebpackPlugin(),
     new HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
+      favicon: './src/favicon.ico',
       template: './src/index.html'
     })
   ]
