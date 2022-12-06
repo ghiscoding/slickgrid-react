@@ -161,10 +161,8 @@ describe('Example 28 - Tree Data (from a Hierarchical Dataset)', { retries: 1 },
       .first()
       .trigger('mouseover')
       .children('.slick-header-menu-button')
-      .should('be.hidden')
       .invoke('show')
       .click();
-
 
     cy.get('.slick-header-menu')
       .should('be.visible')
