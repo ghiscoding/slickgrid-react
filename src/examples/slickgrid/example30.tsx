@@ -673,15 +673,16 @@ export default class Example30 extends React.Component<Props, State> {
     this.undoAllEdits();
 
     // then change a single grid options to make the grid non-editable (readonly)
+    const isGridEditable = !this.state.isGridEditable;
     this.setState((state: State) => ({
       ...state,
-      isGridEditable: !state.isGridEditable,
-      isCompositeDisabled: !state.isGridEditable,
-      isMassSelectionDisabled: !state.isGridEditable,
+      isGridEditable,
+      isCompositeDisabled: !isGridEditable,
+      isMassSelectionDisabled: !isGridEditable,
     }));
 
     // dynamically change SlickGrid editable grid option
-    this.reactGrid.slickGrid.setOptions({ editable: this.state.isGridEditable });
+    this.reactGrid.slickGrid.setOptions({ editable: isGridEditable });
   }
 
   removeUnsavedStylingFromCell(_item: any, column: Column, row: number) {

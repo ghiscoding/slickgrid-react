@@ -7,7 +7,6 @@ import i18next, { i18n } from 'i18next';
  */
 export class TranslaterService implements UniversalTranslateService {
   private readonly i18n: i18n = i18next;
-  constructor() { }
 
   /**
    * Method to return the current language used by the App

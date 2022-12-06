@@ -12,7 +12,7 @@ const Footer = () => {
   return (
     <div>
       <h5>Footer Slot</h5>
-      <button onClick={() => buttonClick()}>I'm a button in Slickgrid-React footer (click me)</button>
+      <button data-test="footer-btn" onClick={() => buttonClick()}>I'm a button in Slickgrid-React footer (click me)</button>
       {state.clickedTimes > 0 && <div>You've clicked me {state.clickedTimes} time(s)</div>}
     </div>
   )

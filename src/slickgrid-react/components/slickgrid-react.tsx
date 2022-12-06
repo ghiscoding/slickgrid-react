@@ -324,6 +324,8 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
     }
 
     // register all Service instances in the container
+    this.props.containerService.registerInstance('PubSubService', this._eventPubSubService);
+    this.props.containerService.registerInstance('EventPubSubService', this._eventPubSubService);
     this.props.containerService.registerInstance('ExtensionUtility', this.extensionUtility);
     this.props.containerService.registerInstance('FilterService', this.filterService);
     this.props.containerService.registerInstance('CollectionService', this.collectionService);
@@ -336,8 +338,6 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
     this.props.containerService.registerInstance('ResizerService', this.resizerService);
     this.props.containerService.registerInstance('SharedService', this.sharedService);
     this.props.containerService.registerInstance('SortService', this.sortService);
-    this.props.containerService.registerInstance('EventPubSubService', this._eventPubSubService);
-    this.props.containerService.registerInstance('PubSubService', this._eventPubSubService);
     this.props.containerService.registerInstance('TranslaterService', this.props.translaterService);
     this.props.containerService.registerInstance('TreeDataService', this.treeDataService);
   }
@@ -384,6 +384,11 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
 
     this.initialization(this._eventHandler);
     this._isGridInitialized = true;
+
+    if (!this._isPaginationInitialized && !this.props.datasetHierarchical && this._gridOptions?.enablePagination && this._isLocalGrid) {
+      this.showPagination = true;
+      this.loadLocalGridPagination(this.dataset);
+    }
 
     // recheck the empty warning message after grid is shown so that it works in every use case
     if (this._gridOptions?.enableEmptyDataWarningMessage) {
@@ -789,8 +794,12 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
       for (const prop in grid) {
         if (grid.hasOwnProperty(prop) && prop.startsWith('on')) {
           const gridEventName = this._eventPubSubService.getEventNameByNamingConvention(prop, slickgridEventPrefix);
-          this._eventHandler.subscribe((grid as any)[prop], (event, args) => {
-            return this._eventPubSubService.dispatchCustomEvent(gridEventName, { eventData: event, args });
+          this._eventHandler.subscribe(grid[prop], (event, args: any) => {
+            if (this.props.hasOwnProperty(prop)) {
+              const callback = this.props[prop];
+              return typeof callback === 'function' && callback(new CustomEvent(gridEventName, { detail: { eventData: event, args } }));
+            }
+            return true;
           });
         }
       }
@@ -798,9 +807,13 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
       // expose all Slick DataView Events through dispatch
       for (const prop in dataView) {
         if (dataView.hasOwnProperty(prop) && prop.startsWith('on')) {
-          this._eventHandler.subscribe((dataView as any)[prop], (event, args) => {
+          this._eventHandler.subscribe(dataView[prop], (event, args: any) => {
             const dataViewEventName = this._eventPubSubService.getEventNameByNamingConvention(prop, slickgridEventPrefix);
-            return this._eventPubSubService.dispatchCustomEvent(dataViewEventName, { eventData: event, args });
+            if (this.props.hasOwnProperty(prop)) {
+              const callback = this.props[prop];
+              return typeof callback === 'function' && callback(new CustomEvent(dataViewEventName, { detail: { eventData: event, args } }));
+            }
+            return true;
           });
         }
       }
@@ -843,7 +856,6 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
           this.handleOnItemCountChanged(dataView.getFilteredItemCount() || 0, dataView.getItemCount() || 0);
         });
         this._eventHandler.subscribe(dataView.onSetItemsCalled, (_e, args) => {
-          grid.invalidate();
           this.handleOnItemCountChanged(dataView.getFilteredItemCount() || 0, args.itemCount);
 
           // when user has resize by content enabled, we'll force a full width calculation since we change our entire dataset
@@ -1056,7 +1068,6 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
 
         // display the Pagination component only after calling this refresh data first, we call it here so that if we preset pagination page number it will be shown correctly
         this.showPagination = (this._gridOptions && (this._gridOptions.enablePagination || (this._gridOptions.backendServiceApi && this._gridOptions.enablePagination === undefined))) ? true : false;
-
         if (this._paginationOptions && this._gridOptions?.pagination && this._gridOptions?.backendServiceApi) {
           const paginationOptions = this.setPaginationOptionsWhenPresetDefined(this._gridOptions, this._paginationOptions);
 
@@ -1161,7 +1172,7 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
       endTime: new Date(),
       itemCount: currentPageRowItemCount,
       totalItemCount
-    };
+    };    
     // if custom footer is enabled, then we'll update its metrics
     if (this.slickFooter) {
       this.slickFooter.metrics = this.metrics;
@@ -1361,13 +1372,11 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
 
     // when we use Pagination on Local Grid, it doesn't seem to work without enableFiltering
     // so we'll enable the filtering but we'll keep the header row hidden
-    if (!options.enableFiltering && options.enablePagination && this._isLocalGrid) {
+    if (this.sharedService && !options.enableFiltering && options.enablePagination && this._isLocalGrid) {
       options.enableFiltering = true;
       options.showHeaderRow = false;
       this._hideHeaderRowAfterPageLoad = true;
-      if (this.sharedService) {
-        this.sharedService.hideHeaderRowAfterPageLoad = true;
-      }
+      this.sharedService.hideHeaderRowAfterPageLoad = true;
     }
 
     return options;

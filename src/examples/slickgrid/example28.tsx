@@ -126,8 +126,6 @@ export default class Example28 extends React.Component<Props, State> {
         // }
       },
       // change header/cell row height for salesforce theme
-      headerRowHeight: 35,
-      rowHeight: 33,
       showCustomFooter: true,
 
       // we can also preset collapsed items via Grid Presets (parentId: 4 => is the "pdf" folder)
@@ -165,6 +163,7 @@ export default class Example28 extends React.Component<Props, State> {
 
   clearSearch() {
     this.setState((state: State) => ({ ...state, searchString: '' }));
+    this.searchStringChanged('');
   }
 
   searchStringChanged(val: string) {
@@ -269,7 +268,7 @@ export default class Example28 extends React.Component<Props, State> {
       { id: 18, file: 'something.txt', dateModified: '2015-03-03T03:50:00.123Z', size: 90 },
       {
         id: 21, file: 'documents', files: [
-          { id: 2, file: 'txt', files: [{ id: 3, file: 'todo.txt', dateModified: '2015-05-12T14:50:00.123Z', size: 0.7, }] },
+          { id: 2, file: 'txt', files: [{ id: 3, file: 'todo.txt', description: 'things to do someday maybe', dateModified: '2015-05-12T14:50:00.123Z', size: 0.7, }] },
           {
             id: 4, file: 'pdf', files: [
               { id: 22, file: 'map2.pdf', dateModified: '2015-07-21T08:22:00.123Z', size: 2.9, },
@@ -279,7 +278,7 @@ export default class Example28 extends React.Component<Props, State> {
             ]
           },
           { id: 9, file: 'misc', files: [{ id: 10, file: 'todo.txt', dateModified: '2015-02-26T16:50:00.123Z', size: 0.4, }] },
-          { id: 7, file: 'xls', files: [{ id: 8, file: 'compilation.xls', dateModified: '2014-10-02T14:50:00.123Z', size: 2.3, }] },
+          { id: 7, file: 'xls', files: [{ id: 8, file: 'compilation.xls', description: 'movie compilation', dateModified: '2014-10-02T14:50:00.123Z', size: 2.3, }] },
         ]
       },
       {
@@ -288,12 +287,19 @@ export default class Example28 extends React.Component<Props, State> {
             { id: 16, file: 'rock', files: [{ id: 17, file: 'soft.mp3', dateModified: '2015-05-13T13:50:00Z', size: 98, }] },
             {
               id: 14, file: 'pop', files: [
-                { id: 15, file: 'theme.mp3', dateModified: '2015-03-01T17:05:00Z', size: 47, },
-                { id: 25, file: 'song.mp3', dateModified: '2016-10-04T06:33:44Z', size: 6.3, }
+                { id: 15, file: 'theme.mp3', description: 'Movie Theme Song', dateModified: '2015-03-01T17:05:00Z', size: 47, },
+                { id: 25, file: 'song.mp3', description: 'it is a song...', dateModified: '2016-10-04T06:33:44Z', size: 6.3, }
               ]
             },
           ]
         }]
+      },
+      {
+        id: 26, file: 'recipes', description: 'Cake Recipes', dateModified: '2012-03-05T12:44:00.123Z', files: [
+          { id: 29, file: 'cheesecake', description: 'strawberry cheesecake', dateModified: '2012-04-04T13:52:00.123Z', size: 0.2 },
+          { id: 30, file: 'chocolate-cake', description: 'tasty sweet chocolate cake', dateModified: '2012-05-05T09:22:00.123Z', size: 0.2 },
+          { id: 31, file: 'coffee-cake', description: 'chocolate coffee cake', dateModified: '2012-01-01T08:08:48.123Z', size: 0.2 },
+        ]
       },
     ];
   }
@@ -337,9 +343,8 @@ export default class Example28 extends React.Component<Props, State> {
 
           <div className="col-md-5">
             <div className="input-group input-group-sm">
-              <input type="text" className="form-control search-string" data-test="search-string" defaultValue={this.state.searchString} onInput={($event) => this.searchStringChanged(($event.target as HTMLInputElement).value)} />
-              <button className="btn btn-sm btn-outline-secondary d-flex align-items-center" data-test="clear-search-string"
-                onClick={() => this.clearSearch()}>
+              <input type="text" className="form-control search-string" data-test="search-string" value={this.state.searchString} onInput={($event) => this.searchStringChanged(($event.target as HTMLInputElement).value)} />
+              <button className="btn btn-sm btn-outline-secondary d-flex align-items-center" data-test="clear-search-string" onClick={() => this.clearSearch()}>
                 <span className="icon fa fa-times"></span>
               </button>
             </div>

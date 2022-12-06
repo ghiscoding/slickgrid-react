@@ -4,7 +4,6 @@ import {
   Editors,
   FieldType,
   Filters,
-  formatNumber,
   Formatter,
   Formatters,
   GridOption,
@@ -19,7 +18,7 @@ import React from 'react';
 import { ReactGridInstance, ReactSlickgridComponent } from '../../slickgrid-react';
 import BaseSlickGridState from './state-slick-grid-base';
 
-const NB_ITEMS = 5000;
+const NB_ITEMS = 500;
 
 interface Props { }
 interface State extends BaseSlickGridState {
@@ -387,7 +386,7 @@ export default class Example32 extends React.Component<Props, State> {
   handleServerDelayInputChange(e: React.FormEvent<HTMLInputElement>) {
     this.setState((state: State) => ({
       ...state,
-      serverApiDelay: +((e.target as HTMLInputElement)?.value ?? 0),
+      serverApiDelay: parseInt((e.target as HTMLInputElement)?.value) ?? '',
     }));
   }
 
@@ -520,7 +519,7 @@ export default class Example32 extends React.Component<Props, State> {
         <div style={{ marginBottom: '20px' }}>
           <label htmlFor="pinned-rows">Simulated Server Delay (ms): </label>
           <input type="number" id="server-delay" data-test="server-delay" style={{ width: '60px' }}
-            defaultValue={this.state.serverApiDelay}
+            value={this.state.serverApiDelay}
             onInput={($event) => this.handleServerDelayInputChange($event)}
           />
         </div>

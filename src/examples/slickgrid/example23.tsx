@@ -368,13 +368,13 @@ class Example23 extends React.Component<Props, State> {
         <form className="row row-cols-lg-auto g-1 align-items-center" onSubmit={(e) => e.preventDefault()}>
           <div className="col">
             <button className="btn btn-outline-secondary btn-sm" data-test="clear-filters"
-              onClick={() => this.reactGrid.filterService.clearFilters}>
+              onClick={() => this.reactGrid.filterService.clearFilters()}>
               Clear Filters
             </button>
           </div>
           <div className="col">
             <button className="btn btn-outline-secondary btn-sm" data-test="clear-sorting"
-              onClick={() => this.reactGrid.sortService.clearSorting}>
+              onClick={() => this.reactGrid.sortService.clearSorting()}>
               Clear Sorting
             </button>
           </div>

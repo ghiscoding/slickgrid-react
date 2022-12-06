@@ -31,6 +31,7 @@ interface State extends BaseSlickGridState {
   isCountEnabled: boolean;
   isSelectEnabled: boolean;
   isExpandEnabled: boolean;
+  isOtherGenderAdded: boolean;
   odataVersion: number;
   odataQuery: string;
   processing: boolean;
@@ -47,7 +48,6 @@ export default class Example31 extends React.Component<Props, State> {
   `;
 
   reactGrid!: ReactGridInstance;
-  isOtherGenderAdded = false;
 
   constructor(public readonly props: Props) {
     super(props);
@@ -57,6 +57,7 @@ export default class Example31 extends React.Component<Props, State> {
       dataset: [],
       paginationOptions: undefined,
       errorStatus: '',
+      isOtherGenderAdded: false,
       isCountEnabled: true,
       isSelectEnabled: false,
       isExpandEnabled: false,
@@ -201,7 +202,7 @@ export default class Example31 extends React.Component<Props, State> {
     }
 
     // don't add it more than once
-    this.isOtherGenderAdded = true;
+    this.setState((state: State) => ({ ...state, isOtherGenderAdded: true }));
   }
 
   displaySpinner(isProcessing: boolean) {
@@ -515,7 +516,7 @@ export default class Example31 extends React.Component<Props, State> {
               Set Sorting Dynamically
             </button>
             <button className="btn btn-outline-secondary btn-sm mx-1" style={{ marginLeft: '10px' }} data-test="add-gender-button"
-              onClick={() => this.addOtherGender()} disabled={this.isOtherGenderAdded}>
+              onClick={() => this.addOtherGender()} disabled={this.state.isOtherGenderAdded}>
               Add Other Gender via RxJS
             </button>
           </div>

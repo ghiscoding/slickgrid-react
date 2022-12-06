@@ -1,25 +1,24 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
-import { ReactGridInstance, Formatter, SlickGrid, ReactSlickgridComponent } from '../../slickgrid-react';
-import BaseSlickGridState from './state-slick-grid-base';
+import { Column, GridOption, ReactGridInstance, ReactSlickgridComponent } from '../../slickgrid-react';
+import './example7.scss';
 
-const columnsWithHighlightingById: any = {};
-
-// create a custom Formatter to highlight negative values in red
-const highlightingFormatter: Formatter = (_row, _cell, value, columnDef) => {
-  if (columnsWithHighlightingById[columnDef.id] && value < 0) {
-    return `<div style="color:red; font-weight:bold;">${value}</div>`;
-  } else {
-    return value;
-  }
-};
+let columns1WithHighlightingById: any = {};
+let columns2WithHighlightingById: any = {};
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props { }
 
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface State extends BaseSlickGridState{}
+interface State {
+  gridOptions1?: GridOption;
+  gridOptions2?: GridOption;
+  columnDefinitions1: Column[];
+  columnDefinitions2: Column[];
+  dataset1: any[];
+  dataset2: any[];
+}
 
 export default class Example7 extends React.Component<Props, State> {
   title = 'Example 7: Header Button Plugin';
@@ -41,17 +40,22 @@ export default class Example7 extends React.Component<Props, State> {
     </ul>
   `;
 
-  gridObj: SlickGrid;
   columnsWithHighlightingById: Record<string, never>;
-  reactGrid!:ReactGridInstance;
+  reactGrid1!: ReactGridInstance;
+  reactGrid2!: ReactGridInstance;
 
   constructor(public readonly props: Props) {
     super(props);
-    this.columnsWithHighlightingById = {};
+    columns1WithHighlightingById = {};
+    columns2WithHighlightingById = {};
+
     this.state = {
-      columnDefinitions: [],
-      dataset: [],
-      gridOptions: undefined
+      gridOptions1: undefined,
+      gridOptions2: undefined,
+      columnDefinitions1: [],
+      columnDefinitions2: [],
+      dataset1: [],
+      dataset2: []
     };
   }
 
@@ -60,13 +64,16 @@ export default class Example7 extends React.Component<Props, State> {
     this.defineGrid();
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
-    this.reactGrid = reactGrid;
-    this.gridObj = reactGrid && reactGrid.slickGrid;
+  reactGrid1Ready(reactGrid: ReactGridInstance) {
+    this.reactGrid1 = reactGrid;
   }
 
-  getGridOptions(){
-    return {
+  reactGrid2Ready(reactGrid: ReactGridInstance) {
+    this.reactGrid2 = reactGrid;
+  }
+
+  defineGrid() {
+    const gridOptions1 = {
       enableAutoResize: true,
       enableHeaderButton: true,
       enableHeaderMenu: false,
@@ -75,55 +82,99 @@ export default class Example7 extends React.Component<Props, State> {
         rightPadding: 10
       },
       enableFiltering: false,
+      enableExcelCopyBuffer: true,
+      excelCopyBufferOptions: {
+        onCopyCells: (e, args) => console.log('onCopyCells', e, args),
+        onPasteCells: (e, args) => console.log('onPasteCells', e, args),
+        onCopyCancelled: (e, args) => console.log('onCopyCancelled', e, args),
+      },
       enableCellNavigation: true,
+      gridHeight: 275,
       headerButton: {
         // you can use the "onCommand" (in Grid Options) and/or the "action" callback (in Column Definition)
-        onCommand: (_e, args) => {
-          const column = args.column;
-          const button = args.button;
-          const command = args.command;
-
-          if (command === 'toggle-highlight') {
-            if (button.cssClass === 'fa fa-circle red') {
-              delete columnsWithHighlightingById[column.id];
-              button.cssClass = 'fa fa-circle-o red faded';
-              button.tooltip = 'Highlight negative numbers.';
-            } else {
-              columnsWithHighlightingById[column.id] = true;
-              button.cssClass = 'fa fa-circle red';
-              button.tooltip = 'Remove highlight.';
-            }
-            this.gridObj.invalidate();
-          }
-        }
+        onCommand: (_e, args) => this.handleOnCommand(_e, args, 1)
       }
     };
-  }
 
-  defineGrid() {
-    const columnDefinitions = this.getData();
-    const gridOptions = this.getGridOptions();
+    // grid 2 options, same as grid 1 + extras
+    const gridOptions2 = {
+      ...gridOptions1,
+      enableHeaderMenu: true,
+      enableFiltering: true,
+      // frozenColumn: 2,
+      // frozenRow: 2,
+      headerButton: {
+        onCommand: (_e, args) => this.handleOnCommand(_e, args, 2)
+      }
+    };
 
-    this.setState((state:any, props:any)=>{
+    const columnDefinitions1 = this.createColumnDefinitions(1);
+    const columnDefinitions2 = this.createColumnDefinitions(2);
+
+    this.setState((state: any) => {
       return {
         ...state,
-        gridOptions,
-        columnDefinitions
+        gridOptions1,
+        gridOptions2,
+        columnDefinitions1,
+        columnDefinitions2,
+        dataset1: this.loadData(200, columnDefinitions1),
+        dataset2: this.loadData(200, columnDefinitions2),
       };
     });
   }
 
-  getData() {
+  handleOnCommand(_e: Event, args: any, gridNo: 1 | 2) {
+    const column = args.column;
+    const button = args.button;
+    const command = args.command;
+
+    if (command === 'toggle-highlight') {
+      if (button.cssClass === 'fa fa-circle red') {
+        if (gridNo === 1) {
+          delete columns1WithHighlightingById[column.id];
+        } else {
+          delete columns2WithHighlightingById[column.id];
+        }
+        button.cssClass = 'fa fa-circle-o red faded';
+        button.tooltip = 'Highlight negative numbers.';
+      } else {
+        if (gridNo === 1) {
+          columns1WithHighlightingById[column.id] = true;
+        } else {
+          columns2WithHighlightingById[column.id] = true;
+        }
+        button.cssClass = 'fa fa-circle red';
+        button.tooltip = 'Remove highlight.';
+      }
+      if (gridNo === 1) {
+        this.reactGrid1.slickGrid.invalidate();
+      } else {
+        this.reactGrid2.slickGrid.invalidate();
+      }
+    }
+  }
+
+  createColumnDefinitions(gridNo: number) {
     // Set up some test columns.
     const columnDefinitions: any[] = [];
+
     for (let i = 0; i < 10; i++) {
       columnDefinitions.push({
         id: i,
         name: 'Column ' + String.fromCharCode('A'.charCodeAt(0) + i),
         field: i + '',
         width: i === 0 ? 70 : 100, // have the 2 first columns wider
+        filterable: true,
         sortable: true,
-        formatter: highlightingFormatter,
+        formatter: (_row, _cell, value, columnDef) => {
+          if (gridNo === 1 && columns1WithHighlightingById[columnDef.id] && value < 0) {
+            return `<div style="color:red; font-weight:bold;">${value}</div>`;
+          } else if (gridNo === 2 && columns2WithHighlightingById[columnDef.id] && value < 0) {
+            return `<div style="color:red; font-weight:bold;">${value}</div>`;
+          }
+          return value;
+        },
         header: {
           buttons: [
             {
@@ -180,6 +231,11 @@ export default class Example7 extends React.Component<Props, State> {
       ]
     };
 
+    // when floating to left, you might want to inverse the icon orders
+    if (gridNo === 2) {
+      columnDefinitions[0].header?.buttons?.reverse();
+    }
+
     // Set a button on the second column to demonstrate hover.
     columnDefinitions[1].name = 'Hover me!';
     columnDefinitions[1].header = {
@@ -195,28 +251,25 @@ export default class Example7 extends React.Component<Props, State> {
       ]
     };
 
-    // mock a dataset
-    const mockDataset: any[] = [];
-    for (let i = 0; i < 100; i++) {
-      const d = (mockDataset[i] = {});
-      (d as any)['id'] = i;
-      for (let j = 0; j < columnDefinitions.length; j++) {
-        (d as any)[j] = Math.round(Math.random() * 10) - 5;
-      }
-    }
-
-    this.setState((state:any, props:any)=>{
-      return {
-        ...state,
-        dataset: mockDataset
-      };
-    });
-
     return columnDefinitions;
   }
 
+  loadData(count: number, columnDefinitions: Column[]) {
+    // mock a dataset
+    const mockDataset: any[] = [];
+
+    for (let i = 0; i < count; i++) {
+      const d: any = (mockDataset[i] = {});
+      d['id'] = i;
+      for (let j = 0; j < columnDefinitions.length; j++) {
+        d[j] = Math.round(Math.random() * 10) - 5;
+      }
+    }
+    return mockDataset;
+  }
+
   render() {
-    return !this.state.gridOptions ? '' : (
+    return !this.state.gridOptions2 ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
@@ -230,11 +283,22 @@ export default class Example7 extends React.Component<Props, State> {
         </h2>
         <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
 
-        <ReactSlickgridComponent gridId="grid7"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+        <h5>Grid 1</h5>
+        <ReactSlickgridComponent gridId="grid7-1"
+          columnDefinitions={this.state.columnDefinitions1}
+          gridOptions={this.state.gridOptions1}
+          dataset={this.state.dataset1}
+          onReactGridCreated={$event => this.reactGrid1Ready($event.detail)}
+        />
+
+        <br />
+
+        <h5>Grid 2 - <span className="subtitle">with both Header Buttons & Menus</span></h5>
+        <ReactSlickgridComponent gridId="grid7-2"
+          columnDefinitions={this.state.columnDefinitions2}
+          gridOptions={this.state.gridOptions2}
+          dataset={this.state.dataset2}
+          onReactGridCreated={$event => this.reactGrid2Ready($event.detail)}
         />
       </div>
     );

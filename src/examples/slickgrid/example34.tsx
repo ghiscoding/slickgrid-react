@@ -390,8 +390,8 @@ export default class Example34 extends React.Component<Props, State> {
           <div className="row mb-4 simulation-form">
             <div className="col-sm-12 d-flex align-items-center">
               <div className="range">
-                <label htmlFor="refreshRateSlider" className="form-label me-1">Changes Rate(ms)</label>
-                <input type="range" className="form-range" id="refreshRateSlider" min="0" max="250" defaultValue={this.state.refreshRate}
+                <label htmlFor="refreshRateRange" className="form-label me-1">Changes Rate(ms)</label>
+                <input type="range" className="form-range" id="refreshRateRange" min="0" max="250" value={this.state.refreshRate}
                   onInput={($event) => this.handleRefreshRateChange($event.target as HTMLInputElement)} />
                 <span className="refresh-rate">
                   <input type="number" id="refreshRateInput" defaultValue={this.state.refreshRate} onInput={($event) => this.handleRefreshRateChange($event.target as HTMLInputElement)} />

@@ -15,6 +15,7 @@ import { App } from './examples/slickgrid/App';
 import localeEn from './assets/locales/en/translation.json';
 import localeFr from './assets/locales/fr/translation.json';
 import './styles.scss';
+import './slickgrid.scss';
 
 i18n
     .use(Backend)
@@ -41,3 +42,7 @@ i18n
 const mainContainer = document.getElementById('main');
 const root = createRoot(mainContainer as HTMLElement);
 root.render(<App />);
+
+// load necessary Flatpickr Locale(s), but make sure it's imported AFTER loading Slickgrid-React plugin
+// delaying the import will work for our use case
+setTimeout(() => import('flatpickr/dist/l10n/fr'));

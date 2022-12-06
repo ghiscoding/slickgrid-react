@@ -76,11 +76,11 @@ export default class Example5 extends React.Component<Props,State> {
       isSelectEnabled: false,
       isExpandEnabled: false,
       metrics: {} as Metrics,
-      status: {class:'', text:''},
+      status: { class: '', text: '' },
       odataVersion: 2,
       odataQuery:'',
-      processing:false,
-      isPageErrorTest:false
+      processing: false,
+      isPageErrorTest: false
     };
   }
 
@@ -211,9 +211,9 @@ export default class Example5 extends React.Component<Props,State> {
 
     // once pagination totalItems is filled, we can update the dataset
     this.setState((state: State) => ({
-        ...state,
-        paginationOptions: { ...state.gridOptions!.pagination, totalItems: totalItemCount } as Pagination,
-        dataset: state.odataVersion === 4 ? data.value : data.d.results,
+      ...state,
+      paginationOptions: { ...state.gridOptions!.pagination, totalItems: totalItemCount } as Pagination,
+      dataset: state.odataVersion === 4 ? data.value : data.d.results,
       odataQuery: data['query'],
       metrics: { ...state.metrics, totalItemCount }
     }));
@@ -263,12 +263,12 @@ export default class Example5 extends React.Component<Props,State> {
         if (param.includes('$filter=')) {
           const filterBy = param.substring('$filter='.length).replace('%20', ' ');
           if (filterBy.includes('contains')) {
-            const filterMatch = filterBy.match(/substringof\('(.*?)',\s([a-zA-Z\/]+)/);
+            const filterMatch = filterBy.match(/contains\(([a-zA-Z\/]+),\s?'(.*?)'/);
             const fieldName = filterMatch![1].trim();
             (columnFilters as any)[fieldName] = { type: 'substring', term: filterMatch![2].trim() };
           }
           if (filterBy.includes('substringof')) {
-            const filterMatch = filterBy.match(/substringof\('(.*?)',([a-zA-Z ]*)/);
+            const filterMatch = filterBy.match(/substringof\('(.*?)',\s([a-zA-Z\/]+)/);
             const fieldName = filterMatch![2].trim();
             (columnFilters as any)[fieldName] = { type: 'substring', term: filterMatch![1].trim() };
           }
@@ -396,6 +396,7 @@ export default class Example5 extends React.Component<Props,State> {
               }
             }
 
+            // console.log('Backend Result', backendResult);
             resolve(backendResult);
           }, 150);
         });

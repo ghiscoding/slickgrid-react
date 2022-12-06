@@ -194,7 +194,7 @@ export default class Example18 extends React.Component<Props, State> {
         }
       },
       {
-        id: 'effortDriven', name: 'Effort Driven', field: 'effortDriven',
+        id: 'effortDriven', name: 'Effort-Driven', field: 'effortDriven',
         width: 80, minWidth: 20, maxWidth: 100,
         cssClass: 'cell-effort-driven',
         sortable: true,
@@ -224,6 +224,7 @@ export default class Example18 extends React.Component<Props, State> {
       createPreHeaderPanel: true,
       showPreHeaderPanel: true,
       preHeaderPanelHeight: 40,
+      showCustomFooter: true,
       enableFiltering: true,
       // you could debounce/throttle the input text filter if you have lots of data
       // filterTypingDebounce: 250,
@@ -535,12 +536,12 @@ export default class Example18 extends React.Component<Props, State> {
                   <label htmlFor="field1" className="col-sm-3 mb-2">Group by field(s)</label>
                   {
                     this.state.selectedGroupingFields.map((groupField, index) =>
-                      <div className="form-group col-md-3" key={index}>
+                      <div className="form-group col-md-3 grouping-selects" key={index}>
                         <select className={`form-select select-group-${index}`} data-test="search-column-list" onChange={($event) => this.changeSelectedGroupByField($event, index)}>
                           <option value="''">...</option>
                           {
                             this.state.columnDefinitions.map((column) =>
-                              <option value={column.id} key={column.id}>{column.id}</option>
+                              <option value={column.id} key={column.id}>{column.name}</option>
                             )
                           }
                         </select>

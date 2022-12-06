@@ -1,4 +1,4 @@
-import { ReactGridInstance, Column, ExtensionName, Filters, Formatters, GridOption, ReactSlickgridComponent } from '../../slickgrid-react';
+import { ReactGridInstance, Column, ExtensionName, Filters, Formatters, GridOption, ReactSlickgridComponent, OnEventArgs } from '../../slickgrid-react';
 import React from 'react';
 import BaseSlickGridState from './state-slick-grid-base';
 
@@ -49,11 +49,7 @@ export default class Example16 extends React.Component<Props, State> {
     document.title = this.title;
 
     // populate the dataset once the grid is ready
-    this.setState((state: State, props: Props) => {
-      return {
-        dataset: this.getData(),
-      };
-    });
+    this.setState((state: State) => ({ dataset: this.getData() }));
   }
 
   /* Define grid Options and Columns */
@@ -251,6 +247,47 @@ export default class Example16 extends React.Component<Props, State> {
     this.reactGrid.sortService.disableSortFunctionality(true);
   }
 
+  addEditDeleteColumns() {
+    if (this.state.columnDefinitions[0].id !== 'change-symbol') {
+      const newCols = [
+        {
+          id: 'change-symbol',
+          field: 'id',
+          excludeFromColumnPicker: true,
+          excludeFromGridMenu: true,
+          excludeFromHeaderMenu: true,
+          formatter: Formatters.editIcon,
+          minWidth: 30,
+          maxWidth: 30,
+          onCellClick: (clickEvent: Event, args: OnEventArgs) => {
+            alert(`Technically we should Edit "Task ${args.dataContext.id}"`);
+          }
+        }, {
+          id: 'delete-symbol',
+          field: 'id',
+          excludeFromColumnPicker: true,
+          excludeFromGridMenu: true,
+          excludeFromHeaderMenu: true,
+          formatter: Formatters.deleteIcon,
+          minWidth: 30,
+          maxWidth: 30,
+          onCellClick: (e: Event, args: OnEventArgs) => {
+            if (confirm('Are you sure?')) {
+              this.reactGrid.gridService.deleteItemById(args.dataContext.id);
+            }
+          }
+        }
+      ];
+
+      // NOTE if you use an Extensions (Checkbox Selector, Row Detail, ...) that modifies the column definitions in any way
+      // you MUST use "getAllColumnDefinitions()" from the GridService, using this will be ALL columns including the 1st column that is created internally
+      // for example if you use the Checkbox Selector (row selection), you MUST use the code below
+      const allColumns = this.reactGrid.gridService.getAllColumnDefinitions();
+      allColumns.unshift(newCols[0], newCols[1]);
+      this.setState((state: State) => ({ ...state, columnDefinitions: [...allColumns] })); // (or use slice) reassign to column definitions for Aurelia to do dirty checking
+    }
+  }
+
   // or Toggle Filtering/Sorting functionalities
   // ---------------------------------------------
 
@@ -301,6 +338,10 @@ export default class Example16 extends React.Component<Props, State> {
             <button className="btn btn-outline-secondary btn-sm" data-test="toggle-sorting-btn" onClick={() => this.toggleSorting()}>
               <i className="fa fa-random me-1"></i>
               Toggle Sorting
+            </button>
+            <button className="btn btn-outline-secondary btn-sm" data-test="add-crud-columns-btn" onClick={() => this.addEditDeleteColumns()}>
+              <i className="fa fa-plus me-1"></i>
+              Add Edit/Delete Columns
             </button>
           </div>
         </div>

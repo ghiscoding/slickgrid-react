@@ -233,7 +233,7 @@ export default class Example21 extends React.Component<Props, State> {
               <option value="''">...</option>
               {
                 this.state.columnDefinitions.map((column) =>
-                  <option value={column.id} key={column.id}>{column.id}</option>
+                  <option value={column.id} key={column.id}>{column.name}</option>
                 )
               }
             </select>
@@ -255,6 +255,7 @@ export default class Example21 extends React.Component<Props, State> {
                 className="form-control"
                 placeholder="search value"
                 data-test="search-value-input"
+                value={this.state.searchValue}
                 onInput={($event) => this.searchValueChanged($event)} />
               <button className="btn btn-outline-secondary d-flex align-items-center pl-2 pr-2" data-test="clear-search-value"
                 onClick={() => this.clearGridSearchInput()}>

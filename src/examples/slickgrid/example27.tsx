@@ -388,7 +388,7 @@ export default class Example27 extends React.Component<Props, State> {
               25k rows
             </button>
             <button onClick={() => this.dynamicallyChangeFilter()} className="btn btn-outline-secondary btn-sm"
-              data-test="change-filter-dynamically me-1">
+              data-test="change-filter-dynamically">
               <span className="fa fa-filter me-1"></span>
               <span>Dynamically Change Filter (% complete &lt; 40)</span>
             </button>
