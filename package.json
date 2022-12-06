@@ -64,7 +64,8 @@
     "update-npm-versions": "npm-check --skip-unused --update-all",
     "//debug": "npm run build && copyfiles dist/**/* c:/temp/slickgrid-react-test/node_modules/slickgrid-react",
     "preview:release": "release-it --dry-run",
-    "release": "release-it"
+    "release": "release-it",
+    "serve:demo": "serve ./docs -l 8080"
   },
   "browserslist": [
     "last 2 version",
@@ -169,6 +170,7 @@
     "rxjs": "^7.5.7",
     "sass": "^1.56.1",
     "sass-loader": "^13.2.0",
+    "serve": "^14.1.2",
     "style-loader": "3.3.1",
     "ts-jest": "^29.0.3",
     "ts-loader": "^9.4.2",
