@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('Example 34 - Real-Time Trading Platform', { retries: 0 }, () => {
+describe('Example 34 - Real-Time Trading Platform', { retries: 1 }, () => {
   const titles = ['Currency', 'Symbol', 'Market', 'Company', 'Type', 'Change', 'Price', 'Quantity', 'Amount', 'Price History', 'Execution Timestamp'];
   const GRID_ROW_HEIGHT = 35;
 
