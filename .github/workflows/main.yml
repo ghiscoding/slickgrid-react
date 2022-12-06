@@ -57,8 +57,7 @@ jobs:
           # working-directory: packages/dnd
           start: yarn serve:demo
           wait-on: 'http://localhost:8080'
-          working-directory: test/cypress
-          config-file: cypress.config.js
+          config-file: test/cypress.config.ts
           browser: chrome
           record: true
           headless: true
