@@ -205,7 +205,7 @@ describe('Example 28 - Tree Data (from a Hierarchical Dataset)', { retries: 1 },
     cy.wait(10);
 
     defaultSortDescListWithExtraSongs.forEach((_colName, rowIdx) => {
-      if (rowIdx < defaultSortDescListWithExtraSongs.length - 1) {
+      if (rowIdx < defaultSortDescListWithExtraSongs.length - 3) {
         cy.get(`#slickGridContainer-grid28 [style="top:${GRID_ROW_HEIGHT * rowIdx}px"] > .slick-cell:nth(0)`)
           .should('contain', defaultSortDescListWithExtraSongs[rowIdx]);
       }
