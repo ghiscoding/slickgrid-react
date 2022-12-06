@@ -106,6 +106,7 @@
     "web-vitals": "^3.1.0"
   },
   "devDependencies": {
+    "@4tw/cypress-drag-drop": "^2.2.2",
     "@faker-js/faker": "^7.6.0",
     "@fnando/sparkline": "^0.3.10",
     "@popperjs/core": "^2.11.6",
