@@ -1,4 +1,4 @@
-# slickgrid-react
+# Slickgrid-React
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
@@ -19,11 +19,11 @@ One of the best javascript datagrid [SlickGrid](https://github.com/mleibman/Slic
 [slickgrid-react on NPM](https://www.npmjs.com/package/slickgrid-react)
 
 ### Demo page
-`slickgrid-react` works with all `Bootstrap` versions, you can see a demo of each one below. There are also 2 new styling Themes, Material & Salesforce which are also available. You can also use different SVG icons, you may want to look at the [Wiki - SVG Icons](https://github.com/ghiscoding/slickgrid-react/wiki/SVG-Icons)
+`Slickgrid-React` works with all `Bootstrap` versions, you can see a demo of each one below. There are also 2 new styling Themes, Material & Salesforce which are also available. You can also use different SVG icons, you may want to look at the [Wiki - SVG Icons](https://github.com/ghiscoding/slickgrid-react/wiki/SVG-Icons)
 - [Bootstrap 5 demo](https://ghiscoding.github.io/slickgrid-react)
 
 ### Like it? :star: it
-You like to use **slickgrid-react**? Be sure to upvote :star:, maybe support me with cafeine :coffee: and feel free to contribute. 👷👷‍♀️ 
+You like to use **Slickgrid-React**? Be sure to upvote :star:, maybe support me with cafeine :coffee: and feel free to contribute. 👷👷‍♀️ 
 
 <a href='https://ko-fi.com/ghiscoding' target='_blank'><img height='32' style='border:0px;height:32px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 
@@ -31,7 +31,7 @@ You like to use **slickgrid-react**? Be sure to upvote :star:, maybe support me 
 Check out the [Releases](https://github.com/ghiscoding/slickgrid-react/releases) section for all latest News & Releases.
 
 ### Fully Tested with [Jest](https://jestjs.io/) (Unit Tests) - [Cypress](https://www.cypress.io/) (E2E Tests)
-slickgrid-react and Slickgrid-Universal both have **100%** Unit Test Coverage, we are talking about +15,000 lines of code (+3,750 unit tests) that are fully tested with [Jest](https://jestjs.io/). On the UI side, all slickgrid-react Examples are tested with [Cypress](https://www.cypress.io/), there are over +500 Cypress E2E tests.
+Slickgrid-React and Slickgrid-Universal both have **100%** Unit Test Coverage, we are talking about +15,000 lines of code (+3,750 unit tests) that are fully tested with [Jest](https://jestjs.io/). On the UI side, all Slickgrid-React Examples are tested with [Cypress](https://www.cypress.io/), there are over +500 Cypress E2E tests.
 
 ## Installation
 Refer to the **[Wiki - HOWTO Step by Step](https://github.com/ghiscoding/slickgrid-react/wiki/HOWTO---Step-by-Step)**. Please don't open any issue unless you have followed these steps (from the Wiki), and if any of the steps are incorrect or confusing, then please let me know.
@@ -45,7 +45,7 @@ The Wiki is where all the documentation and instructions will go, so please cons
 You can see some screenshots below and the instructions down below and if that is not enough for you to decide, head over to the [Wiki - Main Features](https://github.com/ghiscoding/slickgrid-react/wiki).
 
 ## Missing features
-What if `slickgrid-react` is missing feature(s) compare to the original core library [6pac/SlickGrid](https://github.com/6pac/SlickGrid/)?
+What if `Slickgrid-React` is missing feature(s) compare to the original core library [6pac/SlickGrid](https://github.com/6pac/SlickGrid/)?
 
 Fear not, and just simply reference the `SlickGrid` and `DataView` objects, just like in the core lib, those are exposed through Event Emitters. For more info continue reading on [Wiki - SlickGrid & DataView objects](/ghiscoding/slickgrid-react/wiki/SlickGrid-&-DataView-Objects) and [Wiki - Grid & DataView Events](https://github.com/ghiscoding/slickgrid-react/wiki/Grid-&-DataView-Events)
 
