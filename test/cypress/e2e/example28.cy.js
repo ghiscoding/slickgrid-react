@@ -156,8 +156,22 @@ describe('Example 28 - Tree Data (from a Hierarchical Dataset)', { retries: 1 },
   });
 
   it('should click on "Files" column to sort descending', () => {
-    cy.get('.slick-header-columns .slick-header-column:nth(0)')
-      .click({ force: true });
+    cy.get('#slickGridContainer-grid28')
+      .find('.slick-header-column')
+      .first()
+      .trigger('mouseover')
+      .children('.slick-header-menu-button')
+      .should('be.hidden')
+      .invoke('show')
+      .click();
+
+
+    cy.get('.slick-header-menu')
+      .should('be.visible')
+      .children('.slick-menu-item:nth-of-type(4)')
+      .children('.slick-menu-content')
+      .should('contain', 'Sort Descending')
+      .click();
 
     cy.wait(5);
 

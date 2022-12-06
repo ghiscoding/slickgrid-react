@@ -100,7 +100,7 @@ describe('Example 23 - Range Filters', { retries: 1 }, () => {
     cy.get('#grid23')
       .find('.slick-row')
       .each(($row, idx) => {
-        if (idx > 8) {
+        if (idx > 6) {
           return;
         }
         cy.wrap($row)
