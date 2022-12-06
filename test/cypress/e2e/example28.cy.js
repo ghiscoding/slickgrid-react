@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 describe('Example 28 - Tree Data (from a Hierarchical Dataset)', { retries: 1 }, () => {
-  const GRID_ROW_HEIGHT = 35;
+  const GRID_ROW_HEIGHT = 33;
   const titles = ['Files', 'Date Modified', 'Description', 'Size'];
   // const defaultSortAscList = ['bucket-list.txt', 'documents', 'misc', 'todo.txt', 'pdf', 'internet-bill.pdf', 'map.pdf', 'map2.pdf', 'phone-bill.pdf', 'txt', 'todo.txt', 'xls', 'compilation.xls', 'music', 'mp3', 'pop', 'song.mp3', 'theme.mp3', 'rock', 'soft.mp3', 'something.txt'];
   // const defaultSortDescList = ['something.txt', 'music', 'mp3', 'rock', 'soft.mp3', 'pop', 'theme.mp3', 'song.mp3', 'documents', 'xls', 'compilation.xls', 'txt', 'todo.txt', 'pdf', 'phone-bill.pdf', 'map2.pdf', 'map.pdf', 'internet-bill.pdf', 'misc', 'todo.txt', 'bucket-list.txt'];

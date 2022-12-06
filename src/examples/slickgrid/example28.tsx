@@ -126,6 +126,8 @@ export default class Example28 extends React.Component<Props, State> {
         // }
       },
       // change header/cell row height for salesforce theme
+      headerRowHeight: 35,
+      rowHeight: 33,
       showCustomFooter: true,
 
       // we can also preset collapsed items via Grid Presets (parentId: 4 => is the "pdf" folder)
