@@ -16,7 +16,7 @@ export default defineConfig({
     openMode: 0,
   },
   e2e: {
-    baseUrl: 'http://localhost:8888/#',
+    baseUrl: 'http://localhost:8080/#',
     supportFile: 'test/cypress/support/index.js',
     specPattern: 'test/cypress/e2e/**/*.{js,ts}',
     excludeSpecPattern: process.env.CI ? ['**/node_modules/**', '**/000-*.cy.{js,ts}'] : ['**/node_modules/**'],
