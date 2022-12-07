@@ -107,7 +107,7 @@ describe('Example 23 - Range Filters', { retries: 1 }, () => {
           .children('.slick-cell:nth(2):visible')
           .each(($cell) => {
             const value = parseInt($cell.text().trim(), 10);
-            if (!isNaN(value)) {
+            if (!isNaN(value) && value !== '') {
               expect(value >= (newLowest - allowedBuffer)).to.eq(true);
               expect(value <= (newHighest + allowedBuffer)).to.eq(true);
             }
