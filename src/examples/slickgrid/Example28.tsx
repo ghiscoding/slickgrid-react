@@ -27,6 +27,10 @@ interface State extends BaseSlickGridState {
   isAutoApproveParentItemWhenTreeColumnIsValid: boolean;
 }
 
+function randomBetween(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 export default class Example28 extends React.Component<Props, State> {
   title = 'Example 28: Tree Data <small>(from a Hierarchical Dataset)</small>';
   subTitle = `<ul>
@@ -234,7 +238,7 @@ export default class Example28 extends React.Component<Props, State> {
         id: newId,
         file: `pop-${newId}.mp3`,
         dateModified: new Date(),
-        size: Math.round(Math.random() * 100),
+        size: randomBetween(50, 100),
       });
 
       // overwrite hierarchical dataset which will also trigger a grid sort and rendering
@@ -319,7 +323,7 @@ export default class Example28 extends React.Component<Props, State> {
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <div className="row">
           <div className="col-md-7">
