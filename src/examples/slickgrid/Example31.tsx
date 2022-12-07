@@ -497,7 +497,7 @@ export default class Example31 extends React.Component<Props, State> {
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <div className="row">
           <div className="col-md-12" aria-label="Basic Editing Commands">
@@ -527,10 +527,10 @@ export default class Example31 extends React.Component<Props, State> {
         <div>
           <span>
             <label>Programmatically go to first/last page:</label>
-            <button className="btn btn-outline-secondary btn-xs" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
+            <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
               <i className="fa fa-caret-left fa-lg"></i>
             </button>
-            <button className="btn btn-outline-secondary btn-xs" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
+            <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
               <i className="fa fa-caret-right fa-lg"></i>
             </button>
           </span>
@@ -544,7 +544,7 @@ export default class Example31 extends React.Component<Props, State> {
               </label>
               <label className="radio-inline control-label" htmlFor="radio4">
                 <input type="radio" name="inlineRadioOptions" data-test="version4" id="radio4" value="4"
-                  onChange={() => this.setOdataVersion(4)} /> 4 
+                  onChange={() => this.setOdataVersion(4)} /> 4
               </label>
             </span>
             <label className="checkbox-inline control-label" htmlFor="enableCount" style={{ marginLeft: '20px' }}>

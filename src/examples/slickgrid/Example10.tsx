@@ -300,16 +300,16 @@ export default class Example10 extends React.Component<Props, State> {
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <div className="row">
           <div className="col-sm-4" style={{ maxWidth: '170px' }}>
             Pagination
-            <button className="btn btn-outline-secondary btn-xs px-1" data-test="goto-first-page"
+            <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-first-page"
               onClick={() => this.goToGrid1FirstPage()}>
               <i className="fa fa-caret-left fa-lg"></i>
             </button>
-            <button className="btn btn-outline-secondary btn-xs px-1" data-test="goto-last-page" onClick={() => this.goToGrid1LastPage()}>
+            <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-last-page" onClick={() => this.goToGrid1LastPage()}>
               <i className="fa fa-caret-right fa-lg"></i>
             </button>
           </div>
@@ -344,11 +344,11 @@ export default class Example10 extends React.Component<Props, State> {
                 data-test="toggle-pagination-grid2" />
             </label>
             {this.isGrid2WithPagination && <span style={{ marginLeft: '5px' }}>
-              <button className="btn btn-outline-secondary btn-xs px-1" data-test="goto-first-page"
+              <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-first-page"
                 onClick={() => this.goToGrid2FirstPage()}>
                 <i className="fa fa-caret-left fa-lg"></i>
               </button>
-              <button className="btn btn-outline-secondary btn-xs px-1" data-test="goto-last-page"
+              <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-last-page"
                 onClick={() => this.goToGrid2LastPage()}>
                 <i className="fa fa-caret-right fa-lg"></i>
               </button>

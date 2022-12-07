@@ -408,15 +408,15 @@ export default class Example34 extends React.Component<Props, State> {
                 </button>
               </span>
               <span className="mx-1">
-                <label htmlFor="change-per-cycle-input">Changes p/Cycle</label>
+                <label htmlFor="change-per-cycle-input" className="me-1">Changes p/Cycle</label>
                 <input type="number" id="change-per-cycle-input" defaultValue={this.state.minChangePerCycle} max={this.state.maxChangePerCycle}
                   onInput={($event) => this.handleMinChangePerCycle(+($event.target as HTMLInputElement).value)} />
-                to
+                &nbsp;to&nbsp;
                 <input type="number" min={this.state.minChangePerCycle} defaultValue={this.state.maxChangePerCycle}
                   onInput={($event) => this.handleMaxChangePerCycle(+($event.target as HTMLInputElement).value)} />
               </span>
               <span className="ms-2">
-                <label htmlFor="highlight-input">Highlight Duration(ms)</label>
+                <label htmlFor="highlight-input" className="me-1">Highlight Duration(ms)</label>
                 <input type="number" id="highlight-input" data-test="highlight-input" defaultValue={this.state.highlightDuration}
                   onInput={($event) => this.handleHighlightDuration(+($event.target as HTMLInputElement).value)} />
               </span>

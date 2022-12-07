@@ -22,7 +22,7 @@ const sampleDataRoot = 'assets/data';
 
 interface Status { text: string, class: string }
 
-interface State extends BaseSlickGridState{
+interface State extends BaseSlickGridState {
   paginationOptions?: Pagination;
   metrics: Metrics;
   isCountEnabled: boolean;
@@ -39,7 +39,7 @@ interface State extends BaseSlickGridState{
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props { }
 
-export default class Example5 extends React.Component<Props,State> {
+export default class Example5 extends React.Component<Props, State> {
   title = 'Example 5: Grid with Backend OData Service';
   subTitle = `
     Use it when you need to support Pagination with a OData endpoint (for simple JSON, use a regular grid)<br/>
@@ -78,7 +78,7 @@ export default class Example5 extends React.Component<Props,State> {
       metrics: {} as Metrics,
       status: { class: '', text: '' },
       odataVersion: 2,
-      odataQuery:'',
+      odataQuery: '',
       processing: false,
       isPageErrorTest: false
     };
@@ -180,9 +180,9 @@ export default class Example5 extends React.Component<Props,State> {
     const gridOptions = this.getGridDefinition();
 
     this.setState((state: State) => ({
-        ...state,
-        columnDefinitions,
-        gridOptions,
+      ...state,
+      columnDefinitions,
+      gridOptions,
     }));
   }
 
@@ -510,7 +510,7 @@ export default class Example5 extends React.Component<Props,State> {
         </h2>
         <div className="row">
           <div className="col-sm-9">
-            <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+            <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
           </div>
           <div className="col-sm-3">
             {this.state.errorStatus && <div className="alert alert-danger" data-test="error-status">
@@ -559,7 +559,7 @@ export default class Example5 extends React.Component<Props,State> {
               </label>
               <label className="radio-inline control-label" htmlFor="radio4">
                 <input type="radio" name="inlineRadioOptions" data-test="version4" id="radio4" value="4"
-                  onChange={() => this.setOdataVersion(4)} /> 4 
+                  onChange={() => this.setOdataVersion(4)} /> 4
               </label>
             </span>
             <label className="checkbox-inline control-label" htmlFor="enableCount" style={{ marginLeft: '20px' }}>
@@ -589,10 +589,10 @@ export default class Example5 extends React.Component<Props,State> {
 
             <span className="ms-2">
               <label>Programmatically go to first/last page:</label>
-              <button className="btn btn-outline-secondary btn-xs" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
+              <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
                 <i className="fa fa-caret-left fa-lg"></i>
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
+              <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
                 <i className="fa fa-caret-right fa-lg"></i>
               </button>
             </span>
@@ -607,8 +607,8 @@ export default class Example5 extends React.Component<Props,State> {
           onReactGridCreated={$event => this.reactGridReady($event.detail)}
           onGridStateChanged={$event => this.gridStateChanged($event.detail)}
           onBeforeSort={$event => this.handleOnBeforeSort($event.detail.eventData)}
-          onBeforeSearchChange= {$event => this.handleOnBeforeSearchChange($event.detail.eventData)}
-          onBeforePaginationChange= {$event => this.handleOnBeforePaginationChange($event.detail.eventData)}
+          onBeforeSearchChange={$event => this.handleOnBeforeSearchChange($event.detail.eventData)}
+          onBeforePaginationChange={$event => this.handleOnBeforePaginationChange($event.detail.eventData)}
         />
       </div>
     );
