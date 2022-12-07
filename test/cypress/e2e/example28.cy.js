@@ -294,7 +294,7 @@ describe('Example 28 - Tree Data (from a Hierarchical Dataset)', { retries: 1 },
   it('should use same filter "music" and add extra filter of "size >= 50" and expect 1+ songs (>=6 rows) to show up in the grid when "Exclude Children when Filtering Tree" is unchecked and "Skip Other Criteria..." is checked', () => {
     cy.get('.search-filter.filter-size')
       .find('input')
-      .type('50');
+      .type('{backspace}{backspace}50');
 
     cy.get('.search-filter.filter-size')
       .find('.input-group-addon.operator select')
