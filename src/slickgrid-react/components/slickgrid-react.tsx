@@ -663,9 +663,6 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
       (this.sharedService as any)[prop] = null;
     }
     this._dataset = null;
-    if (this.props.datasetHierarchical) {
-      this.props.datasetHierarchical = null;
-    }
     this._columnDefinitions = [];
   }
 
