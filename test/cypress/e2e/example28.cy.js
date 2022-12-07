@@ -174,7 +174,7 @@ describe('Example 28 - Tree Data (from a Hierarchical Dataset)', { retries: 1 },
     cy.wait(5);
 
     defaultSortDescListWithExtraSongs.forEach((_colName, rowIdx) => {
-      if (rowIdx < defaultSortDescListWithExtraSongs.length - 3) {
+      if (rowIdx < defaultSortDescListWithExtraSongs.length - 1) {
         cy.get(`#slickGridContainer-grid28 [style="top:${GRID_ROW_HEIGHT * rowIdx}px"] > .slick-cell:nth(0)`).should('contain', defaultSortDescListWithExtraSongs[rowIdx]);
       }
     });
@@ -205,7 +205,7 @@ describe('Example 28 - Tree Data (from a Hierarchical Dataset)', { retries: 1 },
     cy.wait(10);
 
     defaultSortDescListWithExtraSongs.forEach((_colName, rowIdx) => {
-      if (rowIdx < defaultSortDescListWithExtraSongs.length - 3) {
+      if (rowIdx < defaultSortDescListWithExtraSongs.length - 1) {
         cy.get(`#slickGridContainer-grid28 [style="top:${GRID_ROW_HEIGHT * rowIdx}px"] > .slick-cell:nth(0)`)
           .should('contain', defaultSortDescListWithExtraSongs[rowIdx]);
       }
@@ -303,7 +303,7 @@ describe('Example 28 - Tree Data (from a Hierarchical Dataset)', { retries: 1 },
     cy.wait(50)
       .get('.right-footer .item-count')
       .then($row => {
-        expect(+$row.text()).to.be.at.least(4);
+        expect(+$row.text()).to.be.at.least(6);
       });
 
     const expectedFiles = ['music', 'mp3', 'pop', 'pop-125.mp3', 'rock', 'soft.mp3'];
