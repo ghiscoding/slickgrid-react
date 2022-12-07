@@ -10,10 +10,13 @@
 [![codecov](https://codecov.io/gh/ghiscoding/slickgrid-react/branch/master/graph/badge.svg)](https://codecov.io/gh/ghiscoding/slickgrid-react) -->
 
 ## Upcoming Release (stay tuned) 📣
-An offical supported release 2.x is about to land very, very soon (in coming days), checkout the [Releases](https://github.com/ghiscoding/slickgrid-react/releases) and [Discussions](https://github.com/ghiscoding/slickgrid-react/discussions) sections for an update on the subject. You can already see and test the new [Live Demo](https://ghiscoding.github.io/slickgrid-react/) of the upcoming version, so go and check it out. 
+An offical supported release 2.x is about to land very, very soon (in coming days), checkout the [Releases](https://github.com/ghiscoding/slickgrid-react/releases) and [Discussions](https://github.com/ghiscoding/slickgrid-react/discussions) sections for an update on the subject. You can already see and try out the new [Live Demo](https://ghiscoding.github.io/slickgrid-react/) of the upcoming version.
 
 ### Brief introduction
-One of the best javascript datagrid [SlickGrid](https://github.com/mleibman/SlickGrid) which was originally developed by @mleibman is now available to React. I have used a few datagrids and SlickGrid beats most of them in terms of functionalities and performance (it can easily deal with even a million row). We will be using the [6pac/SlickGrid](https://github.com/6pac/SlickGrid/) fork, it is the most active fork since the original author @mleibman stopped working on his original repo. Also worth knowing that I have contributed a lot to the 6pac/SlickGrid fork for the benefit of slickgrid-react... also a reminder, this is a wrapper of a jQuery lib (SlickGrid) and a big portion of the lib (like Editors, Filters and others) are written in jQuery/JavaScript, so just keep that in mind and it also mean that jQuery is a dependency.
+One of the best javascript datagrid [SlickGrid](https://github.com/mleibman/SlickGrid) which was originally developed by @mleibman is now available to React. I have used a few datagrids and SlickGrid beats most of them in terms of functionalities and performance (it can easily deal with even a million row). We will be using the [6pac/SlickGrid](https://github.com/6pac/SlickGrid/) fork, this is the most active fork since the original @mleibman fork was closed some time ago by his author for personal reasons. Also worth to know, that I also contributed a lot to the 6pac/SlickGrid fork for the benefit of Slickgrid-React.
+
+## Installation
+Refer to the **[Wiki - HOWTO Step by Step](https://github.com/ghiscoding/slickgrid-react/wiki/HOWTO--Step-by-Step)** and/or clone the [Slickgrid-React-Demos](https://github.com/ghiscoding/slickgrid-react-demos) repository. Please consult all Wikis before opening new issues, also consider asking installation and/or general questions on [Stack Overflow](https://stackoverflow.com/search?tab=newest&q=slickgrid) unless you think there's a bug with the library.
 
 ### License
 [MIT License](LICENSE)
@@ -21,12 +24,16 @@ One of the best javascript datagrid [SlickGrid](https://github.com/mleibman/Slic
 ### NPM Package
 [slickgrid-react on NPM](https://www.npmjs.com/package/slickgrid-react)
 
-### Demo page
-`Slickgrid-React` works with all `Bootstrap` versions, you can see a demo of each one below. There are also 2 new styling Themes, Material & Salesforce which are also available. You can also use different SVG icons, you may want to look at the [Wiki - SVG Icons](https://github.com/ghiscoding/slickgrid-react/wiki/SVG-Icons)
+### Live Demo page
+`Slickgrid-React` works with all `Bootstrap` versions and/or any other UI framework you wish to use (Bulma, Material Design, ...), you can see a demo of each one below. There are also 2 new styling Themes, Material & Salesforce which are also available. You can also use different SVG icons, you may want to look at the [Wiki - SVG Icons](https://github.com/ghiscoding/slickgrid-react/wiki/SVG-Icons)
 - [Bootstrap 5 demo](https://ghiscoding.github.io/slickgrid-react)
 
+#### Working Demos
+For a complete working set of working demos, you strongly suggest that you clone the [Slickgrid-React Demos](https://github.com/ghiscoding/slickgrid-react-demos) repository (instructions are provided in the demo repo). This repo provides multiple samples and it is also worth to know that these demos are updated frequently.
+
+
 ### Like it? :star: it
-You like to use **Slickgrid-React**? Be sure to upvote :star:, maybe support me with cafeine :coffee: and feel free to contribute. 👷👷‍♀️ 
+You like **Slickgrid-React**? Be sure to upvote :star:, and perhaps support me with cafeine :coffee: and feel free to contribute. 👷👷‍♀️ 
 
 <a href='https://ko-fi.com/ghiscoding' target='_blank'><img height='32' style='border:0px;height:32px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 
