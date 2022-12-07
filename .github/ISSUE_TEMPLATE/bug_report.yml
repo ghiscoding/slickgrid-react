@@ -23,15 +23,23 @@ body:
     validations:
       required: true
   - type: textarea
+    id: expectation
+    attributes:
+      label: Expectation
+      description: You can optionally tell us what is your expectation from the lib?
+      placeholder: Expectation
+    validations:
+      required: false
+  - type: textarea
     id: system-info
     attributes:
       label: Environment Info
-      description: versions number of each systems and libs (Aurelia, Slickgrid-React, TypeScript)
+      description: versions number of each systems and libs (React, Slickgrid-React, TypeScript)
       render: shell
       placeholder: |
         System
         Browsers
-        Aurelia (x.y)
+        React (x.y)
         Slickgrid-React (x.y)
         TypeScript (x.y)
     validations:
