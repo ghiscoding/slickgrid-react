@@ -63,7 +63,7 @@
     "test:jest:coverage": "npx jest --detectOpenHandles --runInBand --coverage --config test/jest.config.js",
     "update-npm-versions": "npm-check --skip-unused --update-all",
     "preview:release": "release-it --dry-run",
-    "release": "release-it",
+    "release": "release-it --only-version",
     "serve:demo": "serve ./docs -l 8080"
   },
   "browserslist": [
