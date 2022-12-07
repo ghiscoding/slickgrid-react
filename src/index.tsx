@@ -10,9 +10,8 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { initReactI18next } from 'react-i18next';
 import { HashRouter } from 'react-router-dom';
-import { SlickgridConfig } from './slickgrid-react';
 
-import App from './examples/slickgrid/app';
+import App from './examples/slickgrid/App';
 import localeEn from './assets/locales/en/translation.json';
 import localeFr from './assets/locales/fr/translation.json';
 import './styles.scss';
