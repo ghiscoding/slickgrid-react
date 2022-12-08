@@ -7,7 +7,7 @@ import {
   Formatters,
   GridOption,
   findItemInTreeStructure,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
   SlickGrid,
   TreeToggledItem,
 } from '../../slickgrid-react';
@@ -379,7 +379,7 @@ export default class Example28 extends React.Component<Props, State> {
         <br />
 
         <div id="grid-container" className="col-sm-12">
-          <ReactSlickgridComponent gridId="grid28"
+          <ReactSlickgrid gridId="grid28"
             columnDefinitions={this.state.columnDefinitions}
             gridOptions={this.state.gridOptions}
             datasetHierarchical={this.state.datasetHierarchical}

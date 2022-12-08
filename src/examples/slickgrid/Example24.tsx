@@ -14,7 +14,7 @@ import {
   Formatters,
   GridOption,
   SlickGrid,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
 } from '../../slickgrid-react';
 import BaseSlickGridState from './state-slick-grid-base';
 import './example24.scss'; // provide custom CSS/SASS styling
@@ -536,7 +536,7 @@ class Example24 extends React.Component<Props, State> {
           </div>
         </div>
 
-        <ReactSlickgridComponent gridId="grid24"
+        <ReactSlickgrid gridId="grid24"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

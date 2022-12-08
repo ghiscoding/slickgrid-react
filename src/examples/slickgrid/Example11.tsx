@@ -9,7 +9,7 @@ import {
   OnEventArgs,
   SlickDataView,
   SlickGrid,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
 } from '../../slickgrid-react';
 import React from 'react';
 import './example11.scss';
@@ -324,7 +324,7 @@ export default class Example11 extends React.Component {
           <hr />
         </div>
 
-        <ReactSlickgridComponent gridId="grid11"
+        <ReactSlickgrid gridId="grid11"
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}

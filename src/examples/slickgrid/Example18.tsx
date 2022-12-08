@@ -17,7 +17,7 @@ import {
   Grouping,
   SlickDataView,
   SlickGrid,
-  ReactSlickgridComponent
+  ReactSlickgrid
 } from '../../slickgrid-react';
 import React from 'react';
 import BaseSlickGridState from './state-slick-grid-base';
@@ -558,7 +558,7 @@ export default class Example18 extends React.Component<Props, State> {
           <hr />
         </div>
 
-        <ReactSlickgridComponent gridId="grid18"
+        <ReactSlickgrid gridId="grid18"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

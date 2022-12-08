@@ -10,7 +10,7 @@ import {
   GridStateType,
   TreeToggledItem,
   TreeToggleStateChange,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
 } from '../../slickgrid-react';
 import React from 'react';
 import './example27.scss'; // provide custom CSS/SASS styling
@@ -439,7 +439,7 @@ export default class Example27 extends React.Component<Props, State> {
         <br />
 
         <div id="grid-container" className="col-sm-12">
-          <ReactSlickgridComponent gridId="grid27"
+          <ReactSlickgrid gridId="grid27"
             columnDefinitions={this.state.columnDefinitions}
             gridOptions={this.state.gridOptions}
             dataset={this.state.dataset}

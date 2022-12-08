@@ -12,7 +12,7 @@ import {
   GridState,
   GridStateChange,
   MultipleSelectOption,
-  ReactSlickgridComponent
+  ReactSlickgrid
 } from '../../slickgrid-react';
 import BaseSlickGridState from './state-slick-grid-base';
 
@@ -298,7 +298,7 @@ class Example15 extends React.Component<Props, State> {
           {this.state.selectedLanguage + '.json'}
         </span>
 
-        <ReactSlickgridComponent gridId="grid15"
+        <ReactSlickgrid gridId="grid15"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

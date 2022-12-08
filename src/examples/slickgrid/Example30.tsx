@@ -21,7 +21,7 @@ import {
   SlickGrid,
   SlickNamespace,
   SortComparers,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
 } from '../../slickgrid-react';
 import React from 'react';
 import './example30.scss'; // provide custom CSS/SASS styling
@@ -1052,7 +1052,7 @@ export default class Example30 extends React.Component<Props, State> {
           </div>
         </div>
 
-        <ReactSlickgridComponent gridId="grid30"
+        <ReactSlickgrid gridId="grid30"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

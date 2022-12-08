@@ -1,7 +1,7 @@
 import 'regenerator-runtime/runtime.js';
 export * from '@slickgrid-universal/common';
 
-import { ReactSlickgridComponent } from './components/slickgrid-react';
+import { ReactSlickgrid } from './components/slickgrid-react';
 import { SlickgridEventAggregator } from './components/slickgridEventAggregator';
 import { SlickgridConfig } from './slickgrid-config';
 
@@ -31,6 +31,6 @@ export {
   SlickGrid,
   ViewModelBindableData,
   ViewModelBindableInputData,
-  ReactSlickgridComponent as ReactSlickgridComponent,
+  ReactSlickgrid,
   SlickgridConfig
 };

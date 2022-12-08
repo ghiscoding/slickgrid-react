@@ -1,5 +1,5 @@
 import React from 'react';
-import { Column, GridOption, ReactGridInstance, ReactSlickgridComponent } from '../../slickgrid-react';
+import { Column, GridOption, ReactGridInstance, ReactSlickgrid } from '../../slickgrid-react';
 import './example7.scss';
 
 let columns1WithHighlightingById: any = {};
@@ -283,7 +283,7 @@ export default class Example7 extends React.Component<Props, State> {
         <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <h5>Grid 1</h5>
-        <ReactSlickgridComponent gridId="grid7-1"
+        <ReactSlickgrid gridId="grid7-1"
           columnDefinitions={this.state.columnDefinitions1}
           gridOptions={this.state.gridOptions1}
           dataset={this.state.dataset1}
@@ -293,7 +293,7 @@ export default class Example7 extends React.Component<Props, State> {
         <br />
 
         <h5>Grid 2 - <span className="subtitle">with both Header Buttons & Menus</span></h5>
-        <ReactSlickgridComponent gridId="grid7-2"
+        <ReactSlickgrid gridId="grid7-2"
           columnDefinitions={this.state.columnDefinitions2}
           gridOptions={this.state.gridOptions2}
           dataset={this.state.dataset2}

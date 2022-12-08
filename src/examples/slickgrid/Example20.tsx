@@ -10,7 +10,7 @@ import {
   GridOption,
   SlickGrid,
   SlickNamespace,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
   DOMEvent
 } from '../../slickgrid-react';
 import React from 'react';
@@ -407,7 +407,7 @@ export default class Example20 extends React.Component<Props, State> {
           <hr />
         </div>
 
-        <ReactSlickgridComponent gridId="grid20"
+        <ReactSlickgrid gridId="grid20"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

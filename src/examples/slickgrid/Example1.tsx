@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Column, Formatters, GridOption, ReactSlickgridComponent } from '../../slickgrid-react';
+import { Column, Formatters, GridOption, ReactSlickgrid } from '../../slickgrid-react';
 
 const NB_ITEMS = 995;
 
@@ -126,7 +126,7 @@ export default class Example1 extends React.Component<Props, State> {
         <div className="subtitle">{this.state.subTitle}</div>
 
         <h3>Grid 1</h3>
-        <ReactSlickgridComponent gridId="grid1"
+        <ReactSlickgrid gridId="grid1"
           columnDefinitions={this.state.columnDefinitions1}
           gridOptions={this.state.gridOptions1!}
           dataset={this.state.dataset1} />
@@ -134,7 +134,7 @@ export default class Example1 extends React.Component<Props, State> {
         <hr />
 
         <h3>Grid 2 <small>(with local Pagination)</small></h3>
-        <ReactSlickgridComponent gridId="grid2"
+        <ReactSlickgrid gridId="grid2"
           columnDefinitions={this.state.columnDefinitions2}
           gridOptions={this.state.gridOptions2!}
           dataset={this.state.dataset2} />

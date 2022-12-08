@@ -1,4 +1,4 @@
-import { ReactGridInstance, Column, FieldType, Filters, Formatters, GridOption, GridStateChange, ReactSlickgridComponent } from '../../slickgrid-react';
+import { ReactGridInstance, Column, FieldType, Filters, Formatters, GridOption, GridStateChange, ReactSlickgrid } from '../../slickgrid-react';
 import React from 'react';
 import './example10.scss'; // provide custom CSS/SASS styling
 
@@ -322,7 +322,7 @@ export default class Example10 extends React.Component<Props, State> {
         </div>
 
         <div className="overflow-hidden">
-          <ReactSlickgridComponent gridId="grid1"
+          <ReactSlickgrid gridId="grid1"
             columnDefinitions={this.state.columnDefinitions1}
             gridOptions={this.state.gridOptions1!}
             dataset={this.state.dataset1}
@@ -363,7 +363,7 @@ export default class Example10 extends React.Component<Props, State> {
         </div>
 
         <div className="overflow-hidden">
-          <ReactSlickgridComponent gridId="grid2"
+          <ReactSlickgrid gridId="grid2"
             columnDefinitions={this.state.columnDefinitions2}
             gridOptions={this.state.gridOptions2!}
             dataset={this.state.dataset2}

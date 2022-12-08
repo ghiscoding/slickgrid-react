@@ -19,7 +19,7 @@ import {
   OperatorType,
   SlickGrid,
   SliderRangeOption,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
   GroupingGetterFunction
 } from '../../slickgrid-react';
 import React from 'react';
@@ -414,7 +414,7 @@ class Example23 extends React.Component<Props, State> {
           </div>
         </div>
 
-        <ReactSlickgridComponent gridId="grid23"
+        <ReactSlickgrid gridId="grid23"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

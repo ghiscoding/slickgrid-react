@@ -1,4 +1,4 @@
-import { Column, GridOption, Formatters, ReactSlickgridComponent } from '../../slickgrid-react';
+import { Column, GridOption, Formatters, ReactSlickgrid } from '../../slickgrid-react';
 import React from 'react';
 
 const NB_ITEMS = 995;
@@ -97,7 +97,7 @@ export default class Example29 extends React.Component {
 
         <hr />
 
-        <ReactSlickgridComponent gridId="grid"
+        <ReactSlickgrid gridId="grid"
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}

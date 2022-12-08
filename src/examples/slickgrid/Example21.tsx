@@ -4,7 +4,7 @@ import {
   FieldType,
   Formatters,
   OperatorString,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
   GroupingGetterFunction,
   GridOption
 } from '../../slickgrid-react';
@@ -263,7 +263,7 @@ export default class Example21 extends React.Component<Props, State> {
 
         <hr />
 
-        <ReactSlickgridComponent gridId="grid21"
+        <ReactSlickgrid gridId="grid21"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

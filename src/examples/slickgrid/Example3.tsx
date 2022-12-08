@@ -17,7 +17,7 @@ import {
   OperatorType,
   SlickNamespace,
   SortComparers,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
   GridOption,
 } from '../../slickgrid-react';
 import { CustomInputEditor } from './custom-inputEditor';
@@ -902,7 +902,7 @@ export default class Example3 extends React.Component<Props, State> {
         </div>
 
         <div className='col-sm-12'>
-          <ReactSlickgridComponent
+          <ReactSlickgrid
             gridId='grid3'
             columnDefinitions={this.state.columnDefinitions}
             gridOptions={this.state.gridOptions}
