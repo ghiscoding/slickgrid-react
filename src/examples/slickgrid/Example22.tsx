@@ -1,7 +1,6 @@
 import { ReactGridInstance, Column, Filters, GridOption, ReactSlickgridComponent } from '../../slickgrid-react';
 import React from 'react';
 import './example22.scss';
-import BaseSlickGridState from './state-slick-grid-base';
 
 const URL_CUSTOMERS = 'assets/data/customers_100.json';
 
@@ -37,7 +36,7 @@ export default class Example22 extends React.Component<Props, State> {
       columnDefinitions2: [],
       dataset1: [],
       dataset2: [],
-    }
+    };
   }
 
   reactGrid2Ready(reactGrid: ReactGridInstance) {
@@ -93,7 +92,7 @@ export default class Example22 extends React.Component<Props, State> {
       enableSorting: true
     };
 
-    this.setState((state: State, props: Props) => {
+    this.setState((state: State) => {
       return {
         ...state,
         gridOptions1,
@@ -110,12 +109,7 @@ export default class Example22 extends React.Component<Props, State> {
     const response2 = await fetch(URL_CUSTOMERS);
     const dataset2 = await response2['json']();
 
-    this.setState((state: State, props: Props) => {
-      return {
-        ...state,
-        dataset2,
-      }
-    });
+    this.setState((state: State) => ({ ...state, dataset2 }));
     this.isGrid2DataLoaded = true;
   }
 
@@ -169,7 +163,7 @@ export default class Example22 extends React.Component<Props, State> {
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <div>
           <ul className="nav nav-tabs"

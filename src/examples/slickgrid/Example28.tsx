@@ -54,7 +54,7 @@ export default class Example28 extends React.Component<Props, State> {
       loadingClass: '',
       treeToggleItems: [],
       searchString: '',
-    }
+    };
   }
 
   componentDidMount() {

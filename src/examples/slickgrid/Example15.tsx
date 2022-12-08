@@ -131,12 +131,12 @@ class Example15 extends React.Component<Props, State> {
 
   getColumnDefinitions(): Column[] {
     // prepare a multiple-select array to filter with
-     const multiSelectFilterArray: any[] = [];
+    const multiSelectFilterArray: any[] = [];
     for (let i = 0; i < NB_ITEMS; i++) {
       multiSelectFilterArray.push({ value: i, label: i });
     }
 
-     return [
+    return [
       {
         id: 'title',
         name: 'Title',
@@ -281,7 +281,7 @@ class Example15 extends React.Component<Props, State> {
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <button className="btn btn-outline-secondary btn-sm" data-test="reset-button"
           onClick={() => this.clearGridStateFromLocalStorage()}>

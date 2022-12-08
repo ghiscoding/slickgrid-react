@@ -121,7 +121,7 @@ export default class Example30 extends React.Component<Props, State> {
         { value: 3, label: 'Complex' },
         { value: 4, label: 'Very Complex' },
       ],
-    }
+    };
   }
 
   componentDidMount() {
@@ -306,7 +306,7 @@ export default class Example30 extends React.Component<Props, State> {
         },
         filter: {
           model: Filters.inputText,
-                    // placeholder: '🔎︎ search product',
+          // placeholder: '🔎︎ search product',
           type: FieldType.string,
           queryField: 'product.itemName',
         }
@@ -1000,7 +1000,7 @@ export default class Example30 extends React.Component<Props, State> {
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <div className="mb-2">
           <div className="btn-group btn-group-sm" role="group" aria-label="Basic Editing Commands">

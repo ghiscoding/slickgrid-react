@@ -76,7 +76,7 @@ export default class Example34 extends React.Component<Props, State> {
       minChangePerCycle: 0,
       maxChangePerCycle: 10,
       refreshRate: 75,
-    }
+    };
   }
 
   componentDidMount() {
@@ -283,15 +283,9 @@ export default class Example34 extends React.Component<Props, State> {
       // highlight whichever cell is being changed
       changes[rowNumber]['id'] = 'changed';
       this.renderCellHighlighting(itemTmp, this.findColumnById('priceChange'), priceChange);
-      if (!prevItem || !itemTmp) {
-        console.log('something wrong')
-      }
       if ((prevItem.priceChange < 0 && itemTmp.priceChange > 0) || (prevItem.priceChange > 0 && itemTmp.priceChange < 0)) {
         this.renderCellHighlighting(itemTmp, this.findColumnById('price'), priceChange);
       }
-      // if (prevItem.trsnType !== itemTmp.trsnType) {
-      //   this.renderCellHighlighting(itemTmp, this.findColumnById('trsnType'), priceChange);
-      // }
 
       // update the data
       this.reactGrid.dataView.updateItem(itemTmp.id, itemTmp);
@@ -314,9 +308,8 @@ export default class Example34 extends React.Component<Props, State> {
     const newVal = elm.value;
     this.setState((state: State) => ({ ...state, refreshRate: +newVal }));
 
-    let otherInputElm: HTMLInputElement | null;
-    const inputElmId = (elm.type === 'number') ? '#refreshRateSlider' : '#refreshRateInput'
-    otherInputElm = document.querySelector<HTMLInputElement>(inputElmId);
+    const inputElmId = (elm.type === 'number') ? '#refreshRateSlider' : '#refreshRateInput';
+    const otherInputElm = document.querySelector<HTMLInputElement>(inputElmId);
     if (otherInputElm) {
       otherInputElm.value = newVal;
     }

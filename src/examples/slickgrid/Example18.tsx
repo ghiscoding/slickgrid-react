@@ -62,7 +62,7 @@ export default class Example18 extends React.Component<Props, State> {
       durationOrderByCount: false,
       processing: false,
       selectedGroupingFields: ['', '', ''],
-    }
+    };
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
@@ -475,7 +475,7 @@ export default class Example18 extends React.Component<Props, State> {
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <form className="form-inline" onSubmit={(e) => e.preventDefault()}>
           <div className="row">

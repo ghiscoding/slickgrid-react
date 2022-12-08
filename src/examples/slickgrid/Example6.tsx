@@ -84,7 +84,6 @@ class Example6 extends React.Component<Props, State> {
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
-    console.log('reactGridReady', reactGrid)
     this.reactGrid = reactGrid;
   }
 

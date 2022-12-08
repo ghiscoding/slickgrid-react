@@ -110,7 +110,7 @@ class Example24 extends React.Component<Props, State> {
       columnDefinitions: [],
       dataset: [],
       selectedLanguage: 'en',
-    }
+    };
   }
 
   get cellMenuInstance(): any {
@@ -495,7 +495,7 @@ class Example24 extends React.Component<Props, State> {
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <div className="row">
           <span className="context-menu">

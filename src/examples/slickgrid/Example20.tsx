@@ -52,7 +52,7 @@ export default class Example20 extends React.Component<Props, State> {
       frozenColumnCount: 2,
       frozenRowCount: 3,
       isFrozenBottom: false,
-    }
+    };
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
@@ -361,7 +361,7 @@ export default class Example20 extends React.Component<Props, State> {
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <br />
 
