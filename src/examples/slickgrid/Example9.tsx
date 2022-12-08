@@ -19,8 +19,8 @@ interface Props {
   t: TFunction;
 }
 
-interface State extends BaseSlickGridState{
-  selectedLanguage:string,
+interface State extends BaseSlickGridState {
+  selectedLanguage: string,
 }
 
 class Example9 extends React.Component<Props, State> {
@@ -72,7 +72,7 @@ class Example9 extends React.Component<Props, State> {
     this.dataView = reactGrid && reactGrid.dataView;
   }
 
-  getColumnDefinitions(){
+  getColumnDefinitions() {
     return [
       { id: 'title', name: 'Title', field: 'title', nameKey: 'TITLE', filterable: true, type: FieldType.string },
       { id: 'duration', name: 'Duration', field: 'duration', nameKey: 'DURATION', sortable: true, filterable: true, type: FieldType.string },
@@ -98,7 +98,7 @@ class Example9 extends React.Component<Props, State> {
     ];
   }
 
-  getGridOptions(){
+  getGridOptions() {
     return {
       columnPicker: {
         hideForceFitButton: true,
@@ -202,7 +202,7 @@ class Example9 extends React.Component<Props, State> {
   defineGrid() {
     const columnDefinitions = this.getColumnDefinitions();
     const gridOptions = this.getGridOptions();
-    this.setState((state:any, props:any)=>{
+    this.setState((state: any, props: any) => {
       return {
         ...state,
         columnDefinitions,
@@ -226,7 +226,7 @@ class Example9 extends React.Component<Props, State> {
         completed: (i % 5 === 0)
       };
     }
-    this.setState((state:any, props:any)=>{
+    this.setState((state: any, props: any) => {
       return {
         ...state,
         dataset: mockDataset
@@ -245,7 +245,7 @@ class Example9 extends React.Component<Props, State> {
   async switchLanguage() {
     const nextLanguage = (this.state.selectedLanguage === 'en') ? 'fr' : 'en';
     await i18next.changeLanguage(nextLanguage);
-    this.setState((state:any, props:any)=>{
+    this.setState((state: any, props: any) => {
       return {
         ...state,
         selectedLanguage: nextLanguage
@@ -277,12 +277,12 @@ class Example9 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example9.tsx">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example9.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <button className="btn btn-outline-secondary btn-sm" data-test="external-gridmenu"
           onClick={$event => this.toggleGridMenu($event.nativeEvent)}>
