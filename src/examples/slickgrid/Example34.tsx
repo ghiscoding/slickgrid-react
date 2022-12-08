@@ -8,12 +8,13 @@ import {
   Formatters,
   GridOption,
   GroupTotalFormatters,
-} from '@slickgrid-universal/common';
+  ReactGridInstance,
+  ReactSlickgrid,
+} from '../../slickgrid-react';
 import { faker } from '@faker-js/faker';
 import sparkline from '@fnando/sparkline';
 import React from 'react';
 
-import { ReactGridInstance, ReactSlickgrid } from '../../slickgrid-react';
 import BaseSlickGridState from './state-slick-grid-base';
 import './example34.scss';
 

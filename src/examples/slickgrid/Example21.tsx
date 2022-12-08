@@ -9,7 +9,9 @@ import {
   GridOption
 } from '../../slickgrid-react';
 import React from 'react';
+
 import BaseSlickGridState from './state-slick-grid-base';
+import './example21.scss';
 
 interface Props { }
 interface State extends BaseSlickGridState {
@@ -61,27 +63,24 @@ export default class Example21 extends React.Component<Props, State> {
     const columnDefinitions: Column[] = [
       {
         id: 'title', name: 'Title', field: 'title',
-        width: 100,
-        sortable: true,
+        width: 100, sortable: true,
         type: FieldType.string
       },
       {
         id: 'duration', name: 'Duration (days)', field: 'duration',
-        width: 100,
-        sortable: true,
+        width: 100, sortable: true,
         type: FieldType.number
       },
       {
         id: 'complete', name: '% Complete', field: 'percentComplete',
-        width: 100,
+        width: 100, sortable: true,
         formatter: Formatters.percentCompleteBar,
         type: FieldType.number
       },
       {
         id: 'start', name: 'Start', field: 'start',
-        width: 100,
+        width: 100, sortable: true,
         formatter: Formatters.dateIso,
-        sortable: true,
         type: FieldType.date
       },
       {
@@ -92,7 +91,7 @@ export default class Example21 extends React.Component<Props, State> {
       },
       {
         id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
-        width: 100,
+        width: 100, sortable: true,
         formatter: Formatters.checkmark,
         type: FieldType.number
       }
@@ -114,7 +113,6 @@ export default class Example21 extends React.Component<Props, State> {
       enableFiltering: true,
       showHeaderRow: false, // hide the filter row (header row)
 
-      enableGridMenu: false, // disable grid menu & remove vertical scroll
       alwaysShowVerticalScroll: false,
       enableColumnPicker: true,
       enableCellNavigation: true,
