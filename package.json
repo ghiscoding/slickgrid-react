@@ -166,7 +166,7 @@
     "require-dir": "^1.2.0",
     "rimraf": "^3.0.2",
     "rxjs": "^7.6.0",
-    "sass": "^1.56.1",
+    "sass": "^1.56.2",
     "sass-loader": "^13.2.0",
     "serve": "^14.1.2",
     "style-loader": "3.3.1",
