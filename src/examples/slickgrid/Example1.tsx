@@ -42,8 +42,8 @@ export default class Example1 extends React.Component<Props, State> {
 
     // mock some data (different in each dataset)
     this.setState((state: State, props: Props) => ({
-        dataset1: this.mockData(NB_ITEMS),
-        dataset2: this.mockData(NB_ITEMS)
+      dataset1: this.mockData(NB_ITEMS),
+      dataset2: this.mockData(NB_ITEMS)
     }));
   }
 
@@ -118,7 +118,7 @@ export default class Example1 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example1.tsx">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example1.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

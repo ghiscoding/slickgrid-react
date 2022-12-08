@@ -47,7 +47,7 @@ export default class Example32 extends React.Component<Props, State> {
       gridOptions: undefined,
       columnDefinitions: [],
       serverApiDelay: 500,
-    }
+    };
   }
 
   componentDidMount() {
@@ -386,7 +386,7 @@ export default class Example32 extends React.Component<Props, State> {
   handleServerDelayInputChange(e: React.FormEvent<HTMLInputElement>) {
     this.setState((state: State) => ({
       ...state,
-      serverApiDelay: parseInt((e.target as HTMLInputElement)?.value) ?? '',
+      serverApiDelay: parseInt((e.target as HTMLInputElement)?.value, 10) ?? '',
     }));
   }
 
@@ -508,7 +508,7 @@ export default class Example32 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example33.tsx">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example33.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

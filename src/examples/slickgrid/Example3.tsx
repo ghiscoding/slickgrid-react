@@ -27,7 +27,7 @@ import BaseSlickGridState from './state-slick-grid-base';
 // using external non-typed js libraries
 declare const Slick: SlickNamespace;
 
-interface Props {}
+interface Props { }
 
 const NB_ITEMS = 100;
 const URL_SAMPLE_COLLECTION_DATA = 'assets/data/collection_100_numbers.json';
@@ -119,10 +119,10 @@ export default class Example3 extends React.Component<Props, State> {
     const columns = this.getColumns();
 
     this.setState((state: State) => ({
-        ...state,
-        dataset: this.mockData(NB_ITEMS),
-        gridOptions: options,
-        columnDefinitions: columns,
+      ...state,
+      dataset: this.mockData(NB_ITEMS),
+      gridOptions: options,
+      columnDefinitions: columns,
     }));
   }
 
@@ -143,8 +143,8 @@ export default class Example3 extends React.Component<Props, State> {
 
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           this.setState((state: State, props: Props) => ({
-              ...state,
-              alertWarning:  `Editing: ${args.dataContext.title}`
+            ...state,
+            alertWarning: `Editing: ${args.dataContext.title}`
           }));
           this.reactGrid.gridService.highlightRow(args.row, 1500);
           this.reactGrid.gridService.setSelectedRow(args.row);
@@ -185,8 +185,8 @@ export default class Example3 extends React.Component<Props, State> {
 
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           this.setState((state: State, props: Props) => ({
-              ...state,
-              alertWarning: `Updated Title: ${args.dataContext.title}`
+            ...state,
+            alertWarning: `Updated Title: ${args.dataContext.title}`
           }));
         },
       },
@@ -646,8 +646,8 @@ export default class Example3 extends React.Component<Props, State> {
   onCellChanged(_e: JQuery.Event, args: any) {
     console.log('onCellChange', args);
     this.setState((state: State, props: Props) => ({
-        ...state,
-        updatedObject: { ...args.item },
+      ...state,
+      updatedObject: { ...args.item },
     }));
   }
 
@@ -657,8 +657,8 @@ export default class Example3 extends React.Component<Props, State> {
 
     if (metadata.columnDef.id === 'edit') {
       this.setState((state: State, props: Props) => ({
-          ...state,
-          alertWarning: `Open a modal window to edit: ${metadata.dataContext.title}`,
+        ...state,
+        alertWarning: `Open a modal window to edit: ${metadata.dataContext.title}`,
       }));
 
       // highlight the row, to customize the color, you can change the SASS variable $row-highlight-background-color
@@ -671,8 +671,8 @@ export default class Example3 extends React.Component<Props, State> {
         this.reactGrid.gridService.deleteItemById(metadata.dataContext.id);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.setState((state: State, props: Props) => ({
-            ...state,
-            alertWarning: `Deleted: ${metadata.dataContext.title}`,
+          ...state,
+          alertWarning: `Deleted: ${metadata.dataContext.title}`,
         }));
       }
     }
@@ -711,7 +711,7 @@ export default class Example3 extends React.Component<Props, State> {
     // and then use the spread operator [...cols] OR slice to force React to review the changes
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.setState((state: State, props: Props) => ({
-        ...state,
+      ...state,
       columnDefinitions: [...this.state.columnDefinitions!, newCol],
     }));
 
@@ -729,7 +729,7 @@ export default class Example3 extends React.Component<Props, State> {
     this.state.columnDefinitions.pop();
 
     this.setState((state: State, props: Props) => ({
-        ...state,
+      ...state,
       columnDefinitions: this.state.columnDefinitions.slice(),
     }));
 
@@ -801,12 +801,12 @@ export default class Example3 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example3.tsx">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example3.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <div className='col-sm-6'>
           <label className="me-1">autoEdit setting:</label>
@@ -858,7 +858,7 @@ export default class Example3 extends React.Component<Props, State> {
                 Clear Sorting
               </button>
               <button
-                className='btn btn-sm btn-outline-primary' 
+                className='btn btn-sm btn-outline-primary'
                 data-test="add-item-btn"
                 onClick={() => this.addItem()}
                 title='Clear Filters &amp; Sorting to see it better'
@@ -909,7 +909,7 @@ export default class Example3 extends React.Component<Props, State> {
             dataset={this.state.dataset}
             onReactGridCreated={e => { this.reactGridReady(e.detail); }}
             onCellChange={e => { this.onCellChanged(e.detail.eventData, e.detail.args); }}
-            onClick={e=>{this.onCellClicked(e.detail.eventData, e.detail.args);}}
+            onClick={e => { this.onCellClicked(e.detail.eventData, e.detail.args); }}
             onValidationError={e => { this.onCellValidationError(e.detail.eventData, e.detail.args); }}
           />
         </div>

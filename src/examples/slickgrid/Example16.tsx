@@ -168,7 +168,6 @@ export default class Example16 extends React.Component<Props, State> {
   }
 
   onMoveRows(_e: Event, args: any) {
-    console.log('onMoveRows', _e, args)
     // rows and insertBefore references,
     // note that these references are assuming that the dataset isn't filtered at all
     // which is not always the case so we will recalcualte them and we won't use these reference afterward
@@ -307,12 +306,12 @@ export default class Example16 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example16.tsx">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example16.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <div className="row">
           <div className="col-sm-12">

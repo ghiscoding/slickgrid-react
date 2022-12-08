@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import { Column, GridOption, ReactGridInstance, ReactSlickgridComponent } from '../../slickgrid-react';
 import './example7.scss';
@@ -276,12 +275,12 @@ export default class Example7 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example7.tsx">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example7.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <h5>Grid 1</h5>
         <ReactSlickgridComponent gridId="grid7-1"

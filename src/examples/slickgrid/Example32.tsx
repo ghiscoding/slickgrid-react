@@ -105,7 +105,7 @@ export default class Example32 extends React.Component<Props, State> {
         { value: 3, label: 'Complex' },
         { value: 4, label: 'Very Complex' },
       ],
-    }
+    };
   }
 
   componentDidMount() {
@@ -837,12 +837,12 @@ export default class Example32 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example32.tsx">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example32.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <h4 className="ml-3">Container Width (950px)</h4>
 

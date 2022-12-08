@@ -52,7 +52,7 @@ export default class Example13 extends React.Component<Props, State> {
       gridOptions: undefined,
       processing: false,
       dataset: this.loadData(500),
-    }
+    };
   }
 
   componentDidMount() {
@@ -66,7 +66,7 @@ export default class Example13 extends React.Component<Props, State> {
 
   initDataLoad() {
     // populate the dataset once the grid is ready
-    this.setState((state: State, props: Props) => {
+    this.setState((state: State) => {
       return {
         ...state,
         dataset: this.loadData(500)
@@ -188,13 +188,11 @@ export default class Example13 extends React.Component<Props, State> {
       registerExternalResources: [this.excelExportService, this.textExportService],
     };
 
-    this.setState((state: State, props: Props) => {
-      return {
-        ...state,
-        columnDefinitions,
-        gridOptions,
-      }
-    });
+    this.setState((state: State) => ({
+      ...state,
+      columnDefinitions,
+      gridOptions,
+    }));
   }
 
   loadData(rowCount: number) {
@@ -224,12 +222,10 @@ export default class Example13 extends React.Component<Props, State> {
   }
 
   updateData(rowCount: number) {
-    this.setState((state: State, props: Props) => {
-      return {
-        ...state,
-        dataset: this.loadData(rowCount),
-      }
-    });
+    this.setState((state: State) => ({
+      ...state,
+      dataset: this.loadData(rowCount),
+    }));
   }
 
   clearGrouping() {
@@ -373,12 +369,10 @@ export default class Example13 extends React.Component<Props, State> {
   }
 
   changeProcessing(isProcessing: boolean) {
-    this.setState((state: State, props: Props) => {
-      return {
-        ...state,
-        processing: isProcessing
-      }
-    });
+    this.setState((state: State) => ({
+      ...state,
+      processing: isProcessing
+    }));
   }
 
   render() {
@@ -389,12 +383,12 @@ export default class Example13 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example13.tsx">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example13.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <div className="row">
           <div className="col-sm-12">
@@ -435,7 +429,7 @@ export default class Example13 extends React.Component<Props, State> {
           <div className="row">
             <div className="col-sm-12">
               <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-sort-count-collapse-btn"
-                onClick={() =>this.groupByDurationOrderByCount(true)}>
+                onClick={() => this.groupByDurationOrderByCount(true)}>
                 Group by Duration &amp; sort groups by count, aggregate collapsed
               </button>
               <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-effort-btn"

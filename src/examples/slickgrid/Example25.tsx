@@ -71,7 +71,7 @@ export default class Example25 extends React.Component<Props, State> {
       processing: false,
       selectedLanguage: '',
       status: { text: '', class: '' },
-    }
+    };
   }
 
   async componentDidMount() {
@@ -211,13 +211,13 @@ export default class Example25 extends React.Component<Props, State> {
         preProcess: () => this.displaySpinner(true),
         process: (query) => this.getCountries(query),
         postProcess: (result: GraphqlResult<Country>) => {
-          this.setState((state: State, props: Props) => ({ ...state, metrics: result.metrics }));
+          this.setState((state: State) => ({ ...state, metrics: result.metrics }));
           this.displaySpinner(false);
         }
       } as GraphqlServiceApi
     };
 
-    this.setState((state: State, props: Props) => ({
+    this.setState((state: State) => ({
       ...state,
       gridOptions,
       columnDefinitions,
@@ -229,7 +229,7 @@ export default class Example25 extends React.Component<Props, State> {
       ? { text: 'processing...', class: 'alert alert-danger' }
       : { text: 'finished', class: 'alert alert-success' };
 
-    this.setState((state: State, props: any) => ({
+    this.setState((state: State) => ({
       ...state,
       status: newStatus,
       processing: isProcessing,
@@ -248,7 +248,7 @@ export default class Example25 extends React.Component<Props, State> {
       const response = await fetch(COUNTRIES_API, {
         method: 'post',
         body: JSON.stringify({ query }),
-        headers: { "Content-type": "application/json; charset=UTF-8" }
+        headers: { 'Content-type': 'application/json; charset=UTF-8' }
       });
       resolve(response.json());
     });
@@ -265,7 +265,7 @@ export default class Example25 extends React.Component<Props, State> {
       const response = await fetch(COUNTRIES_API, {
         method: 'post',
         body: JSON.stringify({ query: continentQuery }),
-        headers: { "Content-type": "application/json; charset=UTF-8" }
+        headers: { 'Content-type': 'application/json; charset=UTF-8' }
       });
       resolve(response.json());
     });
@@ -278,12 +278,11 @@ export default class Example25 extends React.Component<Props, State> {
    */
   getLanguages(): Promise<GraphqlResult<{ code: string; name: string; native: string; }>> {
     const languageQuery = `query { languages { code, name, native  }}`;
-    console.log('GET LANG', JSON.stringify({ query: languageQuery }))
     return new Promise(async resolve => {
       const response = await fetch(COUNTRIES_API, {
         method: 'post',
         body: JSON.stringify({ query: languageQuery }),
-        headers: { "Content-type": "application/json; charset=UTF-8" }
+        headers: { 'Content-type': 'application/json; charset=UTF-8' }
       });
       resolve(response.json());
     });
@@ -312,12 +311,12 @@ export default class Example25 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example25.tsx">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example25.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <div className="row">
           <div className="col-xs-6 col-sm-3">

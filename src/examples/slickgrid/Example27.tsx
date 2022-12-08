@@ -54,7 +54,7 @@ export default class Example27 extends React.Component<Props, State> {
       isLargeDataset: false,
       hasNoExpandCollapseChanged: true,
       treeToggleItems: [],
-    }
+    };
   }
 
   componentDidMount() {
@@ -156,9 +156,9 @@ export default class Example27 extends React.Component<Props, State> {
     };
 
     this.setState((state: State) => ({
-        ...state,
-        gridOptions,
-        columnDefinitions,
+      ...state,
+      gridOptions,
+      columnDefinitions,
       dataset: this.loadData(NB_ITEMS),
     }));
   }
@@ -313,7 +313,7 @@ export default class Example27 extends React.Component<Props, State> {
     }));
   }
 
-  handleOnTreeFullToggleEnd(treeToggleExecution: TreeToggleStateChange) {
+  handleOnTreeFullToggleEnd(_treeToggleExecution: TreeToggleStateChange) {
     this.hideSpinner();
   }
 
@@ -370,12 +370,12 @@ export default class Example27 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example27.tsx">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example27.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <div className="row" style={{ marginBottom: '4px' }}>
           <div className="col-md-12">

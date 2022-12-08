@@ -62,7 +62,7 @@ export default class Example18 extends React.Component<Props, State> {
       durationOrderByCount: false,
       processing: false,
       selectedGroupingFields: ['', '', ''],
-    }
+    };
   }
 
   reactGridReady(reactGrid: ReactGridInstance) {
@@ -470,12 +470,12 @@ export default class Example18 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example18.tsx">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example18.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <form className="form-inline" onSubmit={(e) => e.preventDefault()}>
           <div className="row">

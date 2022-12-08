@@ -94,7 +94,7 @@ class Example23 extends React.Component<Props, State> {
         { value: 'currentYearTasks', label: 'Current Year Completed Tasks' },
         { value: 'nextYearTasks', label: 'Next Year Active Tasks' }
       ]
-    }
+    };
   }
 
   componentDidMount() {
@@ -251,11 +251,11 @@ class Example23 extends React.Component<Props, State> {
   }
 
   clearFilters() {
-    this.setState((state: State, props: Props) => {
+    this.setState((state: State) => {
       return {
         ...state,
         selectedPredefinedFilter: ''
-      }
+      };
     }, () => this.reactGrid.filterService.clearFilters());
   }
 
@@ -272,7 +272,7 @@ class Example23 extends React.Component<Props, State> {
   refreshMetrics(_e: Event, args: any) {
     if (args && args.current >= 0) {
       setTimeout(() => {
-        this.setState((state: State, props: Props) => {
+        this.setState((state: State) => {
           return {
             ...state,
             metrics: {
@@ -280,7 +280,7 @@ class Example23 extends React.Component<Props, State> {
               itemCount: args?.current ?? 0,
               totalItemCount: state.dataset?.length || 0
             }
-          }
+          };
         });
       });
     }
@@ -290,10 +290,10 @@ class Example23 extends React.Component<Props, State> {
     const selectedVal = (e.target as HTMLSelectElement)?.value ?? '';
     const selectedColumn = this.state.columnDefinitions.find(c => c.id === selectedVal);
 
-    this.setState((state: State, props: Props) => {
+    this.setState((state: State) => {
       return {
         ...state,
-        selectedColumn: selectedColumn,
+        selectedColumn,
       };
     });
   }
@@ -351,12 +351,12 @@ class Example23 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example23.tsx">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example23.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <br />
 

@@ -19,7 +19,7 @@ import {
 import BaseSlickGridState from './state-slick-grid-base';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface State extends BaseSlickGridState{
+interface State extends BaseSlickGridState {
   metrics?: Metrics,
 }
 
@@ -242,10 +242,10 @@ export default class Example4 extends React.Component<Props, State> {
     const gridOptions = this.getGridOptions();
 
     this.setState((state: State) => ({
-        ...state,
-        columnDefinitions,
-        gridOptions,
-        dataset: this.mockData(NB_ITEMS),
+      ...state,
+      columnDefinitions,
+      gridOptions,
+      dataset: this.mockData(NB_ITEMS),
     }));
   }
 
@@ -318,13 +318,13 @@ export default class Example4 extends React.Component<Props, State> {
     if (args?.current >= 0) {
       setTimeout(() => {
         this.setState((state: State) => ({
-            ...state,
-            metrics: {
-              startTime: new Date(),
-              endTime: new Date(),
-              itemCount: args?.current || 0,
-              totalItemCount: this.state.dataset?.length ?? 0
-            }
+          ...state,
+          metrics: {
+            startTime: new Date(),
+            endTime: new Date(),
+            itemCount: args?.current || 0,
+            totalItemCount: this.state.dataset?.length ?? 0
+          }
         }));
       });
     }
@@ -346,12 +346,12 @@ export default class Example4 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example4.tsx">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example4.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <br />
         {this.state.metrics && <span><><b>Metrics:</b>

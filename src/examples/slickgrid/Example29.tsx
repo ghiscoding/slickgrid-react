@@ -8,15 +8,15 @@ interface Props { }
 const Header = () => <h5>Header Slot</h5>;
 const Footer = () => {
   const [state, setState] = React.useState({ clickedTimes: 0 });
-  const buttonClick = () => setState({ ...state, clickedTimes: state.clickedTimes + 1 })
+  const buttonClick = () => setState({ ...state, clickedTimes: state.clickedTimes + 1 });
   return (
     <div>
       <h5>Footer Slot</h5>
       <button data-test="footer-btn" onClick={() => buttonClick()}>I'm a button in Slickgrid-React footer (click me)</button>
       {state.clickedTimes > 0 && <div>You've clicked me {state.clickedTimes} time(s)</div>}
     </div>
-  )
-}
+  );
+};
 
 export default class Example29 extends React.Component {
   title = 'Example 29: Grid with Header and Footer slot';
@@ -88,12 +88,12 @@ export default class Example29 extends React.Component {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/Slickgrid-React/blob/master/src/examples/slickgrid/example29.tsx">
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example29.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <hr />
 
