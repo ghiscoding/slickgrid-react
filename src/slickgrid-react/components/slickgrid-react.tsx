@@ -94,7 +94,7 @@ class CustomEventPubSubService extends EventPubSubService {
   }
 }
 
-export class ReactSlickgridComponent extends React.Component<SlickgridReactProps, State> {
+export class ReactSlickgrid extends React.Component<SlickgridReactProps, State> {
   protected _mounted = false;
   protected setStateValue(key: string, value: any, callback?: () => void): void {
     if (this.state && this.state[key] === value) {
@@ -367,7 +367,7 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
 
       // React doesn't play well with Custom Events & also the render is called after the constructor which brings a second problem
       // to fix both issues, we need to do the following:
-      // loop through all component and subscribe to all props that startsWith "on", assuming they are custom event 
+      // loop through all component and subscribe to all props that startsWith "on", assuming they are custom event
       // and call their listener with event is dispatching
       for (const prop in this.props) {
         if (prop.startsWith('on')) {
@@ -402,7 +402,7 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
 
   initialization(eventHandler: SlickEventHandler) {
     if (!this._gridOptions || !this._columnDefinitions) {
-      throw new Error('Using `<ReactSlickgridComponent>` requires columnDefinitions and gridOptions, it seems that you might have forgot to provide them since at least of them is undefined.');
+      throw new Error('Using `<ReactSlickgrid>` requires columnDefinitions and gridOptions, it seems that you might have forgot to provide them since at least of them is undefined.');
     }
 
     this._gridOptions.translater = this.props.translaterService;
@@ -1175,7 +1175,7 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
       endTime: new Date(),
       itemCount: currentPageRowItemCount,
       totalItemCount
-    };    
+    };
     // if custom footer is enabled, then we'll update its metrics
     if (this.slickFooter) {
       this.slickFooter.metrics = this.metrics;
@@ -1551,7 +1551,7 @@ export class ReactSlickgridComponent extends React.Component<SlickgridReactProps
   render() {
     return (
       <div id={`slickGridContainer-${this.props.gridId}`} className="grid-pane" ref={elm => this._elm = elm} >
-        {/*<!-- Header slot if you need to create a complex custom header -->*/}
+        {/* <!-- Header slot if you need to create a complex custom header --> */}
         {this.props.header && <div className="header">{this.props.header}</div>}
 
         <div id={`${this.props.gridId}`} className="slickgrid-container" style={{ width: '100%' }} onBlur={$event => this.commitEdit($event.target)}>

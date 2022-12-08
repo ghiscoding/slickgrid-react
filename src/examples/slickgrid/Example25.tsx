@@ -8,7 +8,7 @@ import {
   Metrics,
   MultipleSelectOption,
   OperatorType,
-  ReactSlickgridComponent
+  ReactSlickgrid
 } from '../../slickgrid-react';
 import React from 'react';
 import './example25.scss'; // provide custom CSS/SASS styling
@@ -329,7 +329,7 @@ export default class Example25 extends React.Component<Props, State> {
           </div>
         </div>
 
-        <ReactSlickgridComponent gridId="grid25"
+        <ReactSlickgrid gridId="grid25"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset} />

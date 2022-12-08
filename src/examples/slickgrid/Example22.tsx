@@ -1,4 +1,4 @@
-import { ReactGridInstance, Column, Filters, GridOption, ReactSlickgridComponent } from '../../slickgrid-react';
+import { ReactGridInstance, Column, Filters, GridOption, ReactSlickgrid } from '../../slickgrid-react';
 import React from 'react';
 import './example22.scss';
 
@@ -197,7 +197,7 @@ export default class Example22 extends React.Component<Props, State> {
               role="tabpanel"
               aria-labelledby="javascript-tab">
               <h4>Grid 1 - Load Local Data</h4>
-              <ReactSlickgridComponent gridId="grid1"
+              <ReactSlickgrid gridId="grid1"
                 columnDefinitions={this.state.columnDefinitions1}
                 gridOptions={this.state.gridOptions1}
                 dataset={this.state.dataset1} />
@@ -207,7 +207,7 @@ export default class Example22 extends React.Component<Props, State> {
               role="tabpanel"
               aria-labelledby="fetch-tab">
               <h4>Grid 2 - Load a JSON dataset through Fetch-Client</h4>
-              <ReactSlickgridComponent gridId="grid2"
+              <ReactSlickgrid gridId="grid2"
                 columnDefinitions={this.state.columnDefinitions2}
                 gridOptions={this.state.gridOptions2}
                 dataset={this.state.dataset2}

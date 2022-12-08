@@ -5,7 +5,7 @@ import {
   Formatter,
   Formatters,
   GridOption,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
 } from '../../slickgrid-react';
 import React from 'react';
 import BaseSlickGridState from './state-slick-grid-base';
@@ -215,7 +215,7 @@ export default class Example2 extends React.Component<Props, State> {
           Pause auto-resize: <b>{this.resizerPaused}</b>
         </button>
 
-        <ReactSlickgridComponent gridId="grid2"
+        <ReactSlickgrid gridId="grid2"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

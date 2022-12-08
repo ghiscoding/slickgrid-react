@@ -10,7 +10,7 @@ import {
   Formatters,
   SlickDataView,
   SlickGrid,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
 } from '../../slickgrid-react';
 import BaseSlickGridState from './state-slick-grid-base';
 import './example9.scss'; // provide custom CSS/SASS styling
@@ -295,7 +295,7 @@ class Example9 extends React.Component<Props, State> {
         </button>
         <b>Locale:</b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{this.state.selectedLanguage + '.json'}</span>
 
-        <ReactSlickgridComponent gridId="grid9"
+        <ReactSlickgrid gridId="grid9"
           columnDefinitions={this.state.columnDefinitions}
           dataset={this.state.dataset}
           gridOptions={this.state.gridOptions}

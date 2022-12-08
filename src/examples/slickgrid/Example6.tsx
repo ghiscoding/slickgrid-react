@@ -11,7 +11,7 @@ import {
   MultipleSelectOption,
   OperatorType,
   SortDirection,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
 } from '../../slickgrid-react';
 import React from 'react';
 import BaseSlickGridState from './state-slick-grid-base';
@@ -415,7 +415,7 @@ class Example6 extends React.Component<Props, State> {
 
         <hr />
 
-        <ReactSlickgridComponent gridId="grid6"
+        <ReactSlickgrid gridId="grid6"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

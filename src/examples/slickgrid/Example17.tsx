@@ -8,7 +8,7 @@ import {
   Formatter,
   GridOption,
   SlickNamespace,
-  ReactSlickgridComponent
+  ReactSlickgrid
 } from '../../slickgrid-react';
 import React from 'react';
 
@@ -193,7 +193,7 @@ export default class Example17 extends React.Component {
           <span>Loading...</span>
         </div>}
 
-        <ReactSlickgridComponent gridId="grid1"
+        <ReactSlickgrid gridId="grid1"
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}

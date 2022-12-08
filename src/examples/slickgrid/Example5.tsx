@@ -9,7 +9,7 @@ import {
   Metrics,
   OperatorType,
   Pagination,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
   GridOption,
   Column,
 } from '../../slickgrid-react';
@@ -598,7 +598,7 @@ export default class Example5 extends React.Component<Props, State> {
           </div>
         </div>
 
-        <ReactSlickgridComponent gridId="grid5"
+        <ReactSlickgrid gridId="grid5"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

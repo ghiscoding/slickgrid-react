@@ -13,7 +13,7 @@ import { faker } from '@faker-js/faker';
 import sparkline from '@fnando/sparkline';
 import React from 'react';
 
-import { ReactGridInstance, ReactSlickgridComponent } from '../../slickgrid-react';
+import { ReactGridInstance, ReactSlickgrid } from '../../slickgrid-react';
 import BaseSlickGridState from './state-slick-grid-base';
 import './example34.scss';
 
@@ -421,7 +421,7 @@ export default class Example34 extends React.Component<Props, State> {
             </div>
           </div>
 
-          <ReactSlickgridComponent gridId="grid34"
+          <ReactSlickgrid gridId="grid34"
             columnDefinitions={this.state.columnDefinitions}
             gridOptions={this.state.gridOptions}
             dataset={this.state.dataset}

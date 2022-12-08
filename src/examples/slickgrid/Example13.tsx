@@ -16,7 +16,7 @@ import {
   SortComparers,
   SlickDataView,
   SlickGrid,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
 } from '../../slickgrid-react';
 import React from 'react';
 import BaseSlickGridState from './state-slick-grid-base';
@@ -447,7 +447,7 @@ export default class Example13 extends React.Component<Props, State> {
           </div>
         </div>
 
-        <ReactSlickgridComponent gridId="grid13"
+        <ReactSlickgrid gridId="grid13"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions!}
           dataset={this.state.dataset}

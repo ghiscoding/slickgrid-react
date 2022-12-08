@@ -14,7 +14,7 @@ import {
   MultipleSelectOption,
   OperatorType,
   ReactGridInstance,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
 } from '../../slickgrid-react';
 import BaseSlickGridState from './state-slick-grid-base';
 
@@ -385,7 +385,7 @@ export default class Example4 extends React.Component<Props, State> {
           Set Sorting Dynamically
         </button>
 
-        <ReactSlickgridComponent gridId="grid4"
+        <ReactSlickgrid gridId="grid4"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

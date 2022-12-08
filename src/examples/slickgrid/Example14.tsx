@@ -1,5 +1,5 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-import { ReactGridInstance, Column, FieldType, GridOption, ItemMetadata, ReactSlickgridComponent } from '../../slickgrid-react';
+import { ReactGridInstance, Column, FieldType, GridOption, ItemMetadata, ReactSlickgrid } from '../../slickgrid-react';
 import React from 'react';
 import './example14.scss'; // provide custom CSS/SASS styling
 
@@ -170,7 +170,7 @@ export default class Example14 extends React.Component {
         <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <h3>Grid 1 <small>(with Header Grouping &amp; Colspan)</small></h3>
-        <ReactSlickgridComponent gridId="grid1"
+        <ReactSlickgrid gridId="grid1"
           columnDefinitions={this.columnDefinitions1}
           gridOptions={this.gridOptions1}
           dataset={this.dataset1} />
@@ -190,7 +190,7 @@ export default class Example14 extends React.Component {
           </button>
         </div>
 
-        <ReactSlickgridComponent gridId="grid2"
+        <ReactSlickgrid gridId="grid2"
           columnDefinitions={this.columnDefinitions2}
           gridOptions={this.gridOptions2}
           dataset={this.dataset2}

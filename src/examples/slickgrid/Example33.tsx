@@ -15,7 +15,7 @@ import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
 import React from 'react';
 
-import { ReactGridInstance, ReactSlickgridComponent } from '../../slickgrid-react';
+import { ReactGridInstance, ReactSlickgrid } from '../../slickgrid-react';
 import BaseSlickGridState from './state-slick-grid-base';
 
 const NB_ITEMS = 500;
@@ -525,7 +525,7 @@ export default class Example32 extends React.Component<Props, State> {
         </div>
 
         <div id="smaller-container" style={{ width: '950px' }}>
-          <ReactSlickgridComponent gridId="grid33"
+          <ReactSlickgrid gridId="grid33"
             columnDefinitions={this.state.columnDefinitions}
             gridOptions={this.state.gridOptions}
             dataset={this.state.dataset}

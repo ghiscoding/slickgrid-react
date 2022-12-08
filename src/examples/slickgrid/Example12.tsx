@@ -12,7 +12,7 @@ import {
   GridOption,
   GridStateChange,
   SlickGrid,
-  ReactSlickgridComponent,
+  ReactSlickgrid,
 } from '../../slickgrid-react';
 import React from 'react';
 import { withTranslation } from 'react-i18next';
@@ -324,7 +324,7 @@ class Example12 extends React.Component<Props, State> {
             </span>
           </div>
         </div>
-        <ReactSlickgridComponent gridId="grid12"
+        <ReactSlickgrid gridId="grid12"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}
