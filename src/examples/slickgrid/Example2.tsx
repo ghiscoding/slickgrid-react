@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   ReactGridInstance,
   Column,
@@ -40,7 +39,7 @@ const customEnableButtonFormatter: Formatter<DataItem> = (_row: number, _cell: n
 };
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Props {}
+interface Props { }
 
 export default class Example2 extends React.Component<Props, State> {
   title = 'Example 2: Grid with Formatters';
@@ -140,7 +139,7 @@ export default class Example2 extends React.Component<Props, State> {
 
     this.setState((state: State, props: Props) => ({
       ...this.state,
-      columnDefinitions : columns,
+      columnDefinitions: columns,
       gridOptions,
       dataset: this.getData(),
     }));
@@ -210,7 +209,7 @@ export default class Example2 extends React.Component<Props, State> {
             </a>
           </span>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{__html: this.subTitle}}></div>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
         <button className="btn btn-outline-secondary btn-sm"
           onClick={() => this.togglePauseResizer()}>
           Pause auto-resize: <b>{this.resizerPaused}</b>
