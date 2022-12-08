@@ -44,7 +44,7 @@
     "lint": "eslint src/slickgrid-react --ext .ts",
     "build:amd": "cross-env tsc --project src/slickgrid-react/tsconfig.build.json --outDir dist/amd --module amd",
     "postbuild:amd": "cross-env copyfiles --up 2 src/slickgrid-react/**/*.html dist/amd",
-    "build:cjs": "cross-env tsc --project src/slickgrid-react/tsconfig.build.json --outDir dist/cjs --module cjs",
+    "build:cjs": "cross-env tsc --project src/slickgrid-react/tsconfig.build.json --outDir dist/cjs --module commonjs",
     "postbuild:cjs": "cross-env copyfiles --up 2 src/slickgrid-react/**/*.html dist/cjs",
     "build:esm": "cross-env tsc --project src/slickgrid-react/tsconfig.build.json --outDir dist/esm --module esnext --target es2018",
     "postbuild:esm": "cross-env copyfiles --up 2 src/slickgrid-react/**/*.html dist/esm",
@@ -84,7 +84,7 @@
     "dequal": "^2.0.3",
     "dompurify": "^2.4.1",
     "font-awesome": "^4.7.0",
-    "i18next": ">=22.1.4",
+    "i18next": ">=22.0.0",
     "jquery": "^3.6.1",
     "moment-mini": "^2.29.4",
     "regenerator-runtime": "^0.13.11",
@@ -176,9 +176,6 @@
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
-  },
-  "peerDependencies": {
-    "i18next": ">=22.0.0"
   },
   "engines": {
     "node": ">=v14.17.0",
