@@ -9,10 +9,7 @@ import {
   ReactGridInstance,
   ReactComponentOutput,
   GridOption,
-  RowDetailView,
   SlickGrid,
-  ViewModelBindableData,
-  ViewModelBindableInputData
 } from './models/index';
 
 // expose all public classes
@@ -27,10 +24,7 @@ export {
   ReactGridInstance,
   ReactComponentOutput,
   GridOption,
-  RowDetailView,
   SlickGrid,
-  ViewModelBindableData,
-  ViewModelBindableInputData,
   ReactSlickgrid,
   SlickgridConfig
 };
