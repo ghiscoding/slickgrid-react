@@ -84,7 +84,7 @@
     "dequal": "^2.0.3",
     "dompurify": "^2.4.1",
     "font-awesome": "^4.7.0",
-    "i18next": ">=22.0.0",
+    "i18next": ">=22.1.4",
     "jquery": "^3.6.1",
     "moment-mini": "^2.29.4",
     "regenerator-runtime": "^0.13.11",
@@ -114,17 +114,17 @@
     "@types/flatpickr": "^3.1.2",
     "@types/fnando__sparkline": "^0.3.4",
     "@types/i18next-xhr-backend": "^1.4.2",
-    "@types/jest": "^29.2.3",
+    "@types/jest": "^29.2.4",
     "@types/jquery": "^3.5.14",
-    "@types/node": "^18.11.10",
+    "@types/node": "^18.11.11",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.9",
     "@types/sortablejs": "^1.15.0",
     "@types/text-encoding-utf-8": "^1.0.2",
     "@types/webpack": "^5.28.0",
-    "@typescript-eslint/eslint-plugin": "^5.45.0",
-    "@typescript-eslint/parser": "^5.45.0",
-    "@webpack-cli/serve": "^2.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.1",
+    "@typescript-eslint/parser": "^5.45.1",
+    "@webpack-cli/serve": "^2.0.1",
     "babel-loader": "^9.1.0",
     "bootstrap": "^5.2.3",
     "clean-webpack-plugin": "^4.0.0",
@@ -151,7 +151,7 @@
     "jest-environment-jsdom": "^29.3.1",
     "jest-extended": "^3.2.0",
     "jsdom-global": "^3.0.2",
-    "mini-css-extract-plugin": "^2.7.1",
+    "mini-css-extract-plugin": "^2.7.2",
     "minimatch": "^5.1.1",
     "moment-mini": "^2.29.4",
     "npm-check": "^6.0.1",
@@ -159,13 +159,13 @@
     "promise-polyfill": "^8.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-i18next": ">=12.0.0",
+    "react-i18next": ">=12.1.1",
     "react-scripts": "^5.0.1",
-    "react-router-dom": "^6.4.4",
+    "react-router-dom": "^6.4.5",
     "release-it": "^15.5.1",
     "require-dir": "^1.2.0",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.5.7",
+    "rxjs": "^7.6.0",
     "sass": "^1.56.1",
     "sass-loader": "^13.2.0",
     "serve": "^14.1.2",
@@ -174,17 +174,17 @@
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.3",
     "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.0",
+    "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
   },
   "peerDependencies": {
     "i18next": ">=22.0.0"
   },
   "engines": {
-    "node": ">=14.15.0",
-    "npm": ">=6.14.8"
+    "node": ">=v14.17.0",
+    "npm": ">=6.14.13"
   },
   "resolutions": {
-    "caniuse-lite": "1.0.30001431"
+    "caniuse-lite": "1.0.30001436"
   }
 }
