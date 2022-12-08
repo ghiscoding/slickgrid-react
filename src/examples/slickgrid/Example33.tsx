@@ -8,14 +8,15 @@ import {
   Formatters,
   GridOption,
   MenuCommandItemCallbackArgs,
+  ReactGridInstance,
+  ReactSlickgrid,
   OperatorType,
   SlickGrid,
-} from '@slickgrid-universal/common';
+} from '../../slickgrid-react';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
 import React from 'react';
 
-import { ReactGridInstance, ReactSlickgrid } from '../../slickgrid-react';
 import BaseSlickGridState from './state-slick-grid-base';
 
 const NB_ITEMS = 500;

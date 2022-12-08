@@ -10,15 +10,16 @@ import {
   Formatters,
   GridOption,
   LongTextEditorOption,
+  ReactGridInstance,
+  ReactSlickgrid,
   SlickGrid,
   SlickNamespace,
   SortComparers,
-} from '@slickgrid-universal/common';
+} from '../../slickgrid-react';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import React from 'react';
 
 import BaseSlickGridState from './state-slick-grid-base';
-import { ReactGridInstance, ReactSlickgrid } from '../../slickgrid-react';
 import './example32.scss'; // provide custom CSS/SASS styling
 
 const NB_ITEMS = 5000;
