@@ -27,7 +27,7 @@ class Example9 extends React.Component<Props, State> {
   title = 'Example 9: Grid Menu Control';
   subTitle = `
     This example demonstrates using the <b>Slick.Controls.GridMenu</b> plugin to easily add a Grid Menu (aka hamburger menu) on the top right corner of the grid.<br/>
-    (<a href="https://github.com/slickgrid-universal/slickgrid-react/wiki/Grid-Menu" target="_blank">Wiki docs</a>)
+    (<a href="https://github.com/slickgrid-club/slickgrid-react/wiki/Grid-Menu" target="_blank">Wiki docs</a>)
     <ul>
     <li>You can change the Grid Menu icon, for example "fa-ellipsis-v"&nbsp;&nbsp;<span class="fa fa-ellipsis-v"></span>&nbsp;&nbsp;(which is shown in this example)</li>
     <li>By default the Grid Menu shows all columns which you can show/hide them</li>
@@ -277,7 +277,7 @@ class Example9 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/slickgrid-universal/slickgrid-react/blob/master/src/examples/slickgrid/Example9.tsx">
+              href="https://github.com/slickgrid-club/slickgrid-react/blob/master/src/examples/slickgrid/Example9.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

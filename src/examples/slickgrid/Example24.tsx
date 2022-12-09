@@ -75,10 +75,10 @@ class Example24 extends React.Component<Props, State> {
       <li>This example demonstrates 2 SlickGrid plugins
       <ol>
         <li>Using the <b>Slick.Plugins.CellMenu</b> plugin, often used for an Action Menu(s), 1 or more per grid
-          (<a href="https://github.com/slickgrid-universal/slickgrid-react/wiki/Cell-Menu" target="_blank">Wiki docs</a>).
+          (<a href="https://github.com/slickgrid-club/slickgrid-react/wiki/Cell-Menu" target="_blank">Wiki docs</a>).
         </li>
         <li>Using the <b>Slick.Plugins.ContextMenu</b> plugin, shown after a mouse right+click, only 1 per grid.
-        (<a href="https://github.com/slickgrid-universal/slickgrid-react/wiki/Context-Menu" target="_blank">Wiki docs</a>).
+        (<a href="https://github.com/slickgrid-club/slickgrid-react/wiki/Context-Menu" target="_blank">Wiki docs</a>).
         </li>
       </ol>
       <li>It will also "autoAdjustDrop" (bottom/top) and "autoAlignSide" (left/right) by default but could be turned off</li>
@@ -490,7 +490,7 @@ class Example24 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/slickgrid-universal/slickgrid-react/blob/master/src/examples/slickgrid/Example24.tsx">
+              href="https://github.com/slickgrid-club/slickgrid-react/blob/master/src/examples/slickgrid/Example24.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
