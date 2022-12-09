@@ -10,8 +10,8 @@ import {
   Formatters,
   GridOption,
   LongTextEditorOption,
-  ReactGridInstance,
-  ReactSlickgrid,
+  SlickgridReactInstance,
+  SlickgridReact,
   SlickGrid,
   SlickNamespace,
   SortComparers,
@@ -89,7 +89,7 @@ export default class Example32 extends React.Component<Props, State> {
   subTitle = `The grid below uses the optional resize by cell content (with a fixed 950px for demo purposes), you can click on the 2 buttons to see the difference. The "autosizeColumns" is really the default option used by SlickGrid-Universal, the resize by cell content is optional because it requires to read the first thousand rows and do extra width calculation.`;
   editQueue: any[] = [];
   editedItems: any = {};
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
 
   constructor(public readonly props: Props) {
     super(props);
@@ -114,7 +114,7 @@ export default class Example32 extends React.Component<Props, State> {
     this.defineGrid();
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
   }
 
@@ -886,7 +886,7 @@ export default class Example32 extends React.Component<Props, State> {
         </div>
 
         <div id="smaller-container" style={{ width: '950px' }}>
-          <ReactSlickgrid gridId="grid32"
+          <SlickgridReact gridId="grid32"
             columnDefinitions={this.state.columnDefinitions}
             gridOptions={this.state.gridOptions}
             dataset={this.state.dataset}

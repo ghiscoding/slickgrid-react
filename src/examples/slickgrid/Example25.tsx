@@ -1,6 +1,6 @@
 import { GraphqlService, GraphqlResult, GraphqlServiceApi, } from '@slickgrid-universal/graphql';
 import {
-  ReactGridInstance,
+  SlickgridReactInstance,
   Column,
   Filters,
   Formatters,
@@ -8,7 +8,7 @@ import {
   Metrics,
   MultipleSelectOption,
   OperatorType,
-  ReactSlickgrid
+  SlickgridReact
 } from '../../slickgrid-react';
 import React from 'react';
 import './example25.scss'; // provide custom CSS/SASS styling
@@ -57,7 +57,7 @@ export default class Example25 extends React.Component<Props, State> {
   </ul>
   `;
 
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
 
   constructor(public readonly props: Props) {
     super(props);
@@ -329,7 +329,7 @@ export default class Example25 extends React.Component<Props, State> {
           </div>
         </div>
 
-        <ReactSlickgrid gridId="grid25"
+        <SlickgridReact gridId="grid25"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset} />

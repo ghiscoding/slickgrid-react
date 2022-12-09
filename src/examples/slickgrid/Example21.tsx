@@ -1,10 +1,10 @@
 import {
-  ReactGridInstance,
+  SlickgridReactInstance,
   Column,
   FieldType,
   Formatters,
   OperatorString,
-  ReactSlickgrid,
+  SlickgridReact,
   GroupingGetterFunction,
   GridOption
 } from '../../slickgrid-react';
@@ -18,7 +18,7 @@ interface State extends BaseSlickGridState {
   selectedColumn?: Column;
   selectedOperator: string;
   searchValue: string;
-  reactGrid?: ReactGridInstance;
+  reactGrid?: SlickgridReactInstance;
 }
 export default class Example21 extends React.Component<Props, State> {
   title = 'Example 21: Grid AutoHeight';
@@ -31,7 +31,7 @@ export default class Example21 extends React.Component<Props, State> {
   </ul>
   `;
   selectedGroupingFields: Array<string | GroupingGetterFunction> = ['', '', ''];
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
   operatorList: OperatorString[] = ['=', '<', '<=', '>', '>=', '<>', 'StartsWith', 'EndsWith'];
 
   constructor(public readonly props: Props) {
@@ -54,7 +54,7 @@ export default class Example21 extends React.Component<Props, State> {
     this.defineGrid();
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
   }
 
@@ -261,7 +261,7 @@ export default class Example21 extends React.Component<Props, State> {
 
         <hr />
 
-        <ReactSlickgrid gridId="grid21"
+        <SlickgridReact gridId="grid21"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

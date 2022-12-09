@@ -69,7 +69,7 @@ import {
   PagingInfo,
 } from '@slickgrid-universal/common';
 import { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
-import { ReactGridInstance } from '../models';
+import { SlickgridReactInstance } from '../models';
 import { ReactUtilService } from '../services';
 
 export interface SlickgridReactProps {
@@ -103,7 +103,7 @@ export interface SlickgridReactProps {
   gridId: string;
   gridOptions?: GridOption;
   columnDefinitions: Column[];
-  instances?: ReactGridInstance;
+  instances?: SlickgridReactInstance;
   paginationOptions?: Pagination;
 
   // Custom Events list

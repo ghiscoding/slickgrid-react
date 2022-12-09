@@ -2,7 +2,7 @@ import { GraphqlService, GraphqlPaginatedResult, GraphqlServiceApi, } from '@sli
 import i18next, { TFunction } from 'i18next';
 import * as moment from 'moment-mini';
 import {
-  ReactGridInstance,
+  SlickgridReactInstance,
   FieldType,
   Filters,
   Formatters,
@@ -11,7 +11,7 @@ import {
   MultipleSelectOption,
   OperatorType,
   SortDirection,
-  ReactSlickgrid,
+  SlickgridReact,
 } from '../../slickgrid-react';
 import React from 'react';
 import BaseSlickGridState from './state-slick-grid-base';
@@ -51,7 +51,7 @@ class Example6 extends React.Component<Props, State> {
     </ul>
   `;
 
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
   graphqlService = new GraphqlService();
 
 
@@ -82,7 +82,7 @@ class Example6 extends React.Component<Props, State> {
     this.saveCurrentGridState();
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
   }
 
@@ -415,7 +415,7 @@ class Example6 extends React.Component<Props, State> {
 
         <hr />
 
-        <ReactSlickgrid gridId="grid6"
+        <SlickgridReact gridId="grid6"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

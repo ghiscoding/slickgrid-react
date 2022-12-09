@@ -1,5 +1,5 @@
 import {
-  ReactGridInstance,
+  SlickgridReactInstance,
   Column,
   ColumnEditorDualInput,
   Editors,
@@ -10,7 +10,7 @@ import {
   GridOption,
   SlickGrid,
   SlickNamespace,
-  ReactSlickgrid,
+  SlickgridReact,
   DOMEvent
 } from '../../slickgrid-react';
 import React from 'react';
@@ -38,7 +38,7 @@ export default class Example20 extends React.Component<Props, State> {
     </ul>
   `;
 
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
   gridObj!: SlickGrid;
   slickEventHandler: any;
 
@@ -55,7 +55,7 @@ export default class Example20 extends React.Component<Props, State> {
     };
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
     this.gridObj = reactGrid && reactGrid.slickGrid;
 
@@ -407,7 +407,7 @@ export default class Example20 extends React.Component<Props, State> {
           <hr />
         </div>
 
-        <ReactSlickgrid gridId="grid20"
+        <SlickgridReact gridId="grid20"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

@@ -3,7 +3,7 @@ import React from 'react';
 import { withTranslation } from 'react-i18next';
 
 import {
-  ReactGridInstance,
+  SlickgridReactInstance,
   Column,
   FieldType,
   Filters,
@@ -12,7 +12,7 @@ import {
   GridState,
   GridStateChange,
   MultipleSelectOption,
-  ReactSlickgrid
+  SlickgridReact
 } from '../../slickgrid-react';
 import BaseSlickGridState from './state-slick-grid-base';
 
@@ -44,7 +44,7 @@ class Example15 extends React.Component<Props, State> {
   </ul>
 `;
 
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
   // private i18n: i18n;
 
   constructor(public readonly props: Props) {
@@ -74,7 +74,7 @@ class Example15 extends React.Component<Props, State> {
     this.saveCurrentGridState();
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
   }
 
@@ -298,7 +298,7 @@ class Example15 extends React.Component<Props, State> {
           {this.state.selectedLanguage + '.json'}
         </span>
 
-        <ReactSlickgrid gridId="grid15"
+        <SlickgridReact gridId="grid15"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

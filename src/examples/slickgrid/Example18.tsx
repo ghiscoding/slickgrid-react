@@ -2,7 +2,7 @@ import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { TextExportService } from '@slickgrid-universal/text-export';
 import {
   Aggregators,
-  ReactGridInstance,
+  SlickgridReactInstance,
   Column,
   DelimiterType,
   FieldType,
@@ -17,7 +17,7 @@ import {
   Grouping,
   SlickDataView,
   SlickGrid,
-  ReactSlickgrid
+  SlickgridReact
 } from '../../slickgrid-react';
 import React from 'react';
 import BaseSlickGridState from './state-slick-grid-base';
@@ -45,7 +45,7 @@ export default class Example18 extends React.Component<Props, State> {
   </ul>
   `;
 
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
   dataviewObj!: SlickDataView;
   draggableGroupingPlugin: any;
   gridObj!: SlickGrid;
@@ -65,7 +65,7 @@ export default class Example18 extends React.Component<Props, State> {
     };
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
     this.gridObj = reactGrid.slickGrid; // grid object
     this.dataviewObj = reactGrid.dataView;
@@ -558,7 +558,7 @@ export default class Example18 extends React.Component<Props, State> {
           <hr />
         </div>
 
-        <ReactSlickgrid gridId="grid18"
+        <SlickgridReact gridId="grid18"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

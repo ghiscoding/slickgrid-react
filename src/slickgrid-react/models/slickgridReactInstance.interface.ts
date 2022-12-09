@@ -16,7 +16,7 @@ import { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
 
 import { SlickGrid } from '../models/index';
 
-export interface ReactGridInstance {
+export interface SlickgridReactInstance {
   element: HTMLDivElement;
 
   /** Slick DataView object */

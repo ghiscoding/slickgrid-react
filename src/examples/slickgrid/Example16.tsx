@@ -1,4 +1,4 @@
-import { ReactGridInstance, Column, ExtensionName, Filters, Formatters, GridOption, ReactSlickgrid, OnEventArgs } from '../../slickgrid-react';
+import { SlickgridReactInstance, Column, ExtensionName, Filters, Formatters, GridOption, SlickgridReact, OnEventArgs } from '../../slickgrid-react';
 import React from 'react';
 import BaseSlickGridState from './state-slick-grid-base';
 
@@ -23,7 +23,7 @@ export default class Example16 extends React.Component<Props, State> {
       </ul>
     </ul>
   `;
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
 
   constructor(public readonly props: Props) {
     super(props);
@@ -37,7 +37,7 @@ export default class Example16 extends React.Component<Props, State> {
     this.defineGrid();
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
   }
 
@@ -347,7 +347,7 @@ export default class Example16 extends React.Component<Props, State> {
 
         <br />
 
-        <ReactSlickgrid gridId="grid16"
+        <SlickgridReact gridId="grid16"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions!}
           dataset={this.state.dataset}

@@ -2,7 +2,7 @@ import { SlickCompositeEditorComponent } from '@slickgrid-universal/composite-ed
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 
 import {
-  ReactGridInstance,
+  SlickgridReactInstance,
   AutocompleterOption,
   Column,
   CompositeEditorModalType,
@@ -21,7 +21,7 @@ import {
   SlickGrid,
   SlickNamespace,
   SortComparers,
-  ReactSlickgrid,
+  SlickgridReact,
 } from '../../slickgrid-react';
 import React from 'react';
 import './example30.scss'; // provide custom CSS/SASS styling
@@ -97,7 +97,7 @@ export default class Example30 extends React.Component<Props, State> {
   <br>The modal is simply populated by looping through your column definition list and also uses a lot of the same logic as inline editing (see <a href="https://github.com/ghiscoding/slickgrid-react/wiki/Composite-Editor-Modal" target="_blank">Composite Editor - Wiki</a>.)`;
 
   compositeEditorInstance: SlickCompositeEditorComponent;
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
   editQueue: any[] = [];
   editedItems: any = {};
   cellCssStyleQueue: string[] = [];
@@ -503,7 +503,7 @@ export default class Example30 extends React.Component<Props, State> {
   // event handlers
   // ---------------
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
   }
 
@@ -1052,7 +1052,7 @@ export default class Example30 extends React.Component<Props, State> {
           </div>
         </div>
 
-        <ReactSlickgrid gridId="grid30"
+        <SlickgridReact gridId="grid30"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

@@ -12,8 +12,8 @@ import {
   Metrics,
   OperatorType,
   Pagination,
-  ReactGridInstance,
-  ReactSlickgrid,
+  SlickgridReactInstance,
+  SlickgridReact,
 } from '../../slickgrid-react';
 import React from 'react';
 import BaseSlickGridState from './state-slick-grid-base';
@@ -45,7 +45,7 @@ export default class Example31 extends React.Component<Props, State> {
     Optionally use RxJS instead of Promises, you would typically use this with a Backend Service API (OData/GraphQL)
   `;
 
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
 
   constructor(public readonly props: Props) {
     super(props);
@@ -72,7 +72,7 @@ export default class Example31 extends React.Component<Props, State> {
     this.defineGrid();
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
   }
 
@@ -574,7 +574,7 @@ export default class Example31 extends React.Component<Props, State> {
           </div>
         </div>
 
-        <ReactSlickgrid gridId="grid31"
+        <SlickgridReact gridId="grid31"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

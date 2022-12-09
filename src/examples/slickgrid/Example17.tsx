@@ -3,12 +3,12 @@ import 'slickgrid/lib/jquery.jsonp-2.4.min';
 import 'slickgrid/slick.remotemodel'; // SlickGrid Remote Plugin
 
 import {
-  ReactGridInstance,
+  SlickgridReactInstance,
   Column,
   Formatter,
   GridOption,
   SlickNamespace,
-  ReactSlickgrid
+  SlickgridReact
 } from '../../slickgrid-react';
 import React from 'react';
 
@@ -53,7 +53,7 @@ export default class Example17 extends React.Component {
       </li>
     </ul>
   `;
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
   columnDefinitions: Column[] = [];
   customDataView: any;
   dataset = [];
@@ -84,7 +84,7 @@ export default class Example17 extends React.Component {
     this._eventHandler.unsubscribeAll();
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
     this.gridObj = reactGrid.slickGrid; // grid object
     this.loaderDataView.setSort('score', -1);
@@ -193,7 +193,7 @@ export default class Example17 extends React.Component {
           <span>Loading...</span>
         </div>}
 
-        <ReactSlickgrid gridId="grid1"
+        <SlickgridReact gridId="grid1"
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}

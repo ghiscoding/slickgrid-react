@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react';
 import ReactDOM from 'react-dom';
-import { ReactComponentOutput } from '../models/reactComponentOutput.interface';
+import { SlickgridReactComponentOutput } from '../models/reactComponentOutput.interface';
 
 export class ReactUtilService {
-  createReactComponentAppendToDom(component: any, targetElement?: HTMLElement | Element, clearTargetContent = false, props: any = undefined, children: ReactNode[] = []): ReactComponentOutput {
+  createReactComponentAppendToDom(component: any, targetElement?: HTMLElement | Element, clearTargetContent = false, props: any = undefined, children: ReactNode[] = []): SlickgridReactComponentOutput {
     const componentElement = React.createElement(component, props, children);
     let componentInstance: any;
 

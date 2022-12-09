@@ -4,7 +4,7 @@ import React from 'react';
 import { withTranslation } from 'react-i18next';
 
 import {
-  ReactGridInstance,
+  SlickgridReactInstance,
   Column,
   ContextMenu,
   ExtensionName,
@@ -14,7 +14,7 @@ import {
   Formatters,
   GridOption,
   SlickGrid,
-  ReactSlickgrid,
+  SlickgridReact,
 } from '../../slickgrid-react';
 import BaseSlickGridState from './state-slick-grid-base';
 import './example24.scss'; // provide custom CSS/SASS styling
@@ -96,7 +96,7 @@ class Example24 extends React.Component<Props, State> {
       </ol>
     </ul>`;
 
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
 
   constructor(public readonly props: Props) {
     super(props);
@@ -128,7 +128,7 @@ class Example24 extends React.Component<Props, State> {
     this.defineGrid();
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
   }
 
@@ -536,7 +536,7 @@ class Example24 extends React.Component<Props, State> {
           </div>
         </div>
 
-        <ReactSlickgrid gridId="grid24"
+        <SlickgridReact gridId="grid24"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}
