@@ -9,7 +9,7 @@
 <!-- [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 [![codecov](https://codecov.io/gh/ghiscoding/slickgrid-react/branch/master/graph/badge.svg)](https://codecov.io/gh/ghiscoding/slickgrid-react) -->
 
-## First Office Release 2.x 📣
+## First Officially Supported Release 2.x 📣
 We now a fully working and offical release 2.x of Slickgrid-React, checkout the [Live Demo](https://ghiscoding.github.io/slickgrid-react/) of the new version.
 
 ### Brief introduction
