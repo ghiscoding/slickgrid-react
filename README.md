@@ -9,8 +9,8 @@
 <!-- [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 [![codecov](https://codecov.io/gh/ghiscoding/slickgrid-react/branch/master/graph/badge.svg)](https://codecov.io/gh/ghiscoding/slickgrid-react) -->
 
-## Upcoming Release (stay tuned) 📣
-An offical supported release 2.x is about to land very, very soon (in coming days), checkout the [Releases](https://github.com/ghiscoding/slickgrid-react/releases) and [Discussions](https://github.com/ghiscoding/slickgrid-react/discussions) sections for an update on the subject. You can already see and try out the new [Live Demo](https://ghiscoding.github.io/slickgrid-react/) of the upcoming version.
+## First Office Release 2.x 📣
+We now a fully working and offical release 2.x of Slickgrid-React, checkout the [Live Demo](https://ghiscoding.github.io/slickgrid-react/) of the new version.
 
 ### Brief introduction
 One of the best javascript datagrid [SlickGrid](https://github.com/mleibman/SlickGrid) which was originally developed by @mleibman is now available to React. I have used a few datagrids and SlickGrid beats most of them in terms of functionalities and performance (it can easily deal with even a million row). We will be using the [6pac/SlickGrid](https://github.com/6pac/SlickGrid/) fork, this is the most active fork since the original @mleibman fork was closed some time ago by his author for personal reasons. Also worth to know, that I also contributed a lot to the 6pac/SlickGrid fork for the benefit of Slickgrid-React.
