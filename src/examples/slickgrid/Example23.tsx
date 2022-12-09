@@ -54,7 +54,7 @@ const taskTranslateFormatter: Formatter = (_row, _cell, value, _columnDef, _data
 class Example23 extends React.Component<Props, State> {
   title = 'Example 23: Filtering from Range of Search Values';
   subTitle = `
-    This demo shows how to use Filters with Range of Search Values (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Range-Filters" target="_blank">Wiki docs</a>)
+    This demo shows how to use Filters with Range of Search Values (<a href="https://github.com/slickgrid-universal/slickgrid-react/wiki/Range-Filters" target="_blank">Wiki docs</a>)
     <br/>
     <ul class="small">
       <li>All input filters support the following operators: (>, >=, <, <=, <>, !=, =, ==, *) and now also the (..) for an input range
@@ -351,7 +351,7 @@ class Example23 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example23.tsx">
+              href="https://github.com/slickgrid-universal/slickgrid-react/blob/master/src/examples/slickgrid/Example23.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

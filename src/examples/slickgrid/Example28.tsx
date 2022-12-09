@@ -33,7 +33,7 @@ export default class Example28 extends React.Component<Props, State> {
     <li><b>NOTE:</b> The grid will automatically sort Ascending with the column that has the Tree Data, you could add a "sortByFieldId" in your column "treeData" option if you wish to sort on a different column</li>
     <li><b>Styling - Salesforce Theme</b></li>
     <ul>
-      <li>The Salesforce Theme was created with SASS and compiled in CSS (<a href="https://github.com/ghiscoding/slickgrid-universal/blob/master/packages/common/src/styles/slickgrid-theme-salesforce.scss" target="_blank">slickgrid-theme-salesforce.scss</a>), you can override any of its SASS variables</li>
+      <li>The Salesforce Theme was created with SASS and compiled in CSS (<a href="https://github.com/slickgrid-universal/slickgrid-universal/blob/master/packages/common/src/styles/slickgrid-theme-salesforce.scss" target="_blank">slickgrid-theme-salesforce.scss</a>), you can override any of its SASS variables</li>
       <li>We use a small subset of <a href="https://materialdesignicons.com/" target="_blank">Material Design Icons</a></li>
       <li>you might need to refresh the page to clear the browser cache and see the correct theme</li>
     </ul>
@@ -314,7 +314,7 @@ export default class Example28 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example28.tsx">
+              href="https://github.com/slickgrid-universal/slickgrid-react/blob/master/src/examples/slickgrid/Example28.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

@@ -11,7 +11,7 @@ export class NavBar extends React.Component {
     return (
       <div>
         <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-          <a className="navbar-brand ms-2" href="https://github.com/ghiscoding/slickgrid-react">
+          <a className="navbar-brand ms-2" href="https://github.com/slickgrid-universal/slickgrid-react">
             <i className="fa fa-github"></i>
             <span className="ms-2">Slickgrid-React</span>
           </a>
@@ -24,8 +24,8 @@ export class NavBar extends React.Component {
             <ul className="navbar-nav mr-auto">
               <li>
                 <div className="github-button-container" style={{ height: '40px' }}>
-                  <a href="https://github.com/ghiscoding/slickgrid-react">
-                    <img src="https://img.shields.io/github/stars/ghiscoding/slickgrid-react?style=social" />
+                  <a href="https://github.com/slickgrid-universal/slickgrid-react">
+                    <img src="https://img.shields.io/github/stars/slickgrid-universal/slickgrid-react?style=social" />
                   </a>
                 </div>
               </li>

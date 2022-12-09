@@ -36,7 +36,7 @@ export default class Example27 extends React.Component<Props, State> {
     </ul>
     <li><b>Styling - Material Theme</b></li>
     <ul>
-      <li>The Material Theme was created with SASS and compiled in CSS (<a href="https://github.com/ghiscoding/slickgrid-universal/blob/master/packages/common/src/styles/slickgrid-theme-material.scss" target="_blank">slickgrid-theme-material.scss</a>), you can override any of its SASS variables</li>
+      <li>The Material Theme was created with SASS and compiled in CSS (<a href="https://github.com/slickgrid-universal/slickgrid-universal/blob/master/packages/common/src/styles/slickgrid-theme-material.scss" target="_blank">slickgrid-theme-material.scss</a>), you can override any of its SASS variables</li>
       <li>We use a small subset of <a href="https://materialdesignicons.com/" target="_blank">Material Design Icons</a></li>
       <li>you might need to refresh the page to clear the browser cache and see the correct theme</li>
     </ul>
@@ -370,7 +370,7 @@ export default class Example27 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example27.tsx">
+              href="https://github.com/slickgrid-universal/slickgrid-react/blob/master/src/examples/slickgrid/Example27.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

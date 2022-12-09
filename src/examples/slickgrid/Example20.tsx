@@ -29,7 +29,7 @@ interface State extends BaseSlickGridState {
 export default class Example20 extends React.Component<Props, State> {
   title = 'Example 20: Pinned (frozen) Columns/Rows';
   subTitle = `
-    This example demonstrates the use of Pinned (aka frozen) Columns and/or Rows (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Pinned-(aka-Frozen)-Columns-Rows" target="_blank">Wiki docs</a>)
+    This example demonstrates the use of Pinned (aka frozen) Columns and/or Rows (<a href="https://github.com/slickgrid-universal/slickgrid-react/wiki/Pinned-(aka-Frozen)-Columns-Rows" target="_blank">Wiki docs</a>)
     <ul>
       <li>Option to pin any number of columns (left only) or rows</li>
       <li>Option to pin the rows at the bottom instead of the top (default)</li>
@@ -356,7 +356,7 @@ export default class Example20 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example20.tsx">
+              href="https://github.com/slickgrid-universal/slickgrid-react/blob/master/src/examples/slickgrid/Example20.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
