@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/ghiscoding/slickgrid-react/compare/2.0.0...2.0.1) (2022-12-09)
+
+
+### Bug Fixes
+
+* **build:** component should be <SlickgridReact/> ([#22](https://github.com/ghiscoding/slickgrid-react/issues/22)) ([f11a231](https://github.com/ghiscoding/slickgrid-react/commit/f11a23107f2ac408afc826c642778870f0bae932))
+
 # 2.0.0 (2022-12-08)
 
 
