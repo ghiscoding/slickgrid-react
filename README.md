@@ -12,6 +12,9 @@
 ## First Officially Supported Release 2.x 📣
 We now a fully working and offical release 2.x of Slickgrid-React, checkout the [Live Demo](https://slickgrid-stellar.github.io/slickgrid-react-demos/) of the new version.
 
+### Community
+Recently moved all my SlickGrid related repos into a new [Slickgrid-Stellar](https://github.com/slickgrid-stellar) GitHub org to regroup them all under a single location.
+
 ### Brief introduction
 One of the best javascript datagrid [SlickGrid](https://github.com/mleibman/SlickGrid) which was originally developed by @mleibman is now available to React. I have used a few datagrids and SlickGrid beats most of them in terms of functionalities and performance (it can easily deal with even a million row). We will be using the [6pac/SlickGrid](https://github.com/6pac/SlickGrid/) fork, this is the most active fork since the original @mleibman fork was closed some time ago by his author for personal reasons. Also worth to know, that I also contributed a lot to the 6pac/SlickGrid fork for the benefit of Slickgrid-React.
 
