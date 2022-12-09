@@ -94,7 +94,7 @@ interface State extends BaseSlickGridState {
 export default class Example30 extends React.Component<Props, State> {
   title = 'Example 30: Composite Editor Modal';
   subTitle = `Composite Editor allows you to Create, Clone, Edit, Mass Update & Mass Selection Changes inside a nice Modal Window.
-  <br>The modal is simply populated by looping through your column definition list and also uses a lot of the same logic as inline editing (see <a href="https://github.com/slickgrid-club/slickgrid-react/wiki/Composite-Editor-Modal" target="_blank">Composite Editor - Wiki</a>.)`;
+  <br>The modal is simply populated by looping through your column definition list and also uses a lot of the same logic as inline editing (see <a href="https://github.com/slickclub/slickgrid-react/wiki/Composite-Editor-Modal" target="_blank">Composite Editor - Wiki</a>.)`;
 
   compositeEditorInstance: SlickCompositeEditorComponent;
   reactGrid!: SlickgridReactInstance;
@@ -995,7 +995,7 @@ export default class Example30 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/slickgrid-club/slickgrid-react/blob/master/src/examples/slickgrid/Example30.tsx">
+              href="https://github.com/slickclub/slickgrid-react/blob/master/src/examples/slickgrid/Example30.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

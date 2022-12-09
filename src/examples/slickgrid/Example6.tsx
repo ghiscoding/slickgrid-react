@@ -38,7 +38,7 @@ class Example6 extends React.Component<Props, State> {
   title = 'Example 6: Grid with Backend GraphQL Service';
   subTitle = `
   Use it when you need to support Pagination with a GraphQL endpoint (for simple JSON, use a regular grid).
-  <br/>Take a look at the (<a href="https://github.com/slickgrid-club/slickgrid-react/wiki/GraphQL" target="_blank">Wiki docs</a>)
+  <br/>Take a look at the (<a href="https://github.com/slickclub/slickgrid-react/wiki/GraphQL" target="_blank">Wiki docs</a>)
     <ul class="small">
       <li><span class="red bold">(*) NO DATA SHOWN</span> - just change filters &amp; page and look at the "GraphQL Query" changing</li>
       <li>Only "Name" field is sortable for the demo (because we use JSON files), however "multiColumnSort: true" is also supported</li>
@@ -47,7 +47,7 @@ class Example6 extends React.Component<Props, State> {
         <li>The (*) can be used as startsWith (ex.: "abc*" => startsWith "abc") / endsWith (ex.: "*xyz" => endsWith "xyz")</li>
         <li>The other operators can be used on column type number for example: ">=100" (greater or equal than 100)</li>
       </ul>
-      <li>You can also preload a grid with certain "presets" like Filters / Sorters / Pagination <a href="https://github.com/slickgrid-club/slickgrid-react/wiki/Grid-State-&-Preset" target="_blank">Wiki - Grid Preset</a>
+      <li>You can also preload a grid with certain "presets" like Filters / Sorters / Pagination <a href="https://github.com/slickclub/slickgrid-react/wiki/Grid-State-&-Preset" target="_blank">Wiki - Grid Preset</a>
     </ul>
   `;
 
@@ -338,7 +338,7 @@ class Example6 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/slickgrid-club/slickgrid-react/blob/master/src/examples/slickgrid/Example6.tsx">
+              href="https://github.com/slickclub/slickgrid-react/blob/master/src/examples/slickgrid/Example6.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

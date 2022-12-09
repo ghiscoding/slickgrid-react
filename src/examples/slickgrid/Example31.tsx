@@ -490,7 +490,7 @@ export default class Example31 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/slickgrid-club/slickgrid-react/blob/master/src/examples/slickgrid/Example31.tsx">
+              href="https://github.com/slickclub/slickgrid-react/blob/master/src/examples/slickgrid/Example31.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

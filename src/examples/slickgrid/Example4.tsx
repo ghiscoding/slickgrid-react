@@ -35,7 +35,7 @@ interface Props { }
 export default class Example4 extends React.Component<Props, State> {
   title = 'Example 4: Client Side Sort/Filter';
   subTitle = `
-  Sort/Filter on client side only using SlickGrid DataView (<a href="https://github.com/slickgrid-club/slickgrid-react/wiki/Sorting" target="_blank">Wiki docs</a>)
+  Sort/Filter on client side only using SlickGrid DataView (<a href="https://github.com/slickclub/slickgrid-react/wiki/Sorting" target="_blank">Wiki docs</a>)
   <br/>
   <ul class="small">
     <li>Support multi-sort (by default), hold "Shift" key and click on the next column to sort.</li>
@@ -52,7 +52,7 @@ export default class Example4 extends React.Component<Props, State> {
       </li>
     </ul>
     <li>On String filters, (*) can be used as startsWith (Hello* => matches "Hello Word") ... endsWith (*Doe => matches: "John Doe")</li>
-    <li>Custom Filter are now possible, "Description" column below, is a customized InputFilter with different placeholder. See <a href="https://github.com/slickgrid-club/slickgrid-react/wiki/Custom-Filter" target="_blank">Wiki - Custom Filter</a></li>
+    <li>Custom Filter are now possible, "Description" column below, is a customized InputFilter with different placeholder. See <a href="https://github.com/slickclub/slickgrid-react/wiki/Custom-Filter" target="_blank">Wiki - Custom Filter</a></li>
   </ul>
 `;
 
@@ -346,7 +346,7 @@ export default class Example4 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/slickgrid-club/slickgrid-react/blob/master/src/examples/slickgrid/Example4.tsx">
+              href="https://github.com/slickclub/slickgrid-react/blob/master/src/examples/slickgrid/Example4.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

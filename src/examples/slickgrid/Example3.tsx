@@ -77,7 +77,7 @@ interface State extends BaseSlickGridState {
 export default class Example3 extends React.Component<Props, State> {
   title = 'Example 3: Editors / Delete';
   subTitle = `
-  Grid with Inline Editors and onCellClick actions (<a href='https://github.com/slickgrid-club/slickgrid-react/wiki/Editors' target='_blank'>Wiki docs</a>).
+  Grid with Inline Editors and onCellClick actions (<a href='https://github.com/slickclub/slickgrid-react/wiki/Editors' target='_blank'>Wiki docs</a>).
   <ul>
     <li>Multiple Editors & Filters are available: AutoComplete, Checkbox, Date, Slider, SingleSelect, MultipleSelect, Float, Text, LongText... even Custom Editor</li>
     <li>When using 'enableCellNavigation: true', clicking on a cell will automatically make it active &amp; selected.</li>
@@ -801,7 +801,7 @@ export default class Example3 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/slickgrid-club/slickgrid-react/blob/master/src/examples/slickgrid/Example3.tsx">
+              href="https://github.com/slickclub/slickgrid-react/blob/master/src/examples/slickgrid/Example3.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
