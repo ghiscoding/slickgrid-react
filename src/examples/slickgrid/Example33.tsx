@@ -29,7 +29,7 @@ interface State extends BaseSlickGridState {
 export default class Example32 extends React.Component<Props, State> {
   title = 'Example 33: Regular & Custom Tooltips';
   subTitle = `
-  This demo shows how to create Regular & Custom Tooltips (<a href="https://github.com/slickclub/slickgrid-react/wiki/Custom-Tooltip-(plugin)" target="_blank">Wiki docs</a>)
+  This demo shows how to create Regular & Custom Tooltips (<a href="https://github.com/slickgrid-stellar/slickgrid-react/wiki/Custom-Tooltip-(plugin)" target="_blank">Wiki docs</a>)
   <br/>
   <ul class="small">
     <li>optionally parse regular [title] attributes and transform them into tooltips</li>
@@ -509,7 +509,7 @@ export default class Example32 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/slickclub/slickgrid-react/blob/master/src/examples/slickgrid/Example33.tsx">
+              href="https://github.com/slickgrid-stellar/slickgrid-react/blob/master/src/examples/slickgrid/Example33.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

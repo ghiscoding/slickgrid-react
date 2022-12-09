@@ -33,7 +33,7 @@ const NB_ITEMS = 500;
 class Example15 extends React.Component<Props, State> {
   title = 'Example 15: Grid State & Presets using Local Storage';
   subTitle = `
-  Grid State & Preset (<a href="https://github.com/slickclub/slickgrid-react/wiki/Grid-State-&-Preset" target="_blank">Wiki docs</a>)
+  Grid State & Preset (<a href="https://github.com/slickgrid-stellar/slickgrid-react/wiki/Grid-State-&-Preset" target="_blank">Wiki docs</a>)
   <br/>
   <ul class="small">
     <li>Uses Local Storage to persist the Grid State and uses Grid Options "presets" to put the grid back to it's previous state</li>
@@ -276,7 +276,7 @@ class Example15 extends React.Component<Props, State> {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/slickclub/slickgrid-react/blob/master/src/examples/slickgrid/Example15.tsx">
+              href="https://github.com/slickgrid-stellar/slickgrid-react/blob/master/src/examples/slickgrid/Example15.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>

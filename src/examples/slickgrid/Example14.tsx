@@ -11,8 +11,8 @@ export default class Example14 extends React.Component {
   This example demonstrates how to easily span a row over multiple columns & how to group header titles.
   <ul>
     <li>
-      Row Colspan - (<a href="https://github.com/slickclub/slickgrid-react/wiki/Row-Colspan" target="_blank">Wiki docs</a>) /
-      Header Grouping - (<a href="https://github.com/slickclub/slickgrid-react/wiki/Header-Title-Grouping" target="_blank">Wiki docs</a>)
+      Row Colspan - (<a href="https://github.com/slickgrid-stellar/slickgrid-react/wiki/Row-Colspan" target="_blank">Wiki docs</a>) /
+      Header Grouping - (<a href="https://github.com/slickgrid-stellar/slickgrid-react/wiki/Header-Title-Grouping" target="_blank">Wiki docs</a>)
     </li>
     <li>Note that you can add Sort but remember that it will sort by the data which the row contains, even if the data is visually hidden by colspan it will still sort it</li>
   </ul>
@@ -162,7 +162,7 @@ export default class Example14 extends React.Component {
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
-              href="https://github.com/slickclub/slickgrid-react/blob/master/src/examples/slickgrid/Example14.tsx">
+              href="https://github.com/slickgrid-stellar/slickgrid-react/blob/master/src/examples/slickgrid/Example14.tsx">
               <span className="fa fa-link"></span> code
             </a>
           </span>
