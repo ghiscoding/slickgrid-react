@@ -35,7 +35,7 @@ For a complete working set of working demos, you strongly suggest that you clone
 ### Like it? :star: it
 You like **Slickgrid-React**? Be sure to upvote :star:, and perhaps support me with cafeine :coffee: and feel free to contribute. 👷👷‍♀️ 
 
-<a href='https://ko-fi.com/slickgrid-universal' target='_blank'><img height='32' style='border:0px;height:32px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+<a href='https://ko-fi.com/ghiscoding' target='_blank'><img height='32' style='border:0px;height:32px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 
 ## Latest News & Releases
 Check out the [Releases](https://github.com/slickclub/slickgrid-react/releases) section for all latest News & Releases.
