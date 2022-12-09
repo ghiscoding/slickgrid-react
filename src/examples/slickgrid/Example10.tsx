@@ -1,4 +1,4 @@
-import { ReactGridInstance, Column, FieldType, Filters, Formatters, GridOption, GridStateChange, ReactSlickgrid } from '../../slickgrid-react';
+import { SlickgridReactInstance, Column, FieldType, Filters, Formatters, GridOption, GridStateChange, SlickgridReact } from '../../slickgrid-react';
 import React from 'react';
 import './example10.scss'; // provide custom CSS/SASS styling
 
@@ -26,8 +26,8 @@ export default class Example10 extends React.Component<Props, State> {
   isMounted = false;
   isGrid2WithPagination = true;
 
-  reactGrid1!: ReactGridInstance;
-  reactGrid2!: ReactGridInstance;
+  reactGrid1!: SlickgridReactInstance;
+  reactGrid2!: SlickgridReactInstance;
   selectedGrid2IDs: number[] = [];
 
   constructor(public readonly props: Props) {
@@ -52,11 +52,11 @@ export default class Example10 extends React.Component<Props, State> {
     this.defineGrids();
   }
 
-  reactGrid1Ready(reactGrid: ReactGridInstance) {
+  reactGrid1Ready(reactGrid: SlickgridReactInstance) {
     this.reactGrid1 = reactGrid;
   }
 
-  reactGrid2Ready(reactGrid: ReactGridInstance) {
+  reactGrid2Ready(reactGrid: SlickgridReactInstance) {
     this.reactGrid2 = reactGrid;
   }
 
@@ -322,7 +322,7 @@ export default class Example10 extends React.Component<Props, State> {
         </div>
 
         <div className="overflow-hidden">
-          <ReactSlickgrid gridId="grid1"
+          <SlickgridReact gridId="grid1"
             columnDefinitions={this.state.columnDefinitions1}
             gridOptions={this.state.gridOptions1!}
             dataset={this.state.dataset1}
@@ -363,7 +363,7 @@ export default class Example10 extends React.Component<Props, State> {
         </div>
 
         <div className="overflow-hidden">
-          <ReactSlickgrid gridId="grid2"
+          <SlickgridReact gridId="grid2"
             columnDefinitions={this.state.columnDefinitions2}
             gridOptions={this.state.gridOptions2!}
             dataset={this.state.dataset2}

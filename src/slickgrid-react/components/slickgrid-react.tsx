@@ -65,7 +65,7 @@ import { SlickPaginationComponent } from '@slickgrid-universal/pagination-compon
 import { dequal } from 'dequal/lite';
 import { Constants } from '../constants';
 import { GlobalGridOptions } from '../global-grid-options';
-import { ReactGridInstance, GridOption, } from '../models/index';
+import { SlickgridReactInstance, GridOption, } from '../models/index';
 import {
   ReactUtilService,
   disposeAllSubscriptions,
@@ -94,7 +94,7 @@ class CustomEventPubSubService extends EventPubSubService {
   }
 }
 
-export class ReactSlickgrid extends React.Component<SlickgridReactProps, State> {
+export class SlickgridReact extends React.Component<SlickgridReactProps, State> {
   protected _mounted = false;
   protected setStateValue(key: string, value: any, callback?: () => void): void {
     if (this.state && this.state[key] === value) {
@@ -196,7 +196,7 @@ export class ReactSlickgrid extends React.Component<SlickgridReactProps, State> 
   totalItems = 0;
 
   extensions!: ExtensionList<any>;
-  instances: ReactGridInstance | null = null;
+  instances: SlickgridReactInstance | null = null;
 
   static defaultProps = {
     reactUtilService: new ReactUtilService(),
@@ -402,7 +402,7 @@ export class ReactSlickgrid extends React.Component<SlickgridReactProps, State> 
 
   initialization(eventHandler: SlickEventHandler) {
     if (!this._gridOptions || !this._columnDefinitions) {
-      throw new Error('Using `<ReactSlickgrid>` requires columnDefinitions and gridOptions, it seems that you might have forgot to provide them since at least of them is undefined.');
+      throw new Error('Using `<SlickgridReact>` requires columnDefinitions and gridOptions, it seems that you might have forgot to provide them since at least of them is undefined.');
     }
 
     this._gridOptions.translater = this.props.translaterService;
@@ -565,7 +565,7 @@ export class ReactSlickgrid extends React.Component<SlickgridReactProps, State> 
     }
 
     // create the React Grid Instance with reference to all Services
-    const reactElementInstance: ReactGridInstance = {
+    const reactElementInstance: SlickgridReactInstance = {
       element: this._elm as HTMLDivElement,
 
       // Slick Grid & DataView objects

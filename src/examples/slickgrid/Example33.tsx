@@ -8,8 +8,8 @@ import {
   Formatters,
   GridOption,
   MenuCommandItemCallbackArgs,
-  ReactGridInstance,
-  ReactSlickgrid,
+  SlickgridReactInstance,
+  SlickgridReact,
   OperatorType,
   SlickGrid,
 } from '../../slickgrid-react';
@@ -39,7 +39,7 @@ export default class Example32 extends React.Component<Props, State> {
   </ul>`;
   editCommandQueue: EditCommand[] = [];
   editedItems: any = {};
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
 
   constructor(public readonly props: Props) {
     super(props);
@@ -56,7 +56,7 @@ export default class Example32 extends React.Component<Props, State> {
     this.defineGrid();
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
   }
 
@@ -526,7 +526,7 @@ export default class Example32 extends React.Component<Props, State> {
         </div>
 
         <div id="smaller-container" style={{ width: '950px' }}>
-          <ReactSlickgrid gridId="grid33"
+          <SlickgridReact gridId="grid33"
             columnDefinitions={this.state.columnDefinitions}
             gridOptions={this.state.gridOptions}
             dataset={this.state.dataset}

@@ -3,14 +3,14 @@ import React from 'react';
 import { withTranslation } from 'react-i18next';
 
 import {
-  ReactGridInstance,
+  SlickgridReactInstance,
   ExtensionName,
   FieldType,
   Filters,
   Formatters,
   SlickDataView,
   SlickGrid,
-  ReactSlickgrid,
+  SlickgridReact,
 } from '../../slickgrid-react';
 import BaseSlickGridState from './state-slick-grid-base';
 import './example9.scss'; // provide custom CSS/SASS styling
@@ -38,7 +38,7 @@ class Example9 extends React.Component<Props, State> {
     </ul>
   `;
 
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
   dataView!: SlickDataView;
   gridObj!: SlickGrid;
 
@@ -66,7 +66,7 @@ class Example9 extends React.Component<Props, State> {
     this.getData();
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
     this.gridObj = reactGrid && reactGrid.slickGrid;
     this.dataView = reactGrid && reactGrid.dataView;
@@ -295,7 +295,7 @@ class Example9 extends React.Component<Props, State> {
         </button>
         <b>Locale:</b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{this.state.selectedLanguage + '.json'}</span>
 
-        <ReactSlickgrid gridId="grid9"
+        <SlickgridReact gridId="grid9"
           columnDefinitions={this.state.columnDefinitions}
           dataset={this.state.dataset}
           gridOptions={this.state.gridOptions}

@@ -3,7 +3,7 @@ import i18next from 'i18next';
 import React from 'react';
 
 import {
-  ReactGridInstance,
+  SlickgridReactInstance,
   AutocompleterOption,
   Column,
   EditCommand,
@@ -17,7 +17,7 @@ import {
   OperatorType,
   SlickNamespace,
   SortComparers,
-  ReactSlickgrid,
+  SlickgridReact,
   GridOption,
 } from '../../slickgrid-react';
 import { CustomInputEditor } from './custom-inputEditor';
@@ -95,7 +95,7 @@ export default class Example3 extends React.Component<Props, State> {
   </ul>
   `;
   private _commandQueue: EditCommand[] = [];
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
   selectedLanguage: string;
   duplicateTitleHeaderCount = 1;
 
@@ -758,7 +758,7 @@ export default class Example3 extends React.Component<Props, State> {
     return true;
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
   }
 
@@ -902,7 +902,7 @@ export default class Example3 extends React.Component<Props, State> {
         </div>
 
         <div className='col-sm-12'>
-          <ReactSlickgrid
+          <SlickgridReact
             gridId='grid3'
             columnDefinitions={this.state.columnDefinitions}
             gridOptions={this.state.gridOptions}

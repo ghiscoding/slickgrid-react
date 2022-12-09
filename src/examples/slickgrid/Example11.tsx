@@ -1,5 +1,5 @@
 import {
-  ReactGridInstance,
+  SlickgridReactInstance,
   Column,
   Editors,
   FieldType,
@@ -9,7 +9,7 @@ import {
   OnEventArgs,
   SlickDataView,
   SlickGrid,
-  ReactSlickgrid,
+  SlickgridReact,
 } from '../../slickgrid-react';
 import React from 'react';
 import './example11.scss';
@@ -37,7 +37,7 @@ export default class Example11 extends React.Component {
   </ul>
   `;
 
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
   dataView!: SlickDataView;
   grid!: SlickGrid;
   gridService!: GridService;
@@ -53,7 +53,7 @@ export default class Example11 extends React.Component {
     this.mockData(1000);
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
     this.dataView = reactGrid.dataView;
     this.grid = reactGrid.slickGrid;
@@ -324,7 +324,7 @@ export default class Example11 extends React.Component {
           <hr />
         </div>
 
-        <ReactSlickgrid gridId="grid11"
+        <SlickgridReact gridId="grid11"
           columnDefinitions={this.columnDefinitions}
           gridOptions={this.gridOptions}
           dataset={this.dataset}

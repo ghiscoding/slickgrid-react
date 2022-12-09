@@ -1,13 +1,13 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import {
-  ReactGridInstance,
+  SlickgridReactInstance,
   Column,
   FieldType,
   Filters,
   Formatters,
   GridOption,
   findItemInTreeStructure,
-  ReactSlickgrid,
+  SlickgridReact,
   SlickGrid,
   TreeToggledItem,
 } from '../../slickgrid-react';
@@ -38,7 +38,7 @@ export default class Example28 extends React.Component<Props, State> {
       <li>you might need to refresh the page to clear the browser cache and see the correct theme</li>
     </ul>
   `;
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
 
   constructor(public readonly props: Props) {
     super(props);
@@ -64,7 +64,7 @@ export default class Example28 extends React.Component<Props, State> {
     this.defineGrid();
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
   }
 
@@ -379,7 +379,7 @@ export default class Example28 extends React.Component<Props, State> {
         <br />
 
         <div id="grid-container" className="col-sm-12">
-          <ReactSlickgrid gridId="grid28"
+          <SlickgridReact gridId="grid28"
             columnDefinitions={this.state.columnDefinitions}
             gridOptions={this.state.gridOptions}
             datasetHierarchical={this.state.datasetHierarchical}

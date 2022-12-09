@@ -1,4 +1,4 @@
-import { ReactGridInstance, Column, Filters, GridOption, ReactSlickgrid } from '../../slickgrid-react';
+import { SlickgridReactInstance, Column, Filters, GridOption, SlickgridReact } from '../../slickgrid-react';
 import React from 'react';
 import './example22.scss';
 
@@ -22,7 +22,7 @@ export default class Example22 extends React.Component<Props, State> {
     <li>Load dataset through Fetch-Client. Also note we need to call a "resizeGrid()" after focusing on this tab</li>
   </ol>`;
 
-  reactGrid2!: ReactGridInstance;
+  reactGrid2!: SlickgridReactInstance;
   isGrid2DataLoaded = false;
   isGrid2Resize = false;
 
@@ -39,7 +39,7 @@ export default class Example22 extends React.Component<Props, State> {
     };
   }
 
-  reactGrid2Ready(reactGrid: ReactGridInstance) {
+  reactGrid2Ready(reactGrid: SlickgridReactInstance) {
     this.reactGrid2 = reactGrid;
   }
 
@@ -197,7 +197,7 @@ export default class Example22 extends React.Component<Props, State> {
               role="tabpanel"
               aria-labelledby="javascript-tab">
               <h4>Grid 1 - Load Local Data</h4>
-              <ReactSlickgrid gridId="grid1"
+              <SlickgridReact gridId="grid1"
                 columnDefinitions={this.state.columnDefinitions1}
                 gridOptions={this.state.gridOptions1}
                 dataset={this.state.dataset1} />
@@ -207,7 +207,7 @@ export default class Example22 extends React.Component<Props, State> {
               role="tabpanel"
               aria-labelledby="fetch-tab">
               <h4>Grid 2 - Load a JSON dataset through Fetch-Client</h4>
-              <ReactSlickgrid gridId="grid2"
+              <SlickgridReact gridId="grid2"
                 columnDefinitions={this.state.columnDefinitions2}
                 gridOptions={this.state.gridOptions2}
                 dataset={this.state.dataset2}

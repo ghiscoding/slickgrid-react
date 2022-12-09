@@ -5,7 +5,7 @@ import { ExcelExportService } from '@slickgrid-universal/excel-export';
 
 import { CustomInputFilter } from './custom-inputFilter';
 import {
-  ReactGridInstance,
+  SlickgridReactInstance,
   Column,
   CurrentFilter,
   FieldType,
@@ -19,7 +19,7 @@ import {
   OperatorType,
   SlickGrid,
   SliderRangeOption,
-  ReactSlickgrid,
+  SlickgridReact,
   GroupingGetterFunction
 } from '../../slickgrid-react';
 import React from 'react';
@@ -72,7 +72,7 @@ class Example23 extends React.Component<Props, State> {
     </ul>
   `;
 
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
   // private i18n: i18n;
 
   constructor(public readonly props: Props) {
@@ -108,7 +108,7 @@ class Example23 extends React.Component<Props, State> {
     this.saveCurrentGridState();
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
   }
 
@@ -414,7 +414,7 @@ class Example23 extends React.Component<Props, State> {
           </div>
         </div>
 
-        <ReactSlickgrid gridId="grid23"
+        <SlickgridReact gridId="grid23"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}

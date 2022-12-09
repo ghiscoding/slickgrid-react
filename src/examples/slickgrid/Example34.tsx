@@ -8,8 +8,8 @@ import {
   Formatters,
   GridOption,
   GroupTotalFormatters,
-  ReactGridInstance,
-  ReactSlickgrid,
+  SlickgridReactInstance,
+  SlickgridReact,
 } from '../../slickgrid-react';
 import { faker } from '@faker-js/faker';
 import sparkline from '@fnando/sparkline';
@@ -63,7 +63,7 @@ export default class Example34 extends React.Component<Props, State> {
   </ul>`;
 
   timer: any;
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
 
   constructor(public readonly props: Props) {
     super(props);
@@ -93,7 +93,7 @@ export default class Example34 extends React.Component<Props, State> {
     this.stopSimulation();
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
   }
 
@@ -422,7 +422,7 @@ export default class Example34 extends React.Component<Props, State> {
             </div>
           </div>
 
-          <ReactSlickgrid gridId="grid34"
+          <SlickgridReact gridId="grid34"
             columnDefinitions={this.state.columnDefinitions}
             gridOptions={this.state.gridOptions}
             dataset={this.state.dataset}

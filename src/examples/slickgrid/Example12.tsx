@@ -2,7 +2,7 @@ import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { TextExportService } from '@slickgrid-universal/text-export';
 import i18next, { TFunction } from 'i18next';
 import {
-  ReactGridInstance,
+  SlickgridReactInstance,
   DelimiterType,
   FieldType,
   FileType,
@@ -12,7 +12,7 @@ import {
   GridOption,
   GridStateChange,
   SlickGrid,
-  ReactSlickgrid,
+  SlickgridReact,
 } from '../../slickgrid-react';
 import React from 'react';
 import { withTranslation } from 'react-i18next';
@@ -62,7 +62,7 @@ class Example12 extends React.Component<Props, State> {
       </ol>
     `;
 
-  reactGrid!: ReactGridInstance;
+  reactGrid!: SlickgridReactInstance;
   duplicateTitleHeaderCount = 1;
   gridObj!: SlickGrid;
   excelExportService = new ExcelExportService();
@@ -91,7 +91,7 @@ class Example12 extends React.Component<Props, State> {
     this.defineGrid();
   }
 
-  reactGridReady(reactGrid: ReactGridInstance) {
+  reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
     this.gridObj = reactGrid.slickGrid;
   }
@@ -324,7 +324,7 @@ class Example12 extends React.Component<Props, State> {
             </span>
           </div>
         </div>
-        <ReactSlickgrid gridId="grid12"
+        <SlickgridReact gridId="grid12"
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}
