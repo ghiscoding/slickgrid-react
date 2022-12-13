@@ -18,33 +18,33 @@ import './styles.scss';
 import './slickgrid.scss';
 
 i18n
-    .use(Backend)
-    .use(initReactI18next) // passes i18n down to react-i18next
-    .init({
-        // the translations
-        // (tip move them in a JSON file and import them,
-        // or even better, manage them via a UI: https://react.i18next.com/guides/multiple-translation-files#manage-your-translations-with-a-management-gui)
-        // backend: {
-        //     loadPath: 'assets/locales/{{lng}}/{{ns}}.json',
-        // },
-        resources: {
-            en: { translation: localeEn },
-            fr: { translation: localeFr },
-        },
-        lng: 'en',
-        fallbackLng: 'en',
-        debug: false,
-        interpolation: {
-            escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
-        }
-    });
+  .use(Backend)
+  .use(initReactI18next) // passes i18n down to react-i18next
+  .init({
+    // the translations
+    // (tip move them in a JSON file and import them,
+    // or even better, manage them via a UI: https://react.i18next.com/guides/multiple-translation-files#manage-your-translations-with-a-management-gui)
+    // backend: {
+    //     loadPath: 'assets/locales/{{lng}}/{{ns}}.json',
+    // },
+    resources: {
+      en: { translation: localeEn },
+      fr: { translation: localeFr },
+    },
+    lng: 'en',
+    fallbackLng: 'en',
+    debug: false,
+    interpolation: {
+      escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
+    }
+  });
 
 const mainContainer = document.getElementById('main');
 const root = createRoot(mainContainer as HTMLElement);
 root.render(
-    <HashRouter>
-        <App />
-    </HashRouter>
+  <HashRouter>
+    <App />
+  </HashRouter>
 );
 
 // load necessary Flatpickr Locale(s), but make sure it's imported AFTER loading Slickgrid-React plugin
