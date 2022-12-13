@@ -182,7 +182,7 @@ class Example23 extends React.Component<Props, State> {
     ];
 
     const presetLowestDay = moment().add(-2, 'days').format('YYYY-MM-DD');
-    const presetHighestDay = moment().add(20, 'days').format('YYYY-MM-DD');
+    const presetHighestDay = moment().add(28, 'days').format('YYYY-MM-DD');
 
     const gridOptions: GridOption = {
       autoResize: {
