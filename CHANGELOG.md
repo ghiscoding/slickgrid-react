@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.1](https://github.com/slickgrid-stellar/slickgrid-react/compare/v2.1.0...v2.1.1) (2022-12-22)
+
+
+### Bug Fixes
+
+* **styling:** make Grid Menu item full width instead of max-content ([#27](https://github.com/slickgrid-stellar/slickgrid-react/issues/27)) ([530adc4](https://github.com/slickgrid-stellar/slickgrid-react/commit/530adc4a792a897fc49adfab223dec18d120d151))
+
+# Change Log 
+
+All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 # [2.1.0](https://github.com/slickgrid-stellar/slickgrid-react/compare/2.0.4...v2.1.0) (2022-12-22)
 
 
