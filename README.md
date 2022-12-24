@@ -26,7 +26,7 @@ Refer to the **[Wiki - HOWTO Step by Step](https://github.com/slickgrid-stellar/
 
 ### Live Demo page
 `Slickgrid-React` works with all `Bootstrap` versions and/or any other UI framework you wish to use (Bulma, Material Design, ...), you can see a demo of each one below. There are also 2 new styling Themes, Material & Salesforce which are also available. You can also use different SVG icons, you may want to look at the [Wiki - SVG Icons](https://github.com/slickgrid-stellar/slickgrid-react/wiki/SVG-Icons)
-- [Bootstrap 5 demo](https://slickgrid-stellar.github.io/slickgrid-react)
+- [Bootstrap 5 demo](https://ghiscoding.github.io/slickgrid-react) / [examples repo](https://github.com/ghiscoding/slickgrid-react-demos/tree/main/bootstrap5-i18n-demo)
 
 #### Working Demos
 For a complete working set of working demos, you strongly suggest that you clone the [Slickgrid-React Demos](https://github.com/slickgrid-stellar/slickgrid-react-demos) repository (instructions are provided in the demo repo). This repo provides multiple samples and it is also worth to know that these demos are updated frequently.
