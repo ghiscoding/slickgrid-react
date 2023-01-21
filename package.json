@@ -152,14 +152,14 @@
     "jest-extended": "^3.2.3",
     "jsdom-global": "^3.0.2",
     "mini-css-extract-plugin": "^2.7.2",
-    "minimatch": "^5.1.6",
+    "minimatch": "^6.1.5",
     "moment-mini": "^2.29.4",
     "npm-check": "^6.0.1",
     "npm-run-all": "^4.1.5",
     "promise-polyfill": "^8.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-i18next": ">=12.1.1",
+    "react-i18next": ">=12.1.4",
     "react-scripts": "^5.0.1",
     "react-router-dom": "^6.7.0",
     "release-it": "^15.6.0",
@@ -182,6 +182,6 @@
     "npm": ">=6.14.13"
   },
   "resolutions": {
-    "caniuse-lite": "1.0.30001441"
+    "caniuse-lite": "1.0.30001446"
   }
 }
