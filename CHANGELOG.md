@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/ghiscoding/slickgrid-react/compare/v2.1.2...v2.2.0) (2023-01-22)
+
+
+### Features
+
+* **filters:** new flag to disable special chars input filter parsing ([#35](https://github.com/ghiscoding/slickgrid-react/issues/35)) ([aaf7936](https://github.com/ghiscoding/slickgrid-react/commit/aaf7936339bea00395de6300234e469bd989f969))
+
+# Change Log 
+
+All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.1.2](https://github.com/ghiscoding/slickgrid-react/compare/v2.1.1...v2.1.2) (2022-12-24)
 
 
