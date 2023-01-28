@@ -96,12 +96,10 @@ export default class Example3 extends React.Component<Props, State> {
   `;
   private _commandQueue: EditCommand[] = [];
   reactGrid!: SlickgridReactInstance;
-  selectedLanguage: string;
   duplicateTitleHeaderCount = 1;
 
   constructor(public readonly props: Props) {
     super(props);
-    this.selectedLanguage = i18next.language;
     this.state = {
       gridOptions: undefined,
       columnDefinitions: [],
