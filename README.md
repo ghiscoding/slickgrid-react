@@ -10,10 +10,10 @@
 [![codecov](https://codecov.io/gh/slickgrid-universal/slickgrid-react/branch/master/graph/badge.svg)](https://codecov.io/gh/slickgrid-universal/slickgrid-react) -->
 
 ## First Officially Supported Release 2.x 📣
-We now have a fully working and offical release 2.x of Slickgrid-React and a new [Live Demo](https://ghiscoding.github.io/slickgrid-react-demos/).
+We now have a fully working and official release 2.x of Slickgrid-React and a new [Live Demo](https://ghiscoding.github.io/slickgrid-react-demos/) which is being used by Cypress E2E tests.
 
 ### Brief introduction
-One of the best javascript datagrid [SlickGrid](https://github.com/mleibman/SlickGrid) which was originally developed by @mleibman is now available to React. I have used a few datagrids and SlickGrid beats most of them in terms of functionalities and performance (it can easily deal with even a million row). We will be using the [6pac/SlickGrid](https://github.com/6pac/SlickGrid/) fork, this is the most active fork since the original @mleibman fork was closed some time ago by his author for personal reasons. Also worth to know, that I also contributed a lot to the 6pac/SlickGrid fork for the benefit of Slickgrid-React.
+One of the best javascript datagrid [SlickGrid](https://github.com/mleibman/SlickGrid) which was originally developed by @mleibman is now available to React. I have used a few datagrids and SlickGrid beats most of them in terms of functionalities and performance (it can easily deal with even a million row). We will be using the [6pac/SlickGrid](https://github.com/6pac/SlickGrid/) fork, it is the most active fork since the original @mleibman was retired some time ago by the original author for personal reasons. Also worth to know, that I also contributed a lot to the 6pac/SlickGrid fork for the benefit of all the SlickGrid libs that I maintain like this one here.
 
 ## Installation
 Refer to the **[Wiki - HOWTO Step by Step](https://github.com/ghiscoding/slickgrid-react/wiki/HOWTO--Step-by-Step)** and/or clone the [Slickgrid-React-Demos](https://github.com/ghiscoding/slickgrid-react-demos) repository. Please consult all Wikis before opening new issues, also consider asking installation and/or general questions on [Stack Overflow](https://stackoverflow.com/search?tab=newest&q=slickgrid) unless you think there's a bug with the library.
