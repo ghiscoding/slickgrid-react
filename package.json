@@ -134,7 +134,7 @@
     "cross-env": "^7.0.3",
     "css-loader": "6.7.3",
     "custom-event-polyfill": "^1.0.7",
-    "cypress": "^12.5.0",
+    "cypress": "^12.5.1",
     "duplicate-package-checker-webpack-plugin": "^3.0.0",
     "eslint": "^8.33.0",
     "eslint-plugin-import": "^2.27.5",
