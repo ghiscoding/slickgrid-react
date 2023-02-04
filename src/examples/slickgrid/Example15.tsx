@@ -80,11 +80,11 @@ class Example15 extends React.Component<Props, State> {
 
   /** Clear the Grid State from Local Storage and reset the grid to it's original state */
   clearGridStateFromLocalStorage() {
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
     // this.reactGrid.slickGrid.setColumns(this.reactGrid.gridService.getAllColumnDefinitions());
     // this.reactGrid.slickGrid.autosizeColumns();
     this.reactGrid.gridService.resetGrid(this.getColumnDefinitions());
     this.reactGrid.paginationService!.changeItemPerPage(DEFAULT_PAGE_SIZE);
+    setTimeout(() => localStorage[LOCAL_STORAGE_KEY] = null);
   }
 
   /* Define grid Options and Columns */

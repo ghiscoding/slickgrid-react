@@ -2,10 +2,10 @@
 import * as $ from 'jquery';
 import i18next from 'i18next';
 import React from 'react';
-import 'slickgrid/dist/slick.core.min';
-import 'slickgrid/dist/slick.interactions.min';
-import 'slickgrid/dist/slick.grid.min';
-import 'slickgrid/dist/slick.dataview.min';
+import 'slickgrid/slick.core';
+import 'slickgrid/slick.interactions';
+import 'slickgrid/slick.grid';
+import 'slickgrid/slick.dataview';
 import * as Sortable_ from 'sortablejs';
 const Sortable = ((Sortable_ as any)?.['default'] ?? Sortable_); // patch for rollup
 
@@ -998,11 +998,11 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
 
   /**
    * On a Pagination changed, we will trigger a Grid State changed with the new pagination info
-   * Also if we use Row Selection or the Checkbox Selector, we need to reset any selection
+   * Also if we use Row Selection or the Checkbox Selector with a Backend Service (Odata, GraphQL), we need to reset any selection
    */
   paginationChanged(pagination: ServicePagination) {
     const isSyncGridSelectionEnabled = this.gridStateService?.needToPreserveRowSelection() ?? false;
-    if (this.grid && !isSyncGridSelectionEnabled && (this.gridOptions.enableRowSelection || this.gridOptions.enableCheckboxSelector)) {
+    if (this.grid && !isSyncGridSelectionEnabled && this.gridOptions?.backendServiceApi && (this.gridOptions.enableRowSelection || this.gridOptions.enableCheckboxSelector)) {
       this.grid.setSelectedRows([]);
     }
     const { pageNumber, pageSize } = pagination;
@@ -1336,16 +1336,14 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
       } else if (Array.isArray(gridRowIndexes) && gridRowIndexes.length > 0) {
         dataContextIds = this.dataView.mapRowsToIds(gridRowIndexes) || [];
       }
-      this.gridStateService.selectedRowDataContextIds = dataContextIds;
 
-      // change the selected rows except UNLESS it's a Local Grid with Pagination
-      // local Pagination uses the DataView and that also trigger a change/refresh
-      // and we don't want to trigger 2 Grid State changes just 1
-      if ((this._isLocalGrid && !this.gridOptions.enablePagination) || !this._isLocalGrid) {
-        setTimeout(() => {
-          if (this.grid && Array.isArray(gridRowIndexes)) {
-            this.grid.setSelectedRows(gridRowIndexes);
-          }
+      // apply row selection when defined as grid presets
+      if (this.grid && Array.isArray(gridRowIndexes)) {
+        this.grid.setSelectedRows(gridRowIndexes);
+        this.dataView!.setSelectedIds(dataContextIds || [], {
+          isRowBeingAdded: true,
+          shouldTriggerEvent: false, // do not trigger when presetting the grid
+          applyRowSelectionToGrid: true
         });
       }
     }

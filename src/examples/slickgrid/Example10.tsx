@@ -160,7 +160,8 @@ export default class Example10 extends React.Component<Props, State> {
 
         // you can toggle these 2 properties to show the "select all" checkbox in different location
         hideInFilterHeaderRow: false,
-        hideInColumnTitleRow: true
+        hideInColumnTitleRow: true,
+        applySelectOnAllPages: true, // when clicking "Select All", should we apply it to all pages (defaults to true)
       },
       rowSelectionOptions: {
         // True (Single Selection), False (Multiple Selections)
@@ -255,9 +256,15 @@ export default class Example10 extends React.Component<Props, State> {
     if (gridStateChanges.gridState!.rowSelection) {
       this.selectedGrid2IDs = (gridStateChanges.gridState!.rowSelection.filteredDataContextIds || []) as number[];
       this.selectedGrid2IDs = this.selectedGrid2IDs.sort((a, b) => a - b); // sort by ID
+
+      let selectedTitles = this.selectedGrid2IDs.map(dataContextId => `Task ${dataContextId}`).join(',');
+      if (selectedTitles.length > 293) {
+        selectedTitles = selectedTitles.substring(0, 293) + '...';
+      }
+
       this.setState((state: State) => ({
         ...state,
-        selectedTitles: this.selectedGrid2IDs.map(dataContextId => `Task ${dataContextId}`).join(','),
+        selectedTitles,
       }));
     }
   }
