@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/ghiscoding/slickgrid-react/compare/v2.3.0...v2.4.0) (2023-02-04)
+
+
+### Bug Fixes
+
+* use DOMPurify correct namespace for dts file ([#45](https://github.com/ghiscoding/slickgrid-react/issues/45)) ([8f2d6c3](https://github.com/ghiscoding/slickgrid-react/commit/8f2d6c3e4374026985eb22062e3e5b86af78efc8))
+
 # [2.3.0](https://github.com/ghiscoding/slickgrid-react/compare/v2.2.0...v2.3.0) (2023-02-04)
 
 
