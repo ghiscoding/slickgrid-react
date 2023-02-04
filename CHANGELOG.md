@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.3.0](https://github.com/ghiscoding/slickgrid-react/compare/v2.2.0...v2.3.0) (2023-02-04)
+
+
+### Features
+
+* **dataView:** add option to apply row selection to all pages ([#44](https://github.com/ghiscoding/slickgrid-react/issues/44)) ([d878e4f](https://github.com/ghiscoding/slickgrid-react/commit/d878e4f3401a1f095cbaa6ad24d17a0c33312fce))
+
 # [2.2.0](https://github.com/ghiscoding/slickgrid-react/compare/v2.1.2...v2.2.0) (2023-01-22)
 
 
