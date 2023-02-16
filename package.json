@@ -82,7 +82,7 @@
     "@slickgrid-universal/event-pub-sub": "~2.4.0",
     "@slickgrid-universal/pagination-component": "~2.4.1",
     "dequal": "^2.0.3",
-    "dompurify": "^2.4.4",
+    "dompurify": "^3.0.0",
     "font-awesome": "^4.7.0",
     "i18next": ">=22.0.0",
     "jquery": "^3.6.3",
