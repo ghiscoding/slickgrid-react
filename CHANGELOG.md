@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/ghiscoding/slickgrid-react/compare/v2.4.0...v2.5.0) (2023-02-17)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([#43](https://github.com/ghiscoding/slickgrid-react/issues/43)) ([a7c59ef](https://github.com/ghiscoding/slickgrid-react/commit/a7c59efa2b7a83c2b1e72be0686bf3058cac3daa))
+* **deps:** update dependency dompurify to v3 ([#48](https://github.com/ghiscoding/slickgrid-react/issues/48)) ([9f8cb15](https://github.com/ghiscoding/slickgrid-react/commit/9f8cb15111d1db9ebd43fe6fc67ad440843e5160))
+* excel copy buffer should work w/editable grid, fixes [#36](https://github.com/ghiscoding/slickgrid-react/issues/36) ([#52](https://github.com/ghiscoding/slickgrid-react/issues/52)) ([f3c642c](https://github.com/ghiscoding/slickgrid-react/commit/f3c642cfd7f87756e064a1927acefb87b17196fd))
+
 # [2.4.0](https://github.com/ghiscoding/slickgrid-react/compare/v2.3.0...v2.4.0) (2023-02-04)
 
 
