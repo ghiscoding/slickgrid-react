@@ -114,13 +114,12 @@ describe('Example 12: Localization (i18n)', { retries: 1 }, () => {
     });
 
     it('should have some metrics shown in the grid right footer', () => {
-      const dateFormatted = moment(now).format('YYYY-MM-DD hh:mm a');
+      const dateFormatted = moment().format('YYYY-MM-DD hh:mm a');
       
       cy.get('#slickGridContainer-grid12')
         .find('.slick-custom-footer')
         .find('.right-footer')
         .should($span => {
-          const now = new Date();
           const text = removeExtraSpaces($span.text()); // remove all white spaces          
           expect(text).to.eq(`Dernière mise à jour ${dateFormatted} | 1500 de 1500 éléments`);
         });
