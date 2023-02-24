@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.1](https://github.com/ghiscoding/slickgrid-react/compare/v2.6.0...v2.6.1) (2023-02-24)
+
+
+### Bug Fixes
+
+* **common:** remove jQuery import to avoid duplicate jQuery load ([1b57443](https://github.com/ghiscoding/slickgrid-react/commit/1b574439670f92c63258b9c0b8150650ebde8046))
+
 # [2.6.0](https://github.com/ghiscoding/slickgrid-react/compare/v2.5.0...v2.6.0) (2023-02-24)
 
 
