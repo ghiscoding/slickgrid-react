@@ -332,7 +332,7 @@ export default class Example3 extends React.Component<Props, State> {
             fetch: (searchText: string, updateCallback: (items: false | any[]) => void) => {
               /** with FETCH, note this demo won't work because of CORS */
               // this.httpFetch.fetch(`http://gd.geobytes.com/AutoCompleteCity?q=${searchText}`)
-              //   .then(response => response.json())
+              //   .then(response => updateCallback())
               //   .then(data => response(data))
               //   .catch(error => console.log('fetch error:', error));
 
@@ -806,97 +806,99 @@ export default class Example3 extends React.Component<Props, State> {
         </h2>
         <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
-        <div className='col-sm-6'>
-          <label className="me-1">autoEdit setting:</label>
-          <span id='radioAutoEdit'>
-            <label className='radio-inline control-label me-1' htmlFor='radioTrue'>
-              <input
-                type='radio'
-                name='inlineRadioOptions'
-                id='radioTrue'
-                defaultChecked={this.state.isAutoEdit}
-                onInput={() => this.setAutoEdit(true)}
-              />{' '}
-              ON (single-click)
-            </label>
-            <label className='radio-inline control-label' htmlFor='radioFalse'>
-              <input
-                type='radio'
-                name='inlineRadioOptions'
-                id='radioFalse'
-                onInput={() => this.setAutoEdit(false)}
-              />{' '}
-              OFF (double-click)
-            </label>
-          </span>
-          <div className='row col-sm-12'>
-            <span>
-              <button className='btn btn-outline-secondary btn-sm me-1' onClick={() => this.undo()}>
-                <i className='fa fa-undo me-1'></i>
-                Undo last edit(s)
-              </button>
-              <label className='checkbox-inline control-label me-1' htmlFor='autoCommitEdit'>
+        <div className="row">
+          <div className='col-sm-6'>
+            <label className="me-1">autoEdit setting:</label>
+            <span id='radioAutoEdit'>
+              <label className='radio-inline control-label me-1' htmlFor='radioTrue'>
                 <input
-                  type='checkbox'
-                  id='autoCommitEdit'
-                  data-test='auto-commit'
-                  onChange={() => this.changeAutoCommit()}
-                />
-                Auto Commit Edit
+                  type='radio'
+                  name='inlineRadioOptions'
+                  id='radioTrue'
+                  defaultChecked={this.state.isAutoEdit}
+                  onInput={() => this.setAutoEdit(true)}
+                />{' '}
+                ON (single-click)
+              </label>
+              <label className='radio-inline control-label' htmlFor='radioFalse'>
+                <input
+                  type='radio'
+                  name='inlineRadioOptions'
+                  id='radioFalse'
+                  onInput={() => this.setAutoEdit(false)}
+                />{' '}
+                OFF (double-click)
               </label>
             </span>
-          </div>
-          <div className='row' style={marginTop5px}>
-            <div className='col-sm-12'>
-              <button className='btn btn-outline-secondary btn-sm' onClick={() => this.reactGrid.filterService.clearFilters()}>
-                Clear Filters
-              </button>
-              <button
-                className='btn btn-outline-secondary btn-sm mx-1' onClick={() => this.reactGrid.sortService.clearSorting()}>
-                Clear Sorting
-              </button>
-              <button
-                className='btn btn-sm btn-outline-primary'
-                data-test="add-item-btn"
-                onClick={() => this.addItem()}
-                title='Clear Filters &amp; Sorting to see it better'
-              >
-                Add item
-              </button>
-              <button
-                className='btn btn-sm btn-outline-danger mx-1'
-                data-test="delete-item-btn"
-                onClick={() => this.deleteItem()}
-              >
-                Delete item
-              </button>
+            <div className='row col-sm-12'>
+              <span>
+                <button className='btn btn-outline-secondary btn-sm me-1' data-test='undo-btn' onClick={() => this.undo()}>
+                  <i className='fa fa-undo me-1'></i>
+                  Undo last edit(s)
+                </button>
+                <label className='checkbox-inline control-label me-1' htmlFor='autoCommitEdit'>
+                  <input
+                    type='checkbox'
+                    id='autoCommitEdit'
+                    data-test='auto-commit'
+                    onChange={() => this.changeAutoCommit()}
+                  />
+                  Auto Commit Edit
+                </label>
+              </span>
+            </div>
+            <div className='row' style={marginTop5px}>
+              <div className='col-sm-12'>
+                <button className='btn btn-outline-secondary btn-sm' onClick={() => this.reactGrid.filterService.clearFilters()}>
+                  Clear Filters
+                </button>
+                <button
+                  className='btn btn-outline-secondary btn-sm mx-1' onClick={() => this.reactGrid.sortService.clearSorting()}>
+                  Clear Sorting
+                </button>
+                <button
+                  className='btn btn-sm btn-outline-primary'
+                  data-test="add-item-btn"
+                  onClick={() => this.addItem()}
+                  title='Clear Filters &amp; Sorting to see it better'
+                >
+                  Add item
+                </button>
+                <button
+                  className='btn btn-sm btn-outline-danger mx-1'
+                  data-test="delete-item-btn"
+                  onClick={() => this.deleteItem()}
+                >
+                  Delete item
+                </button>
+              </div>
+            </div>
+            <div className='row' style={marginTop5px}>
+              <div className='col-sm-12'>
+                <button
+                  className='btn btn-outline-secondary btn-sm'
+                  data-test='add-title-column'
+                  onClick={() => this.dynamicallyAddTitleHeader()}
+                >
+                  <i className='fa fa-plus me-1'></i>
+                  Dynamically Duplicate Title Column
+                </button>
+                <button
+                  className='btn btn-outline-secondary btn-sm mx-1'
+                  data-test='remove-title-column'
+                  onClick={() => this.dynamicallyRemoveLastColumn()}
+                >
+                  <i className='fa fa-minus me-1'></i>
+                  Dynamically Remove Last Column
+                </button>
+              </div>
             </div>
           </div>
-          <div className='row' style={marginTop5px}>
-            <div className='col-sm-12'>
-              <button
-                className='btn btn-outline-secondary btn-sm'
-                data-test='add-title-column'
-                onClick={() => this.dynamicallyAddTitleHeader()}
-              >
-                <i className='fa fa-plus me-1'></i>
-                Dynamically Duplicate Title Column
-              </button>
-              <button
-                className='btn btn-outline-secondary btn-sm mx-1'
-                data-test='remove-title-column'
-                onClick={() => this.dynamicallyRemoveLastColumn()}
-              >
-                <i className='fa fa-minus me-1'></i>
-                Dynamically Remove Last Column
-              </button>
-            </div>
-          </div>
-        </div>
 
-        <div className='col-sm-6'>
-          {alertWarning}
-          {objectAlert}
+          <div className='col-sm-6'>
+            {alertWarning}
+            {objectAlert}
+          </div>
         </div>
 
         <div className='col-sm-12'>
