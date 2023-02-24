@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/ghiscoding/slickgrid-react/compare/v2.5.0...v2.6.0) (2023-02-24)
+
+
+### Bug Fixes
+
+* regression Edit cell mouseout should save & excel copy should work ([#57](https://github.com/ghiscoding/slickgrid-react/issues/57)) ([152bc80](https://github.com/ghiscoding/slickgrid-react/commit/152bc8073f676544c0dbd133b51b4196b55b3665))
+
 # [2.5.0](https://github.com/ghiscoding/slickgrid-react/compare/v2.4.0...v2.5.0) (2023-02-17)
 
 
