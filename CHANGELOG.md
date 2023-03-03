@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.2](https://github.com/ghiscoding/slickgrid-react/compare/v2.6.1...v2.6.2) (2023-03-03)
+
+
+### Bug Fixes
+
+* draggable grouping shouldn't throw when dynamically changing cols ([#62](https://github.com/ghiscoding/slickgrid-react/issues/62)) ([b934d0a](https://github.com/ghiscoding/slickgrid-react/commit/b934d0a30c1331389f91550ec15bca3bbf8633a6))
+
 ## [2.6.1](https://github.com/ghiscoding/slickgrid-react/compare/v2.6.0...v2.6.1) (2023-02-24)
 
 
