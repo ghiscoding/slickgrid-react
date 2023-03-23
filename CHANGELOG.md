@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.3](https://github.com/ghiscoding/slickgrid-react/compare/v2.6.2...v2.6.3) (2023-03-23)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies to ~2.6.3 ([#73](https://github.com/ghiscoding/slickgrid-react/issues/73)) ([f1b4c36](https://github.com/ghiscoding/slickgrid-react/commit/f1b4c36253baceef3740a20c2dcd817d1671c952))
+* **presets:** dynamic columns should be auto-inserted with Grid Presets ([#74](https://github.com/ghiscoding/slickgrid-react/issues/74)) ([df7f777](https://github.com/ghiscoding/slickgrid-react/commit/df7f7770c533a0cf3119a094efbd5c26432e5e3d))
+
 ## [2.6.2](https://github.com/ghiscoding/slickgrid-react/compare/v2.6.1...v2.6.2) (2023-03-03)
 
 
