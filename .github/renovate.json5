@@ -23,6 +23,6 @@
       allowedVersions: '22.0.0',
     },
   ],
-  schedule: ['on thursday and monday'],
+  schedule: ['on friday and tuesday'],
   ignoreDeps: ['typescript'],
 }
