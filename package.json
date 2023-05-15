@@ -177,7 +177,7 @@
     "webpack-dev-server": "^4.15.0"
   },
   "engines": {
-    "node": ">=v14.17.0",
+    "node": ">=v16.15.0",
     "npm": ">=8.5.0"
   },
   "resolutions": {
