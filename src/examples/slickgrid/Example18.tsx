@@ -181,6 +181,7 @@ export default class Example18 extends React.Component<Props, State> {
         filterable: true,
         filter: { model: Filters.compoundInput },
         formatter: Formatters.dollar,
+        exportWithFormatter: true,
         groupTotalsFormatter: GroupTotalFormatters.sumTotalsDollar,
         type: FieldType.number,
         grouping: {
