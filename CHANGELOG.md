@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.4](https://github.com/ghiscoding/slickgrid-react/compare/v2.6.3...v2.6.4) (2023-05-20)
+
+
+### Bug Fixes
+
+* **export:** fix negative number exports to Excel ([#108](https://github.com/ghiscoding/slickgrid-react/issues/108)) ([c7f93b3](https://github.com/ghiscoding/slickgrid-react/commit/c7f93b3f9a5f49b4106b3eadd1e186112b348723))
+
 ## [2.6.3](https://github.com/ghiscoding/slickgrid-react/compare/v2.6.2...v2.6.3) (2023-03-23)
 
 
