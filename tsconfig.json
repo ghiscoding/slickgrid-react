@@ -4,6 +4,7 @@
     "target": "es2018",
     "module": "esnext",
     "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -13,7 +14,6 @@
     "baseUrl": "src",
     "skipLibCheck": true,
     "strict": true,
-    "suppressImplicitAnyIndexErrors": true,
     "jsx": "react",
     "lib": [
       "es2018",

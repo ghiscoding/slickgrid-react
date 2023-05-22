@@ -175,8 +175,8 @@ export default class Example32 extends React.Component<Props, State> {
         id: 'complexity', name: 'Complexity', field: 'complexity',
         resizeCalcWidthRatio: 0.9, // default calc ratio is 1 or ~0.9 for field type of string
         sortable: true, filterable: true, columnGroup: 'Analysis',
-        formatter: (_row, _cell, value) => this.state.complexityLevelList[value].label,
-        exportCustomFormatter: (_row, _cell, value) => this.state.complexityLevelList[value].label,
+        formatter: (_row, _cell, value) => this.state.complexityLevelList[value]?.label,
+        exportCustomFormatter: (_row, _cell, value) => this.state.complexityLevelList[value]?.label,
         filter: {
           model: Filters.multipleSelect,
           collection: this.state.complexityLevelList

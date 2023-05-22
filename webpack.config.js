@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { HotModuleReplacementPlugin, ProvidePlugin } = require('webpack');
+const { HotModuleReplacementPlugin } = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 // primary config:
@@ -18,7 +18,6 @@ module.exports = ({ production } = {}, { server } = {}) => ({
     extensions: ['.ts', '.tsx', '.js'],
     modules: [srcDir, 'node_modules'],
     alias: {
-      'jquery': path.join(__dirname, 'node_modules/jquery/dist/jquery'),
       moment$: 'moment/moment.js'
     },
     fallback: {
@@ -31,7 +30,6 @@ module.exports = ({ production } = {}, { server } = {}) => ({
   },
   entry: {
     app: [`${srcDir}/index`],
-    vendor: ['jquery']
   },
   mode: production ? 'production' : 'development',
   output: {
@@ -97,12 +95,6 @@ module.exports = ({ production } = {}, { server } = {}) => ({
     ]
   },
   plugins: [
-    new ProvidePlugin({
-      '$': 'jquery',
-      'jQuery': 'jquery',
-      'window.jQuery': 'jquery',
-      'window.$': 'jquery'
-    }),
     // ref: https://webpack.js.org/plugins/mini-css-extract-plugin/
     new MiniCssExtractPlugin({ // updated to match the naming conventions for the js files
       filename: '[name].[contenthash].bundle.css',
