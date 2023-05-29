@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/ghiscoding/slickgrid-react/compare/v2.6.4...v3.0.0) (2023-05-29)
+
 ## [2.6.4](https://github.com/ghiscoding/slickgrid-react/compare/v2.6.3...v2.6.4) (2023-05-20)
 
 
