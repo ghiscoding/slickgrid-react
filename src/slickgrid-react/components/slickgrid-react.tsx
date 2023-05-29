@@ -1,5 +1,4 @@
 // import 3rd party vendor libs
-import * as $ from 'jquery';
 import i18next from 'i18next';
 import React from 'react';
 import 'slickgrid/slick.core';
@@ -56,6 +55,8 @@ import {
   // utilities
   autoAddEditorFormatterToColumnsWithEditor,
   emptyElement,
+  SlickGridEventData,
+  SlickEvent,
 } from '@slickgrid-universal/common';
 import { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
 import { SlickFooterComponent } from '@slickgrid-universal/custom-footer-component';
@@ -97,18 +98,18 @@ class CustomEventPubSubService extends EventPubSubService {
 export class SlickgridReact extends React.Component<SlickgridReactProps, State> {
   protected _mounted = false;
   protected setStateValue(key: string, value: any, callback?: () => void): void {
-    if (this.state && this.state[key] === value) {
+    if ((this.state as any)?.[key] === value) {
       return;
     }
 
     if (!this._mounted) {
       this.state = this.state || {};
-      this.state[key] = value;
+      (this.state as any)[key] = value;
       return;
     }
 
     this.setState(() => {
-      const result = {};
+      const result: any = {};
       result[key] = value;
       return result;
     }, callback);
@@ -139,7 +140,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
     // if we already have grid options, when grid was already initialized, we'll merge with those options
     // else we'll merge with global grid options
     if (this.grid?.getOptions) {
-      mergedOptions = $.extend(true, {}, this.grid.getOptions(), options);
+      mergedOptions = Slick.Utils.extend(true, {}, this.grid.getOptions(), options);
     } else {
       mergedOptions = this.mergeGridOptions(options);
     }
@@ -214,7 +215,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
     const prevDatasetLn = this._currentDatasetLength;
     const isDatasetEqual = dequal(newDataset, this.dataset || []);
     const isDeepCopyDataOnPageLoadEnabled = !!(this._gridOptions?.enableDeepCopyDatasetOnPageLoad);
-    let data = isDeepCopyDataOnPageLoadEnabled ? $.extend(true, [], newDataset) : newDataset;
+    let data = isDeepCopyDataOnPageLoadEnabled ? Slick.Utils.extend(true, [], newDataset) : newDataset;
 
     // when Tree Data is enabled and we don't yet have the hierarchical dataset filled, we can force a convert+sort of the array
     if (this.grid && this.gridOptions?.enableTreeData && Array.isArray(newDataset) && (newDataset.length > 0 || newDataset.length !== prevDatasetLn || !isDatasetEqual)) {
@@ -373,7 +374,8 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
         if (prop.startsWith('on')) {
           this.subscriptions.push(
             this._eventPubSubService.subscribe(prop, (data: unknown) => {
-              const callback = this.props[prop];
+              // eslint-disable-next-line @typescript-eslint/ban-types
+              const callback: any = this.props[prop as keyof SlickgridReactProps];
               const gridEventName = this._eventPubSubService.getEventNameByNamingConvention(prop, '');
               typeof callback === 'function' && callback.call(null, new CustomEvent(gridEventName, { detail: data }));
             })
@@ -716,7 +718,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
       // a timeout must be set or this could come into conflict when slickgrid
       // tries to commit the edit when going from one editor to another on the grid
       // through the click event. If the timeout was not here it would
-      // try to commit/destroy the twice, which would throw a jquery
+      // try to commit/destroy the twice, which would throw an
       // error about the element not being in the DOM
       setTimeout(() => {
         // make sure the target is the active editor so we do not
@@ -791,9 +793,9 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
       for (const prop in grid) {
         if (grid.hasOwnProperty(prop) && prop.startsWith('on')) {
           const gridEventName = this._eventPubSubService.getEventNameByNamingConvention(prop, slickgridEventPrefix);
-          this._eventHandler.subscribe(grid[prop], (event, args: any) => {
+          this._eventHandler.subscribe((grid as any)[prop], (event, args: any) => {
             if (this.props.hasOwnProperty(prop)) {
-              const callback = this.props[prop];
+              const callback = this.props[prop as keyof SlickgridReactProps];
               return typeof callback === 'function' && callback(new CustomEvent(gridEventName, { detail: { eventData: event, args } }));
             }
             return true;
@@ -804,10 +806,10 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
       // expose all Slick DataView Events through dispatch
       for (const prop in dataView) {
         if (dataView.hasOwnProperty(prop) && prop.startsWith('on')) {
-          this._eventHandler.subscribe(dataView[prop], (event, args: any) => {
+          this._eventHandler.subscribe((dataView as any)[prop], (event, args: any) => {
             const dataViewEventName = this._eventPubSubService.getEventNameByNamingConvention(prop, slickgridEventPrefix);
             if (this.props.hasOwnProperty(prop)) {
-              const callback = this.props[prop];
+              const callback = this.props[prop as keyof SlickgridReactProps];
               return typeof callback === 'function' && callback(new CustomEvent(dataViewEventName, { detail: { eventData: event, args } }));
             }
             return true;
@@ -1370,8 +1372,8 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
   }
 
   protected mergeGridOptions(gridOptions: GridOption): GridOption {
-    // use jquery extend to deep merge & copy to avoid immutable properties being changed in GlobalGridOptions after a route change
-    const options = $.extend(true, {}, GlobalGridOptions, gridOptions) as GridOption;
+    // use extend to deep merge & copy to avoid immutable properties being changed in GlobalGridOptions after a route change
+    const options = Slick.Utils.extend(true, {}, GlobalGridOptions, gridOptions) as GridOption;
 
     options.gridId = this.props.gridId;
     options.gridContainerId = `slickGridContainer-${this.props.gridId}`;
@@ -1384,9 +1386,9 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
     // if we have a backendServiceApi and the enablePagination is undefined, we'll assume that we do want to see it, else get that defined value
     options.enablePagination = ((gridOptions.backendServiceApi && gridOptions.enablePagination === undefined) ? true : gridOptions.enablePagination) || false;
 
-    // using jQuery extend to do a deep clone has an unwanted side on objects and pageSizes but ES6 spread has other worst side effects
+    // using copy extend to do a deep clone has an unwanted side on objects and pageSizes but ES6 spread has other worst side effects
     // so we will just overwrite the pageSizes when needed, this is the only one causing issues so far.
-    // jQuery wrote this on their docs:: On a deep extend, Object and Array are extended, but object wrappers on primitive types such as String, Boolean, and Number are not.
+    // On a deep extend, Object and Array are extended, but object wrappers on primitive types such as String, Boolean, and Number are not.
     if (options?.pagination && (gridOptions.enablePagination || gridOptions.backendServiceApi) && gridOptions.pagination && Array.isArray(gridOptions.pagination.pageSizes)) {
       options.pagination.pageSizes = gridOptions.pagination.pageSizes;
     }

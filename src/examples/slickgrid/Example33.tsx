@@ -160,7 +160,7 @@ export default class Example32 extends React.Component<Props, State> {
           model: Editors.slider,
           minValue: 0,
           maxValue: 100,
-          // params: { hideSliderNumber: true },
+          // editorOptions: { hideSliderNumber: true },
         },
         formatter: Formatters.percentCompleteBar,
         sortable: true, filterable: true,

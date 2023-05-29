@@ -316,7 +316,7 @@ export default class Example4 extends React.Component<Props, State> {
     ]);
   }
 
-  refreshMetrics(_e: JQuery.Event, args: any) {
+  refreshMetrics(_e: Event, args: any) {
     if (args?.current >= 0) {
       setTimeout(() => {
         this.setState((state: State) => ({

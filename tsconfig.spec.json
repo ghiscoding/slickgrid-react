@@ -5,9 +5,9 @@
     "outDir": "../out-tsc/spec",
     "baseUrl": "./",
     "types": [
+      "cypress",
       "jest",
       "jest-extended",
-      "jquery",
       "node"
     ]
   },
