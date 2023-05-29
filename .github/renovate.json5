@@ -20,7 +20,7 @@
     },
     {
       packageNames: ['i18next'],
-      allowedVersions: '22.0.0',
+      allowedVersions: '22.5.0',
     },
   ],
   schedule: ['on friday and tuesday'],

@@ -52,6 +52,8 @@ class Example8 extends React.Component<Props, State> {
       selectedLanguage: defaultLang,
       visibleColumns: []
     };
+
+    i18next.changeLanguage(defaultLang);
   }
 
   componentDidMount() {

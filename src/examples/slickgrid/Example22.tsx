@@ -146,7 +146,7 @@ export default class Example22 extends React.Component<Props, State> {
       await this.loadGrid2Data();
     }
     if (!this.isGrid2Resize) {
-      this.reactGrid2?.resizerService.resizeGrid(150);
+      this.reactGrid2?.resizerService.resizeGrid(10);
     }
   }
 

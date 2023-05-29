@@ -3,7 +3,6 @@ import 'font-awesome/css/font-awesome.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import 'flatpickr/dist/flatpickr.min.css';
-import 'multiple-select-modified/src/multiple-select.css';
 import i18n from 'i18next';
 import Backend from 'i18next-http-backend';
 import React from 'react';
