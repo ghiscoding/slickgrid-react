@@ -1,5 +1,5 @@
 import i18next, { TFunction } from 'i18next';
-import * as moment from 'moment-mini';
+import moment from 'moment-mini';
 import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 

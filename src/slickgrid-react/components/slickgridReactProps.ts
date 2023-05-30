@@ -186,6 +186,7 @@ export interface SlickgridReactProps {
   onGridStateChanged?: (e: CustomEvent<any>) => void;
   onPaginationChanged?: (e: CustomEvent<any>) => void;
   onReactGridCreated?: (e: CustomEvent<any>) => void;
+  onSelectedRowIdsChanged?: (e: CustomEvent<any>) => void;
   onSortChanged?: (e: CustomEvent<any>) => void;
   onToggleTreeCollapsed?: (e: CustomEvent<any>) => void;
   onTreeItemToggled?: (e: CustomEvent<any>) => void;

@@ -110,7 +110,7 @@ class Example8 extends React.Component<Props, State> {
                 // for example don't show Help on column "% Complete"
                 return (args.column.id !== 'percentComplete');
               },
-              action: (_e, args) => {
+              action: (_e: Event, args: any) => {
                 // you can use the "action" callback and/or subscribe to the "onCallback" event, they both have the same arguments
                 console.log('execute an action on Help', args);
               }
@@ -142,7 +142,7 @@ class Example8 extends React.Component<Props, State> {
         hideSortCommands: false,
         hideColumnHideCommand: false,
         // you can use the "onCommand" (in Grid Options) and/or the "action" callback (in Column Definition)
-        onCommand: (_e, args) => {
+        onCommand: (_e: Event, args: any) => {
           if (args.command === 'help') {
             alert('Please help!!!');
           }

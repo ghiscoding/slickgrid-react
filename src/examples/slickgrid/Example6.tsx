@@ -1,6 +1,6 @@
 import { GraphqlService, GraphqlPaginatedResult, GraphqlServiceApi, } from '@slickgrid-universal/graphql';
 import i18next, { TFunction } from 'i18next';
-import * as moment from 'moment-mini';
+import moment from 'moment-mini';
 import {
   SlickgridReactInstance,
   FieldType,

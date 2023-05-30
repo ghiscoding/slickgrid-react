@@ -39,7 +39,6 @@ export default class Example7 extends React.Component<Props, State> {
     </ul>
   `;
 
-  columnsWithHighlightingById: Record<string, never>;
   reactGrid1!: SlickgridReactInstance;
   reactGrid2!: SlickgridReactInstance;
 
@@ -83,15 +82,15 @@ export default class Example7 extends React.Component<Props, State> {
       enableFiltering: false,
       enableExcelCopyBuffer: true,
       excelCopyBufferOptions: {
-        onCopyCells: (e, args) => console.log('onCopyCells', e, args),
-        onPasteCells: (e, args) => console.log('onPasteCells', e, args),
-        onCopyCancelled: (e, args) => console.log('onCopyCancelled', e, args),
+        onCopyCells: (e: Event, args: any) => console.log('onCopyCells', e, args),
+        onPasteCells: (e: Event, args: any) => console.log('onPasteCells', e, args),
+        onCopyCancelled: (e: Event, args: any) => console.log('onCopyCancelled', e, args),
       },
       enableCellNavigation: true,
       gridHeight: 275,
       headerButton: {
         // you can use the "onCommand" (in Grid Options) and/or the "action" callback (in Column Definition)
-        onCommand: (_e, args) => this.handleOnCommand(_e, args, 1)
+        onCommand: (_e: Event, args: any) => this.handleOnCommand(_e, args, 1)
       }
     };
 
@@ -103,7 +102,7 @@ export default class Example7 extends React.Component<Props, State> {
       // frozenColumn: 2,
       // frozenRow: 2,
       headerButton: {
-        onCommand: (_e, args) => this.handleOnCommand(_e, args, 2)
+        onCommand: (_e: Event, args: any) => this.handleOnCommand(_e, args, 2)
       }
     };
 
@@ -166,7 +165,7 @@ export default class Example7 extends React.Component<Props, State> {
         width: i === 0 ? 70 : 100, // have the 2 first columns wider
         filterable: true,
         sortable: true,
-        formatter: (_row, _cell, value, columnDef) => {
+        formatter: (_row: number, _cell: number, value: any, columnDef: Column) => {
           if (gridNo === 1 && columns1WithHighlightingById[columnDef.id] && value < 0) {
             return `<div style="color:red; font-weight:bold;">${value}</div>`;
           } else if (gridNo === 2 && columns2WithHighlightingById[columnDef.id] && value < 0) {
@@ -180,15 +179,15 @@ export default class Example7 extends React.Component<Props, State> {
               cssClass: 'fa fa-circle-o red faded',
               command: 'toggle-highlight',
               tooltip: 'Highlight negative numbers.',
-              itemVisibilityOverride: (args) => {
+              itemVisibilityOverride: (args: any) => {
                 // for example don't show the header button on column "E"
                 return args.column.name !== 'Column E';
               },
-              itemUsabilityOverride: (args) => {
+              itemUsabilityOverride: (args: any) => {
                 // for example the button usable everywhere except on last column ='J"
                 return args.column.name !== 'Column J';
               },
-              action: (_e, args) => {
+              action: (_e: Event, args: any) => {
                 // you can use the "action" callback and/or subscribe to the "onCallback" event, they both have the same arguments
                 // do something
                 console.log(`execute a callback action to "${args.command}" on ${args.column.name}`);
