@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.1](https://github.com/ghiscoding/slickgrid-react/compare/v3.0.0...v3.0.1) (2023-05-30)
+
+
+### Bug Fixes
+
+* prefer ESM module over CJS & prefer TS loaders ([#113](https://github.com/ghiscoding/slickgrid-react/issues/113)) ([3c1d510](https://github.com/ghiscoding/slickgrid-react/commit/3c1d510bcff82b331fbe0e4c47a7aa24fc6ff7e3))
+
 # [3.0.0](https://github.com/ghiscoding/slickgrid-react/compare/v2.6.4...v3.0.0) (2023-05-29)
 
 ## [2.6.4](https://github.com/ghiscoding/slickgrid-react/compare/v2.6.3...v2.6.4) (2023-05-20)
