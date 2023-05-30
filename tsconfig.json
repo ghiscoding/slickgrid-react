@@ -12,6 +12,7 @@
     "moduleResolution": "node",
     "allowJs": true,
     "baseUrl": "src",
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
     "jsx": "react",
@@ -27,7 +28,6 @@
   "exclude": [
     "react_project",
     "dist",
-    "jspm_packages",
     "node_modules",
     "**/*.spec.ts"
   ],

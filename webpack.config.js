@@ -1,19 +1,18 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { HotModuleReplacementPlugin } = require('webpack');
+const { EsbuildPlugin } = require('esbuild-loader');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 // primary config:
-const title = 'React Navigation Skeleton';
+const title = 'Slickgrid-React';
+const baseUrl = '';
 const outDevDir = path.resolve(__dirname, 'dist');
 const outProdDir = path.resolve(__dirname, 'docs');
 const srcDir = path.resolve(__dirname, 'src');
-const nodeModulesDir = path.resolve(__dirname, 'node_modules');
-const baseUrl = '';
 
-module.exports = ({ production } = {}, { server } = {}) => ({
+module.exports = ({ production } = {}) => ({
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
     modules: [srcDir, 'node_modules'],
@@ -48,7 +47,6 @@ module.exports = ({ production } = {}, { server } = {}) => ({
     static: {
       directory: production ? outProdDir : outDevDir,
     },
-    // serve index.html for all 404 (required for push-state)
     historyApiFallback: true,
     compress: true,
     hot: false,
@@ -57,41 +55,30 @@ module.exports = ({ production } = {}, { server } = {}) => ({
     host: 'localhost',
     open: true,
   },
-  devtool: production ? false : 'eval-cheap-module-source-map',
+  devtool: production ? false : 'source-map',
   module: {
     rules: [
+      { test: /\.css$/i, use: [{ loader: MiniCssExtractPlugin.loader }, 'css-loader'] },
       {
-        test: /\.css$/i,
-        use: [{ loader: MiniCssExtractPlugin.loader }, 'css-loader']
-      },
-      {
-        test: /\.(ts|js)x?$/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-            presets: [
-              ["@babel/preset-env",
-                {
-                  "targets": {
-                    "browsers": [">0.03%"]
-                  },
-                  "useBuiltIns": "entry",
-                  "corejs": 3
-                }
-              ],
-              "@babel/preset-typescript",
-              "@babel/preset-react"
-            ]
-          },
-        },
+        test: /\.[jt]sx?$/,
+        loader: 'esbuild-loader',
+        options: { target: 'es2015' }
       },
       { test: /\.(sass|scss)$/, use: ['style-loader', 'css-loader', 'sass-loader'], issuer: /\.[tj]sx?$/i },
       { test: /\.(sass|scss)$/, use: ['css-loader', 'sass-loader'], issuer: /\.html?$/i },
-      { test: /\.html$/i, loader: 'html-loader' },
-      { test: /\.ts?$/, use: 'ts-loader', exclude: nodeModulesDir, },
+      { test: /\.html$/i, loader: 'html-loader', options: { esModule: false } },
+      { test: /\.([cm]?ts|tsx)$/, loader: 'ts-loader' },
       { test: /\.(woff|woff2|eot|ttf|otf)$/i, type: 'asset/resource', },
       { test: /\.(ttf|eot|svg|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/i, type: 'asset/resource', },
+    ],
+  },
+  optimization: {
+    minimizer: [
+      new EsbuildPlugin({
+        target: 'es2015',
+        format: 'iife',
+        css: true,
+      })
     ]
   },
   plugins: [
@@ -105,13 +92,14 @@ module.exports = ({ production } = {}, { server } = {}) => ({
         { from: `${srcDir}/assets`, to: 'assets' }
       ]
     }),
-
     // Note that the usage of following plugin cleans the webpack output directory before build.
     new CleanWebpackPlugin(),
-    new HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
-      favicon: './src/favicon.ico',
-      template: './src/index.html'
-    })
+      favicon: `${srcDir}/favicon.ico`,
+      template: './src/index.html',
+      metadata: {
+        title, baseUrl
+      }
+    }),
   ]
 });

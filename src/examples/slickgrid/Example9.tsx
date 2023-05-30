@@ -103,7 +103,7 @@ class Example9 extends React.Component<Props, State> {
       columnPicker: {
         hideForceFitButton: true,
         hideSyncResizeButton: true,
-        onColumnsChanged: (_e, args) => {
+        onColumnsChanged: (_e: Event, args: any) => {
           console.log('Column selection changed from Column Picker, visible columns: ', args.columns);
         }
       },
@@ -153,8 +153,8 @@ class Example9 extends React.Component<Props, State> {
             cssClass: 'orange',
             iconCssClass: 'fa fa-warning',
             // you can use the "action" callback and/or use "onCallback" callback from the grid options, they both have the same arguments
-            action: (_e, args) => alert(args.command),
-            itemUsabilityOverride: (args) => {
+            action: (_e: Event, args: any) => alert(args.command),
+            itemUsabilityOverride: (args: any) => {
               // for example disable the command if there's any hidden column(s)
               if (args && Array.isArray(args.columns)) {
                 return args.columns.length === args.visibleColumns.length;
@@ -168,7 +168,7 @@ class Example9 extends React.Component<Props, State> {
             positionOrder: 92,
             cssClass: 'red',        // container css class
             textCssClass: 'italic', // just the text css class
-            action: (_e, args) => alert(args.command),
+            action: (_e: Event, args: any) => alert(args.command),
             itemVisibilityOverride: () => {
               // for example hide this command from the menu if there's any filter entered
               if (this.reactGrid) {
@@ -185,12 +185,12 @@ class Example9 extends React.Component<Props, State> {
           }
         ],
         // you can use the "action" callback and/or use "onCallback" callback from the grid options, they both have the same arguments
-        onCommand: (_e, args) => {
+        onCommand: (_e: Event, args: any) => {
           if (args.command === 'help') {
             alert('Command: ' + args.command);
           }
         },
-        onColumnsChanged: (_e, args) => {
+        onColumnsChanged: (_e: Event, args: any) => {
           console.log('Column selection changed from Grid Menu, visible columns: ', args.visibleColumns);
         }
       },
