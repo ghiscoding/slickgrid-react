@@ -6,14 +6,9 @@
 
 [![Actions Status](https://github.com/ghiscoding/slickgrid-react/workflows/CI%20Build/badge.svg)](https://github.com/ghiscoding/slickgrid-react/actions)
 [![Cypress.io](https://img.shields.io/badge/tested%20with-Cypress-04C38E.svg)](https://www.cypress.io/)
-<!-- [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
-[![codecov](https://codecov.io/gh/slickgrid-universal/slickgrid-react/branch/master/graph/badge.svg)](https://codecov.io/gh/slickgrid-universal/slickgrid-react) -->
-
-## First Officially Supported Release 2.x 📣
-We now have a fully working and official release 2.x of Slickgrid-React and a new [Live Demo](https://ghiscoding.github.io/slickgrid-react-demos/) which is being used by Cypress E2E tests.
 
 ### Brief introduction
-One of the best JavasSript datagrid [SlickGrid](https://github.com/mleibman/SlickGrid) which was originally developed by @mleibman is now available to React. SlickGrid beats most other datagrids in terms of functionalities and performance (it can easily deal with even a million row). Slickgrid-React is a wrapper on top of SlickGrid and we are using the [6pac/SlickGrid](https://github.com/6pac/SlickGrid/) fork which is the most active fork since the original was put on pause by its original author for personal reasons. Also worth to know, that I also contributed a lot to the 6pac/SlickGrid fork for the benefit of all the SlickGrid libraries that I maintain like this one here....
+One of the best JavasSript datagrid [SlickGrid](https://github.com/mleibman/SlickGrid) which was originally developed by @mleibman is now available to React. SlickGrid beats most other datagrids in terms of functionalities and performance (it can easily deal with even a million row). Slickgrid-React is a wrapper on top of SlickGrid and we are using the [6pac/SlickGrid](https://github.com/6pac/SlickGrid/) fork which is the most active fork since the original was put on pause by its original author for personal reasons. Also worth to know, that I also contributed a lot to the 6pac/SlickGrid fork for the benefit of all the SlickGrid libraries that I maintain like this one here... SlickGrid is now also native and no longer requires jQuery (its only required dependency is SortableJS)
 
 ## Installation
 Refer to the **[Wiki - HOWTO Step by Step](https://github.com/ghiscoding/slickgrid-react/wiki/HOWTO--Step-by-Step)** and/or clone the [Slickgrid-React-Demos](https://github.com/ghiscoding/slickgrid-react-demos) repository. Please consult all Wikis before opening new issues, also consider asking installation and/or general questions on [Stack Overflow](https://stackoverflow.com/search?tab=newest&q=slickgrid) unless you think there's a bug with the library.
