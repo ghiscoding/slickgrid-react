@@ -11,6 +11,11 @@ All notable changes to this project will be documented in this file. See [Conven
 
 # [3.0.0](https://github.com/ghiscoding/slickgrid-react/compare/v2.6.4...v3.0.0) (2023-05-29)
 
+### Follow the [Migration 3.x Guide](https://github.com/ghiscoding/slickgrid-react/wiki/Migration-to-3.x)
+### ⚠ BREAKING CHANGES
+
+* drop jQuery requirement & use ms-select-vanilla dependency (#109)
+
 ## [2.6.4](https://github.com/ghiscoding/slickgrid-react/compare/v2.6.3...v2.6.4) (2023-05-20)
 
 
