@@ -1,1 +1,2 @@
-const data=[];for(let t=0;t<500;t++){const a=data[t]={};a.id=t,a.title="Task "+t,a.description="This is a sample task description.\n  It can be multiline",a.duration="5 days",a.percentComplete=Math.round(100*Math.random()),a.start="01/01/2009",a.finish="01/05/2009",a.effortDriven=t%5==0}export default data;
+(()=>{const i=[];for(let e=0;e<500;e++){const t=i[e]={};t.id=e,t.title="Task "+e,t.description=`This is a sample task description.
+  It can be multiline`,t.duration="5 days",t.percentComplete=Math.round(Math.random()*100),t.start="01/01/2009",t.finish="01/05/2009",t.effortDriven=e%5===0}var a=i;})();
