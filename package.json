@@ -104,7 +104,7 @@
     "sortablejs": "^1.15.0"
   },
   "devDependencies": {
-    "@4tw/cypress-drag-drop": "^2.2.3",
+    "@4tw/cypress-drag-drop": "^2.2.4",
     "@faker-js/faker": "^8.0.2",
     "@fnando/sparkline": "^0.3.10",
     "@popperjs/core": "^2.11.8",
@@ -124,9 +124,9 @@
     "@types/flatpickr": "^3.1.2",
     "@types/fnando__sparkline": "^0.3.4",
     "@types/i18next-xhr-backend": "^1.4.2",
-    "@types/jest": "^29.5.1",
+    "@types/jest": "^29.5.2",
     "@types/node": "^18.16.16",
-    "@types/react": "^18.2.7",
+    "@types/react": "^18.2.8",
     "@types/react-dom": "^18.2.4",
     "@types/sortablejs": "^1.15.1",
     "@types/text-encoding-utf-8": "^1.0.2",
@@ -136,7 +136,7 @@
     "@webpack-cli/serve": "^2.0.4",
     "bootstrap": "^5.3.0",
     "clean-webpack-plugin": "^4.0.0",
-    "concurrently": "^8.0.1",
+    "concurrently": "^8.1.0",
     "copy-webpack-plugin": "^11.0.0",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
@@ -180,7 +180,7 @@
     "ts-jest": "^29.1.0",
     "ts-loader": "^9.4.3",
     "typescript": "^5.0.4",
-    "webpack": "^5.84.1",
+    "webpack": "^5.85.0",
     "webpack-cli": "^5.1.1",
     "webpack-dev-server": "^4.15.0"
   },
