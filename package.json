@@ -40,7 +40,7 @@
   "module": "dist/esm/index.js",
   "exports": {
     ".": {
-      "types": "./dist/esm/index.d.ts",
+      "types": "./dist/types/index.d.ts",
       "require": "./dist/cjs/index.js",
       "import": "./dist/esm/index.js",
       "default": "./dist/esm/index.js"
@@ -50,21 +50,22 @@
   "typesVersions": {
     "*": {
       "*": [
-        "./dist/esm/index.d.ts"
+        "./dist/types/index.d.ts"
       ]
     }
   },
-  "types": "dist/esm/index.d.ts",
+  "types": "dist/types/index.d.ts",
   "scripts": {
     "build:demo": "webpack --env production",
     "delete:dist": "rimraf dist",
     "lint": "eslint src/slickgrid-react --ext .ts",
-    "build:cjs": "cross-env tsc --project src/slickgrid-react/tsconfig.build.json --outDir dist/cjs --module commonjs",
+    "build:cjs": "tsc --project src/slickgrid-react/tsconfig.build.json --outDir dist/cjs --module commonjs --declaration false",
     "postbuild:cjs": "cross-env copyfiles --up 2 src/slickgrid-react/**/*.html dist/cjs",
-    "build:esm": "cross-env tsc --project src/slickgrid-react/tsconfig.build.json --outDir dist/esm --module esnext --target es2018",
+    "build:esm": "tsc --project src/slickgrid-react/tsconfig.build.json --outDir dist/esm --module esnext --target es2018 --declaration false",
     "postbuild:esm": "cross-env copyfiles --up 2 src/slickgrid-react/**/*.html dist/esm",
+    "build:types": "tsc --project src/slickgrid-react/tsconfig.build.json --emitDeclarationOnly --declarationMap --outDir dist/types",
     "prebuild": "npm-run-all delete:dist lint",
-    "build": "npm-run-all build:cjs build:esm",
+    "build": "npm-run-all build:cjs build:esm build:types",
     "postbuild": "npm-run-all copy-i18n:dist copy-asset-lib",
     "copy-asset-lib": "cross-env copyfiles --up 2 src/assets/lib/** dist",
     "copy-i18n:dist": "cross-env copyfiles --up 3 src/assets/i18n/**/*.* dist/i18n",
