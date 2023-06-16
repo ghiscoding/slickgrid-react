@@ -24,5 +24,5 @@
     },
   ],
   schedule: ['on friday and tuesday'],
-  ignoreDeps: ['typescript'],
+  ignoreDeps: ['react-i18next', 'typescript'],
 }
