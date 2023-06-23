@@ -191,6 +191,6 @@
     "npm": ">=8.5.0"
   },
   "resolutions": {
-    "caniuse-lite": "1.0.30001506"
+    "caniuse-lite": "1.0.30001507"
   }
 }
