@@ -115,12 +115,12 @@ describe('Example 12: Localization (i18n)', { retries: 1 }, () => {
 
     it('should have some metrics shown in the grid right footer', () => {
       const dateFormatted = moment().format('YYYY-MM-DD hh:mm a');
-      
+
       cy.get('#slickGridContainer-grid12')
         .find('.slick-custom-footer')
         .find('.right-footer')
         .should($span => {
-          const text = removeExtraSpaces($span.text()); // remove all white spaces          
+          const text = removeExtraSpaces($span.text()); // remove all white spaces
           expect(text).to.eq(`Dernière mise à jour ${dateFormatted} | 1500 de 1500 éléments`);
         });
     });
@@ -287,13 +287,13 @@ describe('Example 12: Localization (i18n)', { retries: 1 }, () => {
       cy.get('@grid12')
         .find('.slick-row')
         .children()
-        .filter('.slick-cell-checkboxsel.selected.true')
+        .filter('.slick-cell-checkboxsel.selected')
         .should('have.length', 1);
 
       cy.get('@grid12')
         .find('.slick-row')
         .children()
-        .filter('.slick-cell.selected.true:nth(1)')
+        .filter('.slick-cell.selected:nth(1)')
         .contains('Task 4');
     });
 
@@ -312,13 +312,13 @@ describe('Example 12: Localization (i18n)', { retries: 1 }, () => {
       cy.get('@grid12')
         .find('.slick-row')
         .children()
-        .filter('.slick-cell-checkboxsel.selected.true')
+        .filter('.slick-cell-checkboxsel.selected')
         .should('have.length', 1);
 
       cy.get('@grid12')
         .find('.slick-row')
         .children()
-        .filter('.slick-cell.selected.true:nth(1)')
+        .filter('.slick-cell.selected:nth(1)')
         .contains('Task 1497');
     });
 

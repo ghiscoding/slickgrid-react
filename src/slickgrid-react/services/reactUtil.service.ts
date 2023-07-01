@@ -12,9 +12,10 @@ export class ReactUtilService {
       if (clearTargetContent && targetElement.innerHTML) {
         targetElement.innerHTML = '';
       }
-
+      // @ts-ignore
       componentInstance = ReactDOM.render(componentElement, targetElement);
     } else {
+      // @ts-ignore
       componentInstance = ReactDOM.render(componentElement, document.body);
     }
 
