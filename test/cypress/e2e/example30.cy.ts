@@ -450,7 +450,7 @@ describe('Example 30  Composite Editor Modal', { retries: 1 }, () => {
   it('should not have any row selected after the mass-selection save is over', () => {
     cy.get('.slick-row')
       .children()
-      .filter('.slick-cell-checkboxsel.selected.true')
+      .filter('.slick-cell-checkboxsel.selected')
       .should('have.length', 0);
   });
 
@@ -507,7 +507,7 @@ describe('Example 30  Composite Editor Modal', { retries: 1 }, () => {
   it('should not have any row selected after the mass-update save is over', () => {
     cy.get('.slick-row')
       .children()
-      .filter('.slick-cell-checkboxsel.selected.true')
+      .filter('.slick-cell-checkboxsel.selected')
       .should('have.length', 0);
   });
 
