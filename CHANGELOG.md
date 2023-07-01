@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.2](https://github.com/ghiscoding/slickgrid-react/compare/v3.0.1...v3.0.2) (2023-07-01)
+
+
+### Bug Fixes
+
+* **grouping:** DraggableGrouping could throw when leaving page ([#144](https://github.com/ghiscoding/slickgrid-react/issues/144)) ([2c1c120](https://github.com/ghiscoding/slickgrid-react/commit/2c1c120dc400b081695c05134e8e5d45bb3a7cf5))
+
+# Change Log 
+
+All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [3.0.1](https://github.com/ghiscoding/slickgrid-react/compare/v3.0.0...v3.0.1) (2023-05-30)
 
 
