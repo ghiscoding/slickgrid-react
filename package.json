@@ -133,8 +133,8 @@
     "@types/sortablejs": "^1.15.1",
     "@types/text-encoding-utf-8": "^1.0.2",
     "@types/webpack": "^5.28.1",
-    "@typescript-eslint/eslint-plugin": "^5.60.1",
-    "@typescript-eslint/parser": "^5.60.1",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
     "@webpack-cli/serve": "^2.0.5",
     "bootstrap": "^5.3.0",
     "clean-webpack-plugin": "^4.0.0",
@@ -191,6 +191,6 @@
     "npm": ">=8.5.0"
   },
   "resolutions": {
-    "caniuse-lite": "1.0.30001509"
+    "caniuse-lite": "1.0.30001512"
   }
 }
