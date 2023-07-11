@@ -97,7 +97,7 @@
     "@slickgrid-universal/event-pub-sub": "3.0.1",
     "@slickgrid-universal/pagination-component": "3.0.1",
     "dequal": "^2.0.3",
-    "dompurify": "^3.0.4",
+    "dompurify": "^3.0.5",
     "font-awesome": "^4.7.0",
     "i18next": ">=22.5.0",
     "moment-mini": "^2.29.4",
@@ -185,6 +185,6 @@
     "npm": ">=8.5.0"
   },
   "resolutions": {
-    "caniuse-lite": "1.0.30001514"
+    "caniuse-lite": "1.0.30001515"
   }
 }
