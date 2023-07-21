@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/ghiscoding/slickgrid-react/compare/v3.0.2...v3.1.0) (2023-07-21)
+
+
+### Features
+
+* **common:** add optional `scrollIntoView` to GridService `addItems` ([#165](https://github.com/ghiscoding/slickgrid-react/issues/165)) ([2c4aa98](https://github.com/ghiscoding/slickgrid-react/commit/2c4aa98202fe037e07b2d1a52ef24a61e5e0af16))
+
 ## [3.0.2](https://github.com/ghiscoding/slickgrid-react/compare/v3.0.1...v3.0.2) (2023-07-01)
 
 
