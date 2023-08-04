@@ -1480,10 +1480,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.18.39.tgz#aa39a1a87a40ef6098ee69689a1acb0c1b034832"
   integrity sha512-8q9ZexmdYYyc5/cfujaXb4YOucpQxAV4RMG0himLyDUOEr8Mr79VrqsFI+cQ2M2h89YIuy95lbxuYjxT4Hk4kQ==
 
-"@types/node@^20.4.5":
-  version "20.4.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.4.5.tgz#9dc0a5cb1ccce4f7a731660935ab70b9c00a5d69"
-  integrity sha512-rt40Nk13II9JwQBdeYqmbn2Q6IVTA5uPhvSO+JVqdXw/6/4glI6oR9ezty/A9Hg5u7JH4OmYmuQ+XvjKm0Datg==
+"@types/node@^20.4.6":
+  version "20.4.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.4.6.tgz#b66b66c9bb5d49b199f03399e341c9d6036e9e88"
+  integrity sha512-q0RkvNgMweWWIvSMDiXhflGUKMdIxBo2M2tYM/0kEGDueQByFzK4KZAgu5YHGFNxziTlppNpTIBcqHQAxlfHdA==
 
 "@types/normalize-package-data@^2.4.0", "@types/normalize-package-data@^2.4.1":
   version "2.4.1"
@@ -2662,10 +2662,10 @@ camelcase@^7.0.0, camelcase@^7.0.1:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-7.0.1.tgz#f02e50af9fd7782bc8b88a3558c32fd3a388f048"
   integrity sha512-xlx1yCK2Oc1APsPXDL2LdlNP6+uu8OCDdhOBSVT279M/S+y75O30C2VuD8T2ogdePBBl7PfPF4504tnLgX3zfw==
 
-caniuse-lite@1.0.30001518, caniuse-lite@^1.0.30001489:
-  version "1.0.30001518"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001518.tgz#b3ca93904cb4699c01218246c4d77a71dbe97150"
-  integrity sha512-rup09/e3I0BKjncL+FesTayKtPrdwKhUufQFd3riFw1hHg8JmIFoInYfB102cFcY/pPgGmdyl/iy+jgiDi2vdA==
+caniuse-lite@1.0.30001519, caniuse-lite@^1.0.30001489:
+  version "1.0.30001519"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001519.tgz#3e7b8b8a7077e78b0eb054d69e6edf5c7df35601"
+  integrity sha512-0QHgqR+Jv4bxHMp8kZ1Kn8CH55OikjKJ6JmKkZYP1F3D7w+lnFXF70nG5eNfsZS89jadi5Ywy5UCSKLAglIRkg==
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -6097,10 +6097,10 @@ jest-environment-node@^29.6.2:
     jest-mock "^29.6.2"
     jest-util "^29.6.2"
 
-jest-extended@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/jest-extended/-/jest-extended-4.0.0.tgz#00bb4b478566c28fd1b91ffd6f9cb405dc52d092"
-  integrity sha512-GMhMFdrwhYPB0y+cmI/5esz+F/Xc0OIzKbnr8SaiZ74YcWamxf7sVT78YlA15+JIQMTlpHBEgcxheyRBdHFqPA==
+jest-extended@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/jest-extended/-/jest-extended-4.0.1.tgz#2315cb5914fc132e5acd07945bfaa01aac3947c2"
+  integrity sha512-KM6dwuBUAgy6QONuR19CGubZB9Hkjqvl/d5Yc/FXsdB8+gsGxB2VQ+NEdOrr95J4GMPeLnDoPOKyi6+mKCCnZQ==
   dependencies:
     jest-diff "^29.0.0"
     jest-get-type "^29.0.0"
