@@ -126,14 +126,14 @@
     "@types/fnando__sparkline": "^0.3.4",
     "@types/i18next-xhr-backend": "^1.4.2",
     "@types/jest": "^29.5.3",
-    "@types/node": "^20.4.10",
+    "@types/node": "^20.5.0",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "@types/sortablejs": "^1.15.1",
     "@types/text-encoding-utf-8": "^1.0.2",
     "@types/webpack": "^5.28.1",
-    "@typescript-eslint/eslint-plugin": "^6.3.0",
-    "@typescript-eslint/parser": "^6.3.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "@typescript-eslint/parser": "^6.4.0",
     "@webpack-cli/serve": "^2.0.5",
     "bootstrap": "^5.3.1",
     "clean-webpack-plugin": "^4.0.0",
@@ -166,7 +166,7 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^12.3.1",
     "react-router-dom": "^6.15.0",
-    "release-it": "^16.1.4",
+    "release-it": "^16.1.5",
     "rimraf": "^5.0.1",
     "rxjs": "^7.8.1",
     "sass": "^1.65.1",
@@ -185,6 +185,6 @@
     "npm": ">=8.5.0"
   },
   "resolutions": {
-    "caniuse-lite": "1.0.30001519"
+    "caniuse-lite": "1.0.30001520"
   }
 }
