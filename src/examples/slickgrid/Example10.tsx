@@ -23,7 +23,6 @@ export default class Example10 extends React.Component<Props, State> {
       <li>NOTE: Any Row Selection(s) will be reset when using Pagination and changing Page (you will need to set it back manually if you want it back)</li>
     </ul>
   `;
-  isMounted = false;
   isGrid2WithPagination = true;
 
   reactGrid1!: SlickgridReactInstance;
@@ -190,7 +189,6 @@ export default class Example10 extends React.Component<Props, State> {
         }
       },
     };
-    this.isMounted = true;
 
     this.setState((state: State) => ({
       ...state,
