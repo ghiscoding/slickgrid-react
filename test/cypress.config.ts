@@ -7,7 +7,7 @@ export default defineConfig({
   projectId: 'wmnjof',
   video: false,
   viewportWidth: 1200,
-  viewportHeight: 950,
+  viewportHeight: 1020,
   fixturesFolder: 'test/cypress/fixtures',
   screenshotsFolder: 'test/cypress/screenshots',
   videosFolder: 'test/cypress/videos',

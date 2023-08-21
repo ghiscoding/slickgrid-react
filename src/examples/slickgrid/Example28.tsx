@@ -1,14 +1,19 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import {
-  SlickgridReactInstance,
+  Aggregators,
   Column,
+  decimalFormatted,
   FieldType,
   Filters,
+  findItemInTreeStructure,
+  Formatter,
   Formatters,
   GridOption,
-  findItemInTreeStructure,
+  isNumber,
+  // GroupTotalFormatters,
+  // italicFormatter,
   SlickgridReact,
-  SlickGrid,
+  SlickgridReactInstance,
   TreeToggledItem,
 } from '../../slickgrid-react';
 import React from 'react';
@@ -25,12 +30,16 @@ interface State extends BaseSlickGridState {
   treeToggleItems: TreeToggledItem[];
   isExcludingChildWhenFiltering: boolean;
   isAutoApproveParentItemWhenTreeColumnIsValid: boolean;
+  isAutoRecalcTotalsOnFilterChange: boolean;
+  isRemoveLastInsertedPopSongDisabled: boolean;
+  lastInsertedPopSongId: number | undefined;
 }
 
 export default class Example28 extends React.Component<Props, State> {
   title = 'Example 28: Tree Data <small>(from a Hierarchical Dataset)</small>';
   subTitle = `<ul>
-    <li><b>NOTE:</b> The grid will automatically sort Ascending with the column that has the Tree Data, you could add a "sortByFieldId" in your column "treeData" option if you wish to sort on a different column</li>
+    <li><b>NOTE #1:</b> The grid will automatically sort Ascending with the column that has the Tree Data, you could add a "sortByFieldId" in your column "treeData" option if you wish to sort on a different column</li>
+    <li><b>NOTE #2:</b> Tree Totals are only calculated once and are <b>NOT</b> recalculated while filtering data, if you do want that feature then you will need to enable <code>autoRecalcTotalsOnFilterChange</code> <i>(see checkbox below)</i></li>
     <li><b>Styling - Salesforce Theme</b></li>
     <ul>
       <li>The Salesforce Theme was created with SASS and compiled in CSS (<a href="https://github.com/slickgrid-universal/slickgrid-universal/blob/master/packages/common/src/styles/slickgrid-theme-salesforce.scss" target="_blank">slickgrid-theme-salesforce.scss</a>), you can override any of its SASS variables</li>
@@ -49,6 +58,9 @@ export default class Example28 extends React.Component<Props, State> {
       datasetHierarchical: undefined,
       isExcludingChildWhenFiltering: false,
       isAutoApproveParentItemWhenTreeColumnIsValid: true,
+      isAutoRecalcTotalsOnFilterChange: false,
+      isRemoveLastInsertedPopSongDisabled: true,
+      lastInsertedPopSongId: undefined,
       isLargeDataset: false,
       hasNoExpandCollapseChanged: true,
       loadingClass: '',
@@ -88,8 +100,44 @@ export default class Example28 extends React.Component<Props, State> {
       {
         id: 'size', name: 'Size', field: 'size', minWidth: 90,
         type: FieldType.number, exportWithFormatter: true,
+        excelExportOptions: { autoDetectCellFormat: false },
         filterable: true, filter: { model: Filters.compoundInputNumber },
-        formatter: (_row, _cell, value) => isNaN(value) ? '' : `${value || 0} MB`,
+
+        // Formatter option #1 (treeParseTotalFormatters)
+        // if you wish to use any of the GroupTotalFormatters (or even regular Formatters), we can do so with the code below
+        // use `treeTotalsFormatter` or `groupTotalsFormatter` to show totals in a Tree Data grid
+        // provide any regular formatters inside the params.formatters
+
+        // formatter: Formatters.treeParseTotals,
+        // treeTotalsFormatter: GroupTotalFormatters.sumTotalsBold,
+        // // groupTotalsFormatter: GroupTotalFormatters.sumTotalsBold,
+        // params: {
+        //   // we can also supply extra params for Formatters/GroupTotalFormatters like min/max decimals
+        //   groupFormatterSuffix: ' MB', minDecimal: 0, maxDecimal: 2,
+        // },
+
+        // OR option #2 (custom Formatter)
+        formatter: (_row, _cell, value, column, dataContext) => {
+          // parent items will a "__treeTotals" property (when creating the Tree and running Aggregation, it mutates all items, all extra props starts with "__" prefix)
+          const fieldId = column.field;
+
+          // Tree Totals, if exists, will be found under `__treeTotals` prop
+          if (dataContext?.__treeTotals !== undefined) {
+            const treeLevel = dataContext[this.state.gridOptions!.treeDataOptions?.levelPropName || '__treeLevel'];
+            const sumVal = dataContext?.__treeTotals?.['sum'][fieldId];
+            const avgVal = dataContext?.__treeTotals?.['avg'][fieldId];
+
+            if (avgVal !== undefined && sumVal !== undefined) {
+              // when found Avg & Sum, we'll display both
+              return isNaN(sumVal) ? '' : `<span class="color-primary bold">sum: ${decimalFormatted(sumVal, 0, 2)} MB</span> / <span class="avg-total">avg: ${decimalFormatted(avgVal, 0, 2)} MB</span> <span class="total-suffix">(${treeLevel === 0 ? 'total' : 'sub-total'})</span>`;
+            } else if (sumVal !== undefined) {
+              // or when only Sum is aggregated, then just show Sum
+              return isNaN(sumVal) ? '' : `<span class="color-primary bold">sum: ${decimalFormatted(sumVal, 0, 2)} MB</span> <span class="total-suffix">(${treeLevel === 0 ? 'total' : 'sub-total'})</span>`;
+            }
+          }
+          // reaching this line means it's a regular dataContext without totals, so regular formatter output will be used
+          return !isNumber(value) ? '' : `${value} MB`;
+        },
       },
     ];
 
@@ -123,7 +171,20 @@ export default class Example28 extends React.Component<Props, State> {
         // initialSort: {
         //   columnId: 'file',
         //   direction: 'DESC'
-        // }
+        // },
+
+        // Aggregators are also supported and must always be an array even when single one is provided
+        // Note: only 5 are currently supported: Avg, Sum, Min, Max and Count
+        // Note 2: also note that Avg Aggregator will automatically give you the "avg", "count" and "sum" so if you need these 3 then simply calling Avg will give you better perf
+        // aggregators: [new Aggregators.Sum('size')]
+        aggregators: [new Aggregators.Avg('size'), new Aggregators.Sum('size') /* , new Aggregators.Min('size'), new Aggregators.Max('size') */],
+
+        // should we auto-recalc Tree Totals (when using Aggregators) anytime a filter changes
+        // it is disabled by default for perf reason, by default it will only calculate totals on first load
+        autoRecalcTotalsOnFilterChange: this.state.isAutoRecalcTotalsOnFilterChange,
+
+        // add optional debounce time to limit number of execution that recalc is called, mostly useful on large dataset
+        // autoRecalcTotalsDebounce: 250
       },
       // change header/cell row height for salesforce theme
       headerRowHeight: 35,
@@ -154,6 +215,19 @@ export default class Example28 extends React.Component<Props, State> {
     return true;
   }
 
+  changeAutoRecalcTotalsOnFilterChange() {
+    const isAutoRecalcTotalsOnFilterChange = !this.state.isAutoRecalcTotalsOnFilterChange;
+    this.setState((state: State) => ({ ...state, isAutoRecalcTotalsOnFilterChange }));
+
+    this.state.gridOptions!.treeDataOptions!.autoRecalcTotalsOnFilterChange = isAutoRecalcTotalsOnFilterChange;
+    this.reactGrid.slickGrid.setOptions(this.state.gridOptions!);
+
+    // since it doesn't take current filters in consideration, we better clear them
+    this.reactGrid.filterService.clearFilters();
+    this.reactGrid.treeDataService.enableAutoRecalcTotalsFeature();
+    return true;
+  }
+
   changeExcludeChildWhenFiltering() {
     const isExcludingChildWhenFiltering = !this.state.isExcludingChildWhenFiltering;
     this.setState((state: State) => ({ ...state, isExcludingChildWhenFiltering }));
@@ -177,7 +251,7 @@ export default class Example28 extends React.Component<Props, State> {
     this.reactGrid.filterService.updateFilters([{ columnId: 'file', searchTerms: [val] }], true, false, true);
   }
 
-  treeFormatter(_row: number, _cell: number, value: any, _columnDef: Column, dataContext: any, grid: SlickGrid) {
+  treeFormatter: Formatter = (_row, _cell, value, _columnDef, dataContext, grid) => {
     const gridOptions = grid.getOptions() as GridOption;
     const treeLevelPropName = gridOptions.treeDataOptions && gridOptions.treeDataOptions.levelPropName || '__treeLevel';
     if (value === null || value === undefined || dataContext === undefined) {
@@ -192,7 +266,7 @@ export default class Example28 extends React.Component<Props, State> {
     value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     const spacer = `<span style="display:inline-block; width:${(15 * dataContext[treeLevelPropName])}px;"></span>`;
 
-    if (data[idx + 1] && data[idx + 1][treeLevelPropName] > data[idx][treeLevelPropName]) {
+    if (data[idx + 1]?.[treeLevelPropName] > data[idx][treeLevelPropName] || data[idx]['__hasChildren']) {
       const folderPrefix = `<span class="text-warning fa ${dataContext.__collapsed ? 'fa-folder' : 'fa-folder-open'}"></span>`;
       if (dataContext.__collapsed) {
         return `${spacer} <span class="slick-group-toggle collapsed" level="${dataContext[treeLevelPropName]}"></span>${folderPrefix} ${prefix}&nbsp;${value}`;
@@ -202,7 +276,7 @@ export default class Example28 extends React.Component<Props, State> {
     } else {
       return `${spacer} <span class="slick-group-toggle" level="${dataContext[treeLevelPropName]}"></span>${prefix}&nbsp;${value}`;
     }
-  }
+  };
 
   getFileIcon(value: string) {
     let prefix = '';
@@ -223,29 +297,59 @@ export default class Example28 extends React.Component<Props, State> {
    * After adding the item, it will sort by parent/child recursively
    */
   addNewFile() {
-    const newId = this.reactGrid.dataView.getLength() + 100;
+    const newId = this.reactGrid.dataView.getLength() + 50;
 
     // find first parent object and add the new item as a child
     const tmpDatasetHierarchical = [...this.state?.datasetHierarchical ?? []];
-    const popItem = findItemInTreeStructure(tmpDatasetHierarchical, x => x.file === 'pop', 'files');
+    const popFolderItem = findItemInTreeStructure(tmpDatasetHierarchical, x => x.file === 'pop', 'files');
 
-    if (popItem && Array.isArray(popItem.files)) {
-      popItem.files.push({
+    if (popFolderItem && Array.isArray(popFolderItem.files)) {
+      popFolderItem.files.push({
         id: newId,
         file: `pop-${newId}.mp3`,
         dateModified: new Date(),
-        size: Math.floor(Math.random() * 100) + 50,
+        size: newId + 3,
       });
+      this.setState((state: State) => ({
+        ...state,
+        lastInsertedPopSongId: newId,
+        isRemoveLastInsertedPopSongDisabled: false,
 
-      // overwrite hierarchical dataset which will also trigger a grid sort and rendering
-      this.setState((state: State) => ({ ...state, datasetHierarchical: tmpDatasetHierarchical }));
+        // overwrite hierarchical dataset which will also trigger a grid sort and rendering
+        datasetHierarchical: tmpDatasetHierarchical,
+      }));
 
       // scroll into the position, after insertion cycle, where the item was added
       setTimeout(() => {
-        const rowIndex = this.reactGrid.dataView.getRowById(popItem.id) as number;
+        const rowIndex = this.reactGrid.dataView.getRowById(popFolderItem.id) as number;
         this.reactGrid.slickGrid.scrollRowIntoView(rowIndex + 3);
       }, 10);
     }
+  }
+
+  deleteFile() {
+    const tmpDatasetHierarchical = [...this.state?.datasetHierarchical ?? []];
+    const popFolderItem = findItemInTreeStructure(tmpDatasetHierarchical, x => x.file === 'pop', 'files');
+    const songItemFound = findItemInTreeStructure(tmpDatasetHierarchical, x => x.id === this.state.lastInsertedPopSongId, 'files');
+
+    if (popFolderItem && songItemFound) {
+      const songIdx = popFolderItem.files.findIndex((f: any) => f.id === songItemFound.id);
+      if (songIdx >= 0) {
+        popFolderItem.files.splice(songIdx, 1);
+        this.setState((state: State) => ({
+          ...state,
+          lastInsertedPopSongId: undefined,
+          isRemoveLastInsertedPopSongDisabled: true,
+
+          // overwrite hierarchical dataset which will also trigger a grid sort and rendering
+          datasetHierarchical: tmpDatasetHierarchical,
+        }));
+      }
+    }
+  }
+
+  clearFilters() {
+    this.reactGrid.filterService.clearFilters();
   }
 
   collapseAll() {
@@ -275,12 +379,15 @@ export default class Example28 extends React.Component<Props, State> {
             id: 4, file: 'pdf', files: [
               { id: 22, file: 'map2.pdf', dateModified: '2015-07-21T08:22:00.123Z', size: 2.9, },
               { id: 5, file: 'map.pdf', dateModified: '2015-05-21T10:22:00.123Z', size: 3.1, },
-              { id: 6, file: 'internet-bill.pdf', dateModified: '2015-05-12T14:50:00.123Z', size: 1.4, },
-              { id: 23, file: 'phone-bill.pdf', dateModified: '2015-05-01T07:50:00.123Z', size: 1.4, },
+              { id: 6, file: 'internet-bill.pdf', dateModified: '2015-05-12T14:50:00.123Z', size: 1.3, },
+              { id: 23, file: 'phone-bill.pdf', dateModified: '2015-05-01T07:50:00.123Z', size: 1.5, },
             ]
           },
-          { id: 9, file: 'misc', files: [{ id: 10, file: 'todo.txt', dateModified: '2015-02-26T16:50:00.123Z', size: 0.4, }] },
-          { id: 7, file: 'xls', files: [{ id: 8, file: 'compilation.xls', description: 'movie compilation', dateModified: '2014-10-02T14:50:00.123Z', size: 2.3, }] },
+          { id: 9, file: 'misc', files: [{ id: 10, file: 'warranties.txt', dateModified: '2015-02-26T16:50:00.123Z', size: 0.4, }] },
+          { id: 7, file: 'xls', files: [{ id: 8, file: 'compilation.xls', dateModified: '2014-10-02T14:50:00.123Z', size: 2.3, }] },
+          { id: 55, file: 'unclassified.csv', dateModified: '2015-04-08T03:44:12.333Z', size: 0.25, },
+          { id: 56, file: 'unresolved.csv', dateModified: '2015-04-03T03:21:12.000Z', size: 0.79, },
+          { id: 57, file: 'zebra.dll', dateModified: '2016-12-08T13:22:12.432', size: 1.22, },
         ]
       },
       {
@@ -291,8 +398,9 @@ export default class Example28 extends React.Component<Props, State> {
               id: 14, file: 'pop', files: [
                 { id: 15, file: 'theme.mp3', description: 'Movie Theme Song', dateModified: '2015-03-01T17:05:00Z', size: 47, },
                 { id: 25, file: 'song.mp3', description: 'it is a song...', dateModified: '2016-10-04T06:33:44Z', size: 6.3, }
-              ]
+              ],
             },
+            { id: 33, file: 'other', files: [] }
           ]
         }]
       },
@@ -327,6 +435,10 @@ export default class Example28 extends React.Component<Props, State> {
               <span className="fa fa-plus me-1"></span>
               <span>Add New Pop Song</span>
             </button>
+            <button onClick={() => this.deleteFile()} data-test="remove-item-btn" className="btn btn-outline-secondary btn-sm" disabled={this.state.isRemoveLastInsertedPopSongDisabled}>
+              <span className="fa fa-minus me-1"></span>
+              <span>Remove Last Inserted Pop Song</span>
+            </button>
             <button onClick={() => this.collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-sm mx-1">
               <span className="fa fa-compress me-1"></span>
               <span>Collapse All</span>
@@ -334,6 +446,10 @@ export default class Example28 extends React.Component<Props, State> {
             <button onClick={() => this.expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-sm">
               <span className="fa fa-expand me-1"></span>
               <span>Expand All</span>
+            </button>
+            <button className='btn btn-outline-secondary btn-sm' data-test="clear-filters-btn" onClick={() => this.reactGrid.filterService.clearFilters()}>
+              <span className="fa fa-close me-1"></span>
+              <span>Clear Filters</span>
             </button>
             <button onClick={() => this.logFlatStructure()} className="btn btn-outline-secondary btn-sm mx-1">
               <span>Log Flat Structure</span>
@@ -372,6 +488,14 @@ export default class Example28 extends React.Component<Props, State> {
             because none of the files have both criteria at the same time, however the column with the tree 'file' does pass the filter criteria 'music'
             and with this flag we tell the lib to skip any other filter(s) as soon as the with the tree (file in this demo) passes its own filter criteria">
               Skip Other Filter Criteria when Parent with Tree is valid
+            </span>
+          </label>
+          <label className="checkbox-inline control-label" htmlFor="autoRecalcTotalsOnFilterChange" style={{ marginLeft: '20px' }}>
+            <input type="checkbox" id="autoRecalcTotalsOnFilterChange" data-test="auto-recalc-totals" className="me-1"
+              defaultChecked={this.state.isAutoRecalcTotalsOnFilterChange}
+              onClick={() => this.changeAutoRecalcTotalsOnFilterChange()} />
+            <span title="Should we recalculate Tree Data Totals (when Aggregators are defined) while filtering? This feature is disabled by default.">
+              auto-recalc Tree Data totals on filter changed
             </span>
           </label>
         </div>
