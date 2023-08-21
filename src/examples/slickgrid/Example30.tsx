@@ -227,7 +227,7 @@ export default class Example30 extends React.Component<Props, State> {
         exportCustomFormatter: Formatters.dateUs,
         type: FieldType.date, outputType: FieldType.dateUs, saveOutputType: FieldType.dateUtc,
         filterable: true, filter: { model: Filters.compoundDate },
-        editor: { model: Editors.date, massUpdate: true, params: { hideClearButton: false } },
+        editor: { model: Editors.date, massUpdate: true, editorOptions: { hideClearButton: false } },
       },
       {
         id: 'completed', name: 'Completed', field: 'completed', width: 80, minWidth: 75, maxWidth: 100,
