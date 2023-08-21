@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/ghiscoding/slickgrid-react/compare/v3.1.0...v3.2.0) (2023-08-21)
+
+
+### Features
+
+* **TreeData:** add optional Aggregators for Tree Data totals calc ([#191](https://github.com/ghiscoding/slickgrid-react/issues/191)) ([26bfac5](https://github.com/ghiscoding/slickgrid-react/commit/26bfac59f0ade3dbaba62fb396e40d25461a0f29))
+
+# Change Log 
+
+All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 # [3.1.0](https://github.com/ghiscoding/slickgrid-react/compare/v3.0.2...v3.1.0) (2023-07-21)
 
 
