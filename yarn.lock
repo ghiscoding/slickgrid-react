@@ -1058,23 +1058,6 @@
   resolved "https://registry.yarnpkg.com/@slickgrid-universal/binding/-/binding-3.1.0.tgz#4c741a5dca3a0ab4a35f7f97afdfeb94ab95cfe3"
   integrity sha512-8nFG2fccIbxv2gTKnehlXNoybyokMoXejsXalHTaniAGL9HlRm5G4UXd72mzAvvWuJ1k9ytC91ce/+N4hgSyoQ==
 
-"@slickgrid-universal/common@~3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@slickgrid-universal/common/-/common-3.2.0.tgz#d7a441a9167f69fd3728dd3aa203c1b8b06bfc2a"
-  integrity sha512-bvqjJodIkjQupwzpfx4CiJryBLfAGHbXj65VCHrUfRpb7SXiaDP/uKAOFVnYh1zS5tTHqU9GR46oIfraYJjzXQ==
-  dependencies:
-    "@slickgrid-universal/event-pub-sub" "~3.1.0"
-    "@slickgrid-universal/utils" "~3.1.0"
-    autocompleter "^9.0.1"
-    dequal "^2.0.3"
-    dompurify "^3.0.5"
-    flatpickr "^4.6.13"
-    moment-mini "^2.29.4"
-    multiple-select-vanilla "^0.4.5"
-    slickgrid "^4.0.1"
-    sortablejs "^1.15.0"
-    un-flatten-tree "^2.0.12"
-
 "@slickgrid-universal/common@~3.2.1":
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/@slickgrid-universal/common/-/common-3.2.1.tgz#7704598a3149d57885676b3995019c19d1ad2fd3"
@@ -1092,12 +1075,12 @@
     sortablejs "^1.15.0"
     un-flatten-tree "^2.0.12"
 
-"@slickgrid-universal/composite-editor-component@3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@slickgrid-universal/composite-editor-component/-/composite-editor-component-3.2.0.tgz#202166bc302bab8cb70c0318e8009f15151755b5"
-  integrity sha512-CLjFpfEJ/lx0lRaYVAKWyqc/wzsuzhcySG8L9Varqracu3nK35kPtsOCfbeKJ8oomX+n6XWF2XK3LRzoqjiEGw==
+"@slickgrid-universal/composite-editor-component@~3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@slickgrid-universal/composite-editor-component/-/composite-editor-component-3.2.1.tgz#8505f2a0266137caf5f2a38d1fda8c97e8fdf59b"
+  integrity sha512-Cg9IQdz0tC8uV+G3TwFgFovWAQn51AccIQn0obXrhVi2KO4s4qXZoHkoCNoDGwNhXZDpQsOL+BCW6uaPmuVmNA==
   dependencies:
-    "@slickgrid-universal/common" "~3.2.0"
+    "@slickgrid-universal/common" "~3.2.1"
     "@slickgrid-universal/utils" "~3.1.0"
 
 "@slickgrid-universal/custom-footer-component@~3.2.1":
@@ -1109,12 +1092,12 @@
     "@slickgrid-universal/common" "~3.2.1"
     moment-mini "^2.29.4"
 
-"@slickgrid-universal/custom-tooltip-plugin@3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@slickgrid-universal/custom-tooltip-plugin/-/custom-tooltip-plugin-3.2.0.tgz#91ab56156f52a3cb29ac1b756ff56e9eeefebb35"
-  integrity sha512-PbAmq4KA83M+SYmQ/Ki5YmW9x292Fp+sez38wlEk4YGBM3MIaw+jzJAQi+Ph9hWYZQG/y0sDd65r3vOnIcNrrw==
+"@slickgrid-universal/custom-tooltip-plugin@~3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@slickgrid-universal/custom-tooltip-plugin/-/custom-tooltip-plugin-3.2.1.tgz#695baec2cf4882bc6b413e256e31e2f6ab5a4170"
+  integrity sha512-WYz3vmTvtRUkJPSRVLf7wOqrTgk3IRC2t89tKVMBrD8NHaeW2CpJh21seokAkg0oMcRAF9YGyv6xm18wlNJDmA==
   dependencies:
-    "@slickgrid-universal/common" "~3.2.0"
+    "@slickgrid-universal/common" "~3.2.1"
     dompurify "^3.0.5"
 
 "@slickgrid-universal/empty-warning-component@~3.2.1":
@@ -2271,11 +2254,6 @@ at-least-node@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
   integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
-
-autocompleter@^9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/autocompleter/-/autocompleter-9.0.1.tgz#cc26dcd6f41085623064144227d6582d516f2b59"
-  integrity sha512-k2NzyUdyI11q7ShEz4/Qo+lh5DocL8dOZr/wKhg5XamdBmQU2lAtgj8+L9qvHcrwehGIrVIkdLrxnjMnsjYufg==
 
 autocompleter@^9.1.0:
   version "9.1.0"
@@ -6993,11 +6971,6 @@ multicast-dns@^7.2.5:
   dependencies:
     dns-packet "^5.2.2"
     thunky "^1.0.2"
-
-multiple-select-vanilla@^0.4.5:
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/multiple-select-vanilla/-/multiple-select-vanilla-0.4.5.tgz#3fe74e895175b87fb9f08c7d807c1a353aa861c5"
-  integrity sha512-3lLL7RIZuGg9JzNAYROG+Vi9qjsZLpG+f9RWjU9JVTda/PiX5FZMZb7E8lpR4SY4UskGCZuHiOU6GD5AS4mQ2w==
 
 multiple-select-vanilla@^0.4.9:
   version "0.4.9"
