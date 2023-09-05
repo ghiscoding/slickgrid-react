@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.1](https://github.com/ghiscoding/slickgrid-react/compare/v3.2.0...v3.2.1) (2023-09-05)
+
+
+### Bug Fixes
+
+* **common:** Select Filter/Editor enableRenderHtml invalid displays ([#202](https://github.com/ghiscoding/slickgrid-react/issues/202)) ([a61c239](https://github.com/ghiscoding/slickgrid-react/commit/a61c2395cee6d98cb44837c85450d6292d92a7e0))
+
 # [3.2.0](https://github.com/ghiscoding/slickgrid-react/compare/v3.1.0...v3.2.0) (2023-08-21)
 
 
