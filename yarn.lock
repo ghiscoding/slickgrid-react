@@ -1593,10 +1593,10 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.1.tgz#20f18294f797f2209b5f65c8e3b5c8e8261d127c"
   integrity sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==
 
-"@types/text-encoding-utf-8@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@types/text-encoding-utf-8/-/text-encoding-utf-8-1.0.2.tgz#896e94ce99b653e886a9b925e9dc12c92af7b1ae"
-  integrity sha512-AQ6zewa0ucLJvtUi5HsErbOFKAcQfRLt9zFLlUOvcXBy2G36a+ZDpCHSGdzJVUD8aNURtIjh9aSjCStNMRCcRQ==
+"@types/text-encoding-utf-8@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@types/text-encoding-utf-8/-/text-encoding-utf-8-1.0.3.tgz#65390e81f141cb4fcb274c278a433b8fb7ae865a"
+  integrity sha512-bU5jEQxiSn5YnrB21WB/SnzbMiU3Z5hpk3bWqdKmIyiKdJHnNI0Sp6V74DfwBEB90v9B3n9zA6+jqKOLALrjQw==
 
 "@types/tough-cookie@*":
   version "4.0.2"
