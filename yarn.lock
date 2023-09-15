@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@4tw/cypress-drag-drop@^2.2.4":
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/@4tw/cypress-drag-drop/-/cypress-drag-drop-2.2.4.tgz#d0e7549a58abfd55060e820c363f9f797ad76ff9"
-  integrity sha512-6mmjJ0SHjciI0JNofdVcN1LYLbvUcUT3oY2O+1HaTlQlpKPlX9kBc040Sik6RYFK7cgWvUNwoDoDoGSKA4IS/g==
+"@4tw/cypress-drag-drop@^2.2.5":
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/@4tw/cypress-drag-drop/-/cypress-drag-drop-2.2.5.tgz#a40f1431acac6d9ece7055c4779306f4eebad6bb"
+  integrity sha512-3ghTmzhOmUqeN6U3QmUnKRUxI7OMLbJA4hHUY/eS/FhWJgxbiGgcaELbolWnBAOpajPXcsNQGYEj9brd59WH6A==
 
 "@aashutoshrathi/word-wrap@^1.2.3":
   version "1.2.6"
@@ -1019,10 +1019,10 @@
     conventional-recommended-bump "^8.0.0"
     semver "^7.5.4"
 
-"@remix-run/router@1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.8.0.tgz#e848d2f669f601544df15ce2a313955e4bf0bafc"
-  integrity sha512-mrfKqIHnSZRyIzBcanNJmVQELTnX+qagEDlcKO90RgRBVOZGSGvZKeDihTRfWcqoDn5N/NkUcwWTccnpN18Tfg==
+"@remix-run/router@1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.9.0.tgz#9033238b41c4cbe1e961eccb3f79e2c588328cf6"
+  integrity sha512-bV63itrKBC0zdT27qYm6SDZHlkXwFL1xMBuhkn+X7l0+IIhNaH5wuuvZKp6eKhCD4KFhujhfhCT1YxXW6esUIA==
 
 "@sinclair/typebox@^0.25.16":
   version "0.25.24"
@@ -1213,10 +1213,10 @@
     "@testing-library/dom" "^9.0.0"
     "@types/react-dom" "^18.0.0"
 
-"@testing-library/user-event@^14.4.3":
-  version "14.4.3"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-14.4.3.tgz#af975e367743fa91989cd666666aec31a8f50591"
-  integrity sha512-kCUc5MEwaEMakkO5x7aoD+DLi02ehmEM2QCGWvNqAS1dV/fAvORWEjnjsEIvml59M7Y5kCkWN6fCCyPOe8OL6Q==
+"@testing-library/user-event@^14.5.0":
+  version "14.5.0"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-14.5.0.tgz#4036add379525b635a64bce4d727820d4ba516a7"
+  integrity sha512-nQRCteEZvULJJrlcGQuNhwGekz25TOUILA+sTWI9PB/vNKKivS+7K7XRTwoikw/2fmJPaM4pPKy+hLWEGg9+JA==
 
 "@tootallnate/once@2":
   version "2.0.0"
@@ -1356,10 +1356,10 @@
   dependencies:
     flatpickr "*"
 
-"@types/fnando__sparkline@^0.3.4":
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/@types/fnando__sparkline/-/fnando__sparkline-0.3.4.tgz#6a4a1a57983c1ecabf782abfb29ce864a9bbbf16"
-  integrity sha512-FWU1zw7CVJYVeDk77FGphTUabfPims4F/Yq+WFB0Gh647lLtiXHWn8vpfT95Fl65IsNBDOhEbxJdhmERMGubNQ==
+"@types/fnando__sparkline@^0.3.5":
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/@types/fnando__sparkline/-/fnando__sparkline-0.3.5.tgz#2bc6b9c39c19984aea6343be63905a57482a8f15"
+  integrity sha512-ARka7r7RVqiysApDQagLOcHty7ieS0IoSkNOYbsiA2JWyrUgxVvLYHDw96qmu0RvuGWAVKLTGRMGgQCt+Vq5wg==
 
 "@types/glob@^7.1.1":
   version "7.2.0"
@@ -2443,10 +2443,10 @@ boolbase@^1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==
 
-bootstrap@^5.3.1:
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-5.3.1.tgz#8ca07040ad15d7f75891d1504cf14c5dedfb1cfe"
-  integrity sha512-jzwza3Yagduci2x0rr9MeFSORjcHpt0lRZukZPZQJT1Dth5qzV7XcgGqYzi39KGAVYR8QEDVoO0ubFKOxzMG+g==
+bootstrap@^5.3.2:
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-5.3.2.tgz#97226583f27aae93b2b28ab23f4c114757ff16ae"
+  integrity sha512-D32nmNWiQHo94BKHLmOrdjlL05q1c8oxbtBphQFb9Z5to6eGRDCm0QgeaZ4zFBHzfg2++rqa2JkqCcxDy0sH0g==
 
 boxen@7.0.0:
   version "7.0.0"
@@ -2631,10 +2631,10 @@ camelcase@^7.0.0, camelcase@^7.0.1:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-7.0.1.tgz#f02e50af9fd7782bc8b88a3558c32fd3a388f048"
   integrity sha512-xlx1yCK2Oc1APsPXDL2LdlNP6+uu8OCDdhOBSVT279M/S+y75O30C2VuD8T2ogdePBBl7PfPF4504tnLgX3zfw==
 
-caniuse-lite@1.0.30001533, caniuse-lite@^1.0.30001489:
-  version "1.0.30001533"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001533.tgz#1180daeb2518b93c82f19b904d1fefcf82197707"
-  integrity sha512-9aY/b05NKU4Yl2sbcJhn4A7MsGwR1EPfW/nrqsnqVA0Oq50wpmPaGI+R1Z0UKlUl96oxUkGEOILWtOHck0eCWw==
+caniuse-lite@1.0.30001534, caniuse-lite@^1.0.30001489:
+  version "1.0.30001534"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001534.tgz#f24a9b2a6d39630bac5c132b5dff89b39a12e7dd"
+  integrity sha512-vlPVrhsCS7XaSh2VvWluIQEzVhefrUQcEsQWSS5A5V+dM07uv1qHeQzAOTGIMy9i3e9bH15+muvI/UHojVgS/Q==
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -7943,20 +7943,20 @@ react-is@^18.0.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
-react-router-dom@^6.15.0:
-  version "6.15.0"
-  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.15.0.tgz#6da7db61e56797266fbbef0d5e324d6ac443ee40"
-  integrity sha512-aR42t0fs7brintwBGAv2+mGlCtgtFQeOzK0BM1/OiqEzRejOZtpMZepvgkscpMUnKb8YO84G7s3LsHnnDNonbQ==
+react-router-dom@^6.16.0:
+  version "6.16.0"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.16.0.tgz#86f24658da35eb66727e75ecbb1a029e33ee39d9"
+  integrity sha512-aTfBLv3mk/gaKLxgRDUPbPw+s4Y/O+ma3rEN1u8EgEpLpPe6gNjIsWt9rxushMHHMb7mSwxRGdGlGdvmFsyPIg==
   dependencies:
-    "@remix-run/router" "1.8.0"
-    react-router "6.15.0"
+    "@remix-run/router" "1.9.0"
+    react-router "6.16.0"
 
-react-router@6.15.0:
-  version "6.15.0"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.15.0.tgz#bf2cb5a4a7ed57f074d4ea88db0d95033f39cac8"
-  integrity sha512-NIytlzvzLwJkCQj2HLefmeakxxWHWAP+02EGqWEZy+DgfHHKQMUoBBjUQLOtFInBMhWtb3hiUy6MfFgwLjXhqg==
+react-router@6.16.0:
+  version "6.16.0"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.16.0.tgz#abbf3d5bdc9c108c9b822a18be10ee004096fb81"
+  integrity sha512-VT4Mmc4jj5YyjpOi5jOf0I+TYzGpvzERy4ckNSvSh2RArv8LLoCxlsZ2D+tc7zgjxcY34oTz2hZaeX5RVprKqA==
   dependencies:
-    "@remix-run/router" "1.8.0"
+    "@remix-run/router" "1.9.0"
 
 react@^18.2.0:
   version "18.2.0"
@@ -8341,10 +8341,10 @@ sass-loader@^13.3.2:
   dependencies:
     neo-async "^2.6.2"
 
-sass@^1.66.1:
-  version "1.66.1"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.66.1.tgz#04b51c4671e4650aa393740e66a4e58b44d055b1"
-  integrity sha512-50c+zTsZOJVgFfTgwwEzkjA3/QACgdNsKueWPyAR0mRINIvLAStVQBbPg14iuqEQ74NPDbXzJARJ/O4SI1zftA==
+sass@^1.67.0:
+  version "1.67.0"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.67.0.tgz#fed84d74b9cd708db603b1380d6dc1f71bb24f6f"
+  integrity sha512-SVrO9ZeX/QQyEGtuZYCVxoeAL5vGlYjJ9p4i4HFuekWl8y/LtJ7tJc10Z+ck1c8xOuoBm2MYzcLfTAffD0pl/A==
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
     immutable "^4.0.0"
