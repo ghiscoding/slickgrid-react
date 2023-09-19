@@ -38,9 +38,10 @@ i18n
     }
   });
 
-const mainContainer = document.getElementById('main');
-const root = createRoot(mainContainer as HTMLElement);
+const mainContainer = document.getElementById('main') as HTMLElement;
+const root = createRoot(mainContainer);
 root.render(
+  // @ts-ignore
   <HashRouter>
     <App />
   </HashRouter>
