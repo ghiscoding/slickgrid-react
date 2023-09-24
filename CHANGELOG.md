@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.2](https://github.com/ghiscoding/slickgrid-react/compare/v3.2.1...v3.2.2) (2023-09-24)
+
+
+### Bug Fixes
+
+* bump Slickgrid-Universal w/auto-resize w/o container ([#219](https://github.com/ghiscoding/slickgrid-react/issues/219)) ([4ce1f1f](https://github.com/ghiscoding/slickgrid-react/commit/4ce1f1f8461393e1be78d9218dcc14560449ecb2))
+
 ## [3.2.1](https://github.com/ghiscoding/slickgrid-react/compare/v3.2.0...v3.2.1) (2023-09-05)
 
 
