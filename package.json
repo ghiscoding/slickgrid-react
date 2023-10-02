@@ -126,8 +126,8 @@
     "@types/fnando__sparkline": "^0.3.5",
     "@types/i18next-xhr-backend": "^1.4.2",
     "@types/jest": "^29.5.5",
-    "@types/node": "^20.7.1",
-    "@types/react": "^18.2.23",
+    "@types/node": "^20.8.0",
+    "@types/react": "^18.2.24",
     "@types/react-dom": "^18.2.8",
     "@types/sortablejs": "^1.15.3",
     "@types/text-encoding-utf-8": "^1.0.3",
@@ -185,6 +185,6 @@
     "npm": ">=8.5.0"
   },
   "resolutions": {
-    "caniuse-lite": "1.0.30001541"
+    "caniuse-lite": "1.0.30001542"
   }
 }
