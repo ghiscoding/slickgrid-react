@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/ghiscoding/slickgrid-react/compare/v3.2.2...v3.3.0) (2023-10-05)
+
+
+### Features
+
+* add pageUp/pageDown/home/end to SlickCellSelection ([#226](https://github.com/ghiscoding/slickgrid-react/issues/226)) ([efc77fe](https://github.com/ghiscoding/slickgrid-react/commit/efc77feb9cfb509b2afaf48dc5285a84c07028d2))
+
 ## [3.2.2](https://github.com/ghiscoding/slickgrid-react/compare/v3.2.1...v3.2.2) (2023-09-24)
 
 
