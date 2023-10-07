@@ -13,9 +13,6 @@ One of the best JavasSript datagrid [SlickGrid](https://github.com/mleibman/Slic
 ## Installation
 Refer to the **[Wiki - HOWTO Step by Step](https://github.com/ghiscoding/slickgrid-react/wiki/HOWTO--Step-by-Step)** and/or clone the [Slickgrid-React-Demos](https://github.com/ghiscoding/slickgrid-react-demos) repository. Please consult all Wikis before opening new issues, also consider asking installation and/or general questions on [Stack Overflow](https://stackoverflow.com/search?tab=newest&q=slickgrid) unless you think there's a bug with the library.
 
-### License
-[MIT License](LICENSE)
-
 ### NPM Package
 [slickgrid-react on NPM](https://www.npmjs.com/package/slickgrid-react)
 
@@ -26,6 +23,8 @@ Refer to the **[Wiki - HOWTO Step by Step](https://github.com/ghiscoding/slickgr
 #### Working Demos
 For a complete set of working demos (over 30 examples), we strongly suggest you to clone the [Slickgrid-React Demos](https://github.com/ghiscoding/slickgrid-react-demos) repository (instructions are provided in the demo repo). The repo provides multiple demos and they are updated every time a new version is out, so it is updated frequently and is also used as the GitHub live demo page.
 
+## License
+[MIT License](LICENSE)
 
 ### Like it? :star: it
 You like **Slickgrid-React**? Be sure to upvote :star:, and perhaps support me with cafeine :coffee: and feel free to contribute. 👷👷‍♀️ 
