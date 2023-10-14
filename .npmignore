@@ -3,8 +3,7 @@
 .github
 .idea
 .vscode
-.codecov.yml
-react-project
+CHANGELOG.md
 CONTRIBUTING.md
 cypress
 cypress.json
@@ -12,26 +11,27 @@ cypress-mochawesome.js
 doc
 src
 ISSUE_TEMPLATE.md
-index.ejs
-jest.conf.js
-npm-debug.log
 package-scripts.js
 screenshots
-test
 webpack.config.js
 
 **/dist-demo
 docs
+index.ejs
+react-project
 react_project
 favicon.ico
 tsconfig.spec.json
 
 # Lock & error files
+npm-debug.log
 yarn.lock
 yarn-error.log
 
 # Tests, Report & Coverage
+.codecov.yml
 *.spec.ts
+jest.conf.js
 test/
 **/node_modules
 **/coverage
@@ -42,3 +42,10 @@ test/
 **/test-report.xml
 **/testresult.xml
 
+# code editor & linter
+.env
+.editorconfig
+.eslintignore
+.eslintrc
+.hintrc
+.release-it.json
