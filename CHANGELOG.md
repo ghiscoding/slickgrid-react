@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.2](https://github.com/ghiscoding/slickgrid-react/compare/v3.3.0...v3.3.2) (2023-10-14)
+
+
+### Bug Fixes
+
+* **graphql:** column with complex object could throw null pointer exception ([#229](https://github.com/ghiscoding/slickgrid-react/issues/229)) ([2cbb717](https://github.com/ghiscoding/slickgrid-react/commit/2cbb7174eec1d775c1413b4b1e8958bfcbc208f1))
+* remove unused code editor files from npm publish ([e913649](https://github.com/ghiscoding/slickgrid-react/commit/e913649b5985cf03e44d1c28b0242acf997d14a5))
+
 # [3.3.0](https://github.com/ghiscoding/slickgrid-react/compare/v3.2.2...v3.3.0) (2023-10-05)
 
 
