@@ -1,8 +1,8 @@
-import { GraphqlService, GraphqlPaginatedResult, GraphqlServiceApi, } from '@slickgrid-universal/graphql';
+import { GraphqlService, GraphqlPaginatedResult, GraphqlServiceApi, GraphqlServiceOption, } from '@slickgrid-universal/graphql';
 import i18next, { TFunction } from 'i18next';
 import moment from 'moment-mini';
 import {
-  SlickgridReactInstance,
+  CursorPageInfo,
   FieldType,
   Filters,
   Formatters,
@@ -12,6 +12,7 @@ import {
   OperatorType,
   SortDirection,
   SlickgridReact,
+  SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
 import BaseSlickGridState from './state-slick-grid-base';
@@ -53,7 +54,6 @@ class Example6 extends React.Component<Props, State> {
 
   reactGrid!: SlickgridReactInstance;
   graphqlService = new GraphqlService();
-
 
   constructor(public readonly props: Props) {
     super(props);
@@ -201,7 +201,7 @@ class Example6 extends React.Component<Props, State> {
           { columnId: 'name', direction: 'asc' },
           { columnId: 'company', direction: SortDirection.DESC }
         ],
-        pagination: { pageNumber: 2, pageSize: 20 }
+        pagination: { pageNumber: this.state.isWithCursor ? 1 : 2, pageSize: 20 } // if cursor based, start at page 1
       },
       backendServiceApi: {
         service: this.graphqlService,
@@ -212,6 +212,7 @@ class Example6 extends React.Component<Props, State> {
             field: 'userId',
             value: 123
           }],
+          isWithCursor: this.state.isWithCursor, // sets pagination strategy, if true requires a call to setPageInfo() when graphql call returns
           // when dealing with complex objects, we want to keep our field name with double quotes
           // example with gender: query { users (orderBy:[{field:"gender",direction:ASC}]) {}
           keepArgumentFieldDoubleQuotes: true
@@ -259,6 +260,35 @@ class Example6 extends React.Component<Props, State> {
    * @return Promise<GraphqlPaginatedResult>
    */
   getCustomerApiCall(_query: string): Promise<GraphqlPaginatedResult> {
+    let pageInfo: CursorPageInfo;
+    if (this.reactGrid?.paginationService) {
+      const { paginationService } = this.reactGrid;
+      // there seems to a timing issue where when you click "cursor" it requests the data before the pagination-service is initialized...
+      const pageNumber = (paginationService as any)._initialized ? paginationService.getCurrentPageNumber() : 1;
+      // In the real world, each node item would be A,B,C...AA,AB,AC, etc and so each page would actually be something like A-T, T-AN
+      // but for this mock data it's easier to represent each page as
+      // Page1: A-B
+      // Page2: B-C
+      // Page3: C-D
+      // Page4: D-E
+      // Page5: E-F
+      const startCursor = String.fromCharCode('A'.charCodeAt(0) + pageNumber - 1);
+      const endCursor = String.fromCharCode(startCursor.charCodeAt(0) + 1);
+      pageInfo = {
+        hasPreviousPage: paginationService.dataFrom === 0,
+        hasNextPage: paginationService.dataTo === 100,
+        startCursor,
+        endCursor
+      };
+    } else {
+      pageInfo = {
+        hasPreviousPage: false,
+        hasNextPage: true,
+        startCursor: 'A',
+        endCursor: 'B'
+      };
+    }
+
     // in your case, you will call your WebAPI function (wich needs to return a Promise)
     // for the demo purpose, we will call a mock WebAPI function
     const mockedResult = {
@@ -267,7 +297,8 @@ class Example6 extends React.Component<Props, State> {
       data: {
         [GRAPHQL_QUERY_DATASET_NAME]: {
           nodes: [],
-          totalCount: 100
+          totalCount: 100,
+          pageInfo
         }
       }
     };
@@ -280,6 +311,12 @@ class Example6 extends React.Component<Props, State> {
             graphqlQuery: this.graphqlService.buildQuery()
           };
         });
+        if (this.state.isWithCursor) {
+          // When using cursor pagination, the pagination service needs to updated with the PageInfo data from the latest request
+          // This might be done automatically if using a framework specific slickgrid library
+          // Note because of this timeout, this may cause race conditions with rapid clicks!
+          this.reactGrid?.paginationService?.setCursorPageInfo((mockedResult.data[GRAPHQL_QUERY_DATASET_NAME].pageInfo));
+        }
         resolve(mockedResult);
       }, 150);
     });
@@ -322,6 +359,47 @@ class Example6 extends React.Component<Props, State> {
       { columnId: 'billingAddressZip', direction: 'DESC' },
       { columnId: 'company', direction: 'ASC' },
     ]);
+  }
+
+  resetToOriginalPresets() {
+    const presetLowestDay = moment().add(-2, 'days').format('YYYY-MM-DD');
+    const presetHighestDay = moment().add(20, 'days').format('YYYY-MM-DD');
+
+    this.reactGrid.filterService.updateFilters([
+      // you can use OperatorType or type them as string, e.g.: operator: 'EQ'
+      { columnId: 'gender', searchTerms: ['male'], operator: OperatorType.equal },
+      { columnId: 'name', searchTerms: ['John Doe'], operator: OperatorType.contains },
+      { columnId: 'company', searchTerms: ['xyz'], operator: 'IN' },
+
+      // use a date range with 2 searchTerms values
+      { columnId: 'finish', searchTerms: [presetLowestDay, presetHighestDay], operator: OperatorType.rangeInclusive },
+    ]);
+    this.reactGrid.sortService.updateSorting([
+      // direction can written as 'asc' (uppercase or lowercase) and/or use the SortDirection type
+      { columnId: 'name', direction: 'asc' },
+      { columnId: 'company', direction: SortDirection.DESC }
+    ]);
+    setTimeout(() => {
+      this.reactGrid.paginationService?.changeItemPerPage(20);
+      this.reactGrid.paginationService?.goToPageNumber(2);
+    });
+  }
+
+  setIsWithCursor(newValue: boolean) {
+    this.setState((state: State) => ({ ...state, isWithCursor: newValue }));
+    this.resetOptions({ isWithCursor: newValue });
+    return true;
+  }
+
+  private resetOptions(options: Partial<GraphqlServiceOption>) {
+    const graphqlService = this.state.gridOptions!.backendServiceApi!.service as GraphqlService;
+    this.reactGrid.paginationService!.setCursorBased(options.isWithCursor!);
+    this.reactGrid.paginationService?.goToFirstPage();
+    graphqlService.updateOptions(options);
+    this.setState((state: State) => ({
+      ...state,
+      gridOptions: { ...this.state.gridOptions },
+    }));
   }
 
   async switchLanguage() {
@@ -369,6 +447,10 @@ class Example6 extends React.Component<Props, State> {
                   onClick={() => this.setSortingDynamically()}>
                   Set Sorting Dynamically
                 </button>
+                <button className="btn btn-outline-secondary btn-sm" data-test="reset-presets"
+                  onClick={() => this.resetToOriginalPresets()}>
+                  Reset Original Presets
+                </button>
               </div>
             </div>
 
@@ -386,6 +468,20 @@ class Example6 extends React.Component<Props, State> {
                   {this.state.selectedLanguage + '.json'}
                 </span>
               </div>
+
+              <span style={{ marginLeft: '10px' }}>
+                <label>Pagination strategy: </label>
+                <span data-test="radioStrategy">
+                  <label className="radio-inline control-label" htmlFor="offset">
+                    <input type="radio" name="inlineRadioOptions" data-test="offset" id="radioOffset" defaultChecked={true} value="false"
+                      onChange={() => this.setIsWithCursor(false)} /> Offset
+                  </label>
+                  <label className="radio-inline control-label" htmlFor="radioCursor">
+                    <input type="radio" name="inlineRadioOptions" data-test="cursor" id="radioCursor" value="true"
+                      onChange={() => this.setIsWithCursor(true)} /> Cursor
+                  </label>
+                </span>
+              </span>
             </div>
             <br />
             {this.state.metrics && <span><><b>Metrics: </b>
