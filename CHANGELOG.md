@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/ghiscoding/slickgrid-react/compare/v3.3.2...v3.4.0) (2023-11-03)
+
+
+### Features
+
+* add sub-menus to all Menu extensions/plugins ([#243](https://github.com/ghiscoding/slickgrid-react/issues/243)) ([63c60ed](https://github.com/ghiscoding/slickgrid-react/commit/63c60ede393e01218b063529dac002668553703a))
+* update GraphQL demo with cursor pagination ([#245](https://github.com/ghiscoding/slickgrid-react/issues/245)) ([4fc6616](https://github.com/ghiscoding/slickgrid-react/commit/4fc6616b274f73e0b3978f089f8efc806e213ce1))
+
 ## [3.3.2](https://github.com/ghiscoding/slickgrid-react/compare/v3.3.0...v3.3.2) (2023-10-14)
 
 
