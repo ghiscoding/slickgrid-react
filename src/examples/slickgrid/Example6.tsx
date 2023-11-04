@@ -30,10 +30,12 @@ interface State extends BaseSlickGridState {
   selectedLanguage: string,
   metrics?: Metrics,
   status: Status,
+  serverWaitDelay: number
 }
 
 const defaultPageSize = 20;
 const GRAPHQL_QUERY_DATASET_NAME = 'users';
+const FAKE_SERVER_DELAY = 250;
 
 class Example6 extends React.Component<Props, State> {
   title = 'Example 6: Grid with Backend GraphQL Service';
@@ -69,6 +71,7 @@ class Example6 extends React.Component<Props, State> {
       isWithCursor: false,
       selectedLanguage: defaultLang,
       status: {} as Status,
+      serverWaitDelay: FAKE_SERVER_DELAY, // server simulation with default of 250ms but 50ms for Cypress tests
     };
 
     i18next.changeLanguage(defaultLang);
@@ -318,7 +321,7 @@ class Example6 extends React.Component<Props, State> {
           this.reactGrid?.paginationService?.setCursorPageInfo((mockedResult.data[GRAPHQL_QUERY_DATASET_NAME].pageInfo));
         }
         resolve(mockedResult);
-      }, 150);
+      }, this.state.serverWaitDelay);
     });
   }
 
@@ -383,6 +386,11 @@ class Example6 extends React.Component<Props, State> {
       this.reactGrid.paginationService?.changeItemPerPage(20);
       this.reactGrid.paginationService?.goToPageNumber(2);
     });
+  }
+
+  serverDelayChanged(e: React.FormEvent<HTMLInputElement>) {
+    const newDelay = +(e.target as HTMLInputElement)?.value ?? '';
+    this.setState((state: State) => ({ ...state, serverWaitDelay: newDelay }));
   }
 
   setIsWithCursor(newValue: boolean) {
@@ -451,6 +459,12 @@ class Example6 extends React.Component<Props, State> {
                   onClick={() => this.resetToOriginalPresets()}>
                   Reset Original Presets
                 </button>
+                <label htmlFor="serverdelay" className="ml-4">Server Delay: </label>
+                <input id="serverdelay" type="number"
+                  defaultValue={this.state.serverWaitDelay}
+                  data-test="server-delay" style={{ width: '55px' }}
+                  onInput={($event) => this.serverDelayChanged($event)}
+                  title="input a fake timer delay to simulate slow server response" />
               </div>
             </div>
 
