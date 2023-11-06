@@ -8,7 +8,7 @@
 
 
 ### Brief introduction
-One of the best JavasSript datagrid [SlickGrid](https://github.com/mleibman/SlickGrid), which was originally developed by @mleibman, is now available to React. SlickGrid beats most other datagrids in terms of features, customizability and performance (it can easily deal with even a million row). Slickgrid-React is a wrapper on top of SlickGrid and we are using the [6pac/SlickGrid](https://github.com/6pac/SlickGrid/) fork which is the most active one since the original one was put on pause by its original author for personal reasons. Also worth to know, that I also contributed a lot to the 6pac/SlickGrid fork over the years for the benefit of all the SlickGrid libraries that I maintain including this one here... SlickGrid was recently refactored to be browser native, which means that jQuery is no longer required in Slickgrid-React [v3.0](https://github.com/ghiscoding/slickgrid-react/releases/tag/v3.0.1) and higher.
+One of the best JavasSript datagrid [SlickGrid](https://github.com/mleibman/SlickGrid), which was originally developed by @mleibman, is now available to React. SlickGrid beats most other datagrids in terms of features, customizability and performance (it can easily deal with even a million row). Slickgrid-React is a wrapper on top of SlickGrid and we are using the [6pac/SlickGrid](https://github.com/6pac/SlickGrid/) fork, which is the most active one since the original one was put on pause by its original author for personal reasons. Also worth to know, that I also contributed a lot to the 6pac/SlickGrid fork over the years for the benefit of all the SlickGrid libraries that I maintain including this one here... SlickGrid was also recently refactored to drop jQuery requirement and be browser native in Slickgrid-React [v3.0](https://github.com/ghiscoding/slickgrid-react/releases/tag/v3.0.1) and higher.
 
 ## Installation
 Refer to the **[Wiki - HOWTO Step by Step](https://github.com/ghiscoding/slickgrid-react/wiki/HOWTO--Step-by-Step)** and/or clone the [Slickgrid-React-Demos](https://github.com/ghiscoding/slickgrid-react-demos) repository. Please consult all Wikis before opening new issues, also consider asking installation and/or general questions on [Stack Overflow](https://stackoverflow.com/search?tab=newest&q=slickgrid) unless you think there's a bug with the library.
@@ -34,8 +34,8 @@ You like **Slickgrid-React**? Be sure to upvote :star:, and perhaps support me w
 ## Latest News & Releases
 Check out the [Releases](https://github.com/ghiscoding/slickgrid-react/releases) section for all latest News & Releases.
 
-### Fully Tested with [Jest](https://jestjs.io/) (Unit Tests) - [Cypress](https://www.cypress.io/) (E2E Tests)
-Slickgrid-React and Slickgrid-Universal both have **100%** Unit Test Coverage, we are talking about +15,000 lines of code (+3,750 unit tests) that are fully tested with [Jest](https://jestjs.io/). On the UI side, all Slickgrid-React Examples are tested with [Cypress](https://www.cypress.io/), there are over +500 Cypress E2E tests.
+### Tested with [Jest](https://jestjs.io/) (Unit Tests) - [Cypress](https://www.cypress.io/) (E2E Tests)
+Slickgrid-Universal has **100%** Unit Test Coverage, we are talking about +4,000 unit tests that are fully tested with [Jest](https://jestjs.io/). On the UI side, all Slickgrid-React Examples are tested with [Cypress](https://www.cypress.io/), there are over +600 Cypress E2E tests.
 
 ## Installation
 Refer to the **[Wiki - HOWTO Step by Step](https://github.com/ghiscoding/slickgrid-react/wiki/HOWTO---Step-by-Step)**. Please don't open any issue unless you have followed these steps (from the Wiki), and if any of the steps are incorrect or confusing, then please let me know.
@@ -46,19 +46,19 @@ Refer to the **[Wiki - HOWTO Step by Step](https://github.com/ghiscoding/slickgr
 The Wiki is where all the documentation and instructions will go, so please consult the [slickgrid-react - Wiki](https://github.com/ghiscoding/slickgrid-react/wiki) before opening any issues. The [Wiki - HOWTO](https://github.com/ghiscoding/slickgrid-react/wiki/HOWTO---Step-by-Step) is a great place to start with. You can also take a look at the [Demo page](https://ghiscoding.github.io/slickgrid-react), it includes sample for most of the features and it keeps growing (so you might want to consult it whenever a new version comes out).
 
 ## Main features
-You can see some screenshots below and the instructions down below and if that is not enough for you to decide, head over to the [Wiki - Main Features](https://github.com/ghiscoding/slickgrid-react/wiki).
+You can see some screenshots below and if that is not enough for you to decide, head over to the [Wiki - Main Features](https://github.com/ghiscoding/slickgrid-react/wiki) for documentations and features.
 
 ## Missing features
 What if `Slickgrid-React` is missing feature(s) compare to the original core library [6pac/SlickGrid](https://github.com/6pac/SlickGrid/)?
 
-Fear not, and just simply reference the `SlickGrid` and `DataView` objects, just like in the core lib, those are exposed through Event Emitters. For more info continue reading on [Wiki - SlickGrid & DataView objects](/slickgrid-universal/slickgrid-react/wiki/SlickGrid-&-DataView-Objects) and [Wiki - Grid & DataView Events](https://github.com/ghiscoding/slickgrid-react/wiki/Grid-&-DataView-Events)
+Fear not, you can always reference the `SlickGrid` and `DataView` instances, just like in the core lib, those are exposed through Events. For more info head over to the [Wiki - SlickGrid & DataView objects](/slickgrid-universal/slickgrid-react/wiki/SlickGrid-&-DataView-Objects) and [Wiki - Grid & DataView Events](https://github.com/ghiscoding/slickgrid-react/wiki/Grid-&-DataView-Events)
 
 
 ## Screenshots
 
 Screenshots from the demo app with the `Bootstrap` theme.
 
-_Note that the styling changed a bit, the best is to simply head over to the [Live Demo](https://ghiscoding.github.io/slickgrid-react) page._
+_Note that the styling might have changed a little, the best is to simply head over to the [Live Demo](https://ghiscoding.github.io/slickgrid-react) page._
 
 ### Slickgrid example with Formatters (last column shown is a custom Formatter)
 
