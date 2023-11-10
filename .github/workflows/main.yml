@@ -57,7 +57,7 @@ jobs:
         run: yarn build:demo
 
       - name: Run Cypress E2E tests
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           install: false
           # working-directory: packages/dnd
@@ -71,13 +71,6 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           # pass GitHub token to allow accurately detecting a build vs a re-run build
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          Cypress_extended: true
-
-      - uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: cypress-screenshots
-          path: test/cypress/screenshots
 
       # deploy (re-publish) GitHub demo page with a Prod build but only when merging to "master" branch
       # and the commit message contains the text "chore: release"
