@@ -1,7 +1,7 @@
 
 import { changeTimezone, removeExtraSpaces, zeroPadding } from '../plugins/utilities';
 
-describe('Example 27 - Tree Data (from a flat dataset with parentId references)', { retries: 1 }, () => {
+describe('Example 27 - Tree Data (from a flat dataset with parentId references)', () => {
   const GRID_ROW_HEIGHT = 40;
   const titles = ['Title', 'Duration', '% Complete', 'Start', 'Finish', 'Effort Driven'];
 
