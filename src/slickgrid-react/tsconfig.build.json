@@ -2,9 +2,9 @@
     "compilerOptions": {
         "module": "esnext",
         "moduleResolution": "node",
-        "target": "es2017",
+        "target": "es2018",
         "lib": [
-            "es2017",
+            "es2018",
             "dom"
         ],
         "typeRoots": [
@@ -30,9 +30,7 @@
     },
     "exclude": [
         ".vscode",
-        "src/react_project",
         "src/examples",
-        "src/resources",
         "src/test",
         "**/*.spec.ts",
         "**/*.scss"
