@@ -35,7 +35,6 @@ interface Props { }
 interface State extends BaseSlickGridState {
   metrics?: Metrics;
   graphqlQuery: string;
-  isWithCursor: boolean;
   processing: boolean;
   selectedLanguage: string;
   status: Status;
@@ -65,7 +64,6 @@ export default class Example25 extends React.Component<Props, State> {
     this.state = {
       gridOptions: undefined,
       columnDefinitions: [],
-      isWithCursor: false,
       graphqlQuery: '',
       metrics: undefined,
       processing: false,
