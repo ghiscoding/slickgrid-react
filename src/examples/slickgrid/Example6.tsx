@@ -215,7 +215,7 @@ class Example6 extends React.Component<Props, State> {
             field: 'userId',
             value: 123
           }],
-          isWithCursor: this.state.isWithCursor, // sets pagination strategy, if true requires a call to setPageInfo() when graphql call returns
+          useCursor: this.state.isWithCursor, // sets pagination strategy, if true requires a call to setPageInfo() when graphql call returns
           // when dealing with complex objects, we want to keep our field name with double quotes
           // example with gender: query { users (orderBy:[{field:"gender",direction:ASC}]) {}
           keepArgumentFieldDoubleQuotes: true
@@ -395,13 +395,13 @@ class Example6 extends React.Component<Props, State> {
 
   setIsWithCursor(newValue: boolean) {
     this.setState((state: State) => ({ ...state, isWithCursor: newValue }));
-    this.resetOptions({ isWithCursor: newValue });
+    this.resetOptions({ useCursor: newValue });
     return true;
   }
 
   private resetOptions(options: Partial<GraphqlServiceOption>) {
     const graphqlService = this.state.gridOptions!.backendServiceApi!.service as GraphqlService;
-    this.reactGrid.paginationService!.setCursorBased(options.isWithCursor!);
+    this.reactGrid.paginationService!.setCursorBased(options.useCursor as boolean);
     this.reactGrid.paginationService?.goToFirstPage();
     graphqlService.updateOptions(options);
     this.setState((state: State) => ({
