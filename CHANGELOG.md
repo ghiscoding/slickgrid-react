@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/ghiscoding/slickgrid-react/compare/v3.4.0...v3.5.0) (2023-11-11)
+
+
+### Bug Fixes
+
+* SlickCellRangeSelector stopped event bubbling in editor ([#252](https://github.com/ghiscoding/slickgrid-react/issues/252)) ([f3e64e8](https://github.com/ghiscoding/slickgrid-react/commit/f3e64e8da3a5d898a90496070dc93fa75a2d3c44))
+
 # [3.4.0](https://github.com/ghiscoding/slickgrid-react/compare/v3.3.2...v3.4.0) (2023-11-03)
 
 
