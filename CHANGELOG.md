@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.5.1](https://github.com/ghiscoding/slickgrid-react/compare/v3.5.0...v3.5.1) (2023-11-13)
+
+
+### Bug Fixes
+
+* add ms-select-vanilla missing type & improve pkg exports ([#256](https://github.com/ghiscoding/slickgrid-react/issues/256)) ([dfd10b9](https://github.com/ghiscoding/slickgrid-react/commit/dfd10b9fe903e29050c5cbf4c2770d634a4bf66f)), closes [#1313](https://github.com/ghiscoding/slickgrid-react/issues/1313)
+* improve build & types exports for all targets, Node, CJS/ESM ([#255](https://github.com/ghiscoding/slickgrid-react/issues/255)) ([d64d814](https://github.com/ghiscoding/slickgrid-react/commit/d64d8140402af4da85458c309fe5b8bf5fa36777))
+
 # [3.5.0](https://github.com/ghiscoding/slickgrid-react/compare/v3.4.0...v3.5.0) (2023-11-11)
 
 
