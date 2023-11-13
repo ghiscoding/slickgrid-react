@@ -53,7 +53,7 @@ jobs:
       - name: Run yarn install dependencies
         run: yarn --frozen-lockfile
 
-      - name: Website Prod Build (GitHub demo site)
+      - name: Website Dev Build (served for Cypress)
         run: yarn build:demo
 
       - name: Run Cypress E2E tests
