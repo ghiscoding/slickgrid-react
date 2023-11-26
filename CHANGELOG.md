@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/ghiscoding/slickgrid-react/compare/v3.5.1...v3.6.0) (2023-11-26)
+
+
+### Features
+
+* **GraphQL:** .excludeFieldFromQuery, exclude field but keep fields ([#261](https://github.com/ghiscoding/slickgrid-react/issues/261)) ([b0e67cf](https://github.com/ghiscoding/slickgrid-react/commit/b0e67cfaf8228e35e852a451cc850459c77fd50e))
+
 ## [3.5.1](https://github.com/ghiscoding/slickgrid-react/compare/v3.5.0...v3.5.1) (2023-11-13)
 
 
