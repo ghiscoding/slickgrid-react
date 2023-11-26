@@ -7,6 +7,9 @@
     "release": true,
     "releaseName": "v${version}"
   },
+  "npm": {
+    "publish": true
+  },
   "hooks": {
     "before:init": [
       "npm run lint"
@@ -24,4 +27,3 @@
     }
   }
 }
-  
