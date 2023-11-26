@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.1](https://github.com/ghiscoding/slickgrid-react/compare/v3.6.0...v3.6.1) (2023-11-26)
+
+
+### Bug Fixes
+
+* add npm publish with provenance support ([d190f05](https://github.com/ghiscoding/slickgrid-react/commit/d190f05c048e7b35c87a92ebc7632544200a88d9))
+
+# Change Log 
+
+All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 # [3.6.0](https://github.com/ghiscoding/slickgrid-react/compare/v3.5.1...v3.6.0) (2023-11-26)
 
 
@@ -68,9 +79,7 @@ All notable changes to this project will be documented in this file. See [Conven
 
 * **TreeData:** add optional Aggregators for Tree Data totals calc ([#191](https://github.com/ghiscoding/slickgrid-react/issues/191)) ([26bfac5](https://github.com/ghiscoding/slickgrid-react/commit/26bfac59f0ade3dbaba62fb396e40d25461a0f29))
 
-# Change Log 
 
-All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 # [3.1.0](https://github.com/ghiscoding/slickgrid-react/compare/v3.0.2...v3.1.0) (2023-07-21)
 
