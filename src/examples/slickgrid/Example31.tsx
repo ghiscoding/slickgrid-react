@@ -163,7 +163,7 @@ export default class Example31 extends React.Component<Props, State> {
           this.displaySpinner(false);
         }
       } as OdataServiceApi,
-      registerExternalResources: [new RxJsResource()]
+      externalResources: [new RxJsResource()]
     };
 
     this.setState((state: State) => ({

@@ -331,7 +331,7 @@ export default class Example32 extends React.Component<Props, State> {
         exportWithFormatter: true
       },
       // Custom Tooltip options can be defined in a Column or Grid Options or a mixed of both (first options found wins)
-      registerExternalResources: [new SlickCustomTooltip(), new ExcelExportService()],
+      externalResources: [new SlickCustomTooltip(), new ExcelExportService()],
       customTooltip: {
         formatter: this.tooltipFormatter.bind(this) as Formatter,
         headerFormatter: this.headerFormatter,

@@ -304,7 +304,7 @@ class Example24 extends React.Component<Props, State> {
         // you can customize how the header titles will be styled (defaults to Bold)
         columnHeaderStyle: { font: { bold: true, italic: true } }
       },
-      registerExternalResources: [new ExcelExportService()],
+      externalResources: [new ExcelExportService()],
       i18n: i18next,
 
       enableContextMenu: true,

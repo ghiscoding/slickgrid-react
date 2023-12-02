@@ -213,7 +213,7 @@ class Example23 extends React.Component<Props, State> {
           { columnId: 'duration', direction: 'ASC' },
         ],
       },
-      registerExternalResources: [new SlickCustomTooltip(), new ExcelExportService()],
+      externalResources: [new SlickCustomTooltip(), new ExcelExportService()],
     };
 
     this.setState((state: State, props: Props) => ({
