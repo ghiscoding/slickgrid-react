@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.2](https://github.com/ghiscoding/slickgrid-react/compare/v3.6.1...v3.6.2) (2023-12-08)
+
+
+### Bug Fixes
+
+* registered external resouces should keep singleton ref ([#262](https://github.com/ghiscoding/slickgrid-react/issues/262)) ([14703df](https://github.com/ghiscoding/slickgrid-react/commit/14703dfd087560b779f157c98e288aa39943bc56))
+
 ## [3.6.1](https://github.com/ghiscoding/slickgrid-react/compare/v3.6.0...v3.6.1) (2023-11-26)
 
 
