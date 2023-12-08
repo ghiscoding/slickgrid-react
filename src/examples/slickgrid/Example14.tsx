@@ -70,7 +70,7 @@ export default class Example14 extends React.Component {
       excelExportOptions: {
         exportWithFormatter: false
       },
-      registerExternalResources: [new ExcelExportService()],
+      externalResources: [new ExcelExportService()],
       explicitInitialization: true,
       colspanCallback: this.renderDifferentColspan
     };
@@ -101,7 +101,7 @@ export default class Example14 extends React.Component {
       excelExportOptions: {
         exportWithFormatter: false
       },
-      registerExternalResources: [new ExcelExportService()],
+      externalResources: [new ExcelExportService()],
       gridMenu: { hideClearFrozenColumnsCommand: false },
       headerMenu: { hideFreezeColumnsCommand: false }
     };

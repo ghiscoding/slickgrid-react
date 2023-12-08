@@ -235,7 +235,7 @@ export default class Example4 extends React.Component<Props, State> {
           { columnId: 'complete', direction: 'ASC' }
         ],
       },
-      registerExternalResources: [new ExcelExportService()],
+      externalResources: [new ExcelExportService()],
     };
   }
 

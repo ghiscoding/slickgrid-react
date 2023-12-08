@@ -192,7 +192,7 @@ class Example12 extends React.Component<Props, State> {
         sanitizeDataExport: true
       },
       excelExportOptions: { exportWithFormatter: true, sanitizeDataExport: true },
-      registerExternalResources: [this.excelExportService, this.textExportService],
+      externalResources: [this.excelExportService, this.textExportService],
     };
 
     this.setState((state: State) => ({

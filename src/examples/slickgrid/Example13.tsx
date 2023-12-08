@@ -202,7 +202,7 @@ export default class Example13 extends React.Component<Props, State> {
       enableTextExport: true,
       excelExportOptions: { sanitizeDataExport: true },
       textExportOptions: { sanitizeDataExport: true },
-      registerExternalResources: [this.excelExportService, this.textExportService],
+      externalResources: [this.excelExportService, this.textExportService],
     };
 
     this.setState((state: State) => ({
