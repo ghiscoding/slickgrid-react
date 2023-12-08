@@ -127,9 +127,8 @@ export default class Example32 extends React.Component<Props, State> {
         resizeCharWidthInPx: 7.6,
         resizeCalcWidthRatio: 1, // default ratio is ~0.9 for string but since our text is all uppercase then a higher ratio is needed
         resizeMaxWidthThreshold: 200,
-        filterable: true, columnGroup: 'Common Factor',
-        filter: { model: Filters.compoundInputText },
-        formatter: Formatters.multiple, params: { formatters: [Formatters.uppercase, Formatters.bold] },
+        cssClass: 'text-uppercase text-bold', columnGroup: 'Common Factor',
+        filterable: true, filter: { model: Filters.compoundInputText },
         editor: {
           model: Editors.longText, required: true, alwaysSaveOnEnterKey: true,
           maxLength: 12,
@@ -196,9 +195,9 @@ export default class Example32 extends React.Component<Props, State> {
       },
       {
         id: 'completed', name: 'Completed', field: 'completed', width: 80, minWidth: 75, maxWidth: 100,
-        sortable: true, filterable: true, columnGroup: 'Period',
-        formatter: Formatters.multiple,
-        params: { formatters: [Formatters.checkmark, Formatters.center] },
+        cssClass: 'text-center', columnGroup: 'Period',
+        sortable: true, filterable: true,
+        formatter: Formatters.checkmark,
         exportWithFormatter: false,
         filter: {
           collection: [{ value: '', label: '' }, { value: true, label: 'True' }, { value: false, label: 'False' }],
