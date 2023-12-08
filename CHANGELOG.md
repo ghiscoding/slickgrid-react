@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.3](https://github.com/ghiscoding/slickgrid-react/compare/v3.6.2...v3.6.3) (2023-12-08)
+
+
+### Features
+
+* introduce devMode to support nodejs based unit testing ([#267](https://github.com/ghiscoding/slickgrid-react/issues/267)) ([fff7e22](https://github.com/ghiscoding/slickgrid-react/commit/fff7e22412d87a434dd3cc82882b12dd9d08156f))
+
 ## [3.6.2](https://github.com/ghiscoding/slickgrid-react/compare/v3.6.1...v3.6.2) (2023-12-08)
 
 
