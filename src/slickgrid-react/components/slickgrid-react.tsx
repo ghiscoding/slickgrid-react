@@ -1,12 +1,6 @@
 // import 3rd party vendor libs
 import i18next from 'i18next';
 import React from 'react';
-import 'slickgrid/slick.core';
-import 'slickgrid/slick.interactions';
-import 'slickgrid/slick.grid';
-import 'slickgrid/slick.dataview';
-import * as Sortable_ from 'sortablejs';
-const Sortable = ((Sortable_ as any)?.['default'] ?? Sortable_); // patch for rollup
 
 import {
   // interfaces/types
@@ -20,6 +14,7 @@ import {
   ExtensionList,
   ExternalResource,
   GridStateType,
+  ItemMetadata,
   Locale,
   Metrics,
   Pagination,
@@ -28,7 +23,6 @@ import {
   SlickDataView,
   SlickEventHandler,
   SlickGrid,
-  SlickNamespace,
 
   // services
   BackendUtilityService,
@@ -55,8 +49,7 @@ import {
   // utilities
   autoAddEditorFormatterToColumnsWithEditor,
   emptyElement,
-  SlickGridEventData,
-  SlickEvent,
+  Utils as SlickUtils,
 } from '@slickgrid-universal/common';
 import { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
 import { SlickFooterComponent } from '@slickgrid-universal/custom-footer-component';
@@ -77,12 +70,6 @@ import { Subscription } from 'rxjs';
 import { GlobalContainerService } from '../services/singletons';
 import { SlickgridReactProps } from './slickgridReactProps';
 
-// using external non-typed js libraries
-declare const Slick: SlickNamespace;
-
-// add Sortable to the window object so that SlickGrid lib can use globally
-(window as any).Sortable = Sortable;
-
 interface State {
   showPagination: boolean;
   _gridOptions: GridOption;
@@ -95,7 +82,7 @@ class CustomEventPubSubService extends EventPubSubService {
   }
 }
 
-export class SlickgridReact extends React.Component<SlickgridReactProps, State> {
+export class SlickgridReact<TData = any> extends React.Component<SlickgridReactProps, State> {
   protected _mounted = false;
   protected setStateValue(key: string, value: any, callback?: () => void): void {
     if ((this.state as any)?.[key] === value) {
@@ -115,7 +102,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
     }, callback);
   }
 
-  protected _columnDefinitions: Column[] = [];
+  protected _columnDefinitions: Column<TData>[] = [];
   protected _currentDatasetLength = 0;
   protected _dataset: any[] | null = null;
   protected _elm?: HTMLDivElement | null;
@@ -132,7 +119,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
   protected _gridOptions?: GridOption;
 
   protected get gridOptions(): GridOption {
-    return this._gridOptions || {};
+    return this._gridOptions || {} as GridOption;
   }
   protected set gridOptions(options: GridOption) {
     let mergedOptions: GridOption;
@@ -140,7 +127,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
     // if we already have grid options, when grid was already initialized, we'll merge with those options
     // else we'll merge with global grid options
     if (this.grid?.getOptions) {
-      mergedOptions = Slick.Utils.extend(true, {}, this.grid.getOptions(), options);
+      mergedOptions = SlickUtils.extend<GridOption>(true, {} as GridOption, this.grid.getOptions() as GridOption, options as GridOption);
     } else {
       mergedOptions = this.mergeGridOptions(options);
     }
@@ -192,7 +179,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
   sortService: SortService;
   treeDataService: TreeDataService;
 
-  dataView!: SlickDataView;
+  dataView!: SlickDataView<TData>;
   grid!: SlickGrid;
   totalItems = 0;
 
@@ -215,7 +202,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
     const prevDatasetLn = this._currentDatasetLength;
     const isDatasetEqual = dequal(newDataset, this.dataset || []);
     const isDeepCopyDataOnPageLoadEnabled = !!(this._gridOptions?.enableDeepCopyDatasetOnPageLoad);
-    let data = isDeepCopyDataOnPageLoadEnabled ? Slick.Utils.extend(true, [], newDataset) : newDataset;
+    let data = isDeepCopyDataOnPageLoadEnabled ? SlickUtils.extend(true, [], newDataset) : newDataset;
 
     // when Tree Data is enabled and we don't yet have the hierarchical dataset filled, we can force a convert+sort of the array
     if (this.grid && this.gridOptions?.enableTreeData && Array.isArray(newDataset) && (newDataset.length > 0 || newDataset.length !== prevDatasetLn || !isDatasetEqual)) {
@@ -267,7 +254,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
   constructor(public readonly props: SlickgridReactProps) {
     super(props);
     const slickgridConfig = new SlickgridConfig();
-    this._eventHandler = new Slick.EventHandler();
+    this._eventHandler = new SlickEventHandler();
 
     this.showPagination = false;
 
@@ -277,11 +264,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
 
     // save resource refs to register before the grid options are merged and possibly deep copied
     // since a deep copy of grid options would lose original resource refs but we want to keep them as singleton
-    this._registeredResources = props.gridOptions?.externalResources || props.gridOptions?.registerExternalResources || [];
-    /* istanbul ignore if */
-    if (props.gridOptions?.registerExternalResources) {
-      console.warn('[Slickgrid-Universal] Please note that the grid option `registerExternalResources` was deprecated, please use `externalResources` instead.');
-    }
+    this._registeredResources = props.gridOptions?.externalResources || [];
 
     this._gridOptions = this.mergeGridOptions(props.gridOptions || {});
 
@@ -394,11 +377,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
 
     // save resource refs to register before the grid options are merged and possibly deep copied
     // since a deep copy of grid options would lose original resource refs but we want to keep them as singleton
-    this._registeredResources = this.gridOptions?.externalResources || this.gridOptions?.registerExternalResources || [];
-    /* istanbul ignore if */
-    if (this.gridOptions?.registerExternalResources) {
-      console.warn('[Slickgrid-React] Please note that the grid option `registerExternalResources` was deprecated and will be removed in next major, please use `externalResources` instead.');
-    }
+    this._registeredResources = this.gridOptions?.externalResources || [];
 
     this.initialization(this._eventHandler);
     this._isGridInitialized = true;
@@ -447,15 +426,15 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
 
     if (!this.props.customDataView) {
       const dataviewInlineFilters = this._gridOptions.dataView && this._gridOptions.dataView.inlineFilters || false;
-      let dataViewOptions: DataViewOption = { inlineFilters: dataviewInlineFilters };
+      let dataViewOptions: Partial<DataViewOption> = { ...this._gridOptions.dataView, inlineFilters: dataviewInlineFilters };
 
       if (this._gridOptions.draggableGrouping || this._gridOptions.enableGrouping) {
         this.groupItemMetadataProvider = new SlickGroupItemMetadataProvider();
         this.sharedService.groupItemMetadataProvider = this.groupItemMetadataProvider;
         dataViewOptions = { ...dataViewOptions, groupItemMetadataProvider: this.groupItemMetadataProvider };
       }
-      this.dataView = new Slick.Data.DataView(dataViewOptions);
-      this._eventPubSubService.publish(`onDataviewCreated`, this.dataView);
+      this.dataView = new SlickDataView<TData>(dataViewOptions as Partial<DataViewOption>);
+      this._eventPubSubService.publish('onDataviewCreated', this.dataView);
     }
 
     // get any possible Services that user want to register which don't require SlickGrid to be instantiated
@@ -487,10 +466,13 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
     }
 
     // build SlickGrid Grid, also user might optionally pass a custom dataview (e.g. remote model)
-    this.grid = new Slick.Grid(`#${this.props.gridId}`, this.props.customDataView || this.dataView, this._columnDefinitions, this._gridOptions);
+    this.grid = new SlickGrid(`#${this.props.gridId}`, this.props.customDataView || this.dataView, this._columnDefinitions, this._gridOptions);
     this.sharedService.dataView = this.dataView;
     this.sharedService.slickGrid = this.grid;
     this.sharedService.gridContainerElement = this._elm as HTMLDivElement;
+    if (this.groupItemMetadataProvider) {
+      this.grid.registerPlugin(this.groupItemMetadataProvider); // register GroupItemMetadataProvider when Grouping is enabled
+    }
 
     this.extensionService.bindDifferentExtensions();
     this.bindDifferentHooks(this.grid, this._gridOptions, this.dataView);
@@ -807,7 +789,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
     }
 
     if (dataView && grid) {
-      const slickgridEventPrefix = this._gridOptions?.defaultSlickgridEventPrefix ?? '';
+      const slickgridEventPrefix = '';
 
       // expose all Slick Grid Events through dispatch
       for (const prop in grid) {
@@ -906,7 +888,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
     // did the user add a colspan callback? If so, hook it into the DataView getItemMetadata
     if (gridOptions?.colspanCallback && dataView?.getItem && dataView?.getItemMetadata) {
       dataView.getItemMetadata = (rowNumber: number) => {
-        let callbackResult = null;
+        let callbackResult: ItemMetadata | null = null;
         if (gridOptions.colspanCallback) {
           callbackResult = gridOptions.colspanCallback(dataView.getItem(rowNumber));
         }
@@ -1125,7 +1107,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
    * @param showing
    */
   showHeaderRow(showing = true) {
-    this.grid.setHeaderRowVisibility(showing, false);
+    this.grid.setHeaderRowVisibility(showing);
     if (showing === true && this._isGridInitialized) {
       this.grid.setColumns(this.props.columnDefinitions);
     }
@@ -1149,7 +1131,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
    * We will re-render the grid so that the new header and data shows up correctly.
    * If using i18n, we also need to trigger a re-translate of the column headers
    */
-  updateColumnDefinitionsList(newColumnDefinitions: Column[]) {
+  updateColumnDefinitionsList(newColumnDefinitions: Column<TData>[]) {
     if (this.grid && this._gridOptions && Array.isArray(newColumnDefinitions)) {
       // map/swap the internal library Editor to the SlickGrid Editor factory
       newColumnDefinitions = this.swapInternalEditorToSlickGridFactoryEditor(newColumnDefinitions);
@@ -1181,7 +1163,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
    * Loop through all column definitions and copy the original optional `width` properties optionally provided by the user.
    * We will use this when doing a resize by cell content, if user provided a `width` it won't override it.
    */
-  protected copyColumnWidthsReference(columnDefinitions: Column[]) {
+  protected copyColumnWidthsReference(columnDefinitions: Column<TData>[]) {
     columnDefinitions.forEach(col => col.originalWidth = col.width);
   }
 
@@ -1288,7 +1270,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
     }
   }
 
-  protected insertDynamicPresetColumns(columnId: string, gridPresetColumns: Column[]) {
+  protected insertDynamicPresetColumns(columnId: string, gridPresetColumns: Column<TData>[]) {
     if (this._columnDefinitions) {
       const columnPosition = this._columnDefinitions.findIndex(c => c.id === columnId);
       if (columnPosition >= 0) {
@@ -1306,7 +1288,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
   protected loadColumnPresetsWhenDatasetInitialized() {
     // if user entered some Columns "presets", we need to reflect them all in the grid
     if (this.grid && this.gridOptions.presets && Array.isArray(this.gridOptions.presets.columns) && this.gridOptions.presets.columns.length > 0) {
-      const gridPresetColumns: Column[] = this.gridStateService.getAssociatedGridColumns(this.grid, this.gridOptions.presets.columns);
+      const gridPresetColumns: Column<TData>[] = this.gridStateService.getAssociatedGridColumns(this.grid, this.gridOptions.presets.columns);
       if (gridPresetColumns && Array.isArray(gridPresetColumns) && gridPresetColumns.length > 0 && Array.isArray(this._columnDefinitions)) {
         // make sure that the dynamic columns are included in presets (1.Row Move, 2. Row Selection, 3. Row Detail)
         if (this.gridOptions.enableRowMoveManager) {
@@ -1393,7 +1375,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
 
   protected mergeGridOptions(gridOptions: GridOption): GridOption {
     // use extend to deep merge & copy to avoid immutable properties being changed in GlobalGridOptions after a route change
-    const options = Slick.Utils.extend(true, {}, GlobalGridOptions, gridOptions) as GridOption;
+    const options = SlickUtils.extend(true, {}, GlobalGridOptions, gridOptions) as GridOption;
 
     options.gridId = this.props.gridId;
     options.gridContainerId = `slickGridContainer-${this.props.gridId}`;
@@ -1511,7 +1493,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
    * @param {Boolean} forceGridRefresh - optionally force a full grid refresh
    * @returns {Array<Object>} sort flat parent/child dataset
    */
-  protected sortTreeDataset<T>(flatDatasetInput: T[], forceGridRefresh = false): T[] {
+  protected sortTreeDataset<U>(flatDatasetInput: U[], forceGridRefresh = false): U[] {
     const prevDatasetLn = this._currentDatasetLength;
     let sortedDatasetResult;
     let flatDatasetOutput: any[] = [];
@@ -1548,7 +1530,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
    * so in our lib we will swap "editor" and copy it into a new property called "internalColumnEditor"
    * then take back "editor.model" and make it the new "editor" so that SlickGrid Editor Factory still works
    */
-  protected swapInternalEditorToSlickGridFactoryEditor(columnDefinitions: Column[]) {
+  protected swapInternalEditorToSlickGridFactoryEditor(columnDefinitions: Column<TData>[]): Column<TData>[] {
     if (columnDefinitions.some(col => `${col.id}`.includes('.'))) {
       console.error('[Slickgrid-React] Make sure that none of your Column Definition "id" property includes a dot in its name because that will cause some problems with the Editors. For example if your column definition "field" property is "user.firstName" then use "firstName" as the column "id".');
     }
@@ -1582,7 +1564,7 @@ export class SlickgridReact extends React.Component<SlickgridReactProps, State> 
    * Since this is called after the async call resolves, the pointer will not be the same as the "column" argument passed.
    * Once we found the new pointer, we will reassign the "editor" and "collection" to the "internalColumnEditor" so it has newest collection
    */
-  protected updateEditorCollection<T = any>(column: Column<T>, newCollection: T[]) {
+  protected updateEditorCollection<U extends TData = any>(column: Column<U>, newCollection: U[]) {
     (column.editor as ColumnEditor).collection = newCollection;
     (column.editor as ColumnEditor).disabled = false;
 

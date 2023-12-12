@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2021",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "lib": ["es5", "dom"],
-    "types": ["cypress", "node"],
+    "lib": ["es2021", "dom"],
+    "types": ["@4tw/cypress-drag-drop", "cypress", "node"],
     "jsx": "preserve"
   },
   "include": ["**/*.ts"]

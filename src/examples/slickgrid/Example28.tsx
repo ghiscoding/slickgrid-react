@@ -12,6 +12,7 @@ import {
   isNumber,
   // GroupTotalFormatters,
   // italicFormatter,
+  SlickDataView,
   SlickgridReact,
   SlickgridReactInstance,
   TreeToggledItem,
@@ -257,7 +258,7 @@ export default class Example28 extends React.Component<Props, State> {
     if (value === null || value === undefined || dataContext === undefined) {
       return '';
     }
-    const dataView = grid.getData();
+    const dataView = grid.getData<SlickDataView>();
     const data = dataView.getItems();
     const identifierPropName = dataView.getIdPropertyName() || 'id';
     const idx = dataView.getIdxById(dataContext[identifierPropName]) as number;
