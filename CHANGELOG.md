@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.4](https://github.com/ghiscoding/slickgrid-react/compare/v3.6.3...v3.6.4) (2023-12-13)
+
+
+### Bug Fixes
+
+* `devMode` can be false/object & use `!important` on text CSS utils ([#270](https://github.com/ghiscoding/slickgrid-react/issues/270)) ([66576ee](https://github.com/ghiscoding/slickgrid-react/commit/66576ee17f5167ee15d4ada20ae752bffdaf8536))
+
 ## [3.6.3](https://github.com/ghiscoding/slickgrid-react/compare/v3.6.2...v3.6.3) (2023-12-08)
 
 
