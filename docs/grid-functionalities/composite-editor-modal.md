@@ -69,7 +69,7 @@ export class GridBasicComponent  extends React.Component<Props, State> {
       autoEdit: true,
       autoCommitEdit: true,
       enableCompositeEditor: true,
-      registerExternalResources: [new ExcelExportService(), this.compositeEditorInstance],
+      externalResources: [new ExcelExportService(), this.compositeEditorInstance],
     };
   }
 
@@ -160,7 +160,7 @@ export class GridBasicComponent  extends React.Component<Props, State> {
        autoEdit: true,
        autoCommitEdit: true,
        enableCompositeEditor: true,
-       registerExternalResources: [new ExcelExportService(), this.compositeEditorInstance],
+       externalResources: [new ExcelExportService(), this.compositeEditorInstance],
     };
   }
 

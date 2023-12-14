@@ -14,7 +14,7 @@
 ### Description
 You can Export to Excel, it will create an Excel file with the `.xlsx` default extension (you can also change it to be `.xls`). If you wish to export to CSV or other delimiter like Tab Delimited, you can refer to the other [Wiki - Export to File](Export-to-Text-File.md).
 
-**NOTE:** this is an opt-in Service, you must download the necessary Service from `@slickgrid-universal/excel-export` and instantiate it in your grid options via `registerExternalResources`, see multiple examples below.
+**NOTE:** this is an opt-in Service, you must download the necessary Service from `@slickgrid-universal/excel-export` and instantiate it in your grid options via `externalResources`, see multiple examples below.
 
 ### Demo
 [Demo Page](https://ghiscoding.github.io/slickgrid-react/#/slickgrid/Example12) / [Demo Component](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example12.tsx)
@@ -42,7 +42,7 @@ export class GridBasicComponent extends React.Component<Props, State> {
       excelExportOptions: {
         exportWithFormatter: true
       },
-      registerExternalResources: [new ExcelExportService()],
+      externalResources: [new ExcelExportService()],
       gridMenu: {
         hideExportExcelCommand: false,        // false by default, so it's optional
       }
