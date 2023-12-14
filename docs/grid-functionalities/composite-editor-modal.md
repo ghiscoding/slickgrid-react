@@ -563,7 +563,7 @@ export class GridExample {
 ```
 
 ### Disabling Form Inputs (readonly)
-Disabling field(s) is done through the exact same way that you would do it in the grid, which is through the `onBeforeEditCell` SlickGrid event and you can find more in depth info at this other [Wiki - Disabling specific cell edit](/ghiscoding/slickgrid-react/wiki/Editors#disabling-specific-cell-edit)
+Disabling field(s) is done through the exact same way that you would do it in the grid, which is through the `onBeforeEditCell` SlickGrid event and you can find more in depth info at this other [Wiki - Disabling specific cell edit](../column-functionalities/editors.md#disabling-specific-cell-edit)
 
 ```tsx
 handleOnBeforeEditCell(event) {

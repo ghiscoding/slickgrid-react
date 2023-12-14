@@ -100,13 +100,13 @@ So to make it more clear, the `saveOutputType` is the format that will be sent t
 
 ## Perform an action After Inline Edit
 #### Recommended way
-What is ideal is to bind to a SlickGrid Event, for that you can take a look at this [Wiki - On Events](/ghiscoding/slickgrid-react/wiki/Grid-&-DataView-Events)
+What is ideal is to bind to a SlickGrid Event, for that you can take a look at this [Wiki - On Events](../events/grid-dataview-events.md)
 
 #### Not recommended
 You could also, perform an action after the item changed event with `onCellChange`. However, this is not the recommended way, since it would require to add a `onCellChange` on every every single column definition.
 
 ## Custom Inline Editor
-To create a Custom Editor, you need to create a `class` that will extend the [`Editors` interface](https://github.com/ghiscoding/slickgrid-react/blob/master/slickgrid-react/src/slickgrid-react/models/editor.interface.ts) and then use it in your grid with `editor: { model: myCustomEditor }` and that should be it.
+To create a Custom Editor, you need to create a `class` that will extend the [`Editors` interface](https://github.com/ghiscoding/slickgrid-universal/blob/master/packages/common/src/interfaces/editor.interface.ts) and then use it in your grid with `editor: { model: myCustomEditor }` and that should be it.
 
 **To use dependency injection with an `Editor` make sure your react dependencies are before the `args` constructor parameter. `args` must be the last parameter in your constructor because we wrap all `Editors` in React's `Factory` resolver so DI can work with slickgrid `Editors`**
 
@@ -165,7 +165,7 @@ const gridOptions = {
 }
 ```
 ## OnClick Action Editor (icon click)
-Instead of an inline editor, you might want to simply click on an edit icon that could call a modal window, or a redirect URL, or whatever you wish to do. For that you can use the inline `onCellClick` event and define a callback function for the action (you could also create your own [Custom Formatter](https://github.com/ghiscoding/slickgrid-react/wiki/Formatters)).
+Instead of an inline editor, you might want to simply click on an edit icon that could call a modal window, or a redirect URL, or whatever you wish to do. For that you can use the inline `onCellClick` event and define a callback function for the action (you could also create your own [Custom Formatter](../column-functionalities/formatters.md)).
 - The `Formatters.editIcon` will give you a pen icon, while a `Formatters.deleteIcon` is an "x" icon
 ```tsx
 const columnDefinitions = [
@@ -194,7 +194,7 @@ export interface OnEventArgs {
 ```
 
 ## AutoComplete Editor
-The AutoComplete Editor has the same configuration (except for the `model: Editors.autoComplete`) as the AutoComplete Filter, so you can refer to the [AutoComplete Filter Wiki](/ghiscoding/slickgrid-react/wiki/AutoComplete-Filter) for more info on how to use it.
+The AutoComplete Editor has the same configuration (except for the `model: Editors.autoComplete`) as the AutoComplete Filter, so you can refer to the [AutoComplete Filter - Docs](../column-functionalities/filters/autocomplete-filter-kraaden.md) for more info on how to use it.
 
 ## Select Editors
 The library ships with two select editors: [singleSelectEditor](https://github.com/ghiscoding/slickgrid-react/blob/master/slickgrid-react/src/slickgrid-react/editors/singleSelectEditor.ts) and the [multipleSelectEditor](https://github.com/ghiscoding/slickgrid-react/blob/master/slickgrid-react/src/slickgrid-react/editors/multipleSelectEditor.ts). Both support the [multiple-select](https://github.com/ghiscoding/slickgrid-react/blob/master/slickgrid-react/assets/lib/multiple-select/multiple-select.js) library, but fallback to the bootstrap form-control style if you decide to exclude this library from your build. These editors will work with a list of foreign key values (custom structure not supported) and can be displayed properly with the [collectionFormatter](https://github.com/ghiscoding/slickgrid-react/blob/master/slickgrid-react/src/slickgrid-react/formatters/collectionEditorFormatter.ts). [example 3](https://ghiscoding.github.io/slickgrid-react/#/slickgrid/Example3) has all the details for you to get started with these editors.
@@ -379,7 +379,7 @@ const columnDefinitions = [
 ```
 
 ### Change Default DOMPurify Options (sanitize html)
-If you find that the HTML that you passed is being sanitized and you wish to change it, then you can change the default `sanitizeHtmlOptions` property defined in the Global Grid Options, for more info on how to change these global options, see the [Wiki - Global Grid Options](/ghiscoding/slickgrid-react/wiki/Global-Options) and also take a look at the [GitHub - DOMPurify](https://github.com/cure53/DOMPurify#can-i-configure-it) configurations.
+If you find that the HTML that you passed is being sanitized and you wish to change it, then you can change the default `sanitizeHtmlOptions` property defined in the Global Grid Options, for more info on how to change these global options, see the [Docs - Global Grid Options](../grid-functionalities/global-options.md) and also take a look at the [GitHub - DOMPurify](https://github.com/cure53/DOMPurify#can-i-configure-it) configurations.
 
 ## Validators
 Each Editor needs to implement the `validate()` method which will be executed and validated before calling the `save()` method. Most Editor will simply validate that the value passed is correctly formed. The Float Editor is one of the more complex one and will first check if the number is a valid float then also check if `minValue` or `maxValue` was passed and if so validate against them. If any errors is found it will return an object of type `EditorValidatorOutput` (see the signature on top).
@@ -449,28 +449,35 @@ this.columnDefinition = [
 ## Disabling specific cell edit
 This can be answered by searching on Stack Overflow Stack Overflow and this is the best [answer](https://stackoverflow.com/questions/10491676/disabling-specific-cell-edit-in-slick-grid) found.
 
-More info can be found in this [Wiki - Grid & DataView Events](/ghiscoding/slickgrid-react/wiki/Grid-&-DataView-Events#1-example-with-delegate-event-dispatch-asgonx).
+More info can be found in this [Docs - Grid & DataView Events](../events/grid-dataview-events.md).
 
 With that in mind and the code from the SO answer, we end up with the following code.
 
 #### View
-```html
-<slickgrid-react
-    grid-id="grid1"
-    column-definitions.bind="columnDefs"
-    grid-options.bind="gridOptions"
-    dataset.bind="myDataset"
-    on-before-edit-cell.delegate="verifyCellIsEditableBeforeEditing($event.detail.eventData, $event.detail.args)"
-    >
-</slickgrid-react>
-```
-
-#### Component
 ```tsx
-  verifyCellIsEditableBeforeEditing(e, args): boolean {
-    // your logic here should return true/false if it's editable or not
-    // args contains the dataContext and other Slickgrid arguments
+import { SlickgridReactInstance, Column, GridOption } from 'slickgrid-react';
+
+export class MyApp extends React.Component<Props, State> {
+  reactGrid: SlickgridReactInstance;
+
+  /** Change dynamically `autoEdit` grid options */
+  setAutoEdit(isAutoEdit) {
+    this.isAutoEdit = isAutoEdit;
+    this.reactGrid.slickGrid.setOptions({ autoEdit: isAutoEdit }); // change the grid option dynamically
+    return true;
   }
+
+  render() {
+    return (
+      <SlickgridReact gridId="grid1"
+        columnDefinitions={this.state.columnDefinitions}
+        gridOptions={this.state.gridOptions}
+        dataset={this.state.dataset}
+        onReactGridCreated={$event => this.reactGridReady($event.detail)}
+      />
+    );
+  }
+}
 ```
 
 ### Editors on Mobile Phone

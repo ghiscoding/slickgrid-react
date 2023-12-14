@@ -24,7 +24,7 @@ export default class Example7 extends React.Component<Props, State> {
   subTitle = `
     This example demonstrates using the <b>Slick.Plugins.HeaderButtons</b> plugin to easily add buttons to colum headers.
     These buttons can be specified directly in the column definition, and are very easy to configure and use.
-    (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Header-Menu-&-Header-Buttons" target="_blank">Docs</a>)
+    (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/header-menu-header-buttons" target="_blank">Docs</a>)
     <ul>
       <li>Resize the 1st column to see all icon/command</li>
       <li>Mouse hover the 2nd column to see it's icon/command</li>

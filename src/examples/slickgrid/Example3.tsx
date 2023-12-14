@@ -77,7 +77,7 @@ interface State extends BaseSlickGridState {
 export default class Example3 extends React.Component<Props, State> {
   title = 'Example 3: Editors / Delete';
   subTitle = `
-  Grid with Inline Editors and onCellClick actions (<a href='https://github.com/ghiscoding/slickgrid-react/wiki/Editors' target='_blank'>Docs</a>).
+  Grid with Inline Editors and onCellClick actions (<a href='https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/editors' target='_blank'>Docs</a>).
   <ul>
     <li>Multiple Editors & Filters are available: AutoComplete, Checkbox, Date, Slider, SingleSelect, MultipleSelect, Float, Text, LongText... even Custom Editor</li>
     <li>When using 'enableCellNavigation: true', clicking on a cell will automatically make it active &amp; selected.</li>

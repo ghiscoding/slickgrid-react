@@ -19,7 +19,7 @@ interface Props { }
 export default class Example11 extends React.Component {
   title = 'Example 11: Add / Update / Highlight a Datagrid Item';
   subTitle = `
-  Add / Update / Hightlight an Item from the Datagrid (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Add,-Update-or-Highlight-a-Datagrid-Item" target="_blank">Docs</a>).
+  Add / Update / Hightlight an Item from the Datagrid (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/add-update-highlight" target="_blank">Docs</a>).
   <ul>
     <li><b>Note:</b> this demo is <b>only</b> on the datagrid (client) side, you still need to deal with the backend yourself</li>
     <li>Adding an item, will always be showing as the 1st item in the grid because that is the best visual place to add it</li>
@@ -32,7 +32,7 @@ export default class Example11 extends React.Component {
     </ul>
     <li>You can also add CSS class(es) on the fly (or on page load) on rows with certain criteria, (e.g. click on last button)
     <ul>
-      <li>Example, click on button "Highlight Rows with Duration over 50" to see row styling changing. <a href="https://github.com/ghiscoding/slickgrid-react/wiki/Dynamically-Add-CSS-Classes-to-Item-Rows" target="_blank">Wiki doc</a></li>
+      <li>Example, click on button "Highlight Rows with Duration over 50" to see row styling changing. <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/dynamic-item-metadata" target="_blank">Wiki doc</a></li>
     </ul>
   </ul>
   `;

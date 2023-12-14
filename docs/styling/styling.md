@@ -74,9 +74,9 @@ Each of these Styling Themes are compiled in CSS and created from a SASS file, s
 - **Note:** you might need to refresh the page to see the theme correctly since the styling is global and if you change page, the style will follow on the next page (unless you refresh).
 
 ### SVG Icons
-The 2 new Themes were created with only SVG icons, most of the icons were pulled from the [Material Design Icons](https://materialdesignicons.com/) set. If you wish to create your own set of SVG Icons, you can refer to the new [Wiki - SVG Icons](https://github.com/ghiscoding/slickgrid-react/wiki/SVG--Icons)
--  [Wiki - SVG Icons](https://github.com/ghiscoding/slickgrid-react/wiki/SVG--Icons).
+The 2 new Themes were created with only SVG icons, most of the icons were pulled from the [Material Design Icons](https://materialdesignicons.com/) set. If you wish to create your own set of SVG Icons, you can refer to the new [Docs - SVG Icons](../styling/svg-icons.md)
+-  [Docs - SVG Icons](../styling/svg-icons.md).
 
-**Note:** Just to point out that both the Fonts and SVG icons are supported, the default Bootstrap theme will keep Font-Awesome 4 so that it still works for everyone. You could, however, use SASS to override the Font and use SVG, again see the [Wiki - SVG Icons](https://github.com/ghiscoding/slickgrid-react/wiki/SVG--Icons) for more details.
+**Note:** Just to point out that both the Fonts and SVG icons are supported, the default Bootstrap theme will keep Font-Awesome 4 so that it still works for everyone. You could, however, use SASS to override the Font and use SVG, again see the [Docs - SVG Icons](../styling/svg-icons.md) for more details.
 
 More info can be found in the release of version `2.18.x` [here](/ghiscoding/slickgrid-react/releases/tag/v2.18.2)

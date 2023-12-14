@@ -31,7 +31,7 @@ export default class Example13 extends React.Component<Props, State> {
   title = 'Example 13: Grouping & Aggregators';
   subTitle = `
     <ul>
-      <li><a href="https://github.com/ghiscoding/slickgrid-react/wiki/Grouping-&-Aggregators" target="_blank">Docs</a></li>
+      <li><a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grouping-aggregators" target="_blank">Docs</a></li>
       <li>Fully dynamic and interactive multi-level grouping with filtering and aggregates over 50'000 items</li>
       <li>Each grouping level can have its own aggregates (over child rows, child groups, or all descendant rows)..</li>
       <li>Use "Aggregators" and "GroupTotalFormatters" directly from Slickgrid-React</li>

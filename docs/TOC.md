@@ -19,7 +19,7 @@
   * [Date Picker (flatpickr)](column-functionalities/editors/date-editor-flatpickr.md)
   * [LongText (textarea)](column-functionalities/editors/longtext-editor-textarea.md)
   * [Select Dropdown Editor (single/multiple)](column-functionalities/editors/select-dropdown-editor.md)
-  ### Filters
+### Filters
   * [Input Filter (default)](column-functionalities/filters/input-filter.md)
   * [Select Filter (dropdown)](column-functionalities/filters/select-filter.md)
   * [Compound Filters](column-functionalities/filters/compound-filters.md)

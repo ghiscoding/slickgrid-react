@@ -43,7 +43,7 @@ interface State extends BaseSlickGridState {
 export default class Example25 extends React.Component<Props, State> {
   title = 'Example 25: GraphQL Basic API without Pagination';
   subTitle = `
-  Use basic GraphQL query with any external public APIs (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/GraphQL" target="_blank">Docs</a>).
+  Use basic GraphQL query with any external public APIs (<a href="https://ghiscoding.gitbook.io/slickgrid-react/backend-services/graphql" target="_blank">Docs</a>).
   <ul>
     <li>This Examples uses a Public GraphQL API that you can find at this link <a href="https://countries.trevorblades.com/" target="_blank">https://countries.trevorblades.com/</a></li>
     <li>Compare to the regular and default GraphQL implementation, you will find the following differences</li>

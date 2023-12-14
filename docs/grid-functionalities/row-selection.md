@@ -21,7 +21,7 @@ For row selection, you can simply play with couple of grid options (see below) a
 For a single row selection, you need to have `enableCellNavigation: true`, `enableRowSelection: true` and `multiSelect: false` and as described earlier, subscribe to `onSelectedRowsChanged` (for that you need to bind to `(gridChanged)`). There are 2 ways to choose for the implementation of a row selection, option **1.** is the most common option and is the recommend way of doing it.
 
 ### 1. with Delegate (preferred way)
-You can also do it through a `delegate` since all SlickGrid events are exposed as `delegate`. For more info see [Wiki - OnEvents - `3. delegate`](/ghiscoding/slickgrid-react/wiki/Grid-&-DataView-Events)
+You can also do it through a `delegate` since all SlickGrid events are exposed as `delegate`. For more info see [Docs - OnEvents - `3. delegate`](../events/grid-dataview-events.md)
 
 #### Component
 ```tsx
@@ -84,7 +84,7 @@ gridObjChanged(grid) {
 As for multiple row selections, you need to disable `enableCellNavigation` and enable `enableCheckboxSelector` and `enableRowSelection`. Then as describe earlier, you will subscribe to `onSelectedRowsChanged` (for that you need to bind to `(gridChanged)`). There are 2 ways to choose for the implementation of a row selection, option **1.** is the most common option and is the recommend way of doing it.
 
 ### 1. with event (preferred way)
-You can also do it through an event since all SlickGrid events are exposed. For more info see [Wiki - OnEvents - `3. event`](/ghiscoding/slickgrid-react/wiki/Grid-&-DataView-Events)
+You can also do it through an event since all SlickGrid events are exposed. For more info see [Docs - OnEvents - `3. event`](../events/grid-dataview-events.md)
 
 #### Component
 ```tsx
@@ -253,7 +253,7 @@ render() {
   );
 }
 ```
-2. use the `onGridStateChanged` event (see [Grid State & Presets](/ghiscoding/slickgrid-universal/wiki/Grid-State-&-Preset) Wiki)
+2. use the `onGridStateChanged` event (see [Grid State & Presets](../grid-functionalities/grid-state-preset.md) Docs)
 ```tsx
 isMyButtonDisabled = false;
 
