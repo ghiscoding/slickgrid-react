@@ -9,7 +9,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const title = 'Slickgrid-React';
 const baseUrl = '';
 const outDevDir = path.resolve(__dirname, 'dist');
-const outProdDir = path.resolve(__dirname, 'docs');
+const outProdDir = path.resolve(__dirname, 'website');
 const srcDir = path.resolve(__dirname, 'src');
 
 module.exports = ({ production } = {}) => ({

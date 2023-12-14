@@ -16,7 +16,7 @@ interface State {
 export default class Example10 extends React.Component<Props, State> {
   title = 'Example 10: Multiple Grids with Row Selection';
   subTitle = `
-    Row selection, single or multi-select (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Row-Selection" target="_blank">Wiki docs</a>).
+    Row selection, single or multi-select (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Row-Selection" target="_blank">Docs</a>).
     <ul>
       <li>Single Select, you can click on any cell to make the row active</li>
       <li>Multiple Selections, you need to specifically click on the checkbox to make 1 or more selections</li>

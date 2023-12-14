@@ -44,7 +44,7 @@ interface Props { }
 export default class Example2 extends React.Component<Props, State> {
   title = 'Example 2: Grid with Formatters';
   subTitle = `
-    Grid with Custom and/or included Slickgrid Formatters (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Formatters" target="_blank">Wiki docs</a>).
+    Grid with Custom and/or included Slickgrid Formatters (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Formatters" target="_blank">Docs</a>).
     <ul>
       <li>The 2 last columns are using Custom Formatters</li>
       <ul><li>The "Completed" column uses a the "onCellClick" event and a formatter to simulate a toggle action</li></ul>

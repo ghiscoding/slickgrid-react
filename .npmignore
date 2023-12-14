@@ -17,6 +17,7 @@ webpack.config.js
 
 **/dist-demo
 docs
+website
 index.ejs
 react-project
 react_project

@@ -283,7 +283,7 @@ export default class Example16 extends React.Component<Props, State> {
       // for example if you use the Checkbox Selector (row selection), you MUST use the code below
       const allColumns = this.reactGrid.gridService.getAllColumnDefinitions();
       allColumns.unshift(newCols[0], newCols[1]);
-      this.setState((state: State) => ({ ...state, columnDefinitions: [...allColumns] })); // (or use slice) reassign to column definitions for Aurelia to do dirty checking
+      this.setState((state: State) => ({ ...state, columnDefinitions: [...allColumns] })); // (or use slice) reassign to column definitions for React to do dirty checking
     }
   }
 

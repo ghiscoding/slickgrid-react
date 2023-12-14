@@ -36,7 +36,7 @@ interface Props { }
 export default class Example4 extends React.Component<Props, State> {
   title = 'Example 4: Client Side Sort/Filter';
   subTitle = `
-  Sort/Filter on client side only using SlickGrid DataView (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Sorting" target="_blank">Wiki docs</a>)
+  Sort/Filter on client side only using SlickGrid DataView (<a href="https://github.com/ghiscoding/slickgrid-react/wiki/Sorting" target="_blank">Docs</a>)
   <br/>
   <ul class="small">
     <li>Support multi-sort (by default), hold "Shift" key and click on the next column to sort.</li>

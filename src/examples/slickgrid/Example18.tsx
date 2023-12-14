@@ -33,7 +33,7 @@ export default class Example18 extends React.Component<Props, State> {
   title = 'Example 18: Draggable Grouping & Aggregators';
   subTitle = `
   <ul>
-    <li>This example shows 3 ways of grouping <a href="https://github.com/ghiscoding/slickgrid-react/wiki/Grouping-&-Aggregators" target="_blank">Wiki docs</a></li>
+    <li>This example shows 3 ways of grouping <a href="https://github.com/ghiscoding/slickgrid-react/wiki/Grouping-&-Aggregators" target="_blank">Docs</a></li>
     <ol>
       <li>Drag any Column Header on the top placeholder to group by that column (support moti-columns grouping by adding more columns to the drop area).</li>
       <li>Use buttons and defined functions to group by whichever field you want</li>

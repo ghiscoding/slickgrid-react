@@ -77,7 +77,7 @@ interface State extends BaseSlickGridState {
 export default class Example3 extends React.Component<Props, State> {
   title = 'Example 3: Editors / Delete';
   subTitle = `
-  Grid with Inline Editors and onCellClick actions (<a href='https://github.com/ghiscoding/slickgrid-react/wiki/Editors' target='_blank'>Wiki docs</a>).
+  Grid with Inline Editors and onCellClick actions (<a href='https://github.com/ghiscoding/slickgrid-react/wiki/Editors' target='_blank'>Docs</a>).
   <ul>
     <li>Multiple Editors & Filters are available: AutoComplete, Checkbox, Date, Slider, SingleSelect, MultipleSelect, Float, Text, LongText... even Custom Editor</li>
     <li>When using 'enableCellNavigation: true', clicking on a cell will automatically make it active &amp; selected.</li>
@@ -330,7 +330,7 @@ export default class Example3 extends React.Component<Props, State> {
             minLength: 3,
             forceUserInput: true,
             fetch: (searchText: string, updateCallback: (items: false | any[]) => void) => {
-              /** with Angular Http, note this demo won't work because of CORS */
+              /** with React Http, note this demo won't work because of CORS */
               // this.http.get(`http://gd.geobytes.com/AutoCompleteCity?q=${searchText}`).subscribe(data => updateCallback(data));
 
               /** with JSONP AJAX will work locally but not on the GitHub demo because of CORS */
@@ -353,7 +353,7 @@ export default class Example3 extends React.Component<Props, State> {
           filterOptions: {
             minLength: 3,
             fetch: (searchText: string, updateCallback: (items: false | any[]) => void) => {
-              /** with Angular Http, note this demo won't work because of CORS */
+              /** with React Http, note this demo won't work because of CORS */
               // this.http.get(`http://gd.geobytes.com/AutoCompleteCity?q=${searchText}`).subscribe(data => updateCallback(data));
 
               /** with JSONP AJAX will work locally but not on the GitHub demo because of CORS */
