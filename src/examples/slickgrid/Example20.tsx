@@ -77,7 +77,7 @@ export default class Example20 extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    // unsubscribe every SlickGrid subscribed event (or use the Slick.EventHandler)
+    // unsubscribe every SlickGrid subscribed event (or use the SlickEventHandler)
     this.slickEventHandler.unsubscribeAll();
   }
 
