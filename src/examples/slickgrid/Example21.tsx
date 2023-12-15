@@ -227,7 +227,7 @@ export default class Example21 extends React.Component<Props, State> {
               <option value="''">...</option>
               {
                 this.state.columnDefinitions.map((column) =>
-                  <option value={column.id} key={column.id}>{column.name}</option>
+                  <option value={column.id} key={column.id}>{column.name as string}</option>
                 )
               }
             </select>

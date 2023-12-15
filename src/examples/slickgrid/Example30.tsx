@@ -1,8 +1,8 @@
-import { SlickCompositeEditorComponent } from '@slickgrid-universal/composite-editor-component';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
+import { SlickCompositeEditor, SlickCompositeEditorComponent } from '@slickgrid-universal/composite-editor-component';
+import React from 'react';
 
 import {
-  SlickgridReactInstance,
   AutocompleterOption,
   Column,
   CompositeEditorModalType,
@@ -18,20 +18,17 @@ import {
   GridStateChange,
   LongTextEditorOption,
   OnCompositeEditorChangeEventArgs,
+  SlickGlobalEditorLock,
+  SlickgridReactInstance,
   SlickGrid,
-  SlickNamespace,
-  SortComparers,
   SlickgridReact,
+  SortComparers,
 } from '../../slickgrid-react';
-import React from 'react';
 import './example30.scss'; // provide custom CSS/SASS styling
 import BaseSlickGridState from './state-slick-grid-base';
 
 const NB_ITEMS = 500;
 const URL_COUNTRIES_COLLECTION = 'assets/data/countries.json';
-
-// using external SlickGrid JS libraries
-declare const Slick: SlickNamespace;
 
 /**
  * Check if the current item (cell) is editable or not
@@ -41,12 +38,12 @@ declare const Slick: SlickNamespace;
  * @returns {boolean} isEditable
  */
 function checkItemIsEditable(dataContext: any, columnDef: Column, grid: SlickGrid) {
-  const gridOptions = grid && grid.getOptions && grid.getOptions();
+  const gridOptions = grid?.getOptions();
   const hasEditor = columnDef.editor;
   const isGridEditable = gridOptions.editable;
-  let isEditable = !!(isGridEditable && hasEditor);
+  let isEditable = Boolean(isGridEditable && hasEditor);
 
-  if (dataContext && columnDef && gridOptions && gridOptions.editable) {
+  if (dataContext && columnDef && gridOptions?.editable) {
     switch (columnDef.id) {
       case 'finish':
         // case 'percentComplete':
@@ -63,7 +60,6 @@ function checkItemIsEditable(dataContext: any, columnDef: Column, grid: SlickGri
   }
   return isEditable;
 }
-
 
 const customEditableInputFormatter: Formatter = (_row, _cell, value, columnDef, _dataContext, grid) => {
   const gridOptions = grid && grid.getOptions && grid.getOptions();
@@ -262,7 +258,7 @@ export default class Example30 extends React.Component<Props, State> {
           } as FlatpickrOption,
           massUpdate: true,
           validator: (value, args) => {
-            const dataContext = args && args.item;
+            const dataContext = args?.item;
             if (dataContext && (dataContext.completed && !value)) {
               return { valid: false, msg: 'You must provide a "Finish" date when "Completed" is checked.' };
             }
@@ -509,7 +505,7 @@ export default class Example30 extends React.Component<Props, State> {
   handleValidationError(_e: Event, args: any) {
     if (args.validationResults) {
       let errorMsg = args.validationResults.msg || '';
-      if (args.editor && (args.editor instanceof Slick.CompositeEditor)) {
+      if (args?.editor instanceof SlickCompositeEditor) {
         if (args.validationResults.errors) {
           errorMsg += '\n';
           for (const error of args.validationResults.errors) {
@@ -746,7 +742,7 @@ export default class Example30 extends React.Component<Props, State> {
   undoLastEdit(showLastEditor = false) {
     const lastEdit = this.editQueue.pop();
     const lastEditCommand = lastEdit?.editCommand;
-    if (lastEdit && lastEditCommand && Slick.GlobalEditorLock.cancelCurrentEdit()) {
+    if (lastEdit && lastEditCommand && SlickGlobalEditorLock.cancelCurrentEdit()) {
       lastEditCommand.undo();
 
       // remove unsaved css class from that cell
@@ -766,7 +762,7 @@ export default class Example30 extends React.Component<Props, State> {
   undoAllEdits() {
     for (const lastEdit of this.editQueue) {
       const lastEditCommand = lastEdit?.editCommand;
-      if (lastEditCommand && Slick.GlobalEditorLock.cancelCurrentEdit()) {
+      if (lastEditCommand && SlickGlobalEditorLock.cancelCurrentEdit()) {
         lastEditCommand.undo();
 
         // remove unsaved css class from that cell

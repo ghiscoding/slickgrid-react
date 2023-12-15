@@ -74,7 +74,8 @@ export default class Example11 extends React.Component {
         id: 'delete',
         field: 'id',
         excludeFromHeaderMenu: true,
-        formatter: Formatters.deleteIcon,
+        formatter: Formatters.icon,
+        params: { iconCssClass: 'fa fa-trash pointer' },
         minWidth: 30,
         maxWidth: 30,
         // use onCellClick OR grid.onClick.subscribe which you can see down below

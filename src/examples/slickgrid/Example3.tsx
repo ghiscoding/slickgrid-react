@@ -15,17 +15,14 @@ import {
   Formatters,
   OnEventArgs,
   OperatorType,
-  SlickNamespace,
   SortComparers,
+  SlickGlobalEditorLock,
   SlickgridReact,
   GridOption,
 } from '../../slickgrid-react';
 import { CustomInputEditor } from './custom-inputEditor';
 import { CustomInputFilter } from './custom-inputFilter';
 import BaseSlickGridState from './state-slick-grid-base';
-
-// using external non-typed js libraries
-declare const Slick: SlickNamespace;
 
 interface Props { }
 
@@ -132,7 +129,8 @@ export default class Example3 extends React.Component<Props, State> {
         excludeFromColumnPicker: true,
         excludeFromGridMenu: true,
         excludeFromHeaderMenu: true,
-        formatter: Formatters.editIcon,
+        formatter: Formatters.icon,
+        params: { iconCssClass: 'fa fa-pencil pointer' },
         minWidth: 30,
         maxWidth: 30,
         // use onCellClick OR grid.onClick.subscribe which you can see down below
@@ -154,7 +152,8 @@ export default class Example3 extends React.Component<Props, State> {
         excludeFromColumnPicker: true,
         excludeFromGridMenu: true,
         excludeFromHeaderMenu: true,
-        formatter: Formatters.deleteIcon,
+        formatter: Formatters.icon,
+        params: { iconCssClass: 'fa fa-trash pointer' },
         minWidth: 30,
         maxWidth: 30,
         // use onCellClick OR grid.onClick.subscribe which you can see down below
@@ -749,7 +748,7 @@ export default class Example3 extends React.Component<Props, State> {
 
   undo() {
     const command = this._commandQueue.pop();
-    if (command && Slick.GlobalEditorLock.cancelCurrentEdit()) {
+    if (command && SlickGlobalEditorLock.cancelCurrentEdit()) {
       command.undo();
       this.reactGrid.slickGrid.gotoCell(command.row, command.cell, false);
     }
