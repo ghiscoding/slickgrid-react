@@ -66,7 +66,7 @@ jobs:
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           npm whoami
-          npx release-it --ci --dry-run
+          npx release-it 4.0.1 --ci --dry-run
 
       - name: OTP
         if: ${{ inputs.dryrun != true }}
@@ -88,7 +88,7 @@ jobs:
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           npm whoami
-          npx release-it --ci --npm.otp=${{ steps.wait-for-secrets.outputs.OTP }}
+          npx release-it 4.0.1 --ci --npm.otp=${{ steps.wait-for-secrets.outputs.OTP }}
 
       - name: Run Project Build
         if: ${{ inputs.dryrun != true }}
