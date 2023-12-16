@@ -262,10 +262,6 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     // we only want to do this check once in the constructor
     this._hideHeaderRowAfterPageLoad = (props.gridOptions?.showHeaderRow === false);
 
-    // save resource refs to register before the grid options are merged and possibly deep copied
-    // since a deep copy of grid options would lose original resource refs but we want to keep them as singleton
-    this._registeredResources = props.gridOptions?.externalResources || [];
-
     this._gridOptions = this.mergeGridOptions(props.gridOptions || {});
 
     // initialize and assign all Service Dependencies
@@ -1422,6 +1418,8 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
 
   /** Pre-Register any Resource that don't require SlickGrid to be instantiated (for example RxJS Resource) */
   protected preRegisterResources() {
+    this._registeredResources = this.gridOptions.externalResources || [];
+
     // bind & initialize all Components/Services that were tagged as enabled
     // register all services by executing their init method and providing them with the Grid object
     if (Array.isArray(this._registeredResources)) {
