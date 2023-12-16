@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.2](https://github.com/ghiscoding/slickgrid-react/compare/v4.0.1...v4.0.2) (2023-12-16)
+
+
+### Bug Fixes
+
+* **deps:** update all Slickgrid-Universal dependencies ([0795026](https://github.com/ghiscoding/slickgrid-react/commit/0795026e32c0263c75e6d5f5920ce75d6f582d94))
+* regression from PR [#262](https://github.com/ghiscoding/slickgrid-react/issues/262), read external resource when required ([dcf01e4](https://github.com/ghiscoding/slickgrid-react/commit/dcf01e42c7edcc84db53085df2a48ace9caefeb3))
+
 ## [4.0.1](https://github.com/ghiscoding/slickgrid-react/compare/v3.6.5...v4.0.1) (2023-12-15)
 ### Follow the [Migration 3.x Guide](https://ghiscoding.gitbook.io/slickgrid-react/migrations/migration-to-4.x)
 ### ⚠ BREAKING CHANGES
