@@ -1,6 +1,7 @@
 .chrome
 .circleci
 .github
+.gitbook.yaml
 .idea
 .vscode
 CHANGELOG.md
@@ -9,20 +10,19 @@ cypress
 cypress.json
 cypress-mochawesome.js
 doc
-src
 ISSUE_TEMPLATE.md
 package-scripts.js
 screenshots
 webpack.config.js
 
-**/dist-demo
 docs
 website
 index.ejs
 react-project
 react_project
 favicon.ico
-tsconfig.spec.json
+**/tsconfig.build.json
+**/tsconfig.spec.json
 
 # Lock & error files
 npm-debug.log
@@ -31,9 +31,10 @@ yarn-error.log
 
 # Tests, Report & Coverage
 .codecov.yml
-*.spec.ts
+**/__tests__/*.*
 jest.conf.js
 test/
+**/*.spec.ts
 **/node_modules
 **/coverage
 **/jest-coverage
