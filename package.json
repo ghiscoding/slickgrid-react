@@ -77,7 +77,8 @@
     "test:jest:coverage": "npx jest --detectOpenHandles --runInBand --coverage --config test/jest.config.js",
     "preview:release": "release-it --dry-run",
     "release": "release-it --only-version",
-    "serve:demo": "serve ./website -l 8080 --no-request-logging"
+    "serve:demo": "serve ./website -l 8080 --no-request-logging",
+    "pack": "npm pack"
   },
   "browserslist": [
     "last 2 version",
@@ -90,6 +91,10 @@
       "react-app/jest"
     ]
   },
+  "files": [
+    "/dist",
+    "/src/slickgrid-react"
+  ],
   "dependencies": {
     "@slickgrid-universal/common": "~4.0.3",
     "@slickgrid-universal/custom-footer-component": "~4.0.3",
