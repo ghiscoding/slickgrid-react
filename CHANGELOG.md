@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/ghiscoding/slickgrid-react/compare/v4.0.2...v4.1.0) (2023-12-21)
+
+
+### Bug Fixes
+
+* publish src folder for source maps, fixes [#273](https://github.com/ghiscoding/slickgrid-react/issues/273) ([#274](https://github.com/ghiscoding/slickgrid-react/issues/274)) ([18a8909](https://github.com/ghiscoding/slickgrid-react/commit/18a8909b255b03c8a7d601e22e1525b29987eed2))
+
+
+### Features
+
+* reimplement highlight row, node-extend & fix few issues ([#275](https://github.com/ghiscoding/slickgrid-react/issues/275)) ([e29842a](https://github.com/ghiscoding/slickgrid-react/commit/e29842aedf213c956cc309378bdae4d92ca5f8cc))
+
 ## [4.0.2](https://github.com/ghiscoding/slickgrid-react/compare/v4.0.1...v4.0.2) (2023-12-16)
 
 
