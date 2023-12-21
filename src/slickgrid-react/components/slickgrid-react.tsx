@@ -49,12 +49,12 @@ import {
   // utilities
   autoAddEditorFormatterToColumnsWithEditor,
   emptyElement,
-  Utils as SlickUtils,
 } from '@slickgrid-universal/common';
 import { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
 import { SlickFooterComponent } from '@slickgrid-universal/custom-footer-component';
 import { SlickEmptyWarningComponent } from '@slickgrid-universal/empty-warning-component';
 import { SlickPaginationComponent } from '@slickgrid-universal/pagination-component';
+import { extend } from '@slickgrid-universal/utils';
 
 import { dequal } from 'dequal/lite';
 import { Constants } from '../constants';
@@ -127,7 +127,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     // if we already have grid options, when grid was already initialized, we'll merge with those options
     // else we'll merge with global grid options
     if (this.grid?.getOptions) {
-      mergedOptions = SlickUtils.extend<GridOption>(true, {} as GridOption, this.grid.getOptions() as GridOption, options as GridOption);
+      mergedOptions = extend<GridOption>(true, {} as GridOption, this.grid.getOptions() as GridOption, options as GridOption);
     } else {
       mergedOptions = this.mergeGridOptions(options);
     }
