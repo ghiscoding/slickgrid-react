@@ -202,7 +202,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     const prevDatasetLn = this._currentDatasetLength;
     const isDatasetEqual = dequal(newDataset, this.dataset || []);
     const isDeepCopyDataOnPageLoadEnabled = !!(this._gridOptions?.enableDeepCopyDatasetOnPageLoad);
-    let data = isDeepCopyDataOnPageLoadEnabled ? SlickUtils.extend(true, [], newDataset) : newDataset;
+    let data = isDeepCopyDataOnPageLoadEnabled ? extend(true, [], newDataset) : newDataset;
 
     // when Tree Data is enabled and we don't yet have the hierarchical dataset filled, we can force a convert+sort of the array
     if (this.grid && this.gridOptions?.enableTreeData && Array.isArray(newDataset) && (newDataset.length > 0 || newDataset.length !== prevDatasetLn || !isDatasetEqual)) {
@@ -1371,7 +1371,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
 
   protected mergeGridOptions(gridOptions: GridOption): GridOption {
     // use extend to deep merge & copy to avoid immutable properties being changed in GlobalGridOptions after a route change
-    const options = SlickUtils.extend(true, {}, GlobalGridOptions, gridOptions) as GridOption;
+    const options = extend(true, {}, GlobalGridOptions, gridOptions) as GridOption;
 
     options.gridId = this.props.gridId;
     options.gridContainerId = `slickGridContainer-${this.props.gridId}`;
