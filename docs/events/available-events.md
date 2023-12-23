@@ -55,6 +55,11 @@ render() {
 
 ---
 
+#### SlickCellExternalCopyManager (extension)
+  - `onCopyCells`
+  - `onCopyCancelled`
+  - `onPasteCells`
+
 #### SlickContextMenu (extension)
   - `onContextMenuClearGrouping`
   - `onContextMenuCollapseAllGroups`
@@ -114,13 +119,13 @@ render() {
   - `onTreeFullToggleEnd`
   - `onTreeItemToggled`
 
-#### SlickVanillaGridBundle
+#### Slickgrid-React Component
   - `onBeforeGridDestroy`
   - `onAfterGridDestroyed`
   - `onBeforeGridCreate`
   - `onDataviewCreated`
   - `onGridCreated`
-  - `onSlickerGridCreated`
+  - `onReactGridCreated`
   - `onGridStateChanged`
 
 #### SlickGrid
