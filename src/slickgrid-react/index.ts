@@ -9,7 +9,6 @@ import {
   SlickgridReactInstance,
   SlickgridReactComponentOutput,
   GridOption,
-  SlickGrid,
 } from './models/index';
 
 // expose all public classes
@@ -24,7 +23,6 @@ export {
   SlickgridReactInstance,
   SlickgridReactComponentOutput,
   GridOption,
-  SlickGrid,
   SlickgridReact,
   SlickgridConfig
 };

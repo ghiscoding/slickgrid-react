@@ -21,7 +21,7 @@ import BaseSlickGridState from './state-slick-grid-base';
 const NB_ITEMS = 1500;
 
 const taskTranslateFormatter: Formatter = (_row, _cell, value, _columnDef, _dataContext, grid) => {
-  const gridOptions: GridOption = (grid && typeof grid.getOptions === 'function') ? grid.getOptions() : {};
+  const gridOptions = grid.getOptions() as GridOption;
 
   return gridOptions.i18n?.t('TASK_X', { x: value }) ?? '';
 };
