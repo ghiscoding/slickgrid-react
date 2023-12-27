@@ -38,7 +38,7 @@ const URL_COUNTRIES_COLLECTION = 'assets/data/countries.json';
  * @returns {boolean} isEditable
  */
 function checkItemIsEditable(dataContext: any, columnDef: Column, grid: SlickGrid) {
-  const gridOptions = grid?.getOptions();
+  const gridOptions = grid.getOptions() as GridOption;
   const hasEditor = columnDef.editor;
   const isGridEditable = gridOptions.editable;
   let isEditable = Boolean(isGridEditable && hasEditor);
@@ -62,7 +62,7 @@ function checkItemIsEditable(dataContext: any, columnDef: Column, grid: SlickGri
 }
 
 const customEditableInputFormatter: Formatter = (_row, _cell, value, columnDef, _dataContext, grid) => {
-  const gridOptions = grid && grid.getOptions && grid.getOptions();
+  const gridOptions = grid.getOptions() as GridOption;
   const isEditableLine = gridOptions.editable && columnDef.editor;
   value = (value === null || value === undefined) ? '' : value;
   return isEditableLine ? { text: value, addClasses: 'editable-field', toolTip: 'Click to Edit' } : value;
@@ -528,11 +528,9 @@ export default class Example30 extends React.Component<Props, State> {
   handleOnBeforeEditCell(e: Event, args: any) {
     const { column, item, grid } = args;
 
-    if (column && item) {
-      if (!checkItemIsEditable(item, column, grid)) {
-        e.stopImmediatePropagation();
-        return false;
-      }
+    if (column && item && !checkItemIsEditable(item, column, grid)) {
+      e.stopImmediatePropagation();
+      return false;
     }
     return true;
   }
