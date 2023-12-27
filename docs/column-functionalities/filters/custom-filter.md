@@ -1,7 +1,6 @@
 #### index
 - [Filter Complex Object](Input-Filter.md#filter-complex-object)
 - [Update Filters Dynamically](Input-Filter.md#update-filters-dynamically)
-- [Custom Filter with React Custom Elements](#custom-filter-with-react-custom-element)
 
 ### Demo
 [Demo Page](https://ghiscoding.github.io/slickgrid-react/#/slickgrid/Example4) / [Demo Client Component](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example4.tsx) / [Custom InputFilter.ts](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/custom-inputFilter.ts)

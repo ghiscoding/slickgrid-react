@@ -3,7 +3,6 @@
    * [Demo with Float Editor & Dollar Formatter](#demo-with-float-editor-and-dollar-currency-formatter)
    * [Editor `outputType` and `saveOutputType`](#editor-output-type--save-output-type)
    * [Custom Editor](#custom-inline-editor)
-   * [Custom Editor from an React Custom Element](#custom-editor-with-react-custom-element)
 * [Perform an Action after Inline Edit](#perform-an-action-after-inline-edit)
 * [How to prevent Editor from going to the next bottom cell](#how-to-prevent-editor-from-going-to-the-next-bottom-cell)
 * [onClick Action Editor (icon click)](#onclick-action-editor-icon-click)
