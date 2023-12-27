@@ -145,16 +145,6 @@ const columnDefinitions = [
 ];
 ```
 
-## Custom Editor with React Custom Element
-I added a new [Example 26](https://ghiscoding.github.io/slickgrid-react/#/slickgrid/Example26) which have both Custom Editors & Filters which uses React Custom Elements. The 2nd column "Assignee" is the column that uses both (it's a simple select dropdown created as an React Custom Elements [here](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Editor-select.ts)) and you need to create a Custom Editor like [here](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/custom-reactViewModelEditor.ts) and use that Custom Editor in your column definition like [here](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example26.tsx#L125).
-
-Personally I don't find this very straightforward and I don't recommend using React Custom Elements for Editors/Filters as it adds a lot of boilerplate (compare to 1 step with a jQuery Custom Editor) but if you really wish to go that route, it's now possible following the steps shown below.
-
-The steps to use an React Custom Elements as a Custom Editor are the following:
-1. Create a Custom Editor that will handle the creation or compilation of the React Custom Element into a SlickGrid Editors. For that you can take a look at this [Custom Editor](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/custom-reactViewModelEditor.ts)
-2. Define your React Custom Element, for example take a look at this simple [Select Custom Element](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Editor-select.ts)
-3. Use the Custom Editor inside your Column Definitions, for that you can see previous paragraph [here](https://github.com#use-it-in-your-column-definition)
-
 ## How to prevent Editor from going to the next bottom cell?
 The default behavior or SlickGrid is to go to the next cell at the bottom of the current cell that you are editing. You can change and remove this behavior by enabling `autoCommitEdit` which will save current editor and remain in the same cell
 

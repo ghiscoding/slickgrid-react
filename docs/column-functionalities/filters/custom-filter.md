@@ -156,13 +156,3 @@ this.columnDef.filter.collection.forEach((option: SelectOption) => {
   options += `<option value="${option[valueName]}">${textLabel}</option>`;
 });
 ```
-
-## Custom Filter with React Custom Element
-I added a new [Example 26](https://ghiscoding.github.io/slickgrid-react/#/slickgrid/Example26) which have both Custom Editors & Filters which uses React Custom Elements. The 2nd column "Assignee" is the column that uses both (it's a simple select dropdown created as an React Custom Elements [here](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/filter-select.ts)) and you need to create a Custom Filter like [here](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/custom-reactViewModelFilter.ts) and use that Custom Filter in your column definition like [here](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example26.tsx#L110).
-
-Personally I don't find this very straightforward and I don't recommend using React Custom Elements for Editors/Filters as it adds a lot of boilerplate (compare to 1 step with a jQuery Custom Filter) but if you really wish to go that route, it's now possible following the steps shown below.
-
-The steps to use an React Custom Element as a Custom Filter are the following:
-1. Create a Custom Filter that will handle the creation or compilation of the React Custom Element into a SlickGrid Filter. For that you can take a look at this [Custom Filter](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/custom-reactViewModelFilter.ts)
-2. Define your React Custom Element, for example take a look at this simple [Select Custom Element](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/filter-select.ts)
-3. Use the Custom Filter inside your Column Definitions, for that you can see previous paragraph [here](https://github.com#how-to-use-custom-filter)
