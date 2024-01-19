@@ -28,8 +28,8 @@ For a complete set of working demos (over 30 examples), we strongly suggest you 
 ## License
 [MIT License](LICENSE)
 
-### Like it? :star: it
-You like **Slickgrid-React**? Be sure to upvote :star:, and perhaps support me with cafeine :coffee: and feel free to contribute. 👷👷‍♀️
+### Like it? ⭐ it
+You like **Slickgrid-React**? Be sure to upvote ⭐, and perhaps support me with cafeine [☕](https://ko-fi.com/ghiscoding) and feel free to contribute. 👷👷‍♀️
 
 <a href='https://ko-fi.com/ghiscoding' target='_blank'><img height='32' style='border:0px;height:32px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 
