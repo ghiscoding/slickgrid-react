@@ -109,6 +109,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   protected _eventHandler!: SlickEventHandler;
   protected _eventPubSubService!: EventPubSubService;
   protected _hideHeaderRowAfterPageLoad = false;
+  protected _isAutosizeColsCalled = false;
   protected _isGridInitialized = false;
   protected _isDatasetInitialized = false;
   protected _isDatasetHierarchicalInitialized = false;
@@ -215,8 +216,9 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
 
     // expand/autofit columns on first page load
     // we can assume that if the prevDataset was empty then we are on first load
-    if (this.grid && this.gridOptions.autoFitColumnsOnFirstLoad && prevDatasetLn === 0) {
+    if (this.grid && this.gridOptions.autoFitColumnsOnFirstLoad && prevDatasetLn === 0 && !this._isAutosizeColsCalled) {
       this.grid.autosizeColumns();
+      this._isAutosizeColsCalled = true;
     }
   }
 
@@ -400,6 +402,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
 
     this._gridOptions.translater = this.props.translaterService;
     this._eventHandler = eventHandler;
+    this._isAutosizeColsCalled = false;
 
     // when detecting a frozen grid, we'll automatically enable the mousewheel scroll handler so that we can scroll from both left/right frozen containers
     if (this._gridOptions && ((this._gridOptions.frozenRow !== undefined && this._gridOptions.frozenRow >= 0) || this._gridOptions.frozenColumn !== undefined && this._gridOptions.frozenColumn >= 0) && this._gridOptions.enableMouseWheelScrollHandler === undefined) {
@@ -966,11 +969,6 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       throw new Error(`[Slickgrid-React] You cannot enable both autosize/fit viewport & resize by content, you must choose which resize technique to use. You can enable these 2 options ("autoFitColumnsOnFirstLoad" and "enableAutoSizeColumns") OR these other 2 options ("autosizeColumnsByCellContentOnFirstLoad" and "enableAutoResizeColumnsByCellContent").`);
     }
 
-    // expand/autofit columns on first page load
-    if (grid && options.autoFitColumnsOnFirstLoad && options.enableAutoSizeColumns && typeof grid.autosizeColumns === 'function') {
-      this.grid.autosizeColumns();
-    }
-
     // auto-resize grid on browser resize
     if (options.gridHeight || options.gridWidth) {
       this.resizerService.resizeGrid(0, { height: options.gridHeight, width: options.gridWidth });
@@ -978,10 +976,10 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       this.resizerService.resizeGrid();
     }
 
-    if (grid && options?.enableAutoResize) {
-      if (options.autoFitColumnsOnFirstLoad && options.enableAutoSizeColumns && typeof grid.autosizeColumns === 'function') {
-        grid.autosizeColumns();
-      }
+    // expand/autofit columns on first page load
+    if (grid && options?.enableAutoResize && options.autoFitColumnsOnFirstLoad && options.enableAutoSizeColumns && !this._isAutosizeColsCalled) {
+      grid.autosizeColumns();
+      this._isAutosizeColsCalled = true;
     }
   }
 
@@ -1108,6 +1106,14 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       this.grid.setColumns(this.props.columnDefinitions);
     }
     return showing;
+  }
+
+  setData(data: TData[], shouldAutosizeColumns = false) {
+    if (shouldAutosizeColumns) {
+      this._isAutosizeColsCalled = false;
+      this._currentDatasetLength = 0;
+    }
+    this.dataset = data || [];
   }
 
   /**
