@@ -290,6 +290,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       this.sortService,
       this.treeDataService,
       this.props.translaterService,
+      () => this.gridService
     );
 
     this.gridStateService = this.props.externalServices?.gridStateService ?? new GridStateService(this.extensionService, this.filterService, this._eventPubSubService, this.sharedService, this.sortService, this.treeDataService);

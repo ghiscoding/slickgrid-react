@@ -343,7 +343,7 @@ class Example24 extends React.Component<Props, State> {
     }));
   }
 
-  executeCommand(_e: Event, args: any) {
+  executeCommand(_e: any, args: any) {
     const command = args.command;
     const dataContext = args.dataContext;
 

@@ -34,6 +34,7 @@ import Example31 from './Example31';
 import Example32 from './Example32';
 import Example33 from './Example33';
 import Example34 from './Example34';
+import Example35 from './Example35';
 
 const routes: Array<{ path: string; route: string; component: any; title: string; }> = [
   { path: 'Example1', route: '/Example1', component: <Example1 />, title: '1- Basic Grid / 2 Grids' },
@@ -68,6 +69,7 @@ const routes: Array<{ path: string; route: string; component: any; title: string
   { path: 'Example32', route: '/Example32', component: <Example32 />, title: '32- Columns Resize by Content' },
   { path: 'Example33', route: '/Example33', component: <Example33 />, title: '33- Regular & Custom Tooltip' },
   { path: 'Example34', route: '/Example34', component: <Example34 />, title: '34- Real-Time Trading Platform' },
+  { path: 'Example35', route: '/Example35', component: <Example35 />, title: '35- Row Based Editing' },
 ];
 
 export default function Routes() {
