@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.3.0](https://github.com/ghiscoding/slickgrid-react/compare/v4.2.0...v4.3.0) (2024-01-21)
+
+
+### Features
+
+* **plugin:** new Row Based Editing ([#289](https://github.com/ghiscoding/slickgrid-react/issues/289)) ([ac3218d](https://github.com/ghiscoding/slickgrid-react/commit/ac3218daafd37a6df7ec3d7c74184b0b7d2f19e6))
+
+
+### Performance Improvements
+
+* **resizer:** `autosizeColumns` is called too many times on page load ([#283](https://github.com/ghiscoding/slickgrid-react/issues/283)) ([329555f](https://github.com/ghiscoding/slickgrid-react/commit/329555f33d0219ee01dbcac38167bf7007ea37ad))
+
 # [4.2.0](https://github.com/ghiscoding/slickgrid-react/compare/v4.1.0...v4.2.0) (2023-12-30)
 
 
