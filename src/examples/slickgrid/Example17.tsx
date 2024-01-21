@@ -114,7 +114,7 @@ export default class Example17 extends React.Component {
   hookAllLoaderEvents() {
     if (this._eventHandler && this._eventHandler.subscribe && this.loaderDataView && this.loaderDataView.onDataLoading && this.loaderDataView.onDataLoaded) {
       this._eventHandler.subscribe(this.loaderDataView.onDataLoading, () => this.loading = true);
-      this._eventHandler.subscribe(this.loaderDataView.onDataLoaded, (_e: Event, args: any) => {
+      this._eventHandler.subscribe(this.loaderDataView.onDataLoaded, (_e: any, args: any) => {
         if (args && this.gridObj && this.gridObj.invalidateRow && this.gridObj.updateRowCount && this.gridObj.render) {
           for (let i = args.from; i <= args.to; i++) {
             this.gridObj.invalidateRow(i);

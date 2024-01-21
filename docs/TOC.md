@@ -69,6 +69,7 @@
 * [Providing data to the grid](grid-functionalities/providing-grid-data.md)
 * [Row Selection](grid-functionalities/row-selection.md)
 * [Tree Data Grid](grid-functionalities/tree-data-grid.md)
+* [Row Based Editing Plugin](grid-functionalities/Row-based-edit.md)
 
 ## Backend Services
 

@@ -23,7 +23,6 @@ import {
   SortService,
   TranslaterService,
   TreeDataService,
-  SlickGridEventData,
   OnActiveCellChangedEventArgs,
   DragRowMove,
   OnAddNewRowEventArgs,
@@ -67,6 +66,7 @@ import {
   OnRowsOrCountChangedEventArgs,
   OnSetItemsCalledEventArgs,
   PagingInfo,
+  SlickGrid,
 } from '@slickgrid-universal/common';
 import { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
 import { SlickgridReactInstance } from '../models';
@@ -111,14 +111,14 @@ export interface SlickgridReactProps {
 
   // Slick Grid events
   onActiveCellChanged?: (e: CustomEvent<{ eventData: any; args: OnActiveCellChangedEventArgs; }>) => void;
-  onActiveCellPositionChanged?: (e: CustomEvent<{ eventData: any; args: SlickGridEventData; }>) => void;
+  onActiveCellPositionChanged?: (e: CustomEvent<{ eventData: any; args: { grid: SlickGrid; }; }>) => void;
   onAddNewRow?: (e: CustomEvent<{ eventData: any; args: OnAddNewRowEventArgs; }>) => void;
   onAutosizeColumns?: (e: CustomEvent<{ eventData: any; args: OnAutosizeColumnsEventArgs; }>) => void;
   onBeforeAppendCell?: (e: CustomEvent<{ eventData: any; args: OnBeforeAppendCellEventArgs; }>) => void;
   onBeforeSearchChange?: (e: CustomEvent<{ eventData: any; args: OnCellChangeEventArgs; }>) => void;
   onBeforeCellEditorDestroy?: (e: CustomEvent<{ eventData: any; args: OnBeforeCellEditorDestroyEventArgs; }>) => void;
   onBeforeColumnsResize?: (e: CustomEvent<{ eventData: any; args: OnBeforeColumnsResizeEventArgs; }>) => void;
-  onBeforeDestroy?: (e: CustomEvent<{ eventData: any; args: SlickGridEventData; }>) => void;
+  onBeforeDestroy?: (e: CustomEvent<{ eventData: any; args: { grid: SlickGrid; }; }>) => void;
   onBeforeEditCell?: (e: CustomEvent<{ eventData: any; args: OnBeforeEditCellEventArgs; }>) => void;
   onBeforeHeaderCellDestroy?: (e: CustomEvent<{ eventData: any; args: OnBeforeHeaderCellDestroyEventArgs; }>) => void;
   onBeforeHeaderRowCellDestroy?: (e: CustomEvent<{ eventData: any; args: OnBeforeHeaderRowCellDestroyEventArgs; }>) => void;
@@ -133,7 +133,7 @@ export interface SlickgridReactProps {
   onColumnsResized?: (e: CustomEvent<{ eventData: any; args: OnColumnsResizedEventArgs; }>) => void;
   onColumnsResizeDblClick?: (e: CustomEvent<{ eventData: any; args: OnColumnsResizeDblClickEventArgs; }>) => void;
   onCompositeEditorChange?: (e: CustomEvent<{ eventData: any; args: OnCompositeEditorChangeEventArgs; }>) => void;
-  onContextMenu?: (e: CustomEvent<{ eventData: any; args: SlickGridEventData; }>) => void;
+  onContextMenu?: (e: CustomEvent<{ eventData: any; args: { grid: SlickGrid; }; }>) => void;
   onDrag?: (e: CustomEvent<{ eventData: any; args: DragRowMove; }>) => void;
   onDragEnd?: (e: CustomEvent<{ eventData: any; args: DragRowMove; }>) => void;
   onDragInit?: (e: CustomEvent<{ eventData: any; args: DragRowMove; }>) => void;
@@ -151,10 +151,10 @@ export interface SlickgridReactProps {
   onHeaderRowMouseEnter?: (e: CustomEvent<{ eventData: any; args: OnHeaderMouseEventArgs; }>) => void;
   onHeaderRowMouseLeave?: (e: CustomEvent<{ eventData: any; args: OnHeaderMouseEventArgs; }>) => void;
   onKeyDown?: (e: CustomEvent<{ eventData: any; args: OnKeyDownEventArgs; }>) => void;
-  onMouseEnter?: (e: CustomEvent<{ eventData: any; args: SlickGridEventData; }>) => void;
-  onMouseLeave?: (e: CustomEvent<{ eventData: any; args: SlickGridEventData; }>) => void;
+  onMouseEnter?: (e: CustomEvent<{ eventData: any; args: { grid: SlickGrid; }; }>) => void;
+  onMouseLeave?: (e: CustomEvent<{ eventData: any; args: { grid: SlickGrid; }; }>) => void;
   onValidationError?: (e: CustomEvent<{ eventData: any; args: OnValidationErrorEventArgs; }>) => void;
-  onViewportChanged?: (e: CustomEvent<{ eventData: any; args: SlickGridEventData; }>) => void;
+  onViewportChanged?: (e: CustomEvent<{ eventData: any; args: { grid: SlickGrid; }; }>) => void;
   onRendered?: (e: CustomEvent<{ eventData: any; args: OnRenderedEventArgs; }>) => void;
   onSelectedRowsChanged?: (e: CustomEvent<{ eventData: any; args: OnSelectedRowsChangedEventArgs; }>) => void;
   onSetOptions?: (e: CustomEvent<{ eventData: any; args: OnSetOptionsEventArgs; }>) => void;
