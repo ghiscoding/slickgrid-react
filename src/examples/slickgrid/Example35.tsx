@@ -359,7 +359,7 @@ class Example35 extends React.Component<Props, State> {
               </span>
             </div>
 
-            <div className="col-sm-4 alert alert-success">
+            <div className={`col-sm-4 ${this.state.statusClass}`}>
               <strong>Status: </strong>
               <span data-test="fetch-result" dangerouslySetInnerHTML={{ __html: this.state.fetchResult }}></span>
             </div>
