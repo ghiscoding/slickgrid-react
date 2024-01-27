@@ -760,19 +760,15 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     // translate some of them on first load, then on each language change
     if (gridOptions.enableTranslate) {
       this.extensionService.translateAllExtensions();
-      this.translateColumnHeaderTitleKeys();
-      this.translateColumnGroupKeys();
     }
 
     // on locale change, we have to manually translate the Headers, GridMenu
-    i18next.on('languageChanged', () => {
+    i18next.on('languageChanged', (lang) => {
       // publish event of the same name that Slickgrid-Universal uses on a language change event
       this._eventPubSubService.publish('onLanguageChange');
 
       if (gridOptions.enableTranslate) {
-        this.extensionService.translateAllExtensions();
-        this.translateColumnHeaderTitleKeys();
-        this.translateColumnGroupKeys();
+        this.extensionService.translateAllExtensions(lang);
         if (gridOptions.createPreHeaderPanel && !gridOptions.enableDraggableGrouping) {
           this.groupingService.translateGroupingAndColSpan();
         }
@@ -1064,10 +1060,6 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
           this._isDatasetInitialized = true;
         }
 
-        if (dataset) {
-          this.grid.invalidate();
-        }
-
         // display the Pagination component only after calling this refresh data first, we call it here so that if we preset pagination page number it will be shown correctly
         this.showPagination = (this._gridOptions && (this._gridOptions.enablePagination || (this._gridOptions.backendServiceApi && this._gridOptions.enablePagination === undefined))) ? true : false;
         if (this._paginationOptions && this._gridOptions?.pagination && this._gridOptions?.backendServiceApi) {
@@ -1109,14 +1101,6 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     return showing;
   }
 
-  setData(data: TData[], shouldAutosizeColumns = false) {
-    if (shouldAutosizeColumns) {
-      this._isAutosizeColsCalled = false;
-      this._currentDatasetLength = 0;
-    }
-    this.dataset = data || [];
-  }
-
   /**
    * Check if there's any Pagination Presets defined in the Grid Options,
    * if there are then load them in the paginationOptions object
@@ -1145,7 +1129,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       }
 
       if (this._gridOptions.enableTranslate) {
-        this.extensionService.translateColumnHeaders(false, newColumnDefinitions);
+        this.extensionService.translateColumnHeaders(undefined, newColumnDefinitions);
       } else {
         this.extensionService.renderColumnHeaders(newColumnDefinitions, true);
       }
@@ -1552,16 +1536,6 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
         internalColumnEditor: { ...column.editor }
       };
     });
-  }
-
-  /** translate all columns (including hidden columns) */
-  protected translateColumnHeaderTitleKeys() {
-    this.extensionUtility.translateItems(this.sharedService.allColumns, 'nameKey', 'name');
-  }
-
-  /** translate all column groups (including hidden columns) */
-  protected translateColumnGroupKeys() {
-    this.extensionUtility.translateItems(this.sharedService.allColumns, 'columnGroupKey', 'columnGroup');
   }
 
   /**
