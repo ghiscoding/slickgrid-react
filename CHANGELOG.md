@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.3.1](https://github.com/ghiscoding/slickgrid-react/compare/v4.3.0...v4.3.1) (2024-01-27)
+
+
+### Performance Improvements
+
+* decrease number of calls to translate all extensions only once ([#290](https://github.com/ghiscoding/slickgrid-react/issues/290)) ([89ddb41](https://github.com/ghiscoding/slickgrid-react/commit/89ddb4139145d54236e3787a6221e83a24fac065))
+
 # [4.3.0](https://github.com/ghiscoding/slickgrid-react/compare/v4.2.0...v4.3.0) (2024-01-21)
 
 
