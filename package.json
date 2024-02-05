@@ -122,7 +122,7 @@
     "@slickgrid-universal/odata": "~4.3.1",
     "@slickgrid-universal/rxjs-observable": "~4.3.1",
     "@slickgrid-universal/text-export": "~4.3.1",
-    "@testing-library/jest-dom": "^6.4.1",
+    "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
     "@testing-library/user-event": "^14.5.2",
     "@types/bluebird": "^3.5.42",
@@ -132,13 +132,13 @@
     "@types/i18next-xhr-backend": "^1.4.2",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.16",
-    "@types/react": "^18.2.51",
+    "@types/react": "^18.2.53",
     "@types/react-dom": "^18.2.18",
     "@types/sortablejs": "^1.15.7",
     "@types/text-encoding-utf-8": "^1.0.5",
     "@types/webpack": "^5.28.5",
-    "@typescript-eslint/eslint-plugin": "^6.20.0",
-    "@typescript-eslint/parser": "^6.20.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "@webpack-cli/serve": "^2.0.5",
     "bootstrap": "^5.3.2",
     "clean-webpack-plugin": "^4.0.0",
@@ -190,6 +190,6 @@
     "npm": ">=8.5.0"
   },
   "resolutions": {
-    "caniuse-lite": "1.0.30001582"
+    "caniuse-lite": "1.0.30001584"
   }
 }
