@@ -314,7 +314,7 @@ class Example35 extends React.Component<Props, State> {
               different color, which you can customize using css variables (see
               <a
                 target="_blank"
-                href="https://github.com/ghiscoding/aurelia-slickgrid/blob/master/src/examples/slickgrid/example35.scss"
+                href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example35.scss"
               >
                 example35.scss </a
               >)
