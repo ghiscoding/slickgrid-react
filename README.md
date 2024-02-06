@@ -28,6 +28,12 @@ For a complete set of working demos (over 30 examples), we strongly suggest you 
 ## License
 [MIT License](LICENSE)
 
+## Latest News & Releases
+Check out the [Releases](https://github.com/ghiscoding/slickgrid-react/releases) section for all latest News & Releases.
+
+### Tested with [Jest](https://jestjs.io/) (Unit Tests) - [Cypress](https://www.cypress.io/) (E2E Tests)
+Slickgrid-Universal has **100%** Unit Test Coverage and all Slickgrid-React Examples are tested with [Cypress](https://www.cypress.io/) as E2E tests.
+
 ### Like it? ⭐ it
 You like **Slickgrid-React**? Be sure to upvote ⭐, and perhaps support me with cafeine [☕](https://ko-fi.com/ghiscoding) and feel free to contribute. 👷👷‍♀️
 
@@ -41,61 +47,3 @@ You like **Slickgrid-React**? Be sure to upvote ⭐, and perhaps support me with
     <span class="wb-break-word ml-2">kevinburkett</span>
   </a>
 </div>
-
-## Latest News & Releases
-Check out the [Releases](https://github.com/ghiscoding/slickgrid-react/releases) section for all latest News & Releases.
-
-### Tested with [Jest](https://jestjs.io/) (Unit Tests) - [Cypress](https://www.cypress.io/) (E2E Tests)
-Slickgrid-Universal has **100%** Unit Test Coverage, we are talking about +4,000 unit tests that are fully tested with [Jest](https://jestjs.io/). On the UI side, all Slickgrid-React Examples are tested with [Cypress](https://www.cypress.io/), there are over +600 Cypress E2E tests.
-
-## Installation
-Refer to the **[Docs - Quick Start](https://ghiscoding.gitbook.io/slickgrid-react/getting-started/quick-start)**. Please don't open any issue unless you have followed these steps (from the Docs), and if any of the steps are incorrect or confusing, then please let me know.
-
-**NOTE:** if you have any question, please consider asking installation and/or general questions on [Stack Overflow](https://stackoverflow.com/search?tab=newest&q=slickgrid)
-
-## Documentation
-The [Documentation](https://ghiscoding.gitbook.io/slickgrid-react/) is powered by GitBook and is where you'll find all the documentation and instructions for the lib, so please consult the documentation before opening any new issue. The [Docs - Quick Start](https://ghiscoding.gitbook.io/slickgrid-react/getting-started/quick-start) is a great place to start with.
-
-## Main features
-You can see some screenshots below and visit the [Documentation](https://ghiscoding.gitbook.io/slickgrid-react/getting-started/quick-start) website.
-
-## Missing features
-What if `Slickgrid-React` is missing feature(s) compare to the original core library [6pac/SlickGrid](https://github.com/6pac/SlickGrid/)?
-
-Fear not, you can always reference the `SlickGrid` and `DataView` instances, just like in the core lib, those are exposed through Events. For more info head over to the [Docs - SlickGrid & DataView objects](https://ghiscoding.gitbook.io/slickgrid-react/slick-grid-dataview-objects/slickgrid-dataview-objects) and [Docs - Grid & DataView Events](https://ghiscoding.gitbook.io/slickgrid-react/events/grid-dataview-events)
-
-## Screenshots
-
-Screenshots from the demo app with the `Bootstrap` theme.
-
-_Note that the styling might have changed a little, the best is to simply head over to the [Live Demo](https://ghiscoding.github.io/slickgrid-react) page._
-
-### Slickgrid example with Formatters (last column shown is a custom Formatter)
-
-#### _You can also see the Grid Menu opened (aka hambuger menu)_
-
-![Default Slickgrid Example](/screenshots/formatters.png)
-
-### Filters and Multi-Column Sort
-
-![Filter and Sort](/screenshots/filter_and_sort.png)
-
-### Inline Editing
-
-![Editors](/screenshots/editors.png)
-
-### Pinned (aka frozen) Columns/Rows
-
-![Pinned Columns/Rows](/screenshots/frozen.png)
-
-### Draggable Grouping & Aggregators
-
-![Draggable Grouping](/screenshots/draggable-grouping.png)
-
-### Slickgrid Example with Server Side (Filter/Sort/Pagination)
-#### Comes with OData & GraphQL support (you can implement custom ones too)
-
-![Slickgrid Server Side](/screenshots/pagination.png)
-
-### Composite Editor Modal Windows
-![Composite Editor Modal](/screenshots/composite-editor.png)
