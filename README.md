@@ -37,10 +37,12 @@ You like **Slickgrid-React**? Be sure to upvote ⭐, and perhaps support me with
 
 Thanks :)
 
-<img class="circle avatar-user" src="https://avatars.githubusercontent.com/u/48218815?s=52&amp;v=4" width="40" height="40" alt="@kevinburkett" />
-<a href="/kevinburkett" class="Link">
-  <span class="wb-break-word ml-2">kevinburkett</span>
-</a>
+<div>
+  <img class="circle avatar-user" src="https://avatars.githubusercontent.com/u/48218815?s=52&amp;v=4" width="40" height="40" alt="@kevinburkett" />
+  <a href="/kevinburkett" class="Link">
+    <span class="wb-break-word ml-2">kevinburkett</span>
+  </a>
+</div>
 
 ## Latest News & Releases
 Check out the [Releases](https://github.com/ghiscoding/slickgrid-react/releases) section for all latest News & Releases.
