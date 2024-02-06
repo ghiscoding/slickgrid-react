@@ -57,9 +57,9 @@ Fear not, you can always reference the `SlickGrid` and `DataView` instances, jus
 
 ## Sponsors
 
-Huge to our Sponsors
+Thanks to our Sponsors :)
 
-<a class="d-inline-block" data-hovercard-type="user" data-hovercard-url="/users/kevinburkett/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="/kevinburkett"><img class="avatar avatar-user" src="https://avatars.githubusercontent.com/u/48218815?s=70&amp;v=4" width="35" height="35" alt="@kevinburkett" style="border: 50%"></a>
+<a class="d-inline-block" href="https://github.com/kevinburkett"><img class="avatar avatar-user" src="https://avatars.githubusercontent.com/u/48218815?s=70&amp;v=4" width="38" height="38" alt="@kevinburkett"></a>
 
 ## Screenshots
 
