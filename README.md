@@ -33,6 +33,15 @@ You like **Slickgrid-React**? Be sure to upvote ⭐, and perhaps support me with
 
 <a href='https://ko-fi.com/ghiscoding' target='_blank'><img height='32' style='border:0px;height:32px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 
+## Sponsors
+
+Thanks :)
+
+<img class="circle avatar-user" src="https://avatars.githubusercontent.com/u/48218815?s=52&amp;v=4" width="40" height="40" alt="@kevinburkett" />
+<a href="/kevinburkett" class="Link">
+  <span class="wb-break-word ml-2">kevinburkett</span>
+</a>
+
 ## Latest News & Releases
 Check out the [Releases](https://github.com/ghiscoding/slickgrid-react/releases) section for all latest News & Releases.
 
@@ -54,12 +63,6 @@ You can see some screenshots below and visit the [Documentation](https://ghiscod
 What if `Slickgrid-React` is missing feature(s) compare to the original core library [6pac/SlickGrid](https://github.com/6pac/SlickGrid/)?
 
 Fear not, you can always reference the `SlickGrid` and `DataView` instances, just like in the core lib, those are exposed through Events. For more info head over to the [Docs - SlickGrid & DataView objects](https://ghiscoding.gitbook.io/slickgrid-react/slick-grid-dataview-objects/slickgrid-dataview-objects) and [Docs - Grid & DataView Events](https://ghiscoding.gitbook.io/slickgrid-react/events/grid-dataview-events)
-
-## Sponsors
-
-Thanks to our Sponsors :)
-
-<a class="d-inline-block" href="https://github.com/kevinburkett"><img class="avatar avatar-user" src="https://avatars.githubusercontent.com/u/48218815?s=70&amp;v=4" width="38" height="38" alt="@kevinburkett"></a>
 
 ## Screenshots
 
