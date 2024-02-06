@@ -55,6 +55,11 @@ What if `Slickgrid-React` is missing feature(s) compare to the original core lib
 
 Fear not, you can always reference the `SlickGrid` and `DataView` instances, just like in the core lib, those are exposed through Events. For more info head over to the [Docs - SlickGrid & DataView objects](https://ghiscoding.gitbook.io/slickgrid-react/slick-grid-dataview-objects/slickgrid-dataview-objects) and [Docs - Grid & DataView Events](https://ghiscoding.gitbook.io/slickgrid-react/events/grid-dataview-events)
 
+## Sponsors
+
+Huge to our Sponsors
+
+<a class="d-inline-block" data-hovercard-type="user" data-hovercard-url="/users/kevinburkett/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="/kevinburkett"><img class="avatar avatar-user" src="https://avatars.githubusercontent.com/u/48218815?s=70&amp;v=4" width="35" height="35" alt="@kevinburkett" style="border: 50%"></a>
 
 ## Screenshots
 
