@@ -1,4 +1,6 @@
 
+@import '@slickgrid-universal/common/dist/styles/sass/slickgrid-theme-salesforce.lite.scss';
+
 .icon {
     align-items: center;
     display: inline-flex;
@@ -15,6 +17,9 @@
 }
 .total-suffix {
   margin-left: 10px;
+}
+.hidden {
+  display: none;
 }
 
 /** You can use the following code OR use the .color-x CSS classes */
