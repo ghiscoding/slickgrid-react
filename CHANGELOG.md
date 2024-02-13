@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.4.0](https://github.com/ghiscoding/slickgrid-react/compare/v4.3.1...v4.4.0) (2024-02-13)
+
+
+### Bug Fixes
+
+* **demo:** change trading demo full screen z-index lower than ms-select ([7761265](https://github.com/ghiscoding/slickgrid-react/commit/77612652c3a2949a823c97986fdf2651e60c2047))
+
+
+### Features
+
+* **ExcelExport:** migrate to Excel-Builder-Vanilla (ESM) ([#297](https://github.com/ghiscoding/slickgrid-react/issues/297)) ([87226d0](https://github.com/ghiscoding/slickgrid-react/commit/87226d02dbcb71bac2bf769721a3f921767a44fb))
+
 ## [4.3.1](https://github.com/ghiscoding/slickgrid-react/compare/v4.3.0...v4.3.1) (2024-01-27)
 
 
