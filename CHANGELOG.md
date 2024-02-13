@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.4.1](https://github.com/ghiscoding/slickgrid-react/compare/v4.4.0...v4.4.1) (2024-02-13)
+
+
+### Bug Fixes
+
+* update to latest Slickgrid-Universal v4.4.1 ([e06f669](https://github.com/ghiscoding/slickgrid-react/commit/e06f669b7a2350a2e9204f3fb4a8ce76a2647526))
+
 # [4.4.0](https://github.com/ghiscoding/slickgrid-react/compare/v4.3.1...v4.4.0) (2024-02-13)
 
 
