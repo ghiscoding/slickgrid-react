@@ -132,13 +132,13 @@
     "@types/i18next-xhr-backend": "^1.4.2",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.19",
-    "@types/react": "^18.2.55",
+    "@types/react": "^18.2.56",
     "@types/react-dom": "^18.2.19",
-    "@types/sortablejs": "^1.15.7",
+    "@types/sortablejs": "^1.15.8",
     "@types/text-encoding-utf-8": "^1.0.5",
     "@types/webpack": "^5.28.5",
-    "@typescript-eslint/eslint-plugin": "^7.0.1",
-    "@typescript-eslint/parser": "^7.0.1",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
     "@webpack-cli/serve": "^2.0.5",
     "bootstrap": "^5.3.2",
     "clean-webpack-plugin": "^4.0.0",
@@ -170,26 +170,26 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^14.0.5",
-    "react-router-dom": "^6.22.0",
-    "release-it": "^17.0.5",
+    "react-router-dom": "^6.22.1",
+    "release-it": "^17.1.1",
     "rimraf": "^5.0.5",
     "rxjs": "^7.8.1",
-    "sass": "^1.70.0",
-    "sass-loader": "^14.1.0",
+    "sass": "^1.71.0",
+    "sass-loader": "^14.1.1",
     "serve": "^14.2.1",
     "style-loader": "3.3.4",
     "ts-jest": "^29.1.2",
     "ts-loader": "^9.5.1",
     "typescript": "^5.3.3",
-    "webpack": "^5.90.2",
+    "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.0.1"
+    "webpack-dev-server": "^5.0.2"
   },
   "engines": {
     "node": ">=16.15.0",
     "npm": ">=8.5.0"
   },
   "resolutions": {
-    "caniuse-lite": "1.0.30001587"
+    "caniuse-lite": "1.0.30001588"
   }
 }
