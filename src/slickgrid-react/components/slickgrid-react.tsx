@@ -1520,21 +1520,23 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
    * then take back "editor.model" and make it the new "editor" so that SlickGrid Editor Factory still works
    */
   protected swapInternalEditorToSlickGridFactoryEditor(columnDefinitions: Column<TData>[]): Column<TData>[] {
-    if (columnDefinitions.some(col => `${col.id}`.includes('.'))) {
+    if (columnDefinitions.some(col => `${col?.id}`.includes('.'))) {
       console.error('[Slickgrid-React] Make sure that none of your Column Definition "id" property includes a dot in its name because that will cause some problems with the Editors. For example if your column definition "field" property is "user.firstName" then use "firstName" as the column "id".');
     }
 
     return columnDefinitions.map((column: Column | any) => {
-      // on every Editor which have a "collection" or a "collectionAsync"
-      if (column.editor?.collectionAsync) {
-        this.loadEditorCollectionAsync(column);
-      }
+      if (column) {
+        // on every Editor which have a "collection" or a "collectionAsync"
+        if (column.editor?.collectionAsync) {
+          this.loadEditorCollectionAsync(column);
+        }
 
-      return {
-        ...column,
-        editor: column.editor?.model,
-        internalColumnEditor: { ...column.editor }
-      };
+        return {
+          ...column,
+          editor: column.editor?.model,
+          internalColumnEditor: { ...column.editor }
+        };
+      }
     });
   }
 
