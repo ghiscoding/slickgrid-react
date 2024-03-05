@@ -69,6 +69,7 @@ const taskTranslateFormatter: Formatter = (_row, _cell, value, _columnDef, _data
 };
 
 class Example24 extends React.Component<Props, State> {
+  private _darkModeGrid = false;
   title = 'Example 24: Cell Menu & Context Menu Plugins';
   subTitle = `Add Cell Menu and Context Menu
     <ul>
@@ -126,6 +127,11 @@ class Example24 extends React.Component<Props, State> {
 
     // define the grid options & columns and then create the grid itself
     this.defineGrid();
+  }
+
+  componentWillUnmount(): void {
+    document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
+    document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
   }
 
   reactGridReady(reactGrid: SlickgridReactInstance) {
@@ -554,6 +560,18 @@ class Example24 extends React.Component<Props, State> {
     this.setState((state: State) => ({ ...state, selectedLanguage: nextLanguage }));
   }
 
+  toggleDarkModeGrid() {
+    this._darkModeGrid = !this._darkModeGrid;
+    if (this._darkModeGrid) {
+      document.querySelector<HTMLDivElement>('.panel-wm-content')!.classList.add('dark-mode');
+      document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'dark';
+    } else {
+      document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
+      document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
+    }
+    this.reactGrid.slickGrid?.setOptions({ darkMode: this._darkModeGrid });
+  }
+
   render() {
     return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
@@ -566,6 +584,9 @@ class Example24 extends React.Component<Props, State> {
               <span className="fa fa-link"></span> code
             </a>
           </span>
+          <button className="btn btn-outline-secondary btn-sm ms-2" onClick={() => this.toggleDarkModeGrid()} data-test="toggle-dark-mode">
+            <span>Toggle Dark Mode</span>
+          </button>
         </h2>
         <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 

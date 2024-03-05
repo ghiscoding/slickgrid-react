@@ -394,6 +394,11 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
         this.displayEmptyDataWarning(finalTotalCount < 1);
       }
     }
+
+    // add dark mode CSS class when enabled
+    if (this.gridOptions.darkMode) {
+      this.setDarkMode(true);
+    }
   }
 
   initialization(eventHandler: SlickEventHandler) {
@@ -849,6 +854,13 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
           this.sharedService.visibleColumns = args.impactedColumns;
         });
 
+        this._eventHandler.subscribe(grid.onSetOptions, (_e, args) => {
+          // add/remove dark mode CSS class when enabled
+          if (args.optionsBefore.darkMode !== args.optionsAfter.darkMode && this.sharedService.gridContainerElement) {
+            this.setDarkMode(args.optionsAfter.darkMode);
+          }
+        });
+
         // load any presets if any (after dataset is initialized)
         this.loadColumnPresetsWhenDatasetInitialized();
         this.loadFilterPresetsWhenDatasetInitialized();
@@ -1111,6 +1123,14 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       paginationOptions.pageNumber = gridOptions.presets.pagination.pageNumber;
     }
     return paginationOptions;
+  }
+
+  setDarkMode(dark = false) {
+    if (dark) {
+      this.sharedService.gridContainerElement?.classList.add('slick-dark-mode');
+    } else {
+      this.sharedService.gridContainerElement?.classList.remove('slick-dark-mode');
+    }
   }
 
   /**
