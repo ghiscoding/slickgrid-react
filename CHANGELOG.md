@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.5.0](https://github.com/ghiscoding/slickgrid-react/compare/v4.4.1...v4.5.0) (2024-03-05)
+
+
+### Bug Fixes
+
+* add extra conditions to help strict mode ([#302](https://github.com/ghiscoding/slickgrid-react/issues/302)) ([8b4d1f6](https://github.com/ghiscoding/slickgrid-react/commit/8b4d1f6e918c0359321bf324fc523a346eabee2a))
+* remove width style on grid container for CSP safe ([#306](https://github.com/ghiscoding/slickgrid-react/issues/306)) ([529abab](https://github.com/ghiscoding/slickgrid-react/commit/529abab098079447b94f452e00bb6d7571193576))
+
+
+### Features
+
+* add Dark Mode grid option ([#305](https://github.com/ghiscoding/slickgrid-react/issues/305)) ([d4bfdd1](https://github.com/ghiscoding/slickgrid-react/commit/d4bfdd10dad8ccc29da53faa2970cc5bffc877f5))
+
 ## [4.4.1](https://github.com/ghiscoding/slickgrid-react/compare/v4.4.0...v4.4.1) (2024-02-13)
 
 
