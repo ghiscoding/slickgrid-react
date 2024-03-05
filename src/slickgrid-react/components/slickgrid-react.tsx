@@ -1592,7 +1592,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
         {/* <!-- Header slot if you need to create a complex custom header --> */}
         {this.props.header && <div className="header">{this.props.header}</div>}
 
-        <div id={`${this.props.gridId}`} className="slickgrid-container" style={{ width: '100%' }} onBlur={$event => this.commitEdit($event.target)}>
+        <div id={`${this.props.gridId}`} className="slickgrid-container" onBlur={$event => this.commitEdit($event.target)}>
         </div>
 
         {/* <!--Footer slot if you need to create a complex custom footer-- > */}
