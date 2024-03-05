@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Column, Formatters, GridOption, SlickgridReact } from '../../slickgrid-react';
+import { Column, Formatters, GridOption, SlickgridReact, SlickgridReactInstance } from '../../slickgrid-react';
 
 const NB_ITEMS = 995;
 
@@ -19,6 +19,9 @@ interface State {
 }
 
 export default class Example1 extends React.Component<Props, State> {
+  private _darkModeGrid1 = false;
+  reactGrid1!: SlickgridReactInstance;
+
   constructor(public readonly props: Props) {
     super(props);
 
@@ -47,6 +50,14 @@ export default class Example1 extends React.Component<Props, State> {
     }));
   }
 
+  reactGrid1Ready(reactGrid: SlickgridReactInstance) {
+    this.reactGrid1 = reactGrid;
+  }
+
+  isBrowserDarkModeEnabled() {
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+  }
+
   /* Define grid Options and Columns */
   defineGrids() {
     const columns: Column[] = [
@@ -57,7 +68,9 @@ export default class Example1 extends React.Component<Props, State> {
       { id: 'finish', name: 'Finish', field: 'finish', formatter: Formatters.dateIso },
       { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven', sortable: true, minWidth: 100 }
     ];
+    this._darkModeGrid1 = this.isBrowserDarkModeEnabled();
     const gridOptions1: GridOption = {
+      darkMode: this._darkModeGrid1,
       gridHeight: 225,
       gridWidth: 800,
       enableAutoResize: false,
@@ -67,6 +80,7 @@ export default class Example1 extends React.Component<Props, State> {
     // copy the same Grid Options and Column Definitions to 2nd grid
     // but also add Pagination in this grid
     const gridOptions2: GridOption = {
+      darkMode: false,
       gridHeight: 225,
       gridWidth: 800,
       enableAutoResize: false,
@@ -110,6 +124,16 @@ export default class Example1 extends React.Component<Props, State> {
     return mockDataset;
   }
 
+  toggleDarkModeGrid1() {
+    this._darkModeGrid1 = !this._darkModeGrid1;
+    if (this._darkModeGrid1) {
+      document.querySelector('.grid-container1')?.classList.add('dark-mode');
+    } else {
+      document.querySelector('.grid-container1')?.classList.remove('dark-mode');
+    }
+    this.reactGrid1.slickGrid?.setOptions({ darkMode: this._darkModeGrid1 });
+  }
+
   render() {
     return !this.state.gridOptions1 ? '' : (
       <div id="demo-container" className="container-fluid">
@@ -125,11 +149,22 @@ export default class Example1 extends React.Component<Props, State> {
         </h2>
         <div className="subtitle">{this.state.subTitle}</div>
 
-        <h3>Grid 1</h3>
-        <SlickgridReact gridId="grid1"
-          columnDefinitions={this.state.columnDefinitions1}
-          gridOptions={this.state.gridOptions1!}
-          dataset={this.state.dataset1} />
+        <h3>
+          <div className="column">
+            <span className="mr-3">Grid 1</span>
+            <button className="btn btn-outline-secondary btn-sm ms-2" onClick={() => this.toggleDarkModeGrid1()} data-test="toggle-dark-mode">
+              <span>Toggle Dark Mode</span>
+            </button>
+          </div>
+        </h3>
+
+        <div className="grid-container1">
+          <SlickgridReact gridId="grid1"
+            columnDefinitions={this.state.columnDefinitions1}
+            gridOptions={this.state.gridOptions1!}
+            dataset={this.state.dataset1}
+            onReactGridCreated={$event => this.reactGrid1Ready($event.detail)} />
+        </div>
 
         <hr />
 

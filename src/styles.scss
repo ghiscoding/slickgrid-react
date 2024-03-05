@@ -1,52 +1,67 @@
+@import '@slickgrid-universal/common/dist/styles/sass/variables';
+
 $navbar-height: 56px;
 $side-menu-width: 250px;
 
 .bold {
   font-weight: bold;
 }
+
 .italic {
   font-style: italic;
 }
+
 .faded {
   opacity: 0.2;
 }
+
 .faded:hover {
   opacity: 0.5;
 }
+
 .font18 {
   font-size: 18px;
 }
+
 .btn {
   padding: 5px;
 }
-.btn-group-xs > .btn, .btn-xs {
-  padding  : 6px 2px;
-  font-size  : .875rem;
-  line-height  : .5;
-  border-radius : .2rem;
+
+.btn-group-xs>.btn,
+.btn-xs {
+  padding: 6px 2px;
+  font-size: .875rem;
+  line-height: .5;
+  border-radius: .2rem;
   margin: 0 2px;
   font-size: 12px;
 }
+
 .body-content {
   margin-top: $navbar-height;
 }
+
 .lightblue {
   color: lightblue;
 }
+
 .red {
   color: red;
 }
+
 .subtitle {
   font-size: 0.875em;
   font-style: italic;
   color: grey;
   margin-bottom: 10px;
 }
+
 .faded {
-    opacity: 0.2;
+  opacity: 0.2;
 }
+
 .faded:hover {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 section {
@@ -56,7 +71,7 @@ section {
 /** Sidebar (left) and Content (right) */
 @media (min-width: 1200px) {
   .panel-wm-content .container {
-      width: calc(1170px - #{$side-menu-width});
+    width: calc(1170px - #{$side-menu-width});
   }
 }
 
@@ -76,7 +91,7 @@ section {
     }
   }
 
-  .nav > li > a {
+  .nav>li>a {
     padding: 10px 15px;
     border-radius: 0;
   }
@@ -105,4 +120,60 @@ section {
   position: relative;
   top: 6px;
   margin: 0 5px;
+}
+
+.slick-dark-mode {
+  --slick-button-style-bg-color: #212121;
+  --slick-button-border-color: #626262;
+}
+
+.button-style {
+  cursor: pointer;
+  background-color: var(--slick-button-style-bg-color, $slick-button-style-bg-color);
+  border: 1px solid #{var(--slick-button-border-color, $slick-button-border-color)};
+  border-radius: 2px;
+  justify-content: center;
+  text-align: center;
+
+  &:hover {
+    border-color: darken($slick-button-border-color, 10%);
+  }
+}
+
+.panel-wm-content {
+  background-color: #fff;
+  /* the height is 100% minus the 2 navbars */
+  height: calc(100vh - 56px);
+
+  h3 {
+    color: #333;
+  }
+
+  .subtitle {
+    color: #727272;
+  }
+}
+
+.panel-wm-content.dark-mode {
+  background-color: #212529;
+  color: #dddddd;
+
+  h3 {
+    color: #dddddd;
+  }
+
+  .subtitle {
+    color: #cbcbcb;
+  }
+
+  .btn-outline-secondary {
+    color: #dfdfdf;
+  }
+}
+
+.ms-dark-mode,
+.ms-drop.ms-dark-mode,
+.slick-dark-mode .ms-dark-mode,
+.slick-dark-mode {
+  --slick-checkbox-selector-unchecked-color: #89d1f5;
 }
