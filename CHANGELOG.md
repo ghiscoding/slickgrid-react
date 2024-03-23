@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.6.0](https://github.com/ghiscoding/slickgrid-react/compare/v4.5.0...v4.6.0) (2024-03-23)
+
+
+### Bug Fixes
+
+* Filter `model` is now `FilterConstructor` and shouldn't be newed ([#310](https://github.com/ghiscoding/slickgrid-react/issues/310)) ([5f3f765](https://github.com/ghiscoding/slickgrid-react/commit/5f3f765c61531bfb1bc712f10d06f847516d89d7))
+* hide Toggle Dark Mode from Grid Menu by default ([#308](https://github.com/ghiscoding/slickgrid-react/issues/308)) ([074f07e](https://github.com/ghiscoding/slickgrid-react/commit/074f07e9664998b0a968c8b39dcbc6ae578af070))
+
+
+### Features
+
+* rename SG `editorClass` & deprecate `internalColumnEditor` ([#309](https://github.com/ghiscoding/slickgrid-react/issues/309)) ([47ffd2f](https://github.com/ghiscoding/slickgrid-react/commit/47ffd2f2696258a7373d6d65cf55a4cb4e35f46c))
+
 # [4.5.0](https://github.com/ghiscoding/slickgrid-react/compare/v4.4.1...v4.5.0) (2024-03-05)
 
 
