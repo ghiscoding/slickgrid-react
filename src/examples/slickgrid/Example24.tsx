@@ -560,7 +560,7 @@ class Example24 extends React.Component<Props, State> {
     this.setState((state: State) => ({ ...state, selectedLanguage: nextLanguage }));
   }
 
-  toggleDarkModeGrid() {
+  toggleDarkMode() {
     this._darkModeGrid = !this._darkModeGrid;
     if (this._darkModeGrid) {
       document.querySelector<HTMLDivElement>('.panel-wm-content')!.classList.add('dark-mode');
@@ -584,7 +584,7 @@ class Example24 extends React.Component<Props, State> {
               <span className="fa fa-link"></span> code
             </a>
           </span>
-          <button className="btn btn-outline-secondary btn-sm ms-2" onClick={() => this.toggleDarkModeGrid()} data-test="toggle-dark-mode">
+          <button className="btn btn-outline-secondary btn-sm ms-2" onClick={() => this.toggleDarkMode()} data-test="toggle-dark-mode">
             <span>Toggle Dark Mode</span>
           </button>
         </h2>
