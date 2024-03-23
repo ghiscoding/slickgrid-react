@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.2](https://github.com/ghiscoding/slickgrid-react/compare/v4.6.1...v4.6.2) (2024-03-23)
+
+
+### Bug Fixes
+
+* invalid types exports ([5ea0e19](https://github.com/ghiscoding/slickgrid-react/commit/5ea0e19935b58d49d81822ac4076191bac139c4a))
+
 ## [4.6.1](https://github.com/ghiscoding/slickgrid-react/compare/v4.6.0...v4.6.1) (2024-03-23)
 
 
