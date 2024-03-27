@@ -1555,6 +1555,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
         return {
           ...column,
           editorClass: column.editor?.model,
+          // @deprecated `internalColumnEditor`, this will no longer be useful in the next major
           internalColumnEditor: { ...column.editor }
         };
       }
