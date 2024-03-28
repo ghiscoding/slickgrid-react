@@ -545,7 +545,7 @@ export default class Example30 extends React.Component<Props, State> {
     const { column, item, grid } = args;
 
     if (column && item && !checkItemIsEditable(item, column, grid)) {
-      e.stopImmediatePropagation();
+      e.preventDefault(); // OR eventData.preventDefault();
       return false;
     }
     return true;
