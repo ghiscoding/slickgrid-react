@@ -66,7 +66,7 @@ const customEditableInputFormatter: Formatter = (_row, _cell, value, columnDef, 
 // you can create custom validator to pass to an inline editor
 const myCustomTitleValidator = (value: any, args: any) => {
   if (value === null || value === undefined || !value.length) {
-  // we will only check if the field is supplied when it's an inline editing
+    // we will only check if the field is supplied when it's an inline editing
     return { valid: false, msg: 'This is a required field.' };
   } else if (!/^(task\s\d+)*$/i.test(value)) {
     return { valid: false, msg: 'Your title is invalid, it must start with "Task" followed by a number.' };
@@ -478,8 +478,8 @@ export default class Example32 extends React.Component<Props, State> {
 
     if (column && item) {
       if (!checkItemIsEditable(item, column, grid)) {
-        // event.preventDefault();
-        e.stopImmediatePropagation();
+        e.preventDefault(); // OR eventData.preventDefault();
+        return false;
       }
     }
     return false;
