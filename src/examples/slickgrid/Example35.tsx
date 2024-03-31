@@ -1,4 +1,5 @@
 import i18next, { TFunction } from 'i18next';
+import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
 import {
   FieldType,
   Editors,
@@ -228,6 +229,7 @@ class Example35 extends React.Component<Props, State> {
           deleteButtonPrompt: 'Are you sure you want to delete this row?',
         },
       },
+      externalResources: [new SlickCustomTooltip()],
     };
 
     this.setState((state: State) => ({

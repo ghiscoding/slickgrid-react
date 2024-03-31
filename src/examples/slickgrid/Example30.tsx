@@ -1,4 +1,5 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
+import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
 import { SlickCompositeEditor, SlickCompositeEditorComponent } from '@slickgrid-universal/composite-editor-component';
 import React from 'react';
 
@@ -138,7 +139,8 @@ export default class Example30 extends React.Component<Props, State> {
   defineGrids() {
     const columnDefinitions: Column[] = [
       {
-        id: 'title', name: 'Title', field: 'title', sortable: true, type: FieldType.string, minWidth: 75,
+        id: 'title', name: '<span title="Task must always be followed by a number" class="color-warning-dark fa fa-exclamation-triangle"></span> Title <span title="Title is always rendered as UPPERCASE" class="fa fa-info-circle"></span>',
+        field: 'title', sortable: true, type: FieldType.string, minWidth: 75,
         cssClass: 'text-uppercase fw-bold', columnGroup: 'Common Factor',
         filterable: true, filter: { model: Filters.compoundInputText },
         editor: {
@@ -405,7 +407,7 @@ export default class Example30 extends React.Component<Props, State> {
       excelExportOptions: {
         exportWithFormatter: false
       },
-      externalResources: [new ExcelExportService(), this.compositeEditorInstance],
+      externalResources: [new ExcelExportService(), new SlickCustomTooltip(), this.compositeEditorInstance],
       enableFiltering: true,
       rowSelectionOptions: {
         // True (Single Selection), False (Multiple Selections)
