@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.3](https://github.com/ghiscoding/slickgrid-react/compare/v4.6.2...v4.6.3) (2024-04-01)
+
+
+### Bug Fixes
+
+* allow multiple tooltips per grid cell ([#318](https://github.com/ghiscoding/slickgrid-react/issues/318)) ([99d783a](https://github.com/ghiscoding/slickgrid-react/commit/99d783a25b95f1ad78e1e76021c6ae21e166d37e))
+* revisit package `exports` to pass "are the types wrong" ([#314](https://github.com/ghiscoding/slickgrid-react/issues/314)) ([62ea969](https://github.com/ghiscoding/slickgrid-react/commit/62ea9690126ad22273d37522c3b026a16321aa3a))
+
 ## [4.6.2](https://github.com/ghiscoding/slickgrid-react/compare/v4.6.1...v4.6.2) (2024-03-23)
 
 
