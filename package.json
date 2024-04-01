@@ -123,14 +123,14 @@
     "@types/fnando__sparkline": "^0.3.7",
     "@types/i18next-xhr-backend": "^1.4.2",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.30",
-    "@types/react": "^18.2.69",
-    "@types/react-dom": "^18.2.22",
+    "@types/node": "^20.12.2",
+    "@types/react": "^18.2.73",
+    "@types/react-dom": "^18.2.23",
     "@types/sortablejs": "^1.15.8",
     "@types/text-encoding-utf-8": "^1.0.5",
     "@types/webpack": "^5.28.5",
-    "@typescript-eslint/eslint-plugin": "^7.3.1",
-    "@typescript-eslint/parser": "^7.3.1",
+    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@typescript-eslint/parser": "^7.4.0",
     "@webpack-cli/serve": "^2.0.5",
     "bootstrap": "^5.3.3",
     "clean-webpack-plugin": "^4.0.0",
@@ -182,6 +182,6 @@
     "npm": ">=8.5.0"
   },
   "resolutions": {
-    "caniuse-lite": "1.0.30001599"
+    "caniuse-lite": "1.0.30001603"
   }
 }
