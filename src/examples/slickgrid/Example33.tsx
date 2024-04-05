@@ -8,9 +8,9 @@ import {
   Formatters,
   GridOption,
   MenuCommandItemCallbackArgs,
+  OperatorType,
   SlickgridReactInstance,
   SlickgridReact,
-  OperatorType,
   SlickGrid,
 } from '../../slickgrid-react';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
