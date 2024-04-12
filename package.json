@@ -115,7 +115,7 @@
     "@slickgrid-universal/rxjs-observable": "~4.6.1",
     "@slickgrid-universal/text-export": "~4.6.1",
     "@testing-library/jest-dom": "^6.4.2",
-    "@testing-library/react": "^14.2.2",
+    "@testing-library/react": "^15.0.1",
     "@testing-library/user-event": "^14.5.2",
     "@types/bluebird": "^3.5.42",
     "@types/dompurify": "^3.0.5",
