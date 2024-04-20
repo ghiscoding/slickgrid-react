@@ -365,7 +365,6 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
         if (prop.startsWith('on')) {
           this.subscriptions.push(
             this._eventPubSubService.subscribe(prop, (data: unknown) => {
-              // eslint-disable-next-line @typescript-eslint/ban-types
               const callback: any = this.props[prop as keyof SlickgridReactProps];
               const gridEventName = this._eventPubSubService.getEventNameByNamingConvention(prop, '');
               typeof callback === 'function' && callback.call(null, new CustomEvent(gridEventName, { detail: data }));
