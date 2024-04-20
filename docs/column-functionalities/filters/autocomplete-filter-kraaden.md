@@ -67,7 +67,7 @@ export class GridBasicComponent  extends React.Component<Props, State> {
 ```
 
 ### Filter Options (`AutocompleterOption` interface)
-All the available options that can be provided as `filterOptions` to your column definitions can be found under this [AutocompleterOption interface](https://github.com/ghiscoding/slickgrid-universal/blob/master/packages/common/src/interfaces/autocompleterOption.interface.ts) and you should cast your `filterOptions` to that interface to make sure that you use only valid options of the jQueryUI autocomplete library.
+All the available options that can be provided as `filterOptions` to your column definitions can be found under this [AutocompleterOption interface](https://github.com/ghiscoding/slickgrid-universal/blob/master/packages/common/src/interfaces/autocompleterOption.interface.ts) and you should cast your `filterOptions` to that interface to make sure that you use only valid options of the autocomplete library.
 
 ```ts
 filter: {
@@ -80,9 +80,6 @@ filter: {
 
 ## Using External Remote API
 You could also use external 3rd party Web API (can be JSONP query or regular JSON). This will make a much shorter result since it will only return a small subset of what will be displayed in the AutoComplete Editor or Filter. For example, we could use GeoBytes which provide a JSONP Query API for the cities of the world, you can imagine the entire list of cities would be way too big to download locally, so this is why we use such API.
-
-#### Note
-I don't have time to invest in finding how to use JSONP + CORS in React, if someone wants to submit a PR (Pull Request) with the proper React code, I would be happy to merge the code and update the Wiki. For now, I'll simply make a quick and easy example with the jQuery `$.ajax` call just for you to get the idea of how it works.
 
 ##### Component
 ```tsx

@@ -89,7 +89,7 @@ this.columnDefinitions = [
       // example with a fixed Collection (or collectionAsync)
       editorOptions: {
         showOnFocus: true, // display the list on focus of the autocomplete (without the need to type anything)
-      },
+      } as AutocompleterOption,
       enableRenderHtml: true, // this flag only works with a fixed Collection
       // collectionAsync: this.http.get(URL_COUNTRIES_COLLECTION),
       collection: [
@@ -111,6 +111,17 @@ editor: {
   editorOptions: {
     minLength: 3,
   } as AutocompleterOption
+}
+```
+
+#### Grid Option `defaultEditorOptions
+You could also define certain options as a global level (for the entire grid or even all grids) by taking advantage of the `defaultEditorOptions` Grid Option. Note that they are set via the editor type as a key name (`autocompleter`, `date`, ...) and then the content is the same as `editorOptions` (also note that each key is already typed with the correct editor option interface), for example
+
+```ts
+this.gridOptions = {
+  defaultEditorOptions: {
+    autocompleter: { debounceWaitMs: 150 }, // typed as AutocompleterOption
+  }
 }
 ```
 
@@ -302,7 +313,6 @@ export class GridBasicComponent extends React.Component<Props, State> {
             },
           } as AutocompleteOption,
           callbacks: {
-             // callback on the jQuery UI AutoComplete on the instance, example from https://jqueryui.com/autocomplete/#custom-data
              _renderItem: (ul: HTMLElement, item: any) => {
                 const template = `<div class="autocomplete-container-list">
                       <div class="autocomplete-left">
@@ -348,42 +358,26 @@ export class GridBasicComponent extends React.Component<Props, State> {
         editor: {
           model: Editors.autocompleter,
           placeholder: 'search city', //  you can provide an optional placeholder to help your users
-
-          // use your own autocomplete options, instead of $.ajax, use http
-          // here we use $.ajax just because I'm not sure how to configure http with JSONP and CORS
           editorOptions: {
             minLength: 3, // minimum count of character that the user needs to type before it queries to the remote
             fetch: (searchText, updateCallback) => {
-              $.ajax({
-                url: 'http://gd.geobytes.com/AutoCompleteCity',
-                dataType: 'jsonp',
-                data: {
-                  q: searchText // geobytes requires a query with "q" queryParam representing the chars typed (e.g.:  gd.geobytes.com/AutoCompleteCity?q=van
-                },
-                success: (data) => updateCallback(data)
-              });
+              // assuming your API call returns a label/value pair
+              yourAsyncApiCall(searchText) // typically you'll want to return no more than 10 results
+                 .then(result => updateCallback((results.length > 0) ? results : [{ label: 'No match found.', value: '' }]))
+                 .catch(error => console.log('Error:', error));
             }
           },
         },
         filter: {
           model: Filters.autocompleter,
           // placeholder: '&#128269; search city', // &#128269; is a search icon, this provide an option placeholder
-
-          // use your own autocomplete options, instead of $.ajax, use http
-          // here we use $.ajax just because I'm not sure how to configure http with JSONP and CORS
           filterOptions: {
             minLength: 3, // minimum count of character that the user needs to type before it queries to the remote
             fetch: (searchText, updateCallback) => {
-              $.ajax({
-                url: 'http://gd.geobytes.com/AutoCompleteCity',
-                dataType: 'jsonp',
-                data: {
-                  q: searchText
-                },
-                success: (data) => {
-                  updateCallback(data);
-                }
-              });
+              // assuming your API call returns a label/value pair
+              yourAsyncApiCall(searchText) // typically you'll want to return no more than 10 results
+                 .then(result => updateCallback((results.length > 0) ? results : [{ label: 'No match found.', value: '' }]))
+                 .catch(error => console.log('Error:', error));
             }
           },
         }
