@@ -1,4 +1,4 @@
-import { EventSubscription } from '@slickgrid-universal/common';
+import type { EventSubscription } from '@slickgrid-universal/common';
 
 /**
  * A class that will be used for internal communication of parent-child

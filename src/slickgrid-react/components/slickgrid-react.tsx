@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-prototype-builtins */
 // import 3rd party vendor libs
 import i18next from 'i18next';
 import React from 'react';

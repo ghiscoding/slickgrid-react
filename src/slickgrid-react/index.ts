@@ -2,10 +2,10 @@ import 'regenerator-runtime/runtime.js';
 export * from '@slickgrid-universal/common';
 
 import { SlickgridReact } from './components/slickgrid-react';
-import { SlickgridEventAggregator } from './components/slickgridEventAggregator';
-import { SlickgridConfig } from './slickgrid-config';
+import type { SlickgridEventAggregator } from './components/slickgridEventAggregator';
+import type { SlickgridConfig } from './slickgrid-config';
 
-import {
+import type {
   SlickgridReactInstance,
   SlickgridReactComponentOutput,
   GridOption,
@@ -19,10 +19,10 @@ export {
 } from './services/index';
 
 export {
-  SlickgridEventAggregator,
-  SlickgridReactInstance,
-  SlickgridReactComponentOutput,
-  GridOption,
+  type SlickgridEventAggregator,
+  type SlickgridReactInstance,
+  type SlickgridReactComponentOutput,
+  type GridOption,
   SlickgridReact,
   SlickgridConfig
 };

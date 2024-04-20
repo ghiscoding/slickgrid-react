@@ -1,4 +1,4 @@
-import {
+import type {
   BackendUtilityService,
   CollectionService,
   Column,
@@ -68,9 +68,9 @@ import {
   PagingInfo,
   SlickGrid,
 } from '@slickgrid-universal/common';
-import { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
-import { SlickgridReactInstance } from '../models';
-import { ReactUtilService } from '../services';
+import type { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
+import type { SlickgridReactInstance } from '../models';
+import type { ReactUtilService } from '../services';
 
 export interface SlickgridReactProps {
   header?: JSX.Element;

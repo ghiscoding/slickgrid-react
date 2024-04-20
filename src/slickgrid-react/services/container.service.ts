@@ -1,4 +1,4 @@
-import { ContainerService as UniversalContainerService } from '@slickgrid-universal/common';
+import type { ContainerService as UniversalContainerService } from '@slickgrid-universal/common';
 
 export class ContainerService implements UniversalContainerService {
   private readonly container: { [key: string]: any } = {};
