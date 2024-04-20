@@ -1,5 +1,5 @@
-import { TranslaterService as UniversalTranslateService } from '@slickgrid-universal/common';
-import i18next, { i18n } from 'i18next';
+import type { TranslaterService as UniversalTranslateService } from '@slickgrid-universal/common';
+import i18next, { type i18n } from 'i18next';
 
 /**
  * This is a Translate Service Wrapper for Slickgrid-Universal monorepo lib to work properly,

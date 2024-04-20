@@ -1,5 +1,5 @@
-import { Column, DelimiterType, EventNamingStyle, FileType, Filters, OperatorType, TreeDataOption } from '@slickgrid-universal/common';
-import { GridOption } from './models/index';
+import { type Column, DelimiterType, EventNamingStyle, FileType, Filters, OperatorType, type TreeDataOption } from '@slickgrid-universal/common';
+import type { GridOption } from './models/index';
 
 /**
  * Default Options that can be passed to the Slickgrid-React

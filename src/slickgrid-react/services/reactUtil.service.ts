@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import ReactDOM from 'react-dom';
-import { SlickgridReactComponentOutput } from '../models/reactComponentOutput.interface';
+import type { SlickgridReactComponentOutput } from '../models/reactComponentOutput.interface';
 
 export class ReactUtilService {
   createReactComponentAppendToDom(component: any, targetElement?: HTMLElement | Element, clearTargetContent = false, props: any = undefined, children: ReactNode[] = []): SlickgridReactComponentOutput {
