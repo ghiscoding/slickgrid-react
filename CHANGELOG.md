@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.7.0](https://github.com/ghiscoding/slickgrid-react/compare/v4.6.3...v4.7.0) (2024-04-20)
+
+
+### Features
+
+* add global `defaultEditorOptions` & `defaultFilterOptions` ([#326](https://github.com/ghiscoding/slickgrid-react/issues/326)) ([317e4e0](https://github.com/ghiscoding/slickgrid-react/commit/317e4e0700694513190836248db5d439a7fe00b8))
+
 ## [4.6.3](https://github.com/ghiscoding/slickgrid-react/compare/v4.6.2...v4.6.3) (2024-04-01)
 
 
