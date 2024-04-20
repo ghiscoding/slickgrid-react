@@ -13,6 +13,7 @@
   - [Collection Label Prefix/Suffix](#collection-label-prefixsuffix)
   - [Collection Label Render HTML](#collection-label-render-html)
   - [`multiple-select.js` Options](#multiple-selectjs-options)
+- [Editor Options](#editor-options)
 - [Validators](#validators)
    - [Custom Validator](#custom-validator)
 - [Disabling specific cell Edit](#disabling-specific-cell-edit)
@@ -27,7 +28,7 @@
 Editors won't work without these 2 flags `enableCellNavigation: true` and `editable: true` enabled in your Grid Options, so make sure to always to always defined them. Also note that you can toggle the grid to read only (not editable) via the `editable` grid option flag.
 
 ### Demo
-##### with plain javascript/jQuery
+##### with plain javascript
 [Demo Page](https://ghiscoding.github.io/slickgrid-react/#/slickgrid/Example3) / [Demo ViewModel](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example3.tsx)
 
 ##### with React Custom Components
@@ -369,6 +370,34 @@ const columnDefinitions = [
 
 ### Change Default DOMPurify Options (sanitize html)
 If you find that the HTML that you passed is being sanitized and you wish to change it, then you can change the default `sanitizeHtmlOptions` property defined in the Global Grid Options, for more info on how to change these global options, see the [Docs - Global Grid Options](../grid-functionalities/global-options.md) and also take a look at the [GitHub - DOMPurify](https://github.com/cure53/DOMPurify#can-i-configure-it) configurations.
+
+## Editor Options
+
+#### Column Editor `editorOptions`
+Some of the Editors could receive extra options, which is mostly the case for Editors using external dependencies (e.g. `autocompleter`, `date`, `multipleSelect`, ...) you can provide options via the `editorOptions`, for example
+
+```ts
+this.columnDefinitions = [{
+  id: 'start', name: 'Start Date', field: 'start',
+  editor: { 
+    model: Editors.date,
+    editorOptions: { minDate: 'today' }
+  }
+}];
+```
+
+#### Grid Option `defaultEditorOptions
+You could also define certain options as a global level (for the entire grid or even all grids) by taking advantage of the `defaultEditorOptions` Grid Option. Note that they are set via the editor type as a key name (`autocompleter`, `date`, ...) and then the content is the same as `editorOptions` (also note that each key is already typed with the correct editor option interface), for example
+
+```ts
+this.gridOptions = {
+  defaultEditorOptions: { 
+    autocompleter: { debounceWaitMs: 150 }, // typed as AutocompleterOption
+    date: { minDate: 'today' },
+    longText: { cols: 50, rows: 5 } 
+  }
+}
+```
 
 ## Validators
 Each Editor needs to implement the `validate()` method which will be executed and validated before calling the `save()` method. Most Editor will simply validate that the value passed is correctly formed. The Float Editor is one of the more complex one and will first check if the number is a valid float then also check if `minValue` or `maxValue` was passed and if so validate against them. If any errors is found it will return an object of type `EditorValidatorOutput` (see the signature on top).

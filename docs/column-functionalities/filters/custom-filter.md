@@ -6,10 +6,10 @@
 [Demo Page](https://ghiscoding.github.io/slickgrid-react/#/slickgrid/Example4) / [Demo Client Component](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example4.tsx) / [Custom InputFilter.ts](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/custom-inputFilter.ts)
 
 ### Description
-You can also create your own Custom Filter with any html/css you want and/or jQuery library you wish to use. React template (View) are not supported at this point, if you wish to contribute on that end then I certainly accept PR (Pull Request).
+You can also create your own Custom Filter with any html/css you want to use. React template (View) are not supported at this point, if you wish to contribute on that end then I certainly accept PR (Pull Request).
 
 #### Limitations
-- as mentioned in the description, only html/css and/or jQuery libraries are supported.
+- as mentioned in the description, only html/css and/or JS libraries are supported.
   - this mainly mean that React templates (Views) are not supported (feel free to contribute).
 - SlickGrid uses `table-cell` as CSS for it to display a consistent height for each rows (this keeps the same row height/line-height to always be the same).
   - all this to say that you might be in a situation were your filter shows in the back of the grid. The best approach to overcome this is to use a modal if you can or if the library support `append to body container`. For example, you can see that `multiple-select.js` support a `container` and is needed for the filter to work as can be seen in the [multipleSelectFilter.ts](https://github.com/ghiscoding/slickgrid-universal/blob/master/packages/common/src/filters/multipleSelectFilter.ts#L26)
@@ -95,7 +95,7 @@ By default, the library uses the [inputFilter](https://github.com/ghiscoding/sli
 If you want to load the grid with certain default filter(s), you can use the following optional properties:
 - `searchTerms` (array of values)
 
-For example, setting a default value into an `input` element, you can simply get the search term with `columnDef.filter.searchTerms` and set the default value in jquery with `$(filterElm).val(this.searchTerms);`
+For example, setting a default value into an `input` element, you can simply get the search term with `columnDef.filter.searchTerms` and set the default value with `filterElm.value = this.searchTerms;`
 
 ### Collection
 If you want to pass a `collection` to your filter (for example, a multiple-select needs a select list of options), you can then use it in your custom filter through `columnDef.filter.collection`
