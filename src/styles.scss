@@ -1,7 +1,7 @@
-@import '@slickgrid-universal/common/dist/styles/sass/variables';
-
 $navbar-height: 56px;
 $side-menu-width: 250px;
+
+@import '@slickgrid-universal/common/dist/styles/sass/variables';
 
 .bold {
   font-weight: bold;
@@ -11,20 +11,18 @@ $side-menu-width: 250px;
   font-style: italic;
 }
 
-.faded {
-  opacity: 0.2;
-}
-
-.faded:hover {
-  opacity: 0.5;
-}
-
 .font18 {
   font-size: 18px;
 }
 
 .btn {
   padding: 5px;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .btn-group-xs>.btn,
@@ -57,11 +55,11 @@ $side-menu-width: 250px;
 }
 
 .faded {
-  opacity: 0.2;
+  opacity: 0.7;
 }
 
 .faded:hover {
-  opacity: 0.5;
+  opacity: 0.9;
 }
 
 section {

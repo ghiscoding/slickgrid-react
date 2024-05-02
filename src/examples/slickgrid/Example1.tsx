@@ -143,7 +143,7 @@ export default class Example1 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example1.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -152,7 +152,8 @@ export default class Example1 extends React.Component<Props, State> {
         <h3>
           <div className="column">
             <span className="mr-3">Grid 1</span>
-            <button className="btn btn-outline-secondary btn-sm ms-2" onClick={() => this.toggleDarkModeGrid1()} data-test="toggle-dark-mode">
+            <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => this.toggleDarkModeGrid1()} data-test="toggle-dark-mode">
+              <i className="mdi mdi-theme-light-dark"></i>
               <span>Toggle Dark Mode</span>
             </button>
           </div>

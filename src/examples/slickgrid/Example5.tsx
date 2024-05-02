@@ -503,7 +503,7 @@ export default class Example5 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example5.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -523,7 +523,7 @@ export default class Example5 extends React.Component<Props, State> {
             <div className={this.state.status.class} role="alert" data-test="status">
               <strong>Status: </strong> {this.state.status.text}
               {this.state.processing && <span>
-                <i className="fa fa-refresh fa-spin fa-lg fa-fw"></i>
+                <i className="mdi mdi-sync mdi-spin"></i>
               </span>}
             </div>
           </div>
@@ -537,10 +537,10 @@ export default class Example5 extends React.Component<Props, State> {
         <div className="row">
           <div className="col-sm-4">
 
-            <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-filter" onClick={() => this.setFiltersDynamically()}>
+            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="set-dynamic-filter" onClick={() => this.setFiltersDynamically()}>
               Set Filters Dynamically
             </button>
-            <button className="btn btn-outline-secondary btn-sm mx-1" data-test="set-dynamic-sorting" onClick={() => this.setSortingDynamically()}>
+            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="set-dynamic-sorting" onClick={() => this.setSortingDynamically()}>
               Set Sorting Dynamically
             </button>
             <br />
@@ -589,10 +589,10 @@ export default class Example5 extends React.Component<Props, State> {
             <span className="ms-2">
               <label>Programmatically go to first/last page:</label>
               <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
-                <i className="fa fa-caret-left fa-lg"></i>
+                <i className="mdi mdi-page-first"></i>
               </button>
               <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
-                <i className="fa fa-caret-right fa-lg"></i>
+                <i className="mdi mdi-page-last"></i>
               </button>
             </span>
           </div>

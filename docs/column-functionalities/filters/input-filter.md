@@ -123,7 +123,7 @@ export class Example extends React.Component<Props, State> {
 
   render() {
     return (
-      <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-filter"
+      <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="set-dynamic-filter"
         onClick={() => this.setFiltersDynamically()}>
         Set Filters Dynamically
       </button>

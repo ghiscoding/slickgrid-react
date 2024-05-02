@@ -194,7 +194,7 @@ export default class Example20 extends React.Component<Props, State> {
       {
         id: 'effortDriven', name: 'Effort Driven', field: 'effortDriven',
         minWidth: 100, width: 120,
-        formatter: Formatters.checkmark,
+        formatter: Formatters.checkmarkMaterial,
         filterable: true,
         filter: {
           collection: [{ value: '', label: '' }, { value: true, label: 'True' }, { value: false, label: 'False' }],
@@ -354,7 +354,7 @@ export default class Example20 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example20.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -367,14 +367,14 @@ export default class Example20 extends React.Component<Props, State> {
             <span>
               <label htmlFor="">Pinned Rows: </label>
               <input type="number" defaultValue={this.state.frozenRowCount} onInput={($event) => this.changeFrozenRowCount($event)} />
-              <button className="btn btn-outline-secondary btn-xs" onClick={() => this.setFrozenRowCount()}>
+              <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.setFrozenRowCount()}>
                 Set
               </button>
             </span>
             <span style={{ marginLeft: '10px' }}>
               <label htmlFor="">Pinned Columns: </label>
               <input type="number" defaultValue={this.state.frozenColumnCount} onInput={($event) => this.changeFrozenColumnCount($event)} />
-              <button className="btn btn-outline-secondary btn-xs" onClick={() => this.setFrozenColumnCount()}>
+              <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.setFrozenColumnCount()}>
                 Set
               </button>
             </span>
@@ -383,17 +383,17 @@ export default class Example20 extends React.Component<Props, State> {
 
         <div className="row mt-2">
           <div className="col-sm-12">
-            <button className="btn btn-outline-secondary btn-sm" onClick={() => this.setFrozenColumns(-1)}
+            <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={() => this.setFrozenColumns(-1)}
               data-test="remove-frozen-column-button">
-              <i className="fa fa-times fa-lg"></i> Remove Frozen Columns
+              <i className="mdi mdi-close"></i> Remove Frozen Columns
             </button>
-            <button className="btn btn-outline-secondary btn-sm" onClick={() => this.setFrozenColumns(2)}
+            <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={() => this.setFrozenColumns(2)}
               data-test="set-3frozen-columns">
-              <i className="fa fa-thumb-tack fa-lg"></i> Set 3 Frozen Columns
+              <i className="mdi mdi-pin-outline"></i> Set 3 Frozen Columns
             </button>
             <span style={{ marginLeft: '15px' }}>
-              <button className="btn btn-outline-secondary btn-sm" onClick={() => this.toggleFrozenBottomRows()}>
-                <i className="fa fa-random fa-lg"></i> Toggle Pinned Rows
+              <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={() => this.toggleFrozenBottomRows()}>
+                <i className="mdi mdi-flip-vertical"></i> Toggle Pinned Rows
               </button>
               <span style={{ fontWeight: 'bold' }}>: {this.state.isFrozenBottom ? 'Bottom' : 'Top'}</span>
             </span>

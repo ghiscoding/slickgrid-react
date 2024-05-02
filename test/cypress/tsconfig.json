@@ -4,7 +4,12 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "lib": ["es2021", "dom"],
-    "types": ["cypress", "node"],
+    "types": [
+      "cypress-real-events",
+      "jest",
+      "jest-extended",
+      "node"
+    ],
     "jsx": "preserve"
   },
   "include": ["**/*.ts"]

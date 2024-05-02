@@ -78,7 +78,7 @@ class Example8 extends React.Component<Props, State> {
       { id: 'percentComplete', name: '% Complete', field: 'percentComplete', nameKey: 'PERCENT_COMPLETE', sortable: true },
       { id: 'start', name: 'Start', field: 'start', nameKey: 'START' },
       { id: 'finish', name: 'Finish', field: 'finish', nameKey: 'FINISH' },
-      { id: 'completed', name: 'Completed', field: 'completed', nameKey: 'COMPLETED', formatter: Formatters.checkmark }
+      { id: 'completed', name: 'Completed', field: 'completed', nameKey: 'COMPLETED', formatter: Formatters.checkmarkMaterial }
     ];
 
     columnDefinitions.forEach((columnDef) => {
@@ -90,7 +90,7 @@ class Example8 extends React.Component<Props, State> {
             // also note that the internal custom commands are in the positionOrder range of 50-60,
             // if you want yours at the bottom then start with 61, below 50 will make your command(s) show on top
             {
-              iconCssClass: 'fa fa-question-circle',
+              iconCssClass: 'mdi mdi-help-circle',
 
               // you can disable a command with certain logic
               // HOWEVER note that if you use "itemUsabilityOverride" has precedence when it is defined
@@ -173,7 +173,7 @@ class Example8 extends React.Component<Props, State> {
       headerMenu: {
         hideSortCommands: false,
         hideColumnHideCommand: false,
-        subItemChevronClass: 'fa fa-chevron-right',
+        subItemChevronClass: 'mdi mdi-chevron-down mdi-rotate-270',
         // you can use the "onCommand" (in Grid Options) and/or the "action" callback (in Column Definition)
         onCommand: (_e: Event, args: any) => {
           // e.preventDefault(); // preventing default event would keep the menu open after the execution
@@ -250,14 +250,14 @@ class Example8 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example8.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
         <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
-        <button className="btn btn-outline-secondary btn-sm me-1" onClick={() => this.switchLanguage()}>
-          <i className="fa fa-language me-1"></i>
+        <button className="btn btn-outline-secondary btn-sm btn-icon me-1" onClick={() => this.switchLanguage()}>
+          <i className="mdi mdi-translate me-1"></i>
           Switch Language
         </button>
         <b>Locale:</b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{this.state.selectedLanguage + '.json'}</span>

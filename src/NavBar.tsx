@@ -12,7 +12,7 @@ export class NavBar extends React.Component {
       <div>
         <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
           <a className="navbar-brand ms-2" href="https://github.com/ghiscoding/slickgrid-react">
-            <i className="fa fa-github"></i>
+            <i className="mdi mdi-github"></i>
             <span className="ms-2">Slickgrid-React</span>
           </a>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-target="#navbarContent"

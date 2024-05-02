@@ -15,6 +15,7 @@ import {
   SlickgridReact,
   SlickGrid,
   SortComparers,
+  type VanillaCalendarOption,
 } from '../../slickgrid-react';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import React from 'react';
@@ -194,7 +195,7 @@ export default class Example32 extends React.Component<Props, State> {
         id: 'completed', name: 'Completed', field: 'completed', width: 80, minWidth: 75, maxWidth: 100,
         cssClass: 'text-center', columnGroup: 'Period',
         sortable: true, filterable: true,
-        formatter: Formatters.checkmark,
+        formatter: Formatters.checkmarkMaterial,
         exportWithFormatter: false,
         filter: {
           collection: [{ value: '', label: '' }, { value: true, label: 'True' }, { value: false, label: 'False' }],
@@ -211,7 +212,7 @@ export default class Example32 extends React.Component<Props, State> {
         exportCustomFormatter: Formatters.dateUs,
         editor: {
           model: Editors.date,
-          editorOptions: { minDate: 'today' },
+          editorOptions: { range: { date: 'today' } } as VanillaCalendarOption,
           validator: (value, args) => {
             const dataContext = args && args.item;
             if (dataContext && (dataContext.completed && !value)) {
@@ -288,7 +289,7 @@ export default class Example32 extends React.Component<Props, State> {
       {
         id: 'action', name: 'Action', field: 'action', width: 70, minWidth: 70, maxWidth: 70,
         excludeFromExport: true,
-        formatter: () => `<div class="button-style margin-auto" style="width: 35px;"><span class="fa fa-chevron-down text-primary"></span></div>`,
+        formatter: () => `<div class="button-style margin-auto" style="width: 35px;"><span class="mdi mdi-chevron-down text-primary"></span></div>`,
         cellMenu: {
           hideCloseButton: false,
           width: 175,
@@ -297,14 +298,14 @@ export default class Example32 extends React.Component<Props, State> {
             {
               command: 'help',
               title: 'Help!',
-              iconCssClass: 'fa fa-question-circle',
+              iconCssClass: 'mdi mdi-help-circle',
               positionOrder: 66,
               action: () => alert('Please Help!'),
             },
             'divider',
             {
               command: 'delete-row', title: 'Delete Row', positionOrder: 64,
-              iconCssClass: 'fa fa-times color-danger', cssClass: 'red', textCssClass: 'text-italic color-danger-light',
+              iconCssClass: 'mdi mdi-close color-danger', cssClass: 'red', textCssClass: 'text-italic color-danger-light',
               // only show command to 'Delete Row' when the task is not completed
               itemVisibilityOverride: (args) => {
                 return !args.dataContext?.completed;
@@ -725,81 +726,57 @@ export default class Example32 extends React.Component<Props, State> {
   /** List of icons that are supported in this lib Material Design Icons */
   getRandomIcon(iconIndex?: number) {
     const icons = [
-      'fa-500px',
-      'fa-address-book',
-      'fa-address-book-o',
-      'fa-address-card',
-      'fa-address-card-o',
-      'fa-adjust',
-      'fa-adn',
-      'fa-align-center',
-      'fa-align-justify',
-      'fa-align-left',
-      'fa-align-right',
-      'fa-amazon',
-      'fa-ambulance',
-      'fa-american-sign-language-interpreting',
-      'fa-anchor',
-      'fa-android',
-      'fa-angellist',
-      'fa-angle-double-down',
-      'fa-angle-double-left',
-      'fa-angle-double-right',
-      'fa-angle-double-up',
-      'fa-angle-down',
-      'fa-angle-left',
-      'fa-angle-right',
-      'fa-angle-up',
-      'fa-apple',
-      'fa-archive',
-      'fa-area-chart',
-      'fa-arrow-circle-down',
-      'fa-arrow-circle-left',
-      'fa-arrow-circle-o-down',
-      'fa-arrow-circle-o-left',
-      'fa-arrow-circle-o-right',
-      'fa-arrow-circle-o-up',
-      'fa-arrow-circle-right',
-      'fa-arrow-circle-up',
-      'fa-arrow-down',
-      'fa-arrow-left',
-      'fa-arrow-right',
-      'fa-arrow-up',
-      'fa-arrows',
-      'fa-arrows-alt',
-      'fa-arrows-h',
-      'fa-arrows-v',
-      'fa-assistive-listening-systems',
-      'fa-asterisk',
-      'fa-at',
-      'fa-audio-description',
-      'fa-backward',
-      'fa-balance-scale',
-      'fa-ban',
-      'fa-bandcamp',
-      'fa-bank (alias)',
-      'fa-bar-chart',
-      'fa-barcode',
-      'fa-bars',
-      'fa-bath',
-      'fa-battery-empty',
-      'fa-battery-full',
-      'fa-battery-half',
-      'fa-battery-quarter',
-      'fa-battery-three-quarters',
-      'fa-bed',
-      'fa-beer',
-      'fa-behance',
-      'fa-behance-square',
-      'fa-bell',
-      'fa-bell-o',
-      'fa-bell-slash',
-      'fa-bell-slash-o',
-      'fa-bicycle',
-      'fa-binoculars',
-      'fa-birthday-cake',
-      'fa-bitbucket',
-      'fa-bitbucket-square',
+      'mdi-arrow-collapse',
+      'mdi-arrow-expand',
+      'mdi-cancel',
+      'mdi-check',
+      'mdi-checkbox-blank-outline',
+      'mdi-check-box-outline',
+      'mdi-checkbox-marked',
+      'mdi-close',
+      'mdi-close-circle',
+      'mdi-close-circle-outline',
+      'mdi-close-thick',
+      'mdi-content-copy',
+      'mdi-database-refresh',
+      'mdi-download',
+      'mdi-file-document-outline',
+      'mdi-file-excel-outline',
+      'mdi-file-music-outline',
+      'mdi-file-pdf-outline',
+      'mdi-filter-remove-outline',
+      'mdi-flip-vertical',
+      'mdi-folder',
+      'mdi-folder-open',
+      'mdi-help-circle',
+      'mdi-help-circle-outline',
+      'mdi-history',
+      'mdi-information',
+      'mdi-information-outline',
+      'mdi-link',
+      'mdi-link-variant',
+      'mdi-menu',
+      'mdi-microsoft-excel',
+      'mdi-minus',
+      'mdi-page-first',
+      'mdi-page-last',
+      'mdi-paperclip',
+      'mdi-pin-off-outline',
+      'mdi-pin-outline',
+      'mdi-playlist-plus',
+      'mdi-playlist-remove',
+      'mdi-plus',
+      'mdi-redo',
+      'mdi-refresh',
+      'mdi-shape-square-plus',
+      'mdi-sort-ascending',
+      'mdi-sort-descending',
+      'mdi-swap-horizontal',
+      'mdi-swap-vertical',
+      'mdi-sync',
+      'mdi-table-edit',
+      'mdi-table-refresh',
+      'mdi-undo',
     ];
     const randomNumber = Math.floor((Math.random() * icons.length - 1));
     return icons[iconIndex ?? randomNumber];
@@ -813,7 +790,7 @@ export default class Example32 extends React.Component<Props, State> {
       </div>
       <div>
         <span class="autocomplete-top-left">
-          <span class="mdfai ${item.itemTypeName === 'I' ? 'fa-info-circle' : 'fa-copy'}"></span>
+          <span class="fa ${item.itemTypeName === 'I' ? 'mdi-information-outline' : 'mdi-content-copy'}"></span>
           ${item.itemName}
         </span>
       <div>
@@ -831,7 +808,7 @@ export default class Example32 extends React.Component<Props, State> {
           </div>
           <div>
             <span class="autocomplete-top-left">
-              <span class="fa ${item.itemTypeName === 'I' ? 'fa-info-circle' : 'fa-copy'}"></span>
+              <span class="fa ${item.itemTypeName === 'I' ? 'mdi-information-outline' : 'mdi-content-copy'}"></span>
               ${item.itemName}
             </span>
             <span class="autocomplete-top-right">${formatNumber(item.listPrice, 2, 2, false, '$')}</span>
@@ -852,7 +829,7 @@ export default class Example32 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example32.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -863,41 +840,41 @@ export default class Example32 extends React.Component<Props, State> {
         <div className="row">
           <div className="ml-2 mb-2 mr-2">
             <div className="btn-group btn-group-toggle" data-bs-toggle="buttons">
-              <label className={'btn btn-sm btn-outline-secondary ' + (this.state.isUsingDefaultResize ? 'active' : '')} data-test="autosize-columns-btn">
+              <label className={'btn btn-sm btn-outline-secondary btn-icon ' + (this.state.isUsingDefaultResize ? 'active' : '')} data-test="autosize-columns-btn">
                 <input type="radio" className="btn-check" name="options"
                   defaultChecked={this.state.isUsingDefaultResize}
                   onClick={() => this.handleDefaultResizeColumns()}
                 />
-                <i className="fa fa-expand"></i> (default resize) by "autosizeColumns"
+                <i className="mdi mdi-arrow-expand"></i> (default resize) by "autosizeColumns"
               </label>
-              <label className={'btn btn-sm btn-outline-secondary ' + (this.state.isUsingDefaultResize ? '' : 'active')}
+              <label className={'btn btn-sm btn-outline-secondary btn-icon ' + (this.state.isUsingDefaultResize ? '' : 'active')}
                 data-test="resize-by-content-btn">
                 <input type="radio" className="btn-check" name="options"
                   defaultChecked={!this.state.isUsingDefaultResize}
                   onClick={() => this.handleNewResizeColumns()} />
-                <i className="fa fa-expand"></i> Resize by Cell Content
+                <i className="mdi mdi-arrow-expand"></i> Resize by Cell Content
               </label>
             </div>
           </div>
 
           <div className="mb-2">
             <div className="btn-group btn-group-sm" role="group" aria-label="Basic Editing Commands">
-              <button type="button" className="btn btn-outline-secondary" onClick={() => this.setSelectedRowIds()}
+              <button type="button" className="btn btn-outline-secondary btn-icon" onClick={() => this.setSelectedRowIds()}
                 data-test="set-dynamic-rows-btn"
                 title="Change Row Selection across multiple pages">
                 <span>Change Row Selection</span>
               </button>
-              <button type="button" className="btn btn-outline-secondary" data-test="toggle-readonly-btn"
+              <button type="button" className="btn btn-outline-secondary btn-icon" data-test="toggle-readonly-btn"
                 onClick={() => this.toggleGridEditReadonly()}>
-                <i className="fa fa-table"></i> Toggle Readonly
+                <i className="mdi mdi-table-edit"></i> Toggle Readonly
               </button>
-              <button type="button" className="btn btn-outline-secondary" data-test="undo-last-edit-btn"
+              <button type="button" className="btn btn-outline-secondary btn-icon" data-test="undo-last-edit-btn"
                 onClick={() => this.undoLastEdit()}>
-                <i className="fa fa-undo"></i> Undo Last Edit
+                <i className="mdi mdi-undo"></i> Undo Last Edit
               </button>
-              <button type="button" className="btn btn-outline-secondary" data-test="save-all-btn"
+              <button type="button" className="btn btn-outline-secondary btn-icon" data-test="save-all-btn"
                 onClick={() => this.saveAll()}>
-                <i className="fa fa-save"></i> Save All
+                Save All
               </button>
             </div>
           </div>

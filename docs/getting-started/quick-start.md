@@ -18,8 +18,6 @@ _Note: `Bootstrap` and `Font-Awesome` are both optional, you can use any other l
 import 'font-awesome/css/font-awesome.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
-import 'flatpickr/dist/flatpickr.min.css';
-import 'multiple-select-modified/src/multiple-select.css';
 import i18n from 'i18next';
 import React from 'react';
 ```
@@ -34,11 +32,8 @@ Default compiled `css`.
 **Note:** If you are also using `Bootstrap-SASS`, then there is no need to include the `bootstrap.css` in the `styles: []` section.
 
 ```tsx
-import 'font-awesome/css/font-awesome.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
-import 'flatpickr/dist/flatpickr.min.css';
-import 'multiple-select-modified/src/multiple-select.css';
 
 import 'styles.css';
 import 'node_modules/@slickgrid-universal/common/dist/styles/css/slickgrid-theme-bootstrap.css';
@@ -61,9 +56,6 @@ $row-mouse-hover-color: lightgreen;
 To provide locales other than English (default locale), you have 2 options that you can go with. If you only use English, there is nothing to do (you can still change some of the texts in the grid via option 1.)
 1. Using [Custom Locale](../localization/localization-with-custom-locales.md), that is when you use **only 1** locale (other thank English)... this is a new feature starting from version `2.10.0` and up.
 2. Using [Localization with I18N](../localization/localization.md), that is when you want to use multiple locales dynamically.
-
-#### Date Picker - Flatpickr Localization
-If you use multiple locale, you will also need to import necessary Flatpickr Locale, for more info see this [Flatpickr Localization Wiki](../column-functionalities/filters/compound-filters.md#date-picker---flatpickr-localization)
 
 ### 5. Create a basic grid
 

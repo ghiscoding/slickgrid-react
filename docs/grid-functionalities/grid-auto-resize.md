@@ -78,7 +78,7 @@ export export class GridBasicComponent extends React.Component<Props, State> {
 
   render() {
     return (
-      <button className="btn btn-outline-secondary btn-sm"
+      <button className="btn btn-outline-secondary btn-sm btn-icon"
         onClick={() => this.togglePauseResizer()}>
         Pause auto-resize: <b>{this.resizerPaused}</b>
       </button>

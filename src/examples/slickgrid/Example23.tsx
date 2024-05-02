@@ -68,7 +68,7 @@ class Example23 extends React.Component<Props, State> {
         <li>by default the range are not inclusive which would be the same as defining the filter options to "operator: 'RangeExclusive'" or "operator: OperatoryType.rangeExclusive"</li>
         <li>you can also set the inverse (inclusive) by defining the filter options to "operator: 'RangeInclusive'" or "operator: OperatoryType.rangeIncluside"</li>
       </ul>
-      <li>Date Range with Flatpickr Date Picker, they will also use the locale, choose a start date then drag or click on the end date</li>
+      <li>Date Range with Vanilla Calendar Date Picker, they will also use the locale, choose a start date then drag or click on the end date</li>
     </ul>
   `;
 
@@ -170,7 +170,7 @@ class Example23 extends React.Component<Props, State> {
       },
       {
         id: 'completed', name: 'Completed', field: 'completed', nameKey: 'COMPLETED', minWidth: 85, maxWidth: 90,
-        formatter: Formatters.checkmark,
+        formatter: Formatters.checkmarkMaterial,
         exportWithFormatter: true, // you can set this property in the column definition OR in the grid options, column def has priority over grid options
         filterable: true,
         filter: {
@@ -353,7 +353,7 @@ class Example23 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example23.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -368,25 +368,25 @@ class Example23 extends React.Component<Props, State> {
 
         <form className="row row-cols-lg-auto g-1 align-items-center" onSubmit={(e) => e.preventDefault()}>
           <div className="col">
-            <button className="btn btn-outline-secondary btn-sm" data-test="clear-filters"
+            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="clear-filters"
               onClick={() => this.reactGrid.filterService.clearFilters()}>
               Clear Filters
             </button>
           </div>
           <div className="col">
-            <button className="btn btn-outline-secondary btn-sm" data-test="clear-sorting"
+            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="clear-sorting"
               onClick={() => this.reactGrid.sortService.clearSorting()}>
               Clear Sorting
             </button>
           </div>
           <div className="col">
-            <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-filter"
+            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="set-dynamic-filter"
               onClick={() => this.setFiltersDynamically()}>
               Set Filters Dynamically
             </button>
           </div>
           <div className="col">
-            <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-sorting"
+            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="set-dynamic-sorting"
               onClick={() => this.setSortingDynamically()}>
               Set Sorting Dynamically
             </button>
@@ -407,8 +407,8 @@ class Example23 extends React.Component<Props, State> {
 
         <div className="row mt-2">
           <div className="col">
-            <button className="btn btn-outline-secondary btn-sm me-1" data-test="language" onClick={() => this.switchLanguage()}>
-              <i className="fa fa-language me-1"></i>
+            <button className="btn btn-outline-secondary btn-sm btn-icon me-1" data-test="language" onClick={() => this.switchLanguage()}>
+              <i className="mdi mdi-translate me-1"></i>
               Switch Language
             </button>
             <b>Locale: </b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{this.state.selectedLanguage + '.json'}</span>
