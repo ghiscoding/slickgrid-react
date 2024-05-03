@@ -115,7 +115,6 @@
     "@slickgrid-universal/rxjs-observable": "~4.7.0",
     "@slickgrid-universal/text-export": "~4.7.0",
     "@types/dompurify": "^3.0.5",
-    "@types/flatpickr": "^3.1.2",
     "@types/fnando__sparkline": "^0.3.7",
     "@types/i18next-xhr-backend": "^1.4.2",
     "@types/jest": "^29.5.12",

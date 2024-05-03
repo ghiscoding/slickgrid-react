@@ -12,6 +12,7 @@ import {
   SlickgridReactInstance,
   SlickgridReact,
   SlickGrid,
+  type VanillaCalendarOption,
 } from '../../slickgrid-react';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
@@ -195,7 +196,7 @@ export default class Example32 extends React.Component<Props, State> {
       },
       {
         id: 'finish', name: 'Finish', field: 'finish', sortable: true,
-        editor: { model: Editors.date, editorOptions: { minDate: 'today' }, },
+        editor: { model: Editors.date, editorOptions: { range: { min: 'today' } } as VanillaCalendarOption, },
         // formatter: Formatters.dateIso,
         type: FieldType.date, outputType: FieldType.dateIso,
         formatter: Formatters.dateIso,
