@@ -212,7 +212,7 @@ export default class Example32 extends React.Component<Props, State> {
         exportCustomFormatter: Formatters.dateUs,
         editor: {
           model: Editors.date,
-          editorOptions: { range: { date: 'today' } } as VanillaCalendarOption,
+          editorOptions: { range: { min: 'today' } } as VanillaCalendarOption,
           validator: (value, args) => {
             const dataContext = args && args.item;
             if (dataContext && (dataContext.completed && !value)) {

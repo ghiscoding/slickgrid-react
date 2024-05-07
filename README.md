@@ -7,10 +7,10 @@
 [![Actions Status](https://github.com/ghiscoding/slickgrid-react/workflows/CI%20Build/badge.svg)](https://github.com/ghiscoding/slickgrid-react/actions)
 
 ### Brief introduction
-One of the best JavasSript datagrid [SlickGrid](https://github.com/mleibman/SlickGrid), which was originally developed by @mleibman, is now available to the React world. SlickGrid beats most other datagrids in terms of features, customizability and performance (running smoothly with even a million rows). Slickgrid-React is a wrapper on top of [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal/) (which is required), in the early beginning we used the `6pac/SlickGrid` fork but that was dropped in >=[v4.0](https://github.com/ghiscoding/slickgrid-react/releases/tag/v4.0.2) since Slickgrid-Universal is now a standalone project. SlickGrid was also recently rewritten to be browser native (no more ~jQuery~ 🎉).
+One of the best JavasSript datagrid [SlickGrid](https://github.com/mleibman/SlickGrid), which was originally developed by @mleibman, is now available to the React world. SlickGrid beats most other datagrids in terms of features, customizability & performance (running smoothly with even a million rows). Slickgrid-React is a wrapper on top of [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal/) (which is required), in the early beginning we used the `6pac/SlickGrid` fork but that was dropped in >=[v4.0](https://github.com/ghiscoding/slickgrid-react/releases/tag/v4.0.2) since Slickgrid-Universal is now a standalone project. SlickGrid was also recently rewritten with browser native code (no more ~jQuery~ 🎉).
 
 ## Documentation
-📘 [Documentation](https://ghiscoding.gitbook.io/slickgrid-react/getting-started/quick-start) website powered by GitBook.
+📘 [Documentation](https://ghiscoding.gitbook.io/slickgrid-react/getting-started/quick-start) website powered by GitBook (_for version >=4, or use the [Wikis]([https://github.com/ghiscoding/Angular-Slickgrid/wiki](https://github.com/ghiscoding/slickgrid-react/wiki)) for older versions_).
 
 ## Installation
 
@@ -22,7 +22,7 @@ Refer to the **[Docs - Quick Start](https://ghiscoding.gitbook.io/slickgrid-reac
 [slickgrid-react on NPM](https://www.npmjs.com/package/slickgrid-react)
 
 ### Live Demo page
-`Slickgrid-React` works with all `Bootstrap` versions, you can see a demo of each one below. It also with any other framework like Material or Bulma and there are also extra styling themes for not just Bootstrap but also Material & Salesforce which are also available. You can also use different SVG icons, you may want to look at the [Docs - SVG Icons](https://ghiscoding.gitbook.io/slickgrid-react/styling/svg-icons)
+`Slickgrid-React` works with all `Bootstrap` versions, you can see a demo of each one below. It also works well with any other frameworks like Material or Bulma and there are also couple of extra styling themes based on Material & Salesforce which are also available. You can also use different SVG icons, you may want to look at the [Docs - SVG Icons](https://ghiscoding.gitbook.io/slickgrid-react/styling/svg-icons)
 - [Bootstrap 5 demo](https://ghiscoding.github.io/slickgrid-react) / [examples repo](https://github.com/ghiscoding/slickgrid-react-demos/tree/main/bootstrap5-i18n-demo)
 
 #### Working Demos

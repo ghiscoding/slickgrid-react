@@ -446,11 +446,8 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     // RxJS Resource is in this lot because it has to be registered before anything else and doesn't require SlickGrid to be initialized
     this.preRegisterResources();
 
-    // for convenience to the user, we provide the property "editor" as an Slickgrid-React editor complex object
-    // however "editor" is used internally by SlickGrid for it's own Editor Factory
-    // so in our lib we will swap "editor" and copy it into a new property called "internalColumnEditor"
-    // then take back "editor.model" and make it the new "editor" so that SlickGrid Editor Factory still works
-    this._columnDefinitions = this.swapInternalEditorToSlickGridFactoryEditor(this.props.columnDefinitions);
+    // prepare and load all SlickGrid editors, if an async editor is found then we'll also execute it.
+    this._columnDefinitions = this.loadSlickGridEditors(this.props.columnDefinitions);
 
     // if the user wants to automatically add a Custom Editor Formatter, we need to call the auto add function again
     if (this._gridOptions.autoAddCustomEditorFormatter) {
@@ -712,28 +709,6 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     }
     if (this._columnDefinitions.length > 0) {
       this.copyColumnWidthsReference(this._columnDefinitions);
-    }
-  }
-
-  /**
-   * Commits the current edit to the grid
-   */
-  commitEdit(target: Element) {
-    if (this.grid.getOptions().autoCommitEdit) {
-      const activeNode = this.grid.getActiveCellNode();
-
-      // a timeout must be set or this could come into conflict when slickgrid
-      // tries to commit the edit when going from one editor to another on the grid
-      // through the click event. If the timeout was not here it would
-      // try to commit/destroy the twice, which would throw an
-      // error about the element not being in the DOM
-      setTimeout(() => {
-        // make sure the target is the active editor so we do not
-        // commit prematurely
-        if (activeNode?.contains(target) && this.grid.getEditorLock().isActive() && !target?.classList?.contains('autocomplete')) {
-          this.grid.getEditorLock().commitCurrentEdit();
-        }
-      });
     }
   }
 
@@ -1140,8 +1115,8 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
    */
   updateColumnDefinitionsList(newColumnDefinitions: Column<TData>[]) {
     if (this.grid && this._gridOptions && Array.isArray(newColumnDefinitions)) {
-      // map/swap the internal library Editor to the SlickGrid Editor factory
-      newColumnDefinitions = this.swapInternalEditorToSlickGridFactoryEditor(newColumnDefinitions);
+      // map the Editor model to editorClass and load editor collectionAsync
+      newColumnDefinitions = this.loadSlickGridEditors(newColumnDefinitions);
 
       // if the user wants to automatically add a Custom Editor Formatter, we need to call the auto add function again
       if (this._gridOptions.autoAddCustomEditorFormatter) {
@@ -1535,13 +1510,8 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     return flatDatasetOutput;
   }
 
-  /**
-   * For convenience to the user, we provide the property "editor" as an Slickgrid-React editor complex object
-   * however "editor" is used internally by SlickGrid for it's own Editor Factory
-   * so in our lib we will swap "editor" and copy it into a new property called "internalColumnEditor"
-   * then take back "editor.model" and make it the new "editor" so that SlickGrid Editor Factory still works
-   */
-  protected swapInternalEditorToSlickGridFactoryEditor(columnDefinitions: Column<TData>[]): Column<TData>[] {
+  /** Prepare and load all SlickGrid editors, if an async editor is found then we'll also execute it. */
+  protected loadSlickGridEditors(columnDefinitions: Column<TData>[]): Column<TData>[] {
     if (columnDefinitions.some(col => `${col?.id}`.includes('.'))) {
       console.error('[Slickgrid-React] Make sure that none of your Column Definition "id" property includes a dot in its name because that will cause some problems with the Editors. For example if your column definition "field" property is "user.firstName" then use "firstName" as the column "id".');
     }
@@ -1552,34 +1522,19 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
         if (column.editor?.collectionAsync) {
           this.loadEditorCollectionAsync(column);
         }
-
-        return {
-          ...column,
-          editorClass: column.editor?.model,
-          // @deprecated `internalColumnEditor`, this will no longer be useful in the next major
-          internalColumnEditor: { ...column.editor }
-        };
+        return { ...column, editorClass: column.editor?.model };
       }
     });
   }
 
   /**
-   * Update the "internalColumnEditor.collection" property.
+   * When the Editor(s) has a "editor.collection" property, we'll load the async collection.
    * Since this is called after the async call resolves, the pointer will not be the same as the "column" argument passed.
-   * Once we found the new pointer, we will reassign the "editor" and "collection" to the "internalColumnEditor" so it has newest collection
    */
   protected updateEditorCollection<U extends TData = any>(column: Column<U>, newCollection: U[]) {
     if (this.grid && column.editor) {
       column.editor.collection = newCollection;
       column.editor.disabled = false;
-
-      // find the new column reference pointer & re-assign the new editor to the internalColumnEditor
-      if (Array.isArray(this._columnDefinitions)) {
-        const columnRef = this._columnDefinitions.find((col: Column) => col.id === column.id);
-        if (columnRef) {
-          columnRef.internalColumnEditor = column.editor;
-        }
-      }
 
       // get current Editor, remove it from the DOM then re-enable it and re-render it with the new collection.
       const currentEditor = this.grid.getCellEditor() as AutocompleterEditor | SelectEditor;
@@ -1597,7 +1552,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
         {/* <!-- Header slot if you need to create a complex custom header --> */}
         {this.props.header && <div className="header">{this.props.header}</div>}
 
-        <div id={`${this.props.gridId}`} className="slickgrid-container" onBlur={$event => this.commitEdit($event.target)}>
+        <div id={`${this.props.gridId}`} className="slickgrid-container">
         </div>
 
         {/* <!--Footer slot if you need to create a complex custom footer-- > */}

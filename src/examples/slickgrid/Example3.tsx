@@ -302,9 +302,8 @@ export default class Example3 extends React.Component<Props, State> {
         saveOutputType: FieldType.dateUtc, // save output date format
         editor: {
           model: Editors.date,
-          // override any of the options through 'filterOptions'
-          // please note that there's no TSlint on this property since it's generic for any filter, so make sure you entered the correct filter option(s)
-          editorOptions: { range: { date: 'today' } } as VanillaCalendarOption,
+          // override any of the calendar options through 'filterOptions'
+          editorOptions: { range: { min: 'today' } } as VanillaCalendarOption,
         },
       },
       {
