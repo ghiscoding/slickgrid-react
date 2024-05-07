@@ -7,7 +7,6 @@ import {
   Column,
   FieldType,
   Filters,
-  FlatpickrOption,
   Formatters,
   GridOption,
   GridStateChange,
@@ -16,6 +15,7 @@ import {
   OperatorType,
   SlickgridReactInstance,
   SlickgridReact,
+  type VanillaCalendarOption,
 } from '../../slickgrid-react';
 import BaseSlickGridState from './state-slick-grid-base';
 
@@ -176,9 +176,9 @@ export default class Example4 extends React.Component<Props, State> {
         filterable: true,
         filter: {
           model: Filters.compoundDate,
-          // override any of the Flatpickr options through "filterOptions"
+          // override any of the calendar options through "filterOptions"
           // please note that there's no TSlint on this property since it's generic for any filter, so make sure you entered the correct filter option(s)
-          filterOptions: { minDate: 'today' } as FlatpickrOption
+          filterOptions: { range: { min: 'today' } } as VanillaCalendarOption
         }
       },
       {
