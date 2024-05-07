@@ -204,28 +204,28 @@ class Example35 extends React.Component<Props, State> {
           maxWidth: 100,
         },
         actionButtons: {
-          editButtonClassName: 'button-style margin-auto px-2 me-1',
-          iconEditButtonClassName: 'fa fa-pencil',
+          editButtonClassName: 'button-style margin-auto btn-icon px-2 me-1',
+          iconEditButtonClassName: 'mdi mdi-pencil',
           // since no title and no titleKey is provided, it will fallback to the default text provided by the plugin
           // if the title is provided but no titleKey, it will override the default text
           // last but not least if a titleKey is provided, it will use the translation key to translate the text
           // editButtonTitle: 'Edit row',
 
-          cancelButtonClassName: 'button-style px-2',
+          cancelButtonClassName: 'button-style btn-icon px-2',
           cancelButtonTitle: 'Cancel row',
           cancelButtonTitleKey: 'RBE_BTN_CANCEL',
-          iconCancelButtonClassName: 'fa fa-undo text-danger',
+          iconCancelButtonClassName: 'mdi mdi-undo text-danger',
           cancelButtonPrompt: 'Are you sure you want to cancel your changes?',
 
-          updateButtonClassName: 'button-style px-2 me-1',
+          updateButtonClassName: 'button-style btn-icon px-2 me-1',
           updateButtonTitle: 'Update row',
           updateButtonTitleKey: 'RBE_BTN_UPDATE',
-          iconUpdateButtonClassName: 'fa fa-check text-success',
+          iconUpdateButtonClassName: 'mdi mdi-check text-success',
           updateButtonPrompt: 'Save changes?',
 
-          deleteButtonClassName: 'button-style px-2',
+          deleteButtonClassName: 'button-style btn-icon px-2',
           deleteButtonTitle: 'Delete row',
-          iconDeleteButtonClassName: 'fa fa-trash-o text-danger',
+          iconDeleteButtonClassName: 'mdi mdi-trash-can text-danger',
           deleteButtonPrompt: 'Are you sure you want to delete this row?',
         },
       },
@@ -301,7 +301,7 @@ class Example35 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example35.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -345,14 +345,14 @@ class Example35 extends React.Component<Props, State> {
           <div className="row mb-4">
             <div className="col-sm-8">
               <button
-                className="btn btn-outline-secondary btn-sm"
+                className="btn btn-outline-secondary btn-sm btn-icon"
                 data-test="single-multi-toggle"
                 onClick={() => this.toggleSingleMultiRowEdit()}
               >
                 Toggle Single/Multi Row Edit
               </button>
-              <button className="btn btn-outline-secondary btn-sm" data-test="toggle-language" onClick={() => this.switchLanguage()}>
-                <i className="fa fa-language"></i>
+              <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="toggle-language" onClick={() => this.switchLanguage()}>
+                <i className="mdi mdi-translate"></i>
                 Switch Language for Action column buttons
               </button>
               <label>Locale:</label>

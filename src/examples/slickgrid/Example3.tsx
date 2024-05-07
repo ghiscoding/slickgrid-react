@@ -126,7 +126,7 @@ export default class Example3 extends React.Component<Props, State> {
         excludeFromGridMenu: true,
         excludeFromHeaderMenu: true,
         formatter: Formatters.icon,
-        params: { iconCssClass: 'fa fa-pencil pointer' },
+        params: { iconCssClass: 'mdi mdi-pencil pointer' },
         minWidth: 30,
         maxWidth: 30,
         // use onCellClick OR grid.onClick.subscribe which you can see down below
@@ -149,7 +149,7 @@ export default class Example3 extends React.Component<Props, State> {
         excludeFromGridMenu: true,
         excludeFromHeaderMenu: true,
         formatter: Formatters.icon,
-        params: { iconCssClass: 'fa fa-trash pointer' },
+        params: { iconCssClass: 'mdi mdi-trash-can pointer' },
         minWidth: 30,
         maxWidth: 30,
         // use onCellClick OR grid.onClick.subscribe which you can see down below
@@ -242,7 +242,7 @@ export default class Example3 extends React.Component<Props, State> {
           collection: Array.from(Array(101).keys()).map((k) => ({
             value: k,
             label: k,
-            symbol: '<i className="fa fa-percent" style="color:cadetblue"></i>',
+            symbol: '<i className="mdi mdi-percent-outline" style="color:cadetblue"></i>',
           })),
           customStructure: {
             value: 'value',
@@ -303,7 +303,6 @@ export default class Example3 extends React.Component<Props, State> {
         editor: {
           model: Editors.date,
           // override any of the calendar options through 'filterOptions'
-          // please note that there's no TSlint on this property since it's generic for any filter, so make sure you entered the correct filter option(s)
           editorOptions: { range: { min: 'today' } } as VanillaCalendarOption,
         },
       },
@@ -413,7 +412,7 @@ export default class Example3 extends React.Component<Props, State> {
             { value: false, label: 'False' },
           ],
         },
-        formatter: Formatters.checkmark,
+        formatter: Formatters.checkmarkMaterial,
         editor: {
           model: Editors.checkbox,
         },
@@ -589,7 +588,7 @@ export default class Example3 extends React.Component<Props, State> {
     // mock a dataset
     const tempDataset: any[] = [];
     for (let i = startingIndex; i < startingIndex + itemCount; i++) {
-      const randomYear = 2000 + Math.floor(Math.random() * 10);
+      const randomYear = 2000 + this.randomBetween(4, 15);
       const randomFinishYear =
         new Date().getFullYear() - 3 + Math.floor(Math.random() * 10); // use only years not lower than 3 years ago
       const randomMonth = Math.floor(Math.random() * 11);
@@ -621,6 +620,10 @@ export default class Example3 extends React.Component<Props, State> {
       });
     }
     return tempDataset;
+  }
+
+  randomBetween(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
   onCellChanged(_e: Event, args: any) {
@@ -774,7 +777,7 @@ export default class Example3 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example3.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -806,8 +809,8 @@ export default class Example3 extends React.Component<Props, State> {
             </span>
             <div className='row col-sm-12'>
               <span>
-                <button className='btn btn-outline-secondary btn-sm me-1' data-test='undo-btn' onClick={() => this.undo()}>
-                  <i className='fa fa-undo me-1'></i>
+                <button className='btn btn-outline-secondary btn-sm btn-icon me-1' data-test='undo-btn' onClick={() => this.undo()}>
+                  <i className='mdi mdi-undo me-1'></i>
                   Undo last edit(s)
                 </button>
                 <label className='checkbox-inline control-label me-1' htmlFor='autoCommitEdit'>
@@ -823,11 +826,11 @@ export default class Example3 extends React.Component<Props, State> {
             </div>
             <div className='row' style={marginTop5px}>
               <div className='col-sm-12'>
-                <button className='btn btn-outline-secondary btn-sm' onClick={() => this.reactGrid.filterService.clearFilters()}>
+                <button className='btn btn-outline-secondary btn-sm btn-icon' onClick={() => this.reactGrid.filterService.clearFilters()}>
                   Clear Filters
                 </button>
                 <button
-                  className='btn btn-outline-secondary btn-sm mx-1' onClick={() => this.reactGrid.sortService.clearSorting()}>
+                  className='btn btn-outline-secondary btn-sm btn-icon mx-1' onClick={() => this.reactGrid.sortService.clearSorting()}>
                   Clear Sorting
                 </button>
                 <button
@@ -850,19 +853,19 @@ export default class Example3 extends React.Component<Props, State> {
             <div className='row' style={marginTop5px}>
               <div className='col-sm-12'>
                 <button
-                  className='btn btn-outline-secondary btn-sm'
+                  className='btn btn-outline-secondary btn-sm btn-icon'
                   data-test='add-title-column'
                   onClick={() => this.dynamicallyAddTitleHeader()}
                 >
-                  <i className='fa fa-plus me-1'></i>
+                  <i className='mdi mdi-shape-square-plus me-1'></i>
                   Dynamically Duplicate Title Column
                 </button>
                 <button
-                  className='btn btn-outline-secondary btn-sm mx-1'
+                  className='btn btn-outline-secondary btn-sm btn-icon mx-1'
                   data-test='remove-title-column'
                   onClick={() => this.dynamicallyRemoveLastColumn()}
                 >
-                  <i className='fa fa-minus me-1'></i>
+                  <i className='mdi mdi-minus me-1'></i>
                   Dynamically Remove Last Column
                 </button>
               </div>

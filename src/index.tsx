@@ -1,5 +1,3 @@
-// we want font-awesome to load as soon as possible to show the fa-spinner
-import 'font-awesome/css/font-awesome.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import i18n from 'i18next';

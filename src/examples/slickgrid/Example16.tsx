@@ -69,7 +69,7 @@ export default class Example16 extends React.Component<Props, State> {
       },
       {
         id: 'effort-driven', name: 'Completed', field: 'effortDriven',
-        formatter: Formatters.checkmark,
+        formatter: Formatters.checkmarkMaterial,
         filterable: true, sortable: true,
         filter: {
           collection: [{ value: '', label: '' }, { value: true, label: 'True' }, { value: false, label: 'False' }],
@@ -256,7 +256,7 @@ export default class Example16 extends React.Component<Props, State> {
           excludeFromGridMenu: true,
           excludeFromHeaderMenu: true,
           formatter: Formatters.icon,
-          params: { iconCssClass: 'fa fa-pencil pointer' },
+          params: { iconCssClass: 'mdi mdi-pencil pointer' },
           minWidth: 30,
           maxWidth: 30,
           onCellClick: (clickEvent: Event, args: OnEventArgs) => {
@@ -269,7 +269,7 @@ export default class Example16 extends React.Component<Props, State> {
           excludeFromGridMenu: true,
           excludeFromHeaderMenu: true,
           formatter: Formatters.icon,
-          params: { iconCssClass: 'fa fa-trash pointer' },
+          params: { iconCssClass: 'mdi mdi-trash-can pointer' },
           minWidth: 30,
           maxWidth: 30,
           onCellClick: (e: Event, args: OnEventArgs) => {
@@ -309,7 +309,7 @@ export default class Example16 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example16.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -317,31 +317,31 @@ export default class Example16 extends React.Component<Props, State> {
 
         <div className="row">
           <div className="col-sm-12">
-            <button className="btn btn-outline-secondary btn-sm" data-test="hide-duration-btn"
+            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="hide-duration-btn"
               onClick={() => this.hideDurationColumnDynamically()}>
-              <i className="fa fa-eye-slash me-1"></i>
+              <i className="mdi mdi-eye-off-outline me-1"></i>
               Dynamically Hide "Duration"
             </button>
-            <button className="btn btn-outline-secondary btn-sm mx-1" data-test="disable-filters-btn"
+            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="disable-filters-btn"
               onClick={() => this.disableFilters()}>
-              <i className="fa fa-times me-1"></i>
+              <i className="mdi mdi-close me-1"></i>
               Disable Filters
             </button>
-            <button className="btn btn-outline-secondary btn-sm" data-test="disable-sorting-btn"
+            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="disable-sorting-btn"
               onClick={() => this.disableSorting()}>
-              <i className="fa fa-times me-1"></i>
+              <i className="mdi mdi-close me-1"></i>
               Disable Sorting
             </button>
-            <button className="btn btn-outline-secondary btn-sm mx-1" data-test="toggle-filtering-btn" onClick={() => this.toggleFilter()}>
-              <i className="fa fa-random me-1"></i>
+            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="toggle-filtering-btn" onClick={() => this.toggleFilter()}>
+              <i className="mdi mdi-flip-vertical me-1"></i>
               Toggle Filtering
             </button>
-            <button className="btn btn-outline-secondary btn-sm" data-test="toggle-sorting-btn" onClick={() => this.toggleSorting()}>
-              <i className="fa fa-random me-1"></i>
+            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="toggle-sorting-btn" onClick={() => this.toggleSorting()}>
+              <i className="mdi mdi-flip-vertical me-1"></i>
               Toggle Sorting
             </button>
-            <button className="btn btn-outline-secondary btn-sm" data-test="add-crud-columns-btn" onClick={() => this.addEditDeleteColumns()}>
-              <i className="fa fa-plus me-1"></i>
+            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="add-crud-columns-btn" onClick={() => this.addEditDeleteColumns()}>
+              <i className="mdi mdi-shape-square-plus me-1"></i>
               Add Edit/Delete Columns
             </button>
           </div>

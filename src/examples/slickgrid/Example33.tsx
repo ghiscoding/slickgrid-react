@@ -83,7 +83,7 @@ export default class Example32 extends React.Component<Props, State> {
           // example 2 (async):
           // when using async, the `formatter` will contain the loading spinner
           // you will need to provide an `asyncPost` function returning a Promise and also `asyncPostFormatter` formatter to display the result once the Promise resolves
-          formatter: () => `<div><span class="fa fa-spinner fa-pulse fa-fw"></span> loading...</div>`,
+          formatter: () => `<div><span class="mdi mdi-load mdi-spin"></span> loading...</div>`,
           asyncProcess: () => new Promise(resolve => {
             setTimeout(() => resolve({ ratio: Math.random() * 10 / 10, lifespan: Math.random() * 100 }), this.state.serverApiDelay);
           }),
@@ -279,7 +279,7 @@ export default class Example32 extends React.Component<Props, State> {
       },
       {
         id: 'action', name: 'Action', field: 'action', width: 70, minWidth: 70, maxWidth: 70,
-        formatter: () => `<div class="button-style margin-auto" style="width: 35px;"><span class="fa fa-chevron-down text-primary"></span></div>`,
+        formatter: () => `<div class="button-style margin-auto" style="width: 35px;"><span class="mdi mdi-chevron-down text-primary"></span></div>`,
         excludeFromExport: true,
         cellMenu: {
           hideCloseButton: false,
@@ -504,7 +504,7 @@ export default class Example32 extends React.Component<Props, State> {
     }
     for (let i = 0; i < iconCount; i++) {
       const iconColor = iconCount === 5 ? 'text-success' : iconCount >= 3 ? 'text-warning' : 'text-secondary';
-      output += `<span class="fa fa-check-circle-o ${iconColor}"></span>`;
+      output += `<span class="mdi mdi-check-circle-outline ${iconColor}"></span>`;
     }
     return output;
   }
@@ -518,7 +518,7 @@ export default class Example32 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example33.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>

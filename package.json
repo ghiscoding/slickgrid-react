@@ -133,6 +133,8 @@
     "css-loader": "^7.1.1",
     "custom-event-polyfill": "^1.0.7",
     "cypress": "^13.8.1",
+    "cypress-real-events": "^1.12.0",
+    "cypress": "^13.8.1",
     "esbuild-loader": "^4.1.0",
     "eslint": "^9.1.1",
     "eslint-plugin-cypress": "^3.0.2",

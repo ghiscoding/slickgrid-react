@@ -181,7 +181,7 @@ class Example15 extends React.Component<Props, State> {
         type: FieldType.date, filterable: true, filter: { model: Filters.compoundDate }
       },
       {
-        id: 'completed', field: 'completed', nameKey: 'COMPLETED', minWidth: 85, maxWidth: 85, formatter: Formatters.checkmark, width: 100,
+        id: 'completed', field: 'completed', nameKey: 'COMPLETED', minWidth: 85, maxWidth: 85, formatter: Formatters.checkmarkMaterial, width: 100,
         type: FieldType.boolean,
         sortable: true,
         filterable: true,
@@ -277,20 +277,20 @@ class Example15 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example15.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
         <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
-        <button className="btn btn-outline-secondary btn-sm" data-test="reset-button"
+        <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="reset-button"
           onClick={() => this.clearGridStateFromLocalStorage()}>
-          <i className="fa fa-times me-1"></i>
+          <i className="mdi mdi-close me-1"></i>
           Clear Grid State from Local Storage &amp; Reset Grid
         </button>
 
-        <button className="btn btn-outline-secondary btn-sm mx-1" data-test="language-button" onClick={() => this.switchLanguage()}>
-          <i className="fa fa-language me-1"></i>
+        <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="language-button" onClick={() => this.switchLanguage()}>
+          <i className="mdi mdi-translate me-1"></i>
           Switch Language
         </button>
         <strong>Locale: </strong>

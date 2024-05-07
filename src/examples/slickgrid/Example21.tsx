@@ -92,7 +92,7 @@ export default class Example21 extends React.Component<Props, State> {
       {
         id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
         width: 100, sortable: true,
-        formatter: Formatters.checkmark,
+        formatter: Formatters.checkmarkMaterial,
         type: FieldType.number
       }
     ];
@@ -212,7 +212,7 @@ export default class Example21 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example21.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -253,7 +253,7 @@ export default class Example21 extends React.Component<Props, State> {
                 onInput={($event) => this.searchValueChanged($event)} />
               <button className="btn btn-outline-secondary d-flex align-items-center pl-2 pr-2" data-test="clear-search-value"
                 onClick={() => this.clearGridSearchInput()}>
-                <span className="fa fa-times m-1"></span>
+                <span className="mdi mdi-close m-1"></span>
               </button>
             </div>
           </div>

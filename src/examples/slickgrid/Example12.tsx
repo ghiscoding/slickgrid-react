@@ -120,7 +120,7 @@ class Example12 extends React.Component<Props, State> {
       {
         id: 'completedBool', name: 'Completed', field: 'completedBool', nameKey: 'COMPLETED', minWidth: 100,
         sortable: true,
-        formatter: Formatters.checkmark,
+        formatter: Formatters.checkmarkMaterial,
         exportCustomFormatter: Formatters.translateBoolean,
         filterable: true,
         filter: {
@@ -283,7 +283,7 @@ class Example12 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example12.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -293,8 +293,8 @@ class Example12 extends React.Component<Props, State> {
 
         <div className="row">
           <div className="col-sm-12">
-            <button className="btn btn-outline-secondary btn-sm me-1" data-test="language-button" onClick={() => this.switchLanguage()}>
-              <i className="fa fa-language me-1"></i>
+            <button className="btn btn-outline-secondary btn-sm btn-icon me-1" data-test="language-button" onClick={() => this.switchLanguage()}>
+              <i className="mdi mdi-translate me-1"></i>
               Switch Language
             </button>
             <label>Locale:</label>
@@ -303,22 +303,22 @@ class Example12 extends React.Component<Props, State> {
             </span>
 
             <span style={{ marginLeft: '20px' }}>
-              <button className="btn btn-outline-secondary btn-sm" onClick={() => this.exportToFile('csv')}>
-                <i className="fa fa-download me-1"></i>
+              <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={() => this.exportToFile('csv')}>
+                <i className="mdi mdi-download me-1"></i>
                 Download to CSV
               </button>
-              <button className="btn btn-outline-secondary btn-sm mx-1" onClick={() => this.exportToFile('txt')}>
-                <i className="fa fa-download me-1"></i>
+              <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" onClick={() => this.exportToFile('txt')}>
+                <i className="mdi mdi-download me-1"></i>
                 Download to Text
               </button>
-              <button className="btn btn-outline-secondary btn-sm" onClick={() => this.exportToExcel()}>
-                <i className="fa fa-file-excel-o text-success me-1"></i>
+              <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={() => this.exportToExcel()}>
+                <i className="mdi mdi-file-excel-outline text-success me-1"></i>
                 Download to Excel
               </button>
             </span>
             <span style={{ marginLeft: '10px' }}>
-              <button className="btn btn-outline-secondary btn-sm" onClick={() => this.dynamicallyAddTitleHeader()}>
-                <i className="fa fa-plus me-1"></i>
+              <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={() => this.dynamicallyAddTitleHeader()}>
+                <i className="mdi mdi-shape-square-plus me-1"></i>
                 Dynamically Duplicate Title Column
               </button>
             </span>

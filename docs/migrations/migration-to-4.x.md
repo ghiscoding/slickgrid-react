@@ -188,7 +188,7 @@ this.columnDefinitions = [
     id: 'deleteIcon', name: '', field: '',
 -   formatter: Formatters.deleteIcon,
     // NOTE: we previously accepted "icon" and "formatterIcon" in the past but these names are now removed
-+   formatter: Formatters.icon, params: { iconCssClass: 'fa fa-trash pointer' }
++   formatter: Formatters.icon, params: { iconCssClass: 'mdi mdi-trash-can pointer' }
   },
 ];
 ```

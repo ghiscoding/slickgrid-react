@@ -34,12 +34,6 @@ export default class Example27 extends React.Component<Props, State> {
       <li>If you do not have the Tree Level (indent), you could call "convertParentChildArrayToHierarchicalView()" then call "convertHierarchicalViewToParentChildArray()"</li>
       <li>You could also pass the result of "convertParentChildArrayToHierarchicalView()" to "dataset-hierarchical.bind" as defined in the next Hierarchical Example</li>
     </ul>
-    <li><b>Styling - Material Theme</b></li>
-    <ul>
-      <li>The Material Theme was created with SASS and compiled in CSS (<a href="https://github.com/slickgrid-universal/slickgrid-universal/blob/master/packages/common/src/styles/slickgrid-theme-material.scss" target="_blank">slickgrid-theme-material.scss</a>), you can override any of its SASS variables</li>
-      <li>We use a small subset of <a href="https://materialdesignicons.com/" target="_blank">Material Design Icons</a></li>
-      <li>you might need to refresh the page to clear the browser cache and see the correct theme</li>
-    </ul>
   </ul>`;
   reactGrid!: SlickgridReactInstance;
 
@@ -100,7 +94,7 @@ export default class Example27 extends React.Component<Props, State> {
       {
         id: 'effortDriven', name: 'Effort Driven', width: 80, minWidth: 20, maxWidth: 80, cssClass: 'cell-effort-driven', field: 'effortDriven',
         exportWithFormatter: false,
-        formatter: Formatters.checkmark, cannotTriggerInsert: true,
+        formatter: Formatters.checkmarkMaterial, cannotTriggerInsert: true,
         filterable: true,
         filter: {
           collection: [{ value: '', label: '' }, { value: true, label: 'True' }, { value: false, label: 'False' }],
@@ -248,7 +242,7 @@ export default class Example27 extends React.Component<Props, State> {
 
   showSpinner() {
     if (this.state.isLargeDataset) {
-      this.setState((state: State) => ({ ...state, loadingClass: 'fa fa-refresh fa-spin' }));
+      this.setState((state: State) => ({ ...state, loadingClass: 'mdi mdi-load mdi-spin-1s mdi-24px color-alt-success' }));
     }
   }
 
@@ -371,7 +365,7 @@ export default class Example27 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example27.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -379,30 +373,30 @@ export default class Example27 extends React.Component<Props, State> {
 
         <div className="row" style={{ marginBottom: '4px' }}>
           <div className="col-md-12">
-            <button className="btn btn-outline-secondary btn-sm" data-test="add-500-rows-btn" onClick={() => this.setData(500)}>
+            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="add-500-rows-btn" onClick={() => this.setData(500)}>
               500 rows
             </button>
-            <button className="btn btn-outline-secondary btn-sm mx-1" data-test="add-50k-rows-btn" onClick={() => this.setData(25000)}>
+            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="add-50k-rows-btn" onClick={() => this.setData(25000)}>
               25k rows
             </button>
-            <button onClick={() => this.dynamicallyChangeFilter()} className="btn btn-outline-secondary btn-sm"
+            <button onClick={() => this.dynamicallyChangeFilter()} className="btn btn-outline-secondary btn-sm btn-icon"
               data-test="change-filter-dynamically">
-              <span className="fa fa-filter me-1"></span>
+              <span className="mdi mdi-filter me-1"></span>
               <span>Dynamically Change Filter (% complete &lt; 40)</span>
             </button>
-            <button onClick={() => this.collapseAllWithoutEvent()} className="btn btn-outline-secondary btn-sm mx-1"
+            <button onClick={() => this.collapseAllWithoutEvent()} className="btn btn-outline-secondary btn-sm btn-icon mx-1"
               data-test="collapse-all-noevent-btn">
-              <span className="fa fa-compress me-1"></span>
+              <span className="mdi mdi-arrow-collapse me-1"></span>
               <span>Collapse All (without triggering event)</span>
             </button>
-            <button onClick={() => this.dynamicallyToggledFirstParent()} className="btn btn-outline-secondary btn-sm"
+            <button onClick={() => this.dynamicallyToggledFirstParent()} className="btn btn-outline-secondary btn-sm btn-icon"
               data-test="dynamically-toggle-first-parent-btn">
               <span>Dynamically Toggle First Parent</span>
             </button>
             <button onClick={() => this.reapplyToggledItems()} data-test="reapply-toggled-items-btn"
-              className="btn btn-outline-secondary btn-sm ms-1"
+              className="btn btn-outline-secondary btn-sm btn-icon ms-1"
               disabled={this.state.hasNoExpandCollapseChanged}>
-              <span className="fa fa-history me-1"></span>
+              <span className="mdi mdi-history me-1"></span>
               <span>Reapply Previous Toggled Items</span>
             </button>
             <div className={this.state.loadingClass}></div>
@@ -412,25 +406,25 @@ export default class Example27 extends React.Component<Props, State> {
         <div className="row">
           <div className="col-md-12">
             <button onClick={() => this.addNewRow()} data-test="add-item-btn" className="btn btn-primary btn-sm">
-              <span className="fa fa-plus color-white me-1"></span>
+              <span className="mdi mdi-shape-square-plus color-white me-1"></span>
               <span>Add New Item (in 1st group)</span>
             </button>
-            <button onClick={() => this.updateFirstRow()} data-test="update-item-btn" className="btn btn-outline-secondary btn-sm mx-1">
-              <span className="icon fa fa-pencil me-1"></span>
+            <button onClick={() => this.updateFirstRow()} data-test="update-item-btn" className="btn btn-outline-secondary btn-sm btn-icon mx-1">
+              <span className="icon mdi mdi-pencil me-1"></span>
               <span>Update 1st Row Item</span>
             </button>
-            <button onClick={() => this.collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-sm">
-              <span className="fa fa-compress me-1"></span>
+            <button onClick={() => this.collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-sm btn-icon">
+              <span className="mdi mdi-arrow-collapse me-1"></span>
               <span>Collapse All</span>
             </button>
-            <button onClick={() => this.expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-sm mx-1">
-              <span className="fa fa-expand me-1"></span>
+            <button onClick={() => this.expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-sm btn-icon mx-1">
+              <span className="mdi mdi-arrow-expand me-1"></span>
               <span>Expand All</span>
             </button>
-            <button onClick={() => this.logFlatStructure()} className="btn btn-outline-secondary btn-sm">
+            <button onClick={() => this.logFlatStructure()} className="btn btn-outline-secondary btn-sm btn-icon">
               <span>Log Flat Structure</span>
             </button>
-            <button onClick={() => this.logHierarchicalStructure()} className="btn btn-outline-secondary btn-sm ms-1">
+            <button onClick={() => this.logHierarchicalStructure()} className="btn btn-outline-secondary btn-sm btn-icon ms-1">
               <span>Log Hierarchical Structure</span>
             </button>
           </div>

@@ -177,7 +177,6 @@ export default class Example4 extends React.Component<Props, State> {
         filter: {
           model: Filters.compoundDate,
           // override any of the calendar options through "filterOptions"
-          // please note that there's no TSlint on this property since it's generic for any filter, so make sure you entered the correct filter option(s)
           filterOptions: { range: { min: 'today' } } as VanillaCalendarOption
         }
       },
@@ -189,14 +188,14 @@ export default class Example4 extends React.Component<Props, State> {
         // to pass multiple formatters, use the params property
         // also these formatters are executed in sequence, so if you want the checkmark to work correctly, it has to be the last formatter defined
         formatter: Formatters.multiple,
-        params: { formatters: [Formatters.complexObject, Formatters.checkmark] },
+        params: { formatters: [Formatters.complexObject, Formatters.checkmarkMaterial] },
 
         // when the "field" string includes the dot "." notation, the library will consider this to be a complex object and Filter accordingly
         filterable: true,
         filter: {
           // We can also add HTML text to be rendered (any bad script will be sanitized) but we have to opt-in, else it will be sanitized
           // enableRenderHtml: true,
-          // collection: [{ value: '', label: '' }, { value: true, label: 'True', labelPrefix: `<i class="fa fa-check"></i> ` }, { value: false, label: 'False' }],
+          // collection: [{ value: '', label: '' }, { value: true, label: 'True', labelPrefix: `<i class="mdi mdi-check"></i> ` }, { value: false, label: 'False' }],
 
           collection: ['', 'True', 'False'],
           model: Filters.singleSelect,
@@ -349,7 +348,7 @@ export default class Example4 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example4.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -362,27 +361,27 @@ export default class Example4 extends React.Component<Props, State> {
         </span>}
 
         <div className="btn-group mx-1" role="group" aria-label="...">
-          <button className="btn btn-sm btn-outline-secondary" data-test="scroll-top-btn" onClick={() => this.scrollGridTop()}>
-            <i className="fa fa-arrow-up"></i>
+          <button className="btn btn-sm btn-outline-secondary btn-icon" data-test="scroll-top-btn" onClick={() => this.scrollGridTop()}>
+            <i className="mdi mdi-arrow-down mdi-rotate-180"></i>
           </button>
-          <button className="btn btn-sm btn-outline-secondary" data-test="scroll-bottom-btn" onClick={() => this.scrollGridBottom()}>
-            <i className="fa fa-arrow-down"></i>
+          <button className="btn btn-sm btn-outline-secondary btn-icon" data-test="scroll-bottom-btn" onClick={() => this.scrollGridBottom()}>
+            <i className="mdi mdi-arrow-down"></i>
           </button>
         </div>
 
-        <button className="btn btn-outline-secondary btn-sm" data-test="clear-filters"
+        <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="clear-filters"
           onClick={() => this.reactGrid.filterService.clearFilters()}>
           Clear Filters
         </button>
-        <button className="btn btn-outline-secondary btn-sm mx-1" data-test="clear-sorting"
+        <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="clear-sorting"
           onClick={() => this.reactGrid.sortService.clearSorting()}>
           Clear Sorting
         </button>
-        <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-filter"
+        <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="set-dynamic-filter"
           onClick={() => this.setFiltersDynamically()}>
           Set Filters Dynamically
         </button>
-        <button className="btn btn-outline-secondary btn-sm mx-1" data-test="set-dynamic-sorting"
+        <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="set-dynamic-sorting"
           onClick={() => this.setSortingDynamically()}>
           Set Sorting Dynamically
         </button>

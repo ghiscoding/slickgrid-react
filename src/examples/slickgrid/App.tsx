@@ -84,7 +84,7 @@ export default function Routes() {
             <ul className="well nav nav-pills nav-stacked">
               <li className="nav-item fw-bold nav-docs">
                 <a className="nav-link" href="https://ghiscoding.gitbook.io/slickgrid-react/" target="_blank">
-                  <i className="fa fa-book"></i> Documentation
+                  📘 Documentation
                 </a>
               </li>
               {routes.map((row) =>

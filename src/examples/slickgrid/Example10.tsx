@@ -77,7 +77,7 @@ export default class Example10 extends React.Component<Props, State> {
       },
       {
         id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
-        formatter: Formatters.checkmark, type: FieldType.boolean,
+        formatter: Formatters.checkmarkMaterial, type: FieldType.boolean,
         sortable: true, filterable: true,
         filter: {
           collection: [{ value: '', label: '' }, { value: true, label: 'true' }, { value: false, label: 'false' }],
@@ -102,7 +102,7 @@ export default class Example10 extends React.Component<Props, State> {
       },
       {
         id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
-        formatter: Formatters.checkmark, type: FieldType.boolean,
+        formatter: Formatters.checkmarkMaterial, type: FieldType.boolean,
         sortable: true, filterable: true,
         filter: {
           collection: [{ value: '', label: '' }, { value: true, label: 'true' }, { value: false, label: 'false' }],
@@ -301,21 +301,21 @@ export default class Example10 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example10.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
         <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <div className="row">
-          <div className="col-sm-4" style={{ maxWidth: '170px' }}>
+          <div className="col-sm-4" style={{ maxWidth: '205px' }}>
             Pagination
             <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-first-page"
               onClick={() => this.goToGrid1FirstPage()}>
-              <i className="fa fa-caret-left fa-lg"></i>
+              <i className="mdi mdi-page-first"></i>
             </button>
             <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-last-page" onClick={() => this.goToGrid1LastPage()}>
-              <i className="fa fa-caret-right fa-lg"></i>
+              <i className="mdi mdi-page-last"></i>
             </button>
           </div>
           <div className="col-sm-8">
@@ -340,7 +340,7 @@ export default class Example10 extends React.Component<Props, State> {
         <hr className="col-md-6 offset-md-1" />
 
         <div className="row">
-          <div className="col-sm-4 col-md-3" style={{ maxWidth: '185px' }}>
+          <div className="col-sm-4 col-md-3" style={{ maxWidth: '215px' }}>
             <label htmlFor="enableGrid2Pagination">
               Pagination:
               <input type="checkbox" id="enableGrid2Pagination"
@@ -351,11 +351,11 @@ export default class Example10 extends React.Component<Props, State> {
             {this.isGrid2WithPagination && <span style={{ marginLeft: '5px' }}>
               <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-first-page"
                 onClick={() => this.goToGrid2FirstPage()}>
-                <i className="fa fa-caret-left fa-lg"></i>
+                <i className="mdi mdi-page-first"></i>
               </button>
               <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-last-page"
                 onClick={() => this.goToGrid2LastPage()}>
-                <i className="fa fa-caret-right fa-lg"></i>
+                <i className="mdi mdi-page-last"></i>
               </button>
             </span>}
           </div>

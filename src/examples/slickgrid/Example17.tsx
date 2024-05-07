@@ -161,7 +161,7 @@ export default class Example17 extends React.Component {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example17.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -186,7 +186,7 @@ export default class Example17 extends React.Component {
 
         {this.loading && <div className="alert alert-warning col-md-6"
           role="alert">
-          <i className="fa fa-refresh fa-spin fa-lg fa-fw"></i>
+          <i className="mdi mdi-sync mdi-spin"></i>
           <span>Loading...</span>
         </div>}
 
