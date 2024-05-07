@@ -1,5 +1,5 @@
+import { format } from '@formkit/tempo';
 import { GridOdataService, OdataServiceApi, OdataOption } from '@slickgrid-universal/odata';
-import moment from 'moment-mini';
 
 import {
   SlickgridReactInstance,
@@ -545,7 +545,7 @@ export default class Example5 extends React.Component<Props, State> {
             </button>
             <br />
             {this.state.metrics && <span><><b>Metrics:</b>
-              {moment(this.state.metrics.endTime).format('YYYY-MM-DD HH:mm:ss')}
+              {this.state.metrics?.endTime ? format(this.state.metrics.endTime, 'YYYY-MM-DD HH:mm:ss') : ''}
               | {this.state.metrics.itemCount} of {this.state.metrics.totalItemCount} items </>
             </span>}
           </div>

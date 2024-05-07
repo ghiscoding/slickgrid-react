@@ -97,7 +97,6 @@
     "dequal": "^2.0.3",
     "font-awesome": "^4.7.0",
     "i18next": "^23.11.2",
-    "moment-mini": "^2.29.4",
     "regenerator-runtime": "^0.14.1",
     "sortablejs": "^1.15.2"
   },
@@ -105,6 +104,7 @@
     "@4tw/cypress-drag-drop": "^2.2.5",
     "@faker-js/faker": "^8.4.1",
     "@fnando/sparkline": "^0.3.10",
+    "@formkit/tempo": "^0.1.1",
     "@popperjs/core": "^2.11.8",
     "@release-it/conventional-changelog": "^8.0.1",
     "@slickgrid-universal/composite-editor-component": "~5.0.0-beta.1",
@@ -153,7 +153,6 @@
     "jest-extended": "^4.0.2",
     "jsdom-global": "^3.0.2",
     "mini-css-extract-plugin": "^2.9.0",
-    "moment-mini": "^2.29.4",
     "npm-run-all2": "^6.1.2",
     "promise-polyfill": "^8.3.0",
     "react": "^18.3.1",
