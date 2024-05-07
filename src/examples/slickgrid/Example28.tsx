@@ -433,30 +433,30 @@ export default class Example28 extends React.Component<Props, State> {
 
         <div className="row">
           <div className="col-md-7">
-            <button onClick={() => this.addNewFile()} data-test="add-item-btn" className="btn btn-sm btn-primary">
+            <button onClick={() => this.addNewFile()} data-test="add-item-btn" className="btn btn-xs btn-primary">
               <span className="mdi mdi-shape-square-plus me-1"></span>
               <span>Add New Pop Song</span>
             </button>
-            <button onClick={() => this.deleteFile()} data-test="remove-item-btn" className="btn btn-outline-secondary btn-sm btn-icon" disabled={this.state.isRemoveLastInsertedPopSongDisabled}>
+            <button onClick={() => this.deleteFile()} data-test="remove-item-btn" className="btn btn-outline-secondary btn-xs btn-icon" disabled={this.state.isRemoveLastInsertedPopSongDisabled}>
               <span className="mdi mdi-minus me-1"></span>
               <span>Remove Last Inserted Pop Song</span>
             </button>
-            <button onClick={() => this.collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-sm btn-icon mx-1">
+            <button onClick={() => this.collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-xs btn-icon mx-1">
               <span className="mdi mdi-arrow-collapse me-1"></span>
               <span>Collapse All</span>
             </button>
-            <button onClick={() => this.expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-sm btn-icon">
+            <button onClick={() => this.expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-xs btn-icon">
               <span className="mdi mdi-arrow-expand me-1"></span>
               <span>Expand All</span>
             </button>
-            <button className='btn btn-outline-secondary btn-sm btn-icon' data-test="clear-filters-btn" onClick={() => this.reactGrid.filterService.clearFilters()}>
+            <button className='btn btn-outline-secondary btn-xs btn-icon' data-test="clear-filters-btn" onClick={() => this.reactGrid.filterService.clearFilters()}>
               <span className="mdi mdi-close me-1"></span>
               <span>Clear Filters</span>
             </button>
-            <button onClick={() => this.logFlatStructure()} className="btn btn-outline-secondary btn-sm btn-icon mx-1">
+            <button onClick={() => this.logFlatStructure()} className="btn btn-outline-secondary btn-xs btn-icon mx-1">
               <span>Log Flat Structure</span>
             </button>
-            <button onClick={() => this.logHierarchicalStructure()} className="btn btn-outline-secondary btn-sm btn-icon">
+            <button onClick={() => this.logHierarchicalStructure()} className="btn btn-outline-secondary btn-xs btn-icon">
               <span>Log Hierarchical Structure</span>
             </button>
           </div>
@@ -464,7 +464,7 @@ export default class Example28 extends React.Component<Props, State> {
           <div className="col-md-5">
             <div className="input-group input-group-sm">
               <input type="text" className="form-control search-string" data-test="search-string" value={this.state.searchString} onInput={($event) => this.searchStringChanged(($event.target as HTMLInputElement).value)} />
-              <button className="btn btn-sm btn-outline-secondary d-flex align-items-center" data-test="clear-search-string" onClick={() => this.clearSearch()}>
+              <button className="btn btn-xs btn-outline-secondary d-flex align-items-center" data-test="clear-search-string" onClick={() => this.clearSearch()}>
                 <span className="icon mdi mdi-close"></span>
               </button>
             </div>

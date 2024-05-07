@@ -373,28 +373,28 @@ export default class Example27 extends React.Component<Props, State> {
 
         <div className="row" style={{ marginBottom: '4px' }}>
           <div className="col-md-12">
-            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="add-500-rows-btn" onClick={() => this.setData(500)}>
+            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="add-500-rows-btn" onClick={() => this.setData(500)}>
               500 rows
             </button>
-            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="add-50k-rows-btn" onClick={() => this.setData(25000)}>
+            <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="add-50k-rows-btn" onClick={() => this.setData(25000)}>
               25k rows
             </button>
-            <button onClick={() => this.dynamicallyChangeFilter()} className="btn btn-outline-secondary btn-sm btn-icon"
+            <button onClick={() => this.dynamicallyChangeFilter()} className="btn btn-outline-secondary btn-xs btn-icon"
               data-test="change-filter-dynamically">
               <span className="mdi mdi-filter me-1"></span>
               <span>Dynamically Change Filter (% complete &lt; 40)</span>
             </button>
-            <button onClick={() => this.collapseAllWithoutEvent()} className="btn btn-outline-secondary btn-sm btn-icon mx-1"
+            <button onClick={() => this.collapseAllWithoutEvent()} className="btn btn-outline-secondary btn-xs btn-icon mx-1"
               data-test="collapse-all-noevent-btn">
               <span className="mdi mdi-arrow-collapse me-1"></span>
               <span>Collapse All (without triggering event)</span>
             </button>
-            <button onClick={() => this.dynamicallyToggledFirstParent()} className="btn btn-outline-secondary btn-sm btn-icon"
+            <button onClick={() => this.dynamicallyToggledFirstParent()} className="btn btn-outline-secondary btn-xs btn-icon"
               data-test="dynamically-toggle-first-parent-btn">
               <span>Dynamically Toggle First Parent</span>
             </button>
             <button onClick={() => this.reapplyToggledItems()} data-test="reapply-toggled-items-btn"
-              className="btn btn-outline-secondary btn-sm btn-icon ms-1"
+              className="btn btn-outline-secondary btn-xs btn-icon ms-1"
               disabled={this.state.hasNoExpandCollapseChanged}>
               <span className="mdi mdi-history me-1"></span>
               <span>Reapply Previous Toggled Items</span>
@@ -409,22 +409,22 @@ export default class Example27 extends React.Component<Props, State> {
               <span className="mdi mdi-shape-square-plus color-white me-1"></span>
               <span>Add New Item (in 1st group)</span>
             </button>
-            <button onClick={() => this.updateFirstRow()} data-test="update-item-btn" className="btn btn-outline-secondary btn-sm btn-icon mx-1">
+            <button onClick={() => this.updateFirstRow()} data-test="update-item-btn" className="btn btn-outline-secondary btn-xs btn-icon mx-1">
               <span className="icon mdi mdi-pencil me-1"></span>
               <span>Update 1st Row Item</span>
             </button>
-            <button onClick={() => this.collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-sm btn-icon">
+            <button onClick={() => this.collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-xs btn-icon">
               <span className="mdi mdi-arrow-collapse me-1"></span>
               <span>Collapse All</span>
             </button>
-            <button onClick={() => this.expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-sm btn-icon mx-1">
+            <button onClick={() => this.expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-xs btn-icon mx-1">
               <span className="mdi mdi-arrow-expand me-1"></span>
               <span>Expand All</span>
             </button>
-            <button onClick={() => this.logFlatStructure()} className="btn btn-outline-secondary btn-sm btn-icon">
+            <button onClick={() => this.logFlatStructure()} className="btn btn-outline-secondary btn-xs btn-icon">
               <span>Log Flat Structure</span>
             </button>
-            <button onClick={() => this.logHierarchicalStructure()} className="btn btn-outline-secondary btn-sm btn-icon ms-1">
+            <button onClick={() => this.logHierarchicalStructure()} className="btn btn-outline-secondary btn-xs btn-icon ms-1">
               <span>Log Hierarchical Structure</span>
             </button>
           </div>
