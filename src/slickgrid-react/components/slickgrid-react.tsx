@@ -713,28 +713,6 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   }
 
   /**
-   * Commits the current edit to the grid
-   */
-  commitEdit(target: Element) {
-    if (this.grid.getOptions().autoCommitEdit) {
-      const activeNode = this.grid.getActiveCellNode();
-
-      // a timeout must be set or this could come into conflict when slickgrid
-      // tries to commit the edit when going from one editor to another on the grid
-      // through the click event. If the timeout was not here it would
-      // try to commit/destroy the twice, which would throw an
-      // error about the element not being in the DOM
-      setTimeout(() => {
-        // make sure the target is the active editor so we do not
-        // commit prematurely
-        if (activeNode?.contains(target) && this.grid.getEditorLock().isActive() && !target?.classList?.contains('autocomplete')) {
-          this.grid.getEditorLock().commitCurrentEdit();
-        }
-      });
-    }
-  }
-
-  /**
    * Define our internal Post Process callback, it will execute internally after we get back result from the Process backend call
    * For now, this is GraphQL Service ONLY feature and it will basically
    * refresh the Dataset & Pagination without having the user to create his own PostProcess every time
@@ -1574,7 +1552,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
         {/* <!-- Header slot if you need to create a complex custom header --> */}
         {this.props.header && <div className="header">{this.props.header}</div>}
 
-        <div id={`${this.props.gridId}`} className="slickgrid-container" onBlur={$event => this.commitEdit($event.target)}>
+        <div id={`${this.props.gridId}`} className="slickgrid-container">
         </div>
 
         {/* <!--Footer slot if you need to create a complex custom footer-- > */}
