@@ -333,11 +333,11 @@ export default class Example16 extends React.Component<Props, State> {
               Disable Sorting
             </button>
             <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="toggle-filtering-btn" onClick={() => this.toggleFilter()}>
-              <i className="mdi mdi-flip-vertical me-1"></i>
+              <i className="mdi mdi-swap-vertical me-1"></i>
               Toggle Filtering
             </button>
             <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="toggle-sorting-btn" onClick={() => this.toggleSorting()}>
-              <i className="mdi mdi-flip-vertical me-1"></i>
+              <i className="mdi mdi-swap-vertical me-1"></i>
               Toggle Sorting
             </button>
             <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="add-crud-columns-btn" onClick={() => this.addEditDeleteColumns()}>

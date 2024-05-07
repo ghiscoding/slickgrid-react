@@ -349,14 +349,16 @@ export default class Example10 extends React.Component<Props, State> {
                 data-test="toggle-pagination-grid2" />
             </label>
             {this.isGrid2WithPagination && <span style={{ marginLeft: '5px' }}>
-              <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-first-page"
-                onClick={() => this.goToGrid2FirstPage()}>
-                <i className="mdi mdi-page-first"></i>
-              </button>
-              <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-last-page"
-                onClick={() => this.goToGrid2LastPage()}>
-                <i className="mdi mdi-page-last"></i>
-              </button>
+              <div className="btn-group" role="group">
+                <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-first-page"
+                  onClick={() => this.goToGrid2FirstPage()}>
+                  <i className="mdi mdi-page-first"></i>
+                </button>
+                <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-last-page"
+                  onClick={() => this.goToGrid2LastPage()}>
+                  <i className="mdi mdi-page-last"></i>
+                </button>
+              </div>
             </span>}
           </div>
           <div className="col-sm-7">

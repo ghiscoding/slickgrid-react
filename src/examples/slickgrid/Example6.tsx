@@ -444,7 +444,7 @@ class Example6 extends React.Component<Props, State> {
               <div className="col-md-12">
                 <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="clear-filters-sorting"
                   onClick={() => this.clearAllFiltersAndSorts()} title="Clear all Filters & Sorts">
-                  <i className="mdi mdi-filter text-danger me-1"></i>
+                  <i className="mdi mdi-filter-remove-outline"></i>
                   Clear all Filter & Sorts
                 </button>
                 <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="set-dynamic-filter"
@@ -507,12 +507,14 @@ class Example6 extends React.Component<Props, State> {
             <div className="row" style={{ marginBottom: '5px' }}>
               <div className="col-md-12">
                 <label>Programmatically go to first/last page:</label>
-                <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
-                  <i className="mdi mdi-page-first"></i>
-                </button>
-                <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
-                  <i className="mdi mdi-page-last"></i>
-                </button>
+                <div className="btn-group" role="group">
+                  <button className="btn btn-outline-secondary btn-xs btn-icon px-2" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
+                    <i className="mdi mdi-page-first"></i>
+                  </button>
+                  <button className="btn btn-outline-secondary btn-xs btn-icon px-2" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
+                    <i className="mdi mdi-page-last"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

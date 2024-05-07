@@ -525,12 +525,14 @@ export default class Example31 extends React.Component<Props, State> {
         <div>
           <span>
             <label>Programmatically go to first/last page:</label>
-            <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
-              <i className="mdi mdi-page-first"></i>
-            </button>
-            <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
-              <i className="mdi mdi-page-last"></i>
-            </button>
+            <div className="btn-group" role="group">
+              <button className="btn btn-outline-secondary btn-xs btn-icon px-2" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
+                <i className="mdi mdi-page-first"></i>
+              </button>
+              <button className="btn btn-outline-secondary btn-xs btn-icon px-2" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
+                <i className="mdi mdi-page-last"></i>
+              </button>
+            </div>
           </span>
 
           <span style={{ marginLeft: '10px' }}>
