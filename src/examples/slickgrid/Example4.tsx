@@ -1,5 +1,5 @@
+import { format } from '@formkit/tempo';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-import moment from 'moment-mini';
 import React from 'react';
 
 import { CustomInputFilter } from './custom-inputFilter';
@@ -357,7 +357,7 @@ export default class Example4 extends React.Component<Props, State> {
 
         <br />
         {this.state.metrics && <span><><b>Metrics:</b>
-          {moment(this.state.metrics.endTime).format('YYYY-MM-DD HH:mm:ss')}
+          {this.state.metrics.endTime ? format(this.state.metrics.endTime, 'YYYY-MM-DD HH:mm:ss', 'en-US') : ''}
           | {this.state.metrics.itemCount} of {this.state.metrics.totalItemCount} items </>
         </span>}
 

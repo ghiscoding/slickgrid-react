@@ -1,6 +1,6 @@
+import { addDay, format } from '@formkit/tempo';
 import { GraphqlService, GraphqlPaginatedResult, GraphqlServiceApi, GraphqlServiceOption, } from '@slickgrid-universal/graphql';
 import i18next, { TFunction } from 'i18next';
-import moment from 'moment-mini';
 import {
   CursorPageInfo,
   FieldType,
@@ -159,8 +159,8 @@ class Example6 extends React.Component<Props, State> {
   }
 
   getGridOptions() {
-    const presetLowestDay = moment().add(-2, 'days').format('YYYY-MM-DD');
-    const presetHighestDay = moment().add(20, 'days').format('YYYY-MM-DD');
+    const presetLowestDay = format(addDay(new Date(), -2), 'YYYY-MM-DD');
+    const presetHighestDay = format(addDay(new Date(), 20), 'YYYY-MM-DD');
 
     return {
       enableFiltering: true,
@@ -343,8 +343,8 @@ class Example6 extends React.Component<Props, State> {
   }
 
   setFiltersDynamically() {
-    const presetLowestDay = moment().add(-2, 'days').format('YYYY-MM-DD');
-    const presetHighestDay = moment().add(20, 'days').format('YYYY-MM-DD');
+    const presetLowestDay = format(addDay(new Date(), -2), 'YYYY-MM-DD');
+    const presetHighestDay = format(addDay(new Date(), 20), 'YYYY-MM-DD');
 
     // we can Set Filters Dynamically (or different filters) afterward through the FilterService
     this.reactGrid?.filterService.updateFilters([
@@ -365,8 +365,8 @@ class Example6 extends React.Component<Props, State> {
   }
 
   resetToOriginalPresets() {
-    const presetLowestDay = moment().add(-2, 'days').format('YYYY-MM-DD');
-    const presetHighestDay = moment().add(20, 'days').format('YYYY-MM-DD');
+    const presetLowestDay = format(addDay(new Date(), -2), 'YYYY-MM-DD');
+    const presetHighestDay = format(addDay(new Date(), 20), 'YYYY-MM-DD');
 
     this.reactGrid.filterService.updateFilters([
       // you can use OperatorType or type them as string, e.g.: operator: 'EQ'
@@ -499,7 +499,7 @@ class Example6 extends React.Component<Props, State> {
             </div>
             <br />
             {this.state.metrics && <span><><b>Metrics: </b>
-              {moment(this.state.metrics.endTime).format('YYYY-MM-DD HH:mm:ss')}
+              {this.state.metrics.endTime ? format(this.state.metrics.endTime, 'YYYY-MM-DD HH:mm:ss') : ''}
               | {this.state.metrics.executionTime}ms
               | {this.state.metrics.totalItemCount} items </>
             </span>}
