@@ -12,17 +12,12 @@ Default compiled `css` (if you use the plain Bootstrap Theme CSS, you could simp
 
 ##### React
 ```html
-<link rel="stylesheet" type="text/css" href="scripts/css/font-awesome.min.css">
-<link rel="stylesheet" type="text/css" href="../node_modules/flatpickr/dist/flatpickr.min.css">
-
 <!-- Slickgrid Bootstrap theme, unless you use SASS import -->
 <link rel="stylesheet" type="text/css" href="@slickgrid-universal/common/dist/styles/css/slickgrid-theme-bootstrap.css">
 ```
 ##### WebPack
 ```typescript
 import 'bootstrap/dist/css/bootstrap.css';
-import 'font-awesome/css/font-awesome.css';
-import 'flatpickr/dist/flatpickr.min.css';
 
 // if you use CSS instead of SASS
 import '@slickgrid-universal/common/dist/styles/css/slickgrid-theme-bootstrap.css';

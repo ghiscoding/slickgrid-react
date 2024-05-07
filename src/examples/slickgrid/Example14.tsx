@@ -159,7 +159,7 @@ export default class Example14 extends React.Component {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example14.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -176,13 +176,13 @@ export default class Example14 extends React.Component {
         <h3>Grid 2 <small>(with Header Grouping &amp; Frozen/Pinned Columns)</small></h3>
 
         <div className="col-sm 12">
-          <button className="btn btn-outline-secondary btn-sm" onClick={() => this.setFrozenColumns2(-1)}
+          <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={() => this.setFrozenColumns2(-1)}
             data-test="remove-frozen-column-button">
-            <i className="fa fa-times fa-lg"></i> Remove Frozen Columns
+            <i className="mdi mdi-close"></i> Remove Frozen Columns
           </button>
-          <button className="btn btn-outline-secondary btn-sm" onClick={() => this.setFrozenColumns2(2)}
+          <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={() => this.setFrozenColumns2(2)}
             data-test="set-3frozen-columns">
-            <i className="fa fa-thumb-tack fa-lg"></i> Set 3 Frozen Columns
+            <i className="mdi mdi-pin-outline"></i> Set 3 Frozen Columns
           </button>
         </div>
 

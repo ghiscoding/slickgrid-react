@@ -37,7 +37,7 @@ const priceFormatter: Formatter = (_cell, _row, value, _col, dataContext) => {
   const direction = dataContext.priceChange >= 0 ? 'up' : 'down';
   const fragment = new DocumentFragment();
   const spanElm = document.createElement('span');
-  spanElm.className = `fa fa-arrow-${direction} text-${direction === 'up' ? 'success' : 'danger'}`;
+  spanElm.className = `mdi mdi-arrow-${direction} text-${direction === 'up' ? 'success' : 'danger'}`;
   fragment.appendChild(spanElm);
   if (value instanceof HTMLElement) {
     fragment.appendChild(value);
@@ -45,8 +45,8 @@ const priceFormatter: Formatter = (_cell, _row, value, _col, dataContext) => {
   return fragment;
 };
 
-const transactionTypeFormatter: Formatter = (row: number, cell: number, value: string) =>
-  `<span <span className="fa fa-${value === 'Buy' ? 'plus' : 'minus'}-circle ${value === 'Buy' ? 'text-info' : 'text-warning'}"></span> ${value}`;
+const transactionTypeFormatter: Formatter = (_row, _cell, value: string) =>
+  `<span class="mdi mdi-16px mdi-v-align-sub mdi-${value === 'Buy' ? 'plus' : 'minus'}-circle ${value === 'Buy' ? 'text-info' : 'text-warning'}"></span> ${value}`;
 
 const historicSparklineFormatter: Formatter = (row: number, cell: number, value: string, col: Column, dataContext: any) => {
   const svgElem = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -199,7 +199,7 @@ export default class Example34 extends React.Component<Props, State> {
       },
       draggableGrouping: {
         dropPlaceHolderText: 'Drop a column header here to group by any of these available columns: Currency, Market or Type',
-        deleteIconCssClass: 'fa fa-times',
+        deleteIconCssClass: 'mdi mdi-close',
       },
       enableDraggableGrouping: true,
       createPreHeaderPanel: true,
@@ -381,7 +381,7 @@ export default class Example34 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example34.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -399,13 +399,13 @@ export default class Example34 extends React.Component<Props, State> {
                 </span>
               </div>
               <span className="ms-3 me-1">
-                <button className="btn btn-outline-secondary btn-sm" data-test="start-btn" onClick={() => this.startSimulation()}>
-                  <li className="fa fa-play"></li> Start Simulation
+                <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="start-btn" onClick={() => this.startSimulation()}>
+                  <li className="mdi mdi-play-circle-outline"></li> Start Simulation
                 </button>
               </span>
               <span className="me-3">
-                <button className="btn btn-outline-secondary btn-sm" data-test="stop-btn" onClick={() => this.stopSimulation()}>
-                  <li className="fa fa-stop"></li> Stop Simulation
+                <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="stop-btn" onClick={() => this.stopSimulation()}>
+                  <li className="mdi mdi-stop-circle-outline"></li> Stop Simulation
                 </button>
               </span>
               <span className="mx-1">
@@ -422,8 +422,8 @@ export default class Example34 extends React.Component<Props, State> {
                   onInput={($event) => this.handleHighlightDuration(+($event.target as HTMLInputElement).value)} />
               </span>
               <div className="ms-auto">
-                <button className="btn btn-outline-secondary btn-sm" onClick={() => this.toggleFullScreen()}>
-                  <li className={this.state.isFullScreen ? 'fa fa-compress' : 'fa fa-arrows-alt'}></li> Toggle Full-Screen
+                <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={() => this.toggleFullScreen()}>
+                  <li className={this.state.isFullScreen ? 'mdi mdi-arrow-collapse' : 'mdi mdi-arrow-expand'}></li> Toggle Full-Screen
                 </button>
               </div>
             </div>

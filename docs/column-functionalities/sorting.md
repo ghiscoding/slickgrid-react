@@ -106,7 +106,7 @@ export class Example extends React.Component<Props, State> {
   }
 
   render() {
-    <button className="btn btn-outline-secondary btn-sm mx-1" data-test="set-dynamic-sorting"
+    <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="set-dynamic-sorting"
       onClick={() => this.setSortingDynamically()}>
       Set Sorting Dynamically
     </button>

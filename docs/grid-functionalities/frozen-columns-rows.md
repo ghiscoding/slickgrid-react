@@ -130,14 +130,14 @@ export class GridBasicComponent  extends React.Component<Props, State> {
           <span>
             <label htmlFor="">Pinned Rows: </label>
             <input type="number" defaultValue={this.state.frozenRowCount} onInput={($event) => this.changeFrozenRowCount($event)} />
-            <button className="btn btn-outline-secondary btn-xs" onClick={() => this.setFrozenRowCount()}>
+            <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.setFrozenRowCount()}>
               Set
             </button>
           </span>
           <span style={{ marginLeft: '10px' }}>
             <label htmlFor="">Pinned Columns: </label>
             <input type="number" defaultValue={this.state.frozenColumnCount} onInput={($event) => this.changeFrozenColumnCount($event)} />
-            <button className="btn btn-outline-secondary btn-xs" onClick={() => this.setFrozenColumnCount()}>
+            <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.setFrozenColumnCount()}>
               Set
             </button>
           </span>

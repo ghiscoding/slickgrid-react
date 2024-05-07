@@ -425,7 +425,7 @@ class Example6 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example6.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -436,26 +436,26 @@ class Example6 extends React.Component<Props, State> {
             <div className={this.state.status.class} role="alert" data-test="status">
               <strong>Status: </strong> {this.state.status.text}
               {this.state.processing ? <span>
-                <i className="fa fa-refresh fa-spin fa-lg fa-fw"></i>
+                <i className="mdi mdi-sync mdi-spin"></i>
               </span> : ''}
             </div>
 
             <div className="row">
               <div className="col-md-12">
-                <button className="btn btn-outline-secondary btn-sm" data-test="clear-filters-sorting"
+                <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="clear-filters-sorting"
                   onClick={() => this.clearAllFiltersAndSorts()} title="Clear all Filters & Sorts">
-                  <i className="fa fa-filter text-danger me-1"></i>
+                  <i className="mdi mdi-filter text-danger me-1"></i>
                   Clear all Filter & Sorts
                 </button>
-                <button className="btn btn-outline-secondary btn-sm mx-1" data-test="set-dynamic-filter"
+                <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="set-dynamic-filter"
                   onClick={() => this.setFiltersDynamically()}>
                   Set Filters Dynamically
                 </button>
-                <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-sorting"
+                <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="set-dynamic-sorting"
                   onClick={() => this.setSortingDynamically()}>
                   Set Sorting Dynamically
                 </button>
-                <button className="btn btn-outline-secondary btn-sm" data-test="reset-presets"
+                <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="reset-presets"
                   onClick={() => this.resetToOriginalPresets()}>
                   Reset Original Presets
                 </button>
@@ -472,9 +472,9 @@ class Example6 extends React.Component<Props, State> {
 
             <div className="row">
               <div className="col-md-12">
-                <button className="btn btn-outline-secondary btn-sm mx-1" onClick={() => this.switchLanguage()}
+                <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" onClick={() => this.switchLanguage()}
                   data-test="language-button">
-                  <i className="fa fa-language me-1"></i>
+                  <i className="mdi mdi-translate me-1"></i>
                   Switch Language
                 </button>
                 <b>Locale: </b>
@@ -508,10 +508,10 @@ class Example6 extends React.Component<Props, State> {
               <div className="col-md-12">
                 <label>Programmatically go to first/last page:</label>
                 <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
-                  <i className="fa fa-caret-left fa-lg"></i>
+                  <i className="mdi mdi-page-first"></i>
                 </button>
                 <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
-                  <i className="fa fa-caret-right fa-lg"></i>
+                  <i className="mdi mdi-page-last"></i>
                 </button>
               </div>
             </div>

@@ -11,7 +11,6 @@ import {
   Editors,
   FieldType,
   Filters,
-  FlatpickrOption,
   formatNumber,
   Formatter,
   Formatters,
@@ -24,6 +23,7 @@ import {
   SlickGrid,
   SlickgridReact,
   SortComparers,
+  type VanillaCalendarOption,
 } from '../../slickgrid-react';
 import './example30.scss'; // provide custom CSS/SASS styling
 import BaseSlickGridState from './state-slick-grid-base';
@@ -139,7 +139,7 @@ export default class Example30 extends React.Component<Props, State> {
   defineGrids() {
     const columnDefinitions: Column[] = [
       {
-        id: 'title', name: '<span title="Task must always be followed by a number" class="color-warning-dark fa fa-exclamation-triangle"></span> Title <span title="Title is always rendered as UPPERCASE" class="fa fa-info-circle"></span>',
+        id: 'title', name: '<span title="Task must always be followed by a number" class="text-warning mdi mdi-alert-outline"></span> Title <span title="Title is always rendered as UPPERCASE" class="mdi mdi-information-outline"></span>',
         field: 'title', sortable: true, type: FieldType.string, minWidth: 75,
         cssClass: 'text-uppercase fw-bold', columnGroup: 'Common Factor',
         filterable: true, filter: { model: Filters.compoundInputText },
@@ -238,7 +238,7 @@ export default class Example30 extends React.Component<Props, State> {
         id: 'completed', name: 'Completed', field: 'completed', width: 80, minWidth: 75, maxWidth: 100,
         cssClass: 'text-center', columnGroup: 'Period',
         sortable: true, filterable: true,
-        formatter: Formatters.checkmark,
+        formatter: Formatters.checkmarkMaterial,
         exportWithFormatter: false,
         filter: {
           collection: [{ value: '', label: '' }, { value: true, label: 'True' }, { value: false, label: 'False' }],
@@ -256,16 +256,17 @@ export default class Example30 extends React.Component<Props, State> {
         editor: {
           model: Editors.date,
           editorOptions: {
-            minDate: 'today',
+            range: { min: 'today' },
 
             // if we want to preload the date picker with a different date,
-            // we could toggle the `closeOnSelect: false`, set the date in the picker and re-toggle `closeOnSelect: true`
-            // closeOnSelect: false,
-            // onOpen: (selectedDates: Date[] | Date, dateStr: string, instance: FlatpickrInstance) => {
-            //   instance.setDate('2021-06-04', true);
-            //   instance.set('closeOnSelect', true);
-            // },
-          } as FlatpickrOption,
+            // we could do it by assigning settings.seleted.dates
+            // NOTE: vanilla-calendar doesn't automatically focus the picker to the year/month and you need to do it yourself
+            // selected: {
+            //   dates: ['2021-06-04'],
+            //   month: 6 - 1, // Note: JS Date month (only) is zero index based, so June is 6-1 => 5
+            //   year: 2021
+            // }
+          } as VanillaCalendarOption,
           massUpdate: true,
           validator: (value, args) => {
             const dataContext = args?.item;
@@ -343,7 +344,7 @@ export default class Example30 extends React.Component<Props, State> {
       {
         id: 'action', name: 'Action', field: 'action', width: 70, minWidth: 70, maxWidth: 70,
         excludeFromExport: true,
-        formatter: () => `<div class="button-style margin-auto" style="width: 35px;"><span class="fa fa-chevron-down text-primary"></span></div>`,
+        formatter: () => `<div class="button-style margin-auto" style="width: 35px;"><span class="mdi mdi-chevron-down text-primary"></span></div>`,
         cellMenu: {
           hideCloseButton: false,
           width: 175,
@@ -352,21 +353,21 @@ export default class Example30 extends React.Component<Props, State> {
             {
               command: 'edit',
               title: 'Edit Row',
-              iconCssClass: 'fa fa-pencil',
+              iconCssClass: 'mdi mdi-pencil',
               positionOrder: 66,
               action: () => this.openCompositeModal('edit'),
             },
             {
               command: 'clone',
               title: 'Clone Row',
-              iconCssClass: 'fa fa-clone',
+              iconCssClass: 'mdi mdi-content-copy',
               positionOrder: 66,
               action: () => this.openCompositeModal('clone'),
             },
             'divider',
             {
               command: 'delete-row', title: 'Delete Row', positionOrder: 64,
-              iconCssClass: 'fa fa-times color-danger', cssClass: 'red', textCssClass: 'text-italic color-danger-light',
+              iconCssClass: 'mdi mdi-close color-danger', cssClass: 'red', textCssClass: 'text-italic color-danger-light',
               // only show command to 'Delete Row' when the task is not completed
               itemVisibilityOverride: (args) => {
                 return !args.dataContext?.completed;
@@ -566,9 +567,9 @@ export default class Example30 extends React.Component<Props, State> {
 
   handleOnCellClicked(e: Event, args: any) {
     console.log(e, args);
-    // if (eventData.target.classList.contains('fa-question-circle-o')) {
+    // if (eventData.target.classList.contains('mdi-help-circle-o')) {
     //   alert('please HELP!!!');
-    // } else if (eventData.target.classList.contains('fa-chevron-down')) {
+    // } else if (eventData.target.classList.contains('mdi-chevron-down')) {
     //   alert('do something else...');
     // }
   }
@@ -651,7 +652,7 @@ export default class Example30 extends React.Component<Props, State> {
       // viewColumnLayout: 2, // responsive layout, choose from 'auto', 1, 2, or 3 (defaults to 'auto')
       showFormResetButton: true,
       // showResetButtonOnEachEditor: true,
-      resetFormButtonIconCssClass: 'fa fa-undo',
+      resetFormButtonIconCssClass: 'mdi mdi-undo',
       onClose: () => Promise.resolve(confirm('You have unsaved changes, are you sure you want to close this window?')),
       onError: (error) => alert(error.message),
       onRendered: (modalElm) => {
@@ -902,81 +903,57 @@ export default class Example30 extends React.Component<Props, State> {
   /** List of icons that are supported in this lib Material Design Icons */
   getRandomIcon(iconIndex?: number) {
     const icons = [
-      'fa-500px',
-      'fa-address-book',
-      'fa-address-book-o',
-      'fa-address-card',
-      'fa-address-card-o',
-      'fa-adjust',
-      'fa-adn',
-      'fa-align-center',
-      'fa-align-justify',
-      'fa-align-left',
-      'fa-align-right',
-      'fa-amazon',
-      'fa-ambulance',
-      'fa-american-sign-language-interpreting',
-      'fa-anchor',
-      'fa-android',
-      'fa-angellist',
-      'fa-angle-double-down',
-      'fa-angle-double-left',
-      'fa-angle-double-right',
-      'fa-angle-double-up',
-      'fa-angle-down',
-      'fa-angle-left',
-      'fa-angle-right',
-      'fa-angle-up',
-      'fa-apple',
-      'fa-archive',
-      'fa-area-chart',
-      'fa-arrow-circle-down',
-      'fa-arrow-circle-left',
-      'fa-arrow-circle-o-down',
-      'fa-arrow-circle-o-left',
-      'fa-arrow-circle-o-right',
-      'fa-arrow-circle-o-up',
-      'fa-arrow-circle-right',
-      'fa-arrow-circle-up',
-      'fa-arrow-down',
-      'fa-arrow-left',
-      'fa-arrow-right',
-      'fa-arrow-up',
-      'fa-arrows',
-      'fa-arrows-alt',
-      'fa-arrows-h',
-      'fa-arrows-v',
-      'fa-assistive-listening-systems',
-      'fa-asterisk',
-      'fa-at',
-      'fa-audio-description',
-      'fa-backward',
-      'fa-balance-scale',
-      'fa-ban',
-      'fa-bandcamp',
-      'fa-bank (alias)',
-      'fa-bar-chart',
-      'fa-barcode',
-      'fa-bars',
-      'fa-bath',
-      'fa-battery-empty',
-      'fa-battery-full',
-      'fa-battery-half',
-      'fa-battery-quarter',
-      'fa-battery-three-quarters',
-      'fa-bed',
-      'fa-beer',
-      'fa-behance',
-      'fa-behance-square',
-      'fa-bell',
-      'fa-bell-o',
-      'fa-bell-slash',
-      'fa-bell-slash-o',
-      'fa-bicycle',
-      'fa-binoculars',
-      'fa-birthday-cake',
-      'fa-bitbucket',
-      'fa-bitbucket-square',
+      'mdi-arrow-collapse',
+      'mdi-arrow-expand',
+      'mdi-cancel',
+      'mdi-check',
+      'mdi-checkbox-blank-outline',
+      'mdi-check-box-outline',
+      'mdi-checkbox-marked',
+      'mdi-close',
+      'mdi-close-circle',
+      'mdi-close-circle-outline',
+      'mdi-close-thick',
+      'mdi-content-copy',
+      'mdi-database-refresh',
+      'mdi-download',
+      'mdi-file-document-outline',
+      'mdi-file-excel-outline',
+      'mdi-file-music-outline',
+      'mdi-file-pdf-outline',
+      'mdi-filter-remove-outline',
+      'mdi-flip-vertical',
+      'mdi-folder',
+      'mdi-folder-open',
+      'mdi-help-circle',
+      'mdi-help-circle-outline',
+      'mdi-history',
+      'mdi-information',
+      'mdi-information-outline',
+      'mdi-link',
+      'mdi-link-variant',
+      'mdi-menu',
+      'mdi-microsoft-excel',
+      'mdi-minus',
+      'mdi-page-first',
+      'mdi-page-last',
+      'mdi-paperclip',
+      'mdi-pin-off-outline',
+      'mdi-pin-outline',
+      'mdi-playlist-plus',
+      'mdi-playlist-remove',
+      'mdi-plus',
+      'mdi-redo',
+      'mdi-refresh',
+      'mdi-shape-square-plus',
+      'mdi-sort-ascending',
+      'mdi-sort-descending',
+      'mdi-swap-horizontal',
+      'mdi-swap-vertical',
+      'mdi-sync',
+      'mdi-table-edit',
+      'mdi-table-refresh',
+      'mdi-undo',
     ];
     const randomNumber = Math.floor((Math.random() * icons.length - 1));
     return icons[iconIndex ?? randomNumber];
@@ -990,7 +967,7 @@ export default class Example30 extends React.Component<Props, State> {
       </div>
       <div>
         <span class="autocomplete-top-left">
-          <span class="fa ${item.itemTypeName === 'I' ? 'fa-info-circle' : 'fa-copy'}"></span>
+          <span class="fa ${item.itemTypeName === 'I' ? 'mdi-information-outline' : 'mdi-content-copy'}"></span>
           ${item.itemName}
         </span>
       <div>
@@ -1008,7 +985,7 @@ export default class Example30 extends React.Component<Props, State> {
           </div>
           <div>
             <span class="autocomplete-top-left">
-              <span class="fa ${item.itemTypeName === 'I' ? 'fa-info-circle' : 'fa-copy'}"></span>
+              <span class="fa ${item.itemTypeName === 'I' ? 'mdi-information-outline' : 'mdi-content-copy'}"></span>
               ${item.itemName}
             </span>
             <span class="autocomplete-top-right">${formatNumber(item.listPrice, 2, 2, false, '$')}</span>
@@ -1025,14 +1002,15 @@ export default class Example30 extends React.Component<Props, State> {
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
-          <button className="btn btn-outline-secondary btn-sm ms-2" onClick={() => this.toggleDarkMode()} data-test="toggle-dark-mode">
+          <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => this.toggleDarkMode()} data-test="toggle-dark-mode">
+            <i className="mdi mdi-theme-light-dark"></i>
             <span>Toggle Dark Mode</span>
           </button>
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example30.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -1040,50 +1018,50 @@ export default class Example30 extends React.Component<Props, State> {
 
         <div className="mb-2">
           <div className="btn-group btn-group-sm" role="group" aria-label="Basic Editing Commands">
-            <button type="button" className="btn btn-outline-secondary" data-test="toggle-readonly-btn"
+            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="toggle-readonly-btn"
               onClick={() => this.toggleGridEditReadonly()}>
-              <i className="fa fa-table"></i> Toggle Edit/Readonly Grid
+              <i className="mdi mdi-table-edit"></i> Toggle Edit/Readonly Grid
             </button>
-            <button type="button" className="btn btn-outline-secondary" data-test="undo-last-edit-btn"
+            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="undo-last-edit-btn"
               onClick={() => this.undoLastEdit()}>
-              <i className="fa fa-undo"></i> Undo Last Edit
+              <i className="mdi mdi-undo"></i> Undo Last Edit
             </button>
-            <button type="button" className="btn btn-outline-secondary" data-test="undo-open-editor-btn"
+            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="undo-open-editor-btn"
               onClick={() => this.undoLastEdit(true)}>
-              <i className="fa fa-undo"></i> Undo Last Edit &amp; Open Editor
+              <i className="mdi mdi-undo"></i> Undo Last Edit &amp; Open Editor
             </button>
-            <button type="button" className="btn btn-outline-secondary" data-test="undo-all-edits-btn"
+            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="undo-all-edits-btn"
               onClick={() => this.undoAllEdits()}>
-              <i className="fa fa-history"></i> Undo All Edits
+              <i className="mdi mdi-history"></i> Undo All Edits
             </button>
-            <button type="button" className="btn btn-outline-secondary" data-test="save-all-btn"
+            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="save-all-btn"
               onClick={() => this.saveAll()}>
-              <i className="fa fa-save"></i> Save All
+              Save All
             </button>
           </div>
         </div>
 
         <div className="mb-3">
           <div className="btn-group btn-group-sm" role="group" aria-label="Basic example">
-            <button type="button" className="btn btn-outline-secondary" data-test="open-modal-create-btn"
+            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="open-modal-create-btn"
               onClick={() => this.openCompositeModal('create')} disabled={this.state.isCompositeDisabled}>
-              <i className="fa fa-plus"></i> Item Create
+              <i className="mdi mdi-shape-square-plus"></i> Item Create
             </button>
-            <button type="button" className="btn btn-outline-secondary" data-test="open-modal-clone-btn"
+            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="open-modal-clone-btn"
               onClick={() => this.openCompositeModal('clone')} disabled={this.state.isCompositeDisabled}>
-              <i className="fa fa-clone"></i> Item Clone
+              <i className="mdi mdi-content-copy"></i> Item Clone
             </button>
-            <button type="button" className="btn btn-outline-secondary" data-test="open-modal-edit-btn"
+            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="open-modal-edit-btn"
               onClick={() => this.openCompositeModal('edit')} disabled={this.state.isCompositeDisabled}>
-              <i className="fa fa-pencil"></i> Item Edit
+              <i className="mdi mdi-pencil"></i> Item Edit
             </button>
-            <button type="button" className="btn btn-outline-secondary" data-test="open-modal-mass-update-btn"
+            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="open-modal-mass-update-btn"
               onClick={() => this.openCompositeModal('mass-update')} disabled={this.state.isCompositeDisabled}>
-              <i className="fa fa-pencil-square-o"></i> Mass Update
+              <i className="mdi mdi-pencil-box-multiple-outline"></i> Mass Update
             </button>
-            <button type="button" className="btn btn-outline-secondary" data-test="open-modal-mass-selection-btn"
+            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="open-modal-mass-selection-btn"
               onClick={() => this.openCompositeModal('mass-selection')} disabled={this.state.isMassSelectionDisabled}>
-              <i className="fa fa-check-square-o"></i> Update Selected
+              <i className="mdi mdi-check-box-outline"></i> Update Selected
             </button>
           </div>
         </div>

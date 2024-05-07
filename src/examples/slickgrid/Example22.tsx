@@ -159,7 +159,7 @@ export default class Example22 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example22.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>

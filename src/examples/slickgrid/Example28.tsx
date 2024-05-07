@@ -40,15 +40,12 @@ interface State extends BaseSlickGridState {
 export default class Example28 extends React.Component<Props, State> {
   title = 'Example 28: Tree Data with Aggregators <small>(from a Hierarchical Dataset)</small>';
   subTitle = `<ul>
-    <li><b>NOTE #1:</b> The grid will automatically sort Ascending with the column that has the Tree Data, you could add a "sortByFieldId" in your column "treeData" option if you wish to sort on a different column</li>
-    <li><b>NOTE #2:</b> Tree Totals are only calculated once and are <b>NOT</b> recalculated while filtering data, if you do want that feature then you will need to enable <code>autoRecalcTotalsOnFilterChange</code> <i>(see checkbox below)</i></li>
-    <li><b>Styling - Salesforce Theme</b></li>
+    <li>It is assumed that your dataset will have Parent/Child references AND also Tree Level (indent) property.</li>
     <ul>
-      <li>The Salesforce Theme was created with SASS and compiled in CSS (<a href="https://github.com/slickgrid-universal/slickgrid-universal/blob/master/packages/common/src/styles/slickgrid-theme-salesforce.scss" target="_blank">slickgrid-theme-salesforce.scss</a>), you can override any of its SASS variables</li>
-      <li>We use a small subset of <a href="https://materialdesignicons.com/" target="_blank">Material Design Icons</a></li>
-      <li>you might need to refresh the page to clear the browser cache and see the correct theme</li>
+      <li>If you do not have the Tree Level (indent), you could call "convertParentChildArrayToHierarchicalView()" then call "convertHierarchicalViewToParentChildArray()"</li>
+      <li>You could also pass the result of "convertParentChildArrayToHierarchicalView()" to "dataset-hierarchical.bind" as defined in the next Hierarchical Example</li>
     </ul>
-  `;
+  </ul>`;
   reactGrid!: SlickgridReactInstance;
 
   constructor(public readonly props: Props) {
@@ -286,13 +283,13 @@ export default class Example28 extends React.Component<Props, State> {
   getFileIcon(value: string) {
     let prefix = '';
     if (value.includes('.pdf')) {
-      prefix = '<span class="fa fa-file-pdf-o text-danger"></span>';
+      prefix = '<span class="mdi mdi-file-pdf-outline text-danger"></span>';
     } else if (value.includes('.txt')) {
-      prefix = '<span class="fa fa-file-text-o"></span>';
+      prefix = '<span class="mdi mdi-file-document-outline"></span>';
     } else if (value.includes('.xls')) {
-      prefix = '<span class="fa fa-file-excel-o text-primary"></span>';
+      prefix = '<span class="mdi mdi-file-excel-outline text-primary"></span>';
     } else if (value.includes('.mp3')) {
-      prefix = '<span class="fa fa-file-audio-o text-info"></span>';
+      prefix = '<span class="mdi mdi-file-music-outline text-info"></span>';
     }
     return prefix;
   }
@@ -428,7 +425,7 @@ export default class Example28 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example28.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -437,29 +434,29 @@ export default class Example28 extends React.Component<Props, State> {
         <div className="row">
           <div className="col-md-7">
             <button onClick={() => this.addNewFile()} data-test="add-item-btn" className="btn btn-sm btn-primary">
-              <span className="fa fa-plus me-1"></span>
+              <span className="mdi mdi-shape-square-plus me-1"></span>
               <span>Add New Pop Song</span>
             </button>
-            <button onClick={() => this.deleteFile()} data-test="remove-item-btn" className="btn btn-outline-secondary btn-sm" disabled={this.state.isRemoveLastInsertedPopSongDisabled}>
-              <span className="fa fa-minus me-1"></span>
+            <button onClick={() => this.deleteFile()} data-test="remove-item-btn" className="btn btn-outline-secondary btn-sm btn-icon" disabled={this.state.isRemoveLastInsertedPopSongDisabled}>
+              <span className="mdi mdi-minus me-1"></span>
               <span>Remove Last Inserted Pop Song</span>
             </button>
-            <button onClick={() => this.collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-sm mx-1">
-              <span className="fa fa-compress me-1"></span>
+            <button onClick={() => this.collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-sm btn-icon mx-1">
+              <span className="mdi mdi-arrow-collapse me-1"></span>
               <span>Collapse All</span>
             </button>
-            <button onClick={() => this.expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-sm">
-              <span className="fa fa-expand me-1"></span>
+            <button onClick={() => this.expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-sm btn-icon">
+              <span className="mdi mdi-arrow-expand me-1"></span>
               <span>Expand All</span>
             </button>
-            <button className='btn btn-outline-secondary btn-sm' data-test="clear-filters-btn" onClick={() => this.reactGrid.filterService.clearFilters()}>
-              <span className="fa fa-close me-1"></span>
+            <button className='btn btn-outline-secondary btn-sm btn-icon' data-test="clear-filters-btn" onClick={() => this.reactGrid.filterService.clearFilters()}>
+              <span className="mdi mdi-close me-1"></span>
               <span>Clear Filters</span>
             </button>
-            <button onClick={() => this.logFlatStructure()} className="btn btn-outline-secondary btn-sm mx-1">
+            <button onClick={() => this.logFlatStructure()} className="btn btn-outline-secondary btn-sm btn-icon mx-1">
               <span>Log Flat Structure</span>
             </button>
-            <button onClick={() => this.logHierarchicalStructure()} className="btn btn-outline-secondary btn-sm">
+            <button onClick={() => this.logHierarchicalStructure()} className="btn btn-outline-secondary btn-sm btn-icon">
               <span>Log Hierarchical Structure</span>
             </button>
           </div>
@@ -468,7 +465,7 @@ export default class Example28 extends React.Component<Props, State> {
             <div className="input-group input-group-sm">
               <input type="text" className="form-control search-string" data-test="search-string" value={this.state.searchString} onInput={($event) => this.searchStringChanged(($event.target as HTMLInputElement).value)} />
               <button className="btn btn-sm btn-outline-secondary d-flex align-items-center" data-test="clear-search-string" onClick={() => this.clearSearch()}>
-                <span className="icon fa fa-times"></span>
+                <span className="icon mdi mdi-close"></span>
               </button>
             </div>
           </div>

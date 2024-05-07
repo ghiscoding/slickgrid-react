@@ -75,7 +75,7 @@ export default class Example11 extends React.Component {
         field: 'id',
         excludeFromHeaderMenu: true,
         formatter: Formatters.icon,
-        params: { iconCssClass: 'fa fa-trash pointer' },
+        params: { iconCssClass: 'mdi mdi-trash-can pointer' },
         minWidth: 30,
         maxWidth: 30,
         // use onCellClick OR grid.onClick.subscribe which you can see down below
@@ -132,7 +132,7 @@ export default class Example11 extends React.Component {
       },
       {
         id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
-        formatter: Formatters.checkmark,
+        formatter: Formatters.checkmarkMaterial,
         type: FieldType.number,
         editor: {
           model: Editors.checkbox
@@ -288,7 +288,7 @@ export default class Example11 extends React.Component {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example11.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -298,26 +298,26 @@ export default class Example11 extends React.Component {
           <span>
             <label>Scroll: </label>
             <div className="btn-group mx-1" role="group" aria-label="...">
-              <button className="btn btn-sm btn-outline-secondary" data-test="scroll-top-btn" onClick={() => this.scrollGridTop()}>
-                <i className="fa fa-arrow-up"></i>
+              <button className="btn btn-sm btn-outline-secondary btn-icon" data-test="scroll-top-btn" onClick={() => this.scrollGridTop()}>
+                <i className="mdi mdi-arrow-down mdi-rotate-180"></i>
               </button>
-              <button className="btn btn-sm btn-outline-secondary" data-test="scroll-bottom-btn"
+              <button className="btn btn-sm btn-outline-secondary btn-icon" data-test="scroll-bottom-btn"
                 onClick={() => this.scrollGridBottom()}>
-                <i className="fa fa-arrow-down"></i>
+                <i className="mdi mdi-arrow-down"></i>
               </button>
             </div>
-            <button className="btn btn-sm btn-outline-secondary" data-test="add-new-item-top-btn"
+            <button className="btn btn-sm btn-outline-secondary btn-icon" data-test="add-new-item-top-btn"
               onClick={() => this.addNewItem('top')}>Add New Mocked Item (top)</button>
             <button className="btn btn-sm btn-outline-secondary mx-1" data-test="add-new-item-bottom-btn"
               onClick={() => this.addNewItem('bottom')}>Add New Mocked Item
               (bottom)</button>
-            <button className="btn btn-sm btn-outline-secondary" data-test="update-second-item-btn"
+            <button className="btn btn-sm btn-outline-secondary btn-icon" data-test="update-second-item-btn"
               onClick={() => this.updateSecondItem()}>
               Update 2nd Row Item with Random Duration
             </button>
             <button className="btn btn-sm btn-outline-secondary mx-1" data-test="highlight-row5-btn"
               onClick={() => this.highlighFifthRow()}>Highlight 5th Row</button>
-            <button className="btn btn-sm btn-outline-secondary" data-test="highlight-duration40-btn"
+            <button className="btn btn-sm btn-outline-secondary btn-icon" data-test="highlight-duration40-btn"
               onClick={() => this.changeDurationBackgroundColor()}>
               Highlight Rows with Duration over 50
             </button>

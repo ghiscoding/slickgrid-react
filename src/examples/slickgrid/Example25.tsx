@@ -310,7 +310,7 @@ export default class Example25 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example25.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -321,7 +321,7 @@ export default class Example25 extends React.Component<Props, State> {
             <div className={this.state.status.class} role="alert" data-test="status">
               <strong>Status: </strong> {this.state.status.text}
               {this.state.processing ? <span>
-                <i className="fa fa-refresh fa-spin fa-lg fa-fw"></i>
+                <i className="mdi mdi-sync mdi-spin"></i>
               </span> : ''}
             </div>
           </div>

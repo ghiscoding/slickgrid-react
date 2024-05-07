@@ -179,7 +179,7 @@ export default class Example13 extends React.Component<Props, State> {
         minWidth: 30, width: 80, maxWidth: 90,
         cssClass: 'cell-effort-driven',
         field: 'effortDriven',
-        formatter: Formatters.checkmark,
+        formatter: Formatters.checkmarkMaterial,
         sortable: true,
         filterable: true,
         filter: {
@@ -402,7 +402,7 @@ export default class Example13 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example13.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -410,23 +410,23 @@ export default class Example13 extends React.Component<Props, State> {
 
         <div className="row">
           <div className="col-sm-12">
-            <button className="btn btn-outline-secondary btn-xs" data-test="add-500-rows-btn" onClick={() => this.updateData(500)}>
+            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="add-500-rows-btn" onClick={() => this.updateData(500)}>
               500 rows
             </button>
-            <button className="btn btn-outline-secondary btn-xs" data-test="add-50k-rows-btn" onClick={() => this.updateData(50000)}>
+            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="add-50k-rows-btn" onClick={() => this.updateData(50000)}>
               50k rows
             </button>
-            <button className="btn btn-outline-secondary btn-xs" data-test="clear-grouping-btn" onClick={() => this.clearGrouping()}>
-              <i className="fa fa-times"></i> Clear grouping
+            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="clear-grouping-btn" onClick={() => this.clearGrouping()}>
+              <i className="mdi mdi-close"></i> Clear grouping
             </button>
-            <button className="btn btn-outline-secondary btn-xs" data-test="collapse-all-btn" onClick={() => this.collapseAllGroups()}>
-              <i className="fa fa-compress"></i> Collapse all groups
+            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="collapse-all-btn" onClick={() => this.collapseAllGroups()}>
+              <i className="mdi mdi-arrow-collapse"></i> Collapse all groups
             </button>
-            <button className="btn btn-outline-secondary btn-xs" data-test="expand-all-btn" onClick={() => this.expandAllGroups()}>
-              <i className="fa fa-expand"></i> Expand all groups
+            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="expand-all-btn" onClick={() => this.expandAllGroups()}>
+              <i className="mdi mdi-arrow-expand"></i> Expand all groups
             </button>
-            <button className="btn btn-outline-secondary btn-xs" data-test="export-excel-btn" onClick={() => this.exportToExcel()}>
-              <i className="fa fa-file-excel-o text-success"></i> Export to Excel
+            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="export-excel-btn" onClick={() => this.exportToExcel()}>
+              <i className="mdi mdi-file-excel-outline text-success"></i> Export to Excel
             </button>
           </div>
         </div>
@@ -435,31 +435,31 @@ export default class Example13 extends React.Component<Props, State> {
 
         <div className="row">
           <div className="col-sm-12">
-            <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-sort-value-btn"
+            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="group-duration-sort-value-btn"
               onClick={() => this.groupByDuration()}>
               Group by Duration &amp; sort groups by value
             </button>
-            <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-sort-count-btn"
+            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="group-duration-sort-count-btn"
               onClick={() => this.groupByDurationOrderByCount(false)}>
               Group by Duration &amp; sort groups by count
             </button>
           </div>
           <div className="row">
             <div className="col-sm-12">
-              <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-sort-count-collapse-btn"
+              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="group-duration-sort-count-collapse-btn"
                 onClick={() => this.groupByDurationOrderByCount(true)}>
                 Group by Duration &amp; sort groups by count, aggregate collapsed
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-effort-btn"
+              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="group-duration-effort-btn"
                 onClick={() => this.groupByDurationEffortDriven()}>
                 Group by Duration then Effort-Driven
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-effort-percent-btn"
+              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="group-duration-effort-percent-btn"
                 onClick={() => this.groupByDurationEffortDrivenPercent()}>
                 Group by Duration then Effort-Driven then Percent.
               </button>
               {this.state.processing && <span>
-                <i className="fa fa-refresh fa-spin fa-lg fa-fw"></i>
+                <i className="mdi mdi-sync mdi-spin"></i>
               </span>}
             </div>
           </div>

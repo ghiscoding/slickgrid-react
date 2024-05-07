@@ -204,7 +204,7 @@ export default class Example18 extends React.Component<Props, State> {
           collection: [{ value: '', label: '' }, { value: true, label: 'True' }, { value: false, label: 'False' }],
           model: Filters.singleSelect
         },
-        formatter: Formatters.checkmark,
+        formatter: Formatters.checkmarkMaterial,
         grouping: {
           getter: 'effortDriven',
           formatter: (g) => `Effort-Driven: ${g.value ? 'True' : 'False'} <span style="color:green">(${g.count} items)</span>`,
@@ -241,8 +241,8 @@ export default class Example18 extends React.Component<Props, State> {
       },
       draggableGrouping: {
         dropPlaceHolderText: 'Drop a column header here to group by the column',
-        // groupIconCssClass: 'fa fa-outdent',
-        deleteIconCssClass: 'fa fa-times',
+        // groupIconCssClass: 'mdi mdi-drag-vertical',
+        deleteIconCssClass: 'mdi mdi-close',
         onGroupChanged: (_e, args) => this.onGroupChanged(args),
         onExtensionRegistered: (extension) => this.draggableGroupingPlugin = extension,
       },
@@ -473,7 +473,7 @@ export default class Example18 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example18.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -482,49 +482,49 @@ export default class Example18 extends React.Component<Props, State> {
         <form className="form-inline" onSubmit={(e) => e.preventDefault()}>
           <div className="row">
             <div className="col-sm-12">
-              <button className="btn btn-outline-secondary btn-xs" data-test="add-500-rows-btn" onClick={() => this.setData(500)}>
+              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="add-500-rows-btn" onClick={() => this.setData(500)}>
                 500 rows
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="add-50k-rows-btn" onClick={() => this.setData(50000)}>
+              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="add-50k-rows-btn" onClick={() => this.setData(50000)}>
                 50k rows
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="clear-grouping-btn" onClick={() => this.clearGroupsAndSelects()}>
-                <i className="fa fa-times"></i> Clear grouping
+              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="clear-grouping-btn" onClick={() => this.clearGroupsAndSelects()}>
+                <i className="mdi mdi-close"></i> Clear grouping
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="collapse-all-btn" onClick={() => this.collapseAllGroups()}>
-                <i className="fa fa-compress"></i> Collapse all groups
+              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="collapse-all-btn" onClick={() => this.collapseAllGroups()}>
+                <i className="mdi mdi-arrow-collapse"></i> Collapse all groups
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="expand-all-btn" onClick={() => this.expandAllGroups()}>
-                <i className="fa fa-expand"></i> Expand all groups
+              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="expand-all-btn" onClick={() => this.expandAllGroups()}>
+                <i className="mdi mdi-arrow-expand"></i> Expand all groups
               </button>
-              <button className="btn btn-outline-secondary btn-xs" onClick={() => this.toggleDraggableGroupingRow()}>
+              <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.toggleDraggableGroupingRow()}>
                 Toggle Draggable Grouping Row
               </button>
-              <button className="btn btn-outline-secondary btn-xs" onClick={() => this.exportToExcel()}>
-                <i className="fa fa-file-excel-o text-success"></i> Export to Excel
+              <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.exportToExcel()}>
+                <i className="mdi mdi-file-excel-outline text-success"></i> Export to Excel
               </button>
             </div>
           </div>
 
           <div className="row">
             <div className="col-sm-12">
-              <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-sort-value-btn"
+              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="group-duration-sort-value-btn"
                 onClick={() => this.groupByDurationOrderByCount(false)}>
                 Group by duration &amp; sort groups by value
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-sort-count-btn"
+              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="group-duration-sort-count-btn"
                 onClick={() => this.groupByDurationOrderByCount(true)}>
                 Group by duration &amp; sort groups by count
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="group-duration-effort-btn"
+              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="group-duration-effort-btn"
                 onClick={() => this.groupByDurationEffortDriven()}>
                 Group by Duration then Effort-Driven
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="set-dynamic-filter"
+              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="set-dynamic-filter"
                 onClick={() => this.setFiltersDynamically()}>
                 Set Filters Dynamically
               </button>
-              <button className="btn btn-outline-secondary btn-xs" data-test="set-dynamic-sorting"
+              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="set-dynamic-sorting"
                 onClick={() => this.setSortingDynamically()}>
                 Set Sorting Dynamically
               </button>

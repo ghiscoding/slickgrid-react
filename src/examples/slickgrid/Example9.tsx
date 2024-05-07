@@ -29,12 +29,12 @@ class Example9 extends React.Component<Props, State> {
     This example demonstrates using the <b>Slick.Controls.GridMenu</b> plugin to easily add a Grid Menu (aka hamburger menu) on the top right corner of the grid.<br/>
     (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grid-menu" target="_blank">Docs</a>)
     <ul>
-    <li>You can change the Grid Menu icon, for example "fa-ellipsis-v"&nbsp;&nbsp;<span class="fa fa-ellipsis-v"></span>&nbsp;&nbsp;(which is shown in this example)</li>
-    <li>By default the Grid Menu shows all columns which you can show/hide them</li>
-    <li>You can configure multiple custom "commands" to show up in the Grid Menu and use the "onGridMenuCommand()" callback</li>
-    <li>Doing a "right+click" over any column header will also provide a way to show/hide a column (via the Column Picker Plugin)</li>
-    <li>You can change the icons of both picker via SASS variables as shown in this demo (check all SASS variables)</li>
-    <li><i class="fa fa-arrow-down"></i> You can also show the Grid Menu anywhere on your page</li>
+      <li>You can change the Grid Menu icon, for example "mdi-dots-vertical"&nbsp;&nbsp;<span class="mdi mdi-dots-vertical"></span>&nbsp;&nbsp;(which is shown in this example)</li>
+      <li>By default the Grid Menu shows all columns which you can show/hide them</li>
+      <li>You can configure multiple custom "commands" to show up in the Grid Menu and use the "onGridMenuCommand()" callback</li>
+      <li>Doing a "right + click" over any column header will also provide a way to show/hide a column (via the Column Picker Plugin)</li>
+      <li>You can change the icons of both picker via SASS variables as shown in this demo (check all SASS variables)</li>
+      <li><i class="mdi mdi-arrow-down icon"></i> You can also show the Grid Menu anywhere on your page</li>
     </ul>
   `;
 
@@ -85,7 +85,7 @@ class Example9 extends React.Component<Props, State> {
       { id: 'start', name: 'Start', field: 'start', nameKey: 'START', filterable: true, type: FieldType.dateUs, filter: { model: Filters.compoundDate } },
       { id: 'finish', name: 'Finish', field: 'finish', nameKey: 'FINISH', filterable: true, type: FieldType.dateUs, filter: { model: Filters.compoundDate } },
       {
-        id: 'completed', name: 'Completed', field: 'completed', nameKey: 'COMPLETED', maxWidth: 80, formatter: Formatters.checkmark,
+        id: 'completed', name: 'Completed', field: 'completed', nameKey: 'COMPLETED', maxWidth: 80, formatter: Formatters.checkmarkMaterial,
         type: FieldType.boolean,
         minWidth: 100,
         sortable: true,
@@ -122,20 +122,20 @@ class Example9 extends React.Component<Props, State> {
         // all titles optionally support translation keys, if you wish to use that feature then use the title properties with the 'Key' suffix (e.g: titleKey)
         // example "commandTitle" for a plain string OR "commandTitleKey" to use a translation key
         commandTitleKey: 'CUSTOM_COMMANDS',
-        iconCssClass: 'fa fa-ellipsis-v', // defaults to "fa-bars"
+        iconCssClass: 'mdi mdi-dots-vertical', // defaults to "mdi-menu"
         hideForceFitButton: true,
         hideSyncResizeButton: true,
         hideToggleFilterCommand: false, // show/hide internal custom commands
         menuWidth: 17,
         resizeOnShowHeaderRow: true,
-        subItemChevronClass: 'fa fa-chevron-right',
+        subItemChevronClass: 'mdi mdi-chevron-down mdi-rotate-270',
         commandItems: [
           // add Custom Items Commands which will be appended to the existing internal custom items
           // you cannot override an internal items but you can hide them and create your own
           // also note that the internal custom commands are in the positionOrder range of 50-60,
           // if you want yours at the bottom then start with 61, below 50 will make your command(s) show on top
           {
-            iconCssClass: 'fa fa-question-circle',
+            iconCssClass: 'mdi mdi-help-circle',
             titleKey: 'HELP',
             disabled: false,
             command: 'help',
@@ -152,7 +152,7 @@ class Example9 extends React.Component<Props, State> {
             command: 'command1',
             positionOrder: 91,
             cssClass: 'orange',
-            iconCssClass: 'fa fa-warning',
+            iconCssClass: 'mdi mdi-alert',
             // you can use the "action" callback and/or use "onCallback" callback from the grid options, they both have the same arguments
             action: (_e: Event, args: any) => alert(args.command),
             itemUsabilityOverride: (args: any) => {
@@ -315,19 +315,19 @@ class Example9 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example9.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
         <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
-        <button className="btn btn-outline-secondary btn-sm" data-test="external-gridmenu"
+        <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="external-gridmenu"
           onClick={$event => this.toggleGridMenu($event.nativeEvent)}>
-          <i className="fa fa-bars me-1"></i>
+          <i className="mdi mdi-menu me-1"></i>
           Grid Menu
         </button>
-        <button className="btn btn-outline-secondary btn-sm mx-1" data-test="language" onClick={() => this.switchLanguage()}>
-          <i className="fa fa-language me-1"></i>
+        <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="language" onClick={() => this.switchLanguage()}>
+          <i className="mdi mdi-translate me-1"></i>
           Switch Language
         </button>
         <b>Locale:</b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{this.state.selectedLanguage + '.json'}</span>

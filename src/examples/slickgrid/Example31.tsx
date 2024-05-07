@@ -491,7 +491,7 @@ export default class Example31 extends React.Component<Props, State> {
             see&nbsp;
             <a target="_blank"
               href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example31.tsx">
-              <span className="fa fa-link"></span> code
+              <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
         </h2>
@@ -499,21 +499,21 @@ export default class Example31 extends React.Component<Props, State> {
 
         <div className="row">
           <div className="col-md-12" aria-label="Basic Editing Commands">
-            <button className="btn btn-outline-secondary btn-sm" data-test="clear-filters-sorting"
+            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="clear-filters-sorting"
               onClick={() => this.clearAllFiltersAndSorts()} title="Clear all Filters & Sorts">
               <span className="mdi mdi-close"></span>
               <span>Clear all Filter & Sorts</span>
             </button>
 
-            <button className="btn btn-outline-secondary btn-sm mx-1" data-test="set-dynamic-filter"
+            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="set-dynamic-filter"
               onClick={() => this.setFiltersDynamically()}>
               Set Filters Dynamically
             </button>
-            <button className="btn btn-outline-secondary btn-sm" data-test="set-dynamic-sorting"
+            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="set-dynamic-sorting"
               onClick={() => this.setSortingDynamically()}>
               Set Sorting Dynamically
             </button>
-            <button className="btn btn-outline-secondary btn-sm mx-1" style={{ marginLeft: '10px' }} data-test="add-gender-button"
+            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" style={{ marginLeft: '10px' }} data-test="add-gender-button"
               onClick={() => this.addOtherGender()} disabled={this.state.isOtherGenderAdded}>
               Add Other Gender via RxJS
             </button>
@@ -526,10 +526,10 @@ export default class Example31 extends React.Component<Props, State> {
           <span>
             <label>Programmatically go to first/last page:</label>
             <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
-              <i className="fa fa-caret-left fa-lg"></i>
+              <i className="mdi mdi-page-first"></i>
             </button>
             <button className="btn btn-outline-secondary btn-xs px-2" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
-              <i className="fa fa-caret-right fa-lg"></i>
+              <i className="mdi mdi-page-last"></i>
             </button>
           </span>
 
