@@ -62,6 +62,7 @@ const historicSparklineFormatter: Formatter = (row: number, cell: number, value:
 };
 
 export default class Example34 extends React.Component<Props, State> {
+  private _darkMode = false;
   title = 'Example 34: Real-Time Trading Platform';
   subTitle = `Simulate a stock trading platform with lot of price changes
   <ul>
@@ -101,6 +102,8 @@ export default class Example34 extends React.Component<Props, State> {
 
   componentWillUnmount() {
     this.stopSimulation();
+    document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
+    document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
   }
 
   reactGridReady(reactGrid: SlickgridReactInstance) {
@@ -370,6 +373,22 @@ export default class Example34 extends React.Component<Props, State> {
     this.reactGrid.resizerService.resizeGrid();
   }
 
+  toggleDarkMode() {
+    this._darkMode = !this._darkMode;
+    this.toggleBodyBackground();
+    this.reactGrid.slickGrid?.setOptions({ darkMode: this._darkMode });
+  }
+
+  toggleBodyBackground() {
+    if (this._darkMode) {
+      document.querySelector<HTMLDivElement>('.panel-wm-content')!.classList.add('dark-mode');
+      document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'dark';
+    } else {
+      document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
+      document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
+    }
+  }
+
   private randomNumber(min: number, max: number, floor = true) {
     const number = Math.random() * (max - min + 1) + min;
     return floor ? Math.floor(number) : number;
@@ -380,6 +399,10 @@ export default class Example34 extends React.Component<Props, State> {
       <div>
         <h2>
           {this.title}
+          <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => this.toggleDarkMode()} data-test="toggle-dark-mode">
+            <i className="mdi mdi-theme-light-dark"></i>
+            <span>Toggle Dark Mode</span>
+          </button>
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
