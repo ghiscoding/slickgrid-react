@@ -30,6 +30,7 @@ interface State extends BaseSlickGridState {
 }
 
 export default class Example18 extends React.Component<Props, State> {
+  private _darkMode = false;
   title = 'Example 18: Draggable Grouping & Aggregators';
   subTitle = `
   <ul>
@@ -75,6 +76,11 @@ export default class Example18 extends React.Component<Props, State> {
     this.defineGrid();
   }
 
+  componentWillUnmount() {
+    document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
+    document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
+  }
+
   /* Define grid Options and Columns */
   defineGrid() {
     const columnDefinitions: Column[] = [
@@ -86,7 +92,7 @@ export default class Example18 extends React.Component<Props, State> {
         sortable: true,
         grouping: {
           getter: 'title',
-          formatter: (g) => `Title: ${g.value}  <span style="color:green">(${g.count} items)</span>`,
+          formatter: (g) => `Title: ${g.value}  <span class="text-primary">(${g.count} items)</span>`,
           aggregators: [
             new Aggregators.Sum('cost')
           ],
@@ -104,7 +110,7 @@ export default class Example18 extends React.Component<Props, State> {
         groupTotalsFormatter: GroupTotalFormatters.sumTotals,
         grouping: {
           getter: 'duration',
-          formatter: (g) => `Duration: ${g.value}  <span style="color:green">(${g.count} items)</span>`,
+          formatter: (g) => `Duration: ${g.value}  <span class="text-primary">(${g.count} items)</span>`,
           comparer: (a, b) => {
             return this.state.durationOrderByCount ? (a.count - b.count) : SortComparers.numeric(a.value, b.value, SortDirectionNumber.asc);
           },
@@ -126,7 +132,7 @@ export default class Example18 extends React.Component<Props, State> {
         groupTotalsFormatter: GroupTotalFormatters.avgTotalsPercentage,
         grouping: {
           getter: 'percentComplete',
-          formatter: (g) => `% Complete: ${g.value}  <span style="color:green">(${g.count} items)</span>`,
+          formatter: (g) => `% Complete: ${g.value}  <span class="text-primary">(${g.count} items)</span>`,
           aggregators: [
             new Aggregators.Sum('cost')
           ],
@@ -146,7 +152,7 @@ export default class Example18 extends React.Component<Props, State> {
         exportWithFormatter: true,
         grouping: {
           getter: 'start',
-          formatter: (g) => `Start: ${g.value}  <span style="color:green">(${g.count} items)</span>`,
+          formatter: (g) => `Start: ${g.value}  <span class="text-primary">(${g.count} items)</span>`,
           aggregators: [
             new Aggregators.Sum('cost')
           ],
@@ -166,7 +172,7 @@ export default class Example18 extends React.Component<Props, State> {
         exportWithFormatter: true,
         grouping: {
           getter: 'finish',
-          formatter: (g) => `Finish: ${g.value} <span style="color:green">(${g.count} items)</span>`,
+          formatter: (g) => `Finish: ${g.value} <span class="text-primary">(${g.count} items)</span>`,
           aggregators: [
             new Aggregators.Sum('cost')
           ],
@@ -186,7 +192,7 @@ export default class Example18 extends React.Component<Props, State> {
         type: FieldType.number,
         grouping: {
           getter: 'cost',
-          formatter: (g) => `Cost: ${g.value} <span style="color:green">(${g.count} items)</span>`,
+          formatter: (g) => `Cost: ${g.value} <span class="text-primary">(${g.count} items)</span>`,
           aggregators: [
             new Aggregators.Sum('cost')
           ],
@@ -207,7 +213,7 @@ export default class Example18 extends React.Component<Props, State> {
         formatter: Formatters.checkmarkMaterial,
         grouping: {
           getter: 'effortDriven',
-          formatter: (g) => `Effort-Driven: ${g.value ? 'True' : 'False'} <span style="color:green">(${g.count} items)</span>`,
+          formatter: (g) => `Effort-Driven: ${g.value ? 'True' : 'False'} <span class="text-primary">(${g.count} items)</span>`,
           aggregators: [
             new Aggregators.Sum('cost')
           ],
@@ -246,6 +252,7 @@ export default class Example18 extends React.Component<Props, State> {
         onGroupChanged: (_e, args) => this.onGroupChanged(args),
         onExtensionRegistered: (extension) => this.draggableGroupingPlugin = extension,
       },
+      darkMode: this._darkMode,
       enableTextExport: true,
       enableExcelExport: true,
       excelExportOptions: { sanitizeDataExport: true },
@@ -464,11 +471,31 @@ export default class Example18 extends React.Component<Props, State> {
     this.gridObj.setPreHeaderPanelVisibility(!this.gridObj.getOptions().showPreHeaderPanel);
   }
 
+  toggleDarkMode() {
+    this._darkMode = !this._darkMode;
+    this.toggleBodyBackground();
+    this.reactGrid.slickGrid?.setOptions({ darkMode: this._darkMode });
+  }
+
+  toggleBodyBackground() {
+    if (this._darkMode) {
+      document.querySelector<HTMLDivElement>('.panel-wm-content')!.classList.add('dark-mode');
+      document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'dark';
+    } else {
+      document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
+      document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
+    }
+  }
+
   render() {
     return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>
           {this.title}
+          <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => this.toggleDarkMode()} data-test="toggle-dark-mode">
+            <i className="mdi mdi-theme-light-dark"></i>
+            <span>Toggle Dark Mode</span>
+          </button>
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
