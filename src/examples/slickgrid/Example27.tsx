@@ -381,7 +381,7 @@ export default class Example27 extends React.Component<Props, State> {
             </button>
             <button onClick={() => this.dynamicallyChangeFilter()} className="btn btn-outline-secondary btn-xs btn-icon"
               data-test="change-filter-dynamically">
-              <span className="mdi mdi-filter me-1"></span>
+              <span className="mdi mdi-filter-outline me-1"></span>
               <span>Dynamically Change Filter (% complete &lt; 40)</span>
             </button>
             <button onClick={() => this.collapseAllWithoutEvent()} className="btn btn-outline-secondary btn-xs btn-icon mx-1"

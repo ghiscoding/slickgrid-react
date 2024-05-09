@@ -1,12 +1,6 @@
 import React from 'react';
 
 export class NavBar extends React.Component {
-  private router = {
-    title: '',
-    navigation: [],
-    isNavigating: false
-  };
-
   render() {
     return (
       <div>

@@ -433,7 +433,7 @@ export default class Example28 extends React.Component<Props, State> {
 
         <div className="row">
           <div className="col-md-7">
-            <button onClick={() => this.addNewFile()} data-test="add-item-btn" className="btn btn-xs btn-primary">
+            <button onClick={() => this.addNewFile()} data-test="add-item-btn" className="btn btn-xs btn-icon btn-primary">
               <span className="mdi mdi-shape-square-plus me-1"></span>
               <span>Add New Pop Song</span>
             </button>
@@ -464,7 +464,7 @@ export default class Example28 extends React.Component<Props, State> {
           <div className="col-md-5">
             <div className="input-group input-group-sm">
               <input type="text" className="form-control search-string" data-test="search-string" value={this.state.searchString} onInput={($event) => this.searchStringChanged(($event.target as HTMLInputElement).value)} />
-              <button className="btn btn-xs btn-outline-secondary d-flex align-items-center" data-test="clear-search-string" onClick={() => this.clearSearch()}>
+              <button className="btn btn-outline-secondary d-flex align-items-center" data-test="clear-search-string" onClick={() => this.clearSearch()}>
                 <span className="icon mdi mdi-close"></span>
               </button>
             </div>

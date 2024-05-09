@@ -82,13 +82,13 @@ export default class Example17 extends React.Component {
   }
 
   reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-    this.gridObj = reactGrid.slickGrid; // grid object
-    this.loaderDataView.setSort('score', -1);
-    this.gridObj.setSortColumn('score', false);
+    // this.reactGrid = reactGrid;
+    // this.gridObj = reactGrid.slickGrid; // grid object
+    // this.loaderDataView.setSort('score', -1);
+    // this.gridObj.setSortColumn('score', false);
 
-    // simulate a delayed search to preload the first page
-    setTimeout(() => this.searchChanged(this.search), 100);
+    // // simulate a delayed search to preload the first page
+    // setTimeout(() => this.searchChanged(this.search), 100);
   }
 
   defineGrid() {
