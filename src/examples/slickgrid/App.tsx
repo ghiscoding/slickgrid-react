@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link, Navigate, Route, Routes as BaseRoutes, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, Navigate, Route, Routes as BaseRoutes, useLocation, useNavigate } from 'react-router-dom';
 
 import { NavBar } from '../../NavBar';
 import Example1 from './Example1';
@@ -74,6 +74,14 @@ const routes: Array<{ path: string; route: string; component: any; title: string
 
 export default function Routes() {
   const pathname = useLocation().pathname;
+
+  // scroll to active link route
+  useEffect(() => {
+    const linkElm = document.querySelector('.nav-link.active');
+    if (linkElm) {
+      linkElm.scrollIntoView({ block: 'nearest' });
+    }
+  }, [pathname]);
 
   return (
     <div>
