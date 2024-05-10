@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file. See [Conven
 
 ## [5.0.0](https://github.com/ghiscoding/slickgrid-react/compare/v4.7.0...v5.0.0) (2024-05-10)
 
+#### Follow the [Migration to 5.0](https://github.com/ghiscoding/slickgrid-react/wiki/Migration-to-5.x) for all the changes
 
 ### ⚠ BREAKING CHANGES
 
@@ -11,11 +12,11 @@ All notable changes to this project will be documented in this file. See [Conven
 * make DOMPurify as optional (#335)
 * migrate from Moment to Tempo (#334)
 * remove Font-Awesome and use new SVG icons (#331)
-* **common:** migrate from Flatpickr to Vanilla-Calendar (#333)
+* migrate from Flatpickr to Vanilla-Calendar (#333)
 
 ### Features
 
-* **common:** migrate from Flatpickr to Vanilla-Calendar ([#333](https://github.com/ghiscoding/slickgrid-react/issues/333)) ([41254f2](https://github.com/ghiscoding/slickgrid-react/commit/41254f2b1bca83d1a7e31c2158bb03562dfbdadf))
+* migrate from Flatpickr to Vanilla-Calendar ([#333](https://github.com/ghiscoding/slickgrid-react/issues/333)) ([41254f2](https://github.com/ghiscoding/slickgrid-react/commit/41254f2b1bca83d1a7e31c2158bb03562dfbdadf))
 * make DOMPurify as optional ([#335](https://github.com/ghiscoding/slickgrid-react/issues/335)) ([41c1c2f](https://github.com/ghiscoding/slickgrid-react/commit/41c1c2f5bd1b4164e40aea3ca9ce2336b9b5c1ec))
 * migrate from Moment to Tempo ([#334](https://github.com/ghiscoding/slickgrid-react/issues/334)) ([da29dd1](https://github.com/ghiscoding/slickgrid-react/commit/da29dd1cf765c8004578d8740325fac49d66b0d2))
 * pure SVG icons, Moment to Tempo, Flatpickr to Vanilla-Calendar ([#343](https://github.com/ghiscoding/slickgrid-react/issues/343)) ([a27125c](https://github.com/ghiscoding/slickgrid-react/commit/a27125ce55d6b1990e2f0a18654417cbdc475db5))
