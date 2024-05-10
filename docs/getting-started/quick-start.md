@@ -6,16 +6,15 @@
 The easiest is to simply clone the [Slickgrid-React-Demos](https://github.com/ghiscoding/slickgrid-react-demos) project and run it from there... or if you really wish to start from scratch then follow the steps below.
 
 ### 1. Install NPM Package
-Install `React`, `Slickgrid-React`, `Bootstrap` (or other UI framework) and potentially a font library like `Font-Awesome`
+Install `React`, `Slickgrid-React`, `Bootstrap` (or other UI framework)
 ```bash
 npm install --save slickgrid-react bootstrap
 # or with yarn add
 ```
-_Note: `Bootstrap` and `Font-Awesome` are both optional, you can use any other libs too_
+_Note: `Bootstrap` is optional, you can use any other framework_
 
 ### 2. Import all necessary dependencies in `main.ts`
 ```tsx
-import 'font-awesome/css/font-awesome.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import i18n from 'i18next';

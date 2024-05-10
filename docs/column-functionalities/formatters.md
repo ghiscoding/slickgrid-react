@@ -182,7 +182,7 @@ export interface FormatterResultObject {
 
 #### Example of a Custom Formatter with HTML string
 
-For example, we will use `Font-Awesome` with a `boolean` as input data, and display a (fire) icon when `True` or a (snowflake) when `False`. This custom formatter is actually display in the [UI sample](#ui-sample) shown below.
+For example, we will use our optional SVG icons `.mdi` with a `boolean` as input data, and display a (fire) icon when `True` or a (snowflake) when `False`. This custom formatter is actually display in the [UI sample](#ui-sample) shown below.
 
 ```ts
 // create a custom Formatter with the Formatter type
