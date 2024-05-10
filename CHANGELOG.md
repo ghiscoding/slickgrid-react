@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.0.1](https://github.com/ghiscoding/slickgrid-react/compare/v5.0.0...v5.0.1) (2024-05-10)
+
+
+### Bug Fixes
+
+* remove Font-Awesome dependency ([6463b5d](https://github.com/ghiscoding/slickgrid-react/commit/6463b5d828ac1e8d9530c0e429f942b646a1f913))
+
 ## [5.0.0](https://github.com/ghiscoding/slickgrid-react/compare/v4.7.0...v5.0.0) (2024-05-10)
 
 #### Follow the [Migration to 5.0](https://github.com/ghiscoding/slickgrid-react/wiki/Migration-to-5.x) for all the changes
