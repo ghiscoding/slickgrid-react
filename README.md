@@ -40,7 +40,7 @@ Check out the [Releases](https://github.com/ghiscoding/slickgrid-react/releases)
 Slickgrid-Universal has **100%** Unit Test Coverage and all Slickgrid-React Examples are tested with [Cypress](https://www.cypress.io/) as E2E tests.
 
 ### Like it? ⭐ it
-You like **Slickgrid-React**? Be sure to upvote ⭐, and perhaps support me with cafeine [☕](https://ko-fi.com/ghiscoding) and feel free to contribute. 👷👷‍♀️
+You like **Slickgrid-React**? Be sure to upvote ⭐, and perhaps support me with caffeine [☕](https://ko-fi.com/ghiscoding) and feel free to contribute. 👷👷‍♀️
 
 <a href='https://ko-fi.com/ghiscoding' target='_blank'><img height='32' style='border:0px;height:32px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 
