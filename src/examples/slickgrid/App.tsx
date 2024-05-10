@@ -86,7 +86,7 @@ export default function Routes() {
   return (
     <div>
       <NavBar></NavBar>
-      <div className="container-fluid">
+      <div>
         <div className="panel-wm">
           <section id="panel-left" className="panel-wm-left au-animate">
             <ul className="well nav nav-pills nav-stacked">
