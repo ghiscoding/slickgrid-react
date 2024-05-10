@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.7.1](https://github.com/ghiscoding/slickgrid-react/compare/v4.7.0...v4.7.1) (2024-05-10)
+
+
+### Bug Fixes
+
+* we shouldn't always commit on focusout/blur ([#332](https://github.com/ghiscoding/slickgrid-react/issues/332)) ([aab435b](https://github.com/ghiscoding/slickgrid-react/commit/aab435bc9dc37770427a3fdcf1a5597bf96b611a))
+
 # [4.7.0](https://github.com/ghiscoding/slickgrid-react/compare/v4.6.3...v4.7.0) (2024-04-20)
 
 
