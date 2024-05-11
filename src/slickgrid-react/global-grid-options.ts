@@ -185,7 +185,7 @@ export const GlobalGridOptions: Partial<GridOption> = {
     hideToggleFilterCommand: false,
     hideTogglePreHeaderCommand: false,
     iconCssClass: 'mdi mdi-menu',
-    iconClearAllFiltersCommand: 'mdi mdi-filter',
+    iconClearAllFiltersCommand: 'mdi mdi-filter-remove-outline',
     iconClearAllSortingCommand: 'mdi mdi-sort-variant-off',
     iconClearFrozenColumnsCommand: 'mdi mdi-close',
     iconExportCsvCommand: 'mdi mdi-download',

@@ -549,11 +549,13 @@ export default class Example18 extends React.Component<Props, State> {
               </button>
               <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="set-dynamic-filter"
                 onClick={() => this.setFiltersDynamically()}>
-                Set Filters Dynamically
+                <span className="mdi mdi-filter-outline"></span>
+                <span>Set Filters Dynamically</span>
               </button>
               <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="set-dynamic-sorting"
                 onClick={() => this.setSortingDynamically()}>
-                Set Sorting Dynamically
+                <span className="mdi mdi-sort-ascending"></span>
+                <span>Set Sorting Dynamically</span>
               </button>
             </div>
           </div>
