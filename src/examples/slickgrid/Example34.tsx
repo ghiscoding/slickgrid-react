@@ -37,13 +37,15 @@ const priceFormatter: Formatter = (_cell, _row, value, _col, dataContext) => {
   const direction = dataContext.priceChange >= 0 ? 'up' : 'down';
   const fragment = new DocumentFragment();
   const divElm = document.createElement('div');
-  divElm.className = 'd-inline-flex align-items-center';
+  divElm.className = `d-inline-flex align-items-center text-${direction === 'up' ? 'success' : 'danger'}`;
   const spanElm = document.createElement('span');
-  spanElm.className = `mdi mdi-arrow-${direction} text-${direction === 'up' ? 'success' : 'danger'}`;
+  spanElm.className = `mdi mdi-arrow-${direction}`;
   divElm.appendChild(spanElm);
   fragment.appendChild(divElm);
   if (value instanceof HTMLElement) {
     divElm.appendChild(value);
+  } else {
+    divElm.appendChild(document.createTextNode(value));
   }
   return fragment;
 };
@@ -121,7 +123,7 @@ export default class Example34 extends React.Component<Props, State> {
         },
         grouping: {
           getter: 'currency',
-          formatter: (g) => `Currency: <span style="color: #003597; font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
+          formatter: (g) => `Currency: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
           aggregators: [
             new Aggregators.Sum('amount')
           ],
@@ -134,7 +136,7 @@ export default class Example34 extends React.Component<Props, State> {
         id: 'market', name: 'Market', field: 'market', filterable: true, sortable: true, minWidth: 75, width: 75,
         grouping: {
           getter: 'market',
-          formatter: (g) => `Market: <span style="color: #003597; font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
+          formatter: (g) => `Market: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
           aggregators: [
             new Aggregators.Sum('amount')
           ],
@@ -152,7 +154,7 @@ export default class Example34 extends React.Component<Props, State> {
         },
         grouping: {
           getter: 'trsnType',
-          formatter: (g) => `Type: <span style="color: #003597; font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
+          formatter: (g) => `Type: <span style="var(--slick-primary-color); font-weight: bold;">${g.value}</span>  <span style="color: #659bff;">(${g.count} items)</span>`,
           aggregators: [
             new Aggregators.Sum('amount')
           ],
@@ -165,7 +167,7 @@ export default class Example34 extends React.Component<Props, State> {
         filter: { model: Filters.compoundInputNumber }, type: FieldType.number,
         formatter: Formatters.multiple,
         params: {
-          formatters: [Formatters.dollarColored, priceFormatter],
+          formatters: [Formatters.dollar, priceFormatter],
           maxDecimal: 2,
         }
 
