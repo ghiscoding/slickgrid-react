@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.0.2](https://github.com/ghiscoding/slickgrid-react/compare/v5.0.1...v5.0.2) (2024-05-12)
+
+
+### Bug Fixes
+
+* small styling issues & better primary color support w/Dark Mode ([#345](https://github.com/ghiscoding/slickgrid-react/issues/345)) ([bfaaf21](https://github.com/ghiscoding/slickgrid-react/commit/bfaaf211c496b862c06890fa13daea330b44d360))
+
 ## [5.0.1](https://github.com/ghiscoding/slickgrid-react/compare/v5.0.0...v5.0.1) (2024-05-10)
 
 
