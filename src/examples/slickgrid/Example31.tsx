@@ -332,7 +332,7 @@ export default class Example31 extends React.Component<Props, State> {
           }
 
           // Read the result field from the JSON response.
-          const firstRow = skip;
+          let firstRow = skip;
           let filteredData = data;
           if (columnFilters) {
             for (const columnId in columnFilters) {
@@ -365,6 +365,12 @@ export default class Example31 extends React.Component<Props, State> {
               }
             }
             countTotalItems = filteredData.length;
+          }
+
+          // make sure page skip is not out of boundaries, if so reset to first page & remove skip from query
+          if (firstRow > filteredData.length) {
+            query = query.replace(`$skip=${firstRow}`, '');
+            firstRow = 0;
           }
           const updatedData = filteredData.slice(firstRow, firstRow + top!);
 
