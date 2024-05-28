@@ -1,6 +1,6 @@
 # Quick start
 
-> **NOTE** these instructions are for the latest Slickgrid-React v4.x and might be different for earlier versions of the lib.
+> **NOTE** The Documentations shown on this website are meant for Slickgrid-React v4.x and higher, for older versions please refer to the project [Wikis](https://github.com/ghiscoding/slickgrid-react/wiki) for earlier versions of the project.
 
 ### Easiest Way to Get Started
 The easiest is to simply clone the [Slickgrid-React-Demos](https://github.com/ghiscoding/slickgrid-react-demos) project and run it from there... or if you really wish to start from scratch then follow the steps below.
