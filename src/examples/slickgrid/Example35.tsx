@@ -69,7 +69,6 @@ class Example35 extends React.Component<Props, State> {
 
   reactGridReady(reactGrid: SlickgridReactInstance) {
     this.reactGrid = reactGrid;
-    this.gridObj = reactGrid.slickGrid;
   }
 
   /* Define grid Options and Columns */
