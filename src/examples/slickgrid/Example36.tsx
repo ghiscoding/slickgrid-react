@@ -439,6 +439,7 @@ export default class Example36 extends React.Component<Props, State> {
   }
 
   clearGrouping() {
+    this.isDataGrouped = false;
     this.reactGrid?.dataView?.setGrouping([]);
   }
 
