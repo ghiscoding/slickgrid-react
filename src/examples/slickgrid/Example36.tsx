@@ -147,10 +147,10 @@ export default class Example36 extends React.Component<Props, State> {
         editor: { model: Editors.float, decimal: 2 }, sortable: true, width: 70, filterable: true,
         formatter: Formatters.dollar, groupTotalsFormatter: GroupTotalFormatters.sumTotalsDollarBold,
         groupTotalsExcelExportOptions: {
-          groupType: 'sum',
           style: {
-            font: { bold: true },
+            font: { bold: true, size: 11.5 },
             format: '$0.00', // currency format
+            border: { top: { color: 'FF747474', style: 'thick' } },
           },
           valueParserCallback: this.excelGroupCellParser.bind(this),
         }
@@ -159,8 +159,10 @@ export default class Example36 extends React.Component<Props, State> {
         id: 'qty', name: 'Quantity', field: 'qty', type: FieldType.number,
         groupTotalsFormatter: GroupTotalFormatters.sumTotalsBold,
         groupTotalsExcelExportOptions: {
-          groupType: 'sum',
-          style: { font: { bold: true } },
+          style: {
+            font: { bold: true, size: 11.5 },
+            border: { top: { color: 'FF747474', style: 'thick' } },
+          },
           valueParserCallback: this.excelGroupCellParser.bind(this),
         },
         params: { minDecimal: 0, maxDecimal: 0 },
@@ -186,10 +188,10 @@ export default class Example36 extends React.Component<Props, State> {
           valueParserCallback: this.excelRegularCellParser.bind(this),
         },
         groupTotalsExcelExportOptions: {
-          groupType: 'sum',
           style: {
-            font: { bold: true },
+            font: { bold: true, italic: true, size: 11.5 },
             format: '$0.00', // currency format
+            border: { top: { color: 'FF747474', style: 'thick' } },
           },
           valueParserCallback: this.excelGroupCellParser.bind(this),
         }
@@ -228,10 +230,10 @@ export default class Example36 extends React.Component<Props, State> {
           valueParserCallback: this.excelRegularCellParser.bind(this),
         },
         groupTotalsExcelExportOptions: {
-          groupType: 'sum',
           style: {
-            font: { bold: true },
+            font: { bold: true, italic: true, color: 'FFC65911', size: 11.5 },
             format: '$0.00', // currency format
+            border: { top: { color: 'FF747474', style: 'thick' } },
           },
           valueParserCallback: this.excelGroupCellParser.bind(this),
         }
@@ -260,10 +262,10 @@ export default class Example36 extends React.Component<Props, State> {
           valueParserCallback: this.excelRegularCellParser.bind(this),
         },
         groupTotalsExcelExportOptions: {
-          groupType: 'sum',
           style: {
-            font: { bold: true },
+            font: { bold: true, color: 'FF005A9E', size: 12 },
             format: '$0.00',
+            border: { top: { color: 'FF747474', style: 'thick' } },
           },
           valueParserCallback: this.excelGroupCellParser.bind(this),
         }
