@@ -193,7 +193,8 @@ class Example6 extends React.Component<Props, State> {
         filters: [
           // you can use OperatorType or type them as string, e.g.: operator: 'EQ'
           { columnId: 'gender', searchTerms: ['male'], operator: OperatorType.equal },
-          { columnId: 'name', searchTerms: ['John Doe'], operator: OperatorType.contains },
+          // { columnId: 'name', searchTerms: ['John Doe'], operator: OperatorType.contains },
+          { columnId: 'name', searchTerms: ['Joh*oe'], operator: OperatorType.startsWithEndsWith },
           { columnId: 'company', searchTerms: ['xyz'], operator: 'IN' },
 
           // use a date range with 2 searchTerms values
@@ -371,7 +372,8 @@ class Example6 extends React.Component<Props, State> {
     this.reactGrid.filterService.updateFilters([
       // you can use OperatorType or type them as string, e.g.: operator: 'EQ'
       { columnId: 'gender', searchTerms: ['male'], operator: OperatorType.equal },
-      { columnId: 'name', searchTerms: ['John Doe'], operator: OperatorType.contains },
+      // { columnId: 'name', searchTerms: ['John Doe'], operator: OperatorType.contains },
+      { columnId: 'name', searchTerms: ['Joh*oe'], operator: OperatorType.startsWithEndsWith },
       { columnId: 'company', searchTerms: ['xyz'], operator: 'IN' },
 
       // use a date range with 2 searchTerms values
