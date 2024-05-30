@@ -62,7 +62,7 @@ module.exports = ({ production } = {}) => ({
       {
         test: /\.[jt]sx?$/,
         loader: 'esbuild-loader',
-        options: { target: 'es2015' }
+        options: { target: 'es2022' }
       },
       { test: /\.(sass|scss)$/, use: ['style-loader', 'css-loader', 'sass-loader'], issuer: /\.[tj]sx?$/i },
       { test: /\.(sass|scss)$/, use: ['css-loader', 'sass-loader'], issuer: /\.html?$/i },
@@ -75,7 +75,7 @@ module.exports = ({ production } = {}) => ({
   optimization: {
     minimizer: [
       new EsbuildPlugin({
-        target: 'es2015',
+        target: 'es2022',
         format: 'iife',
         css: true,
       })
