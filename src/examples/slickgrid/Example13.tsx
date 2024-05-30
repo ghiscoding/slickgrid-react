@@ -84,7 +84,7 @@ export default class Example13 extends React.Component<Props, State> {
   defineGrid() {
     const columnDefinitions: Column[] = [
       {
-        id: 'sel', name: '#', field: 'num', width: 40,
+        id: 'sel', name: '#', field: 'num', width: 40, type: FieldType.number,
         excludeFromExport: true,
         maxWidth: 70,
         resizable: true,
@@ -203,6 +203,13 @@ export default class Example13 extends React.Component<Props, State> {
       excelExportOptions: { sanitizeDataExport: true },
       textExportOptions: { sanitizeDataExport: true },
       externalResources: [this.excelExportService, this.textExportService],
+      showCustomFooter: true,
+      customFooterOptions: {
+        // optionally display some text on the left footer container
+        hideMetrics: false,
+        hideTotalItemCount: false,
+        hideLastUpdateTimestamp: false
+      },
     };
 
     this.setState((state: State) => ({
