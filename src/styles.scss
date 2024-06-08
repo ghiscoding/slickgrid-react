@@ -157,6 +157,8 @@ section {
   background-color: #fff;
   /* the height is 100% minus the 2 navbars */
   height: calc(100vh - 56px);
+  padding: 0 10px;
+
   h3 {
     color: #333;
   }

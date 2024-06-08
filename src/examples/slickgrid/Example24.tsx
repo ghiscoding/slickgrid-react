@@ -71,17 +71,12 @@ const taskTranslateFormatter: Formatter = (_row, _cell, value, _columnDef, _data
 class Example24 extends React.Component<Props, State> {
   private _darkModeGrid = false;
   title = 'Example 24: Cell Menu & Context Menu Plugins';
-  subTitle = `Add Cell Menu and Context Menu
-    <ul>
-      <li>This example demonstrates 2 SlickGrid plugins
-      <ol>
-        <li>Using the <b>SlickCellMenu</b> plugin, often used for an Action Menu(s), 1 or more per grid
-          (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/cell-menu" target="_blank">Docs</a>).
-        </li>
-        <li>Using the <b>SlickContextMenu</b> plugin, shown after a mouse right+click, only 1 per grid.
-        (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/context-menu" target="_blank">Docs</a>).
-        </li>
-      </ol>
+  subTitle = `<ul>
+      <li>
+        This example demonstrates 2 SlickGrid plugins (<b>SlickCellMenu</b> for plugin Action Menu
+        (see <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/cell-menu" target="_blank">Docs</a>),
+        <b>SlickContextMenu</b> plugin (see <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/context-menu" target="_blank">Docs</a>)).
+      </li>
       <li>It will also "autoAdjustDrop" (bottom/top) and "autoAlignSide" (left/right) by default but could be turned off</li>
       <li>Both plugins have 2 sections, 1st section can have an array of Options (to change value of a field) and 2nd section an array of Commands (execute a command)</li>
       <li>There are 2 ways to execute a Command/Option</li>
@@ -584,12 +579,17 @@ class Example24 extends React.Component<Props, State> {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button"
+            data-test="hide-subtitle"
+            data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-controls="collapseWidthExample">
+            <span className="mdi mdi-chevron-down"></span>
+          </button>
           <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => this.toggleDarkMode()} data-test="toggle-dark-mode">
             <i className="mdi mdi-theme-light-dark"></i>
             <span>Toggle Dark Mode</span>
           </button>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
+        <div className="subtitle collapse show" id="collapseWidthExample" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <div className="row">
           <span className="context-menu">

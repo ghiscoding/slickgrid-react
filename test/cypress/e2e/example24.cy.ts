@@ -6,6 +6,7 @@ describe('Example 24 - Cell Menu & Context Menu Plugins', () => {
   it('should display Example title', () => {
     cy.visit(`${Cypress.config('baseUrl')}/example24`);
     cy.get('h2').should('contain', 'Example 24: Cell Menu & Context Menu Plugins');
+    cy.get('[data-test="hide-subtitle"]').click();
   });
 
   describe('English Locale', () => {
@@ -331,7 +332,7 @@ describe('Example 24 - Cell Menu & Context Menu Plugins', () => {
     it('should check Context Menu "menuUsabilityOverride" condition and expect to not be able to open Context Menu from rows than are >= to Task 21', () => {
       cy.get('.slick-viewport-top.slick-viewport-left')
         .scrollTo('bottom')
-        .wait(50);
+        .wait(25);
 
       cy.get('#grid24')
         .find('.slick-row:nth(3) .slick-cell:nth(1)')
@@ -344,7 +345,7 @@ describe('Example 24 - Cell Menu & Context Menu Plugins', () => {
     it('should scroll back to top row and be able to open Context Menu', () => {
       cy.get('.slick-viewport-top.slick-viewport-left')
         .scrollTo('top')
-        .wait(50);
+        .wait(25);
 
       cy.get('#grid24')
         .find('.slick-row:nth(1) .slick-cell:nth(1)')
@@ -809,6 +810,64 @@ describe('Example 24 - Cell Menu & Context Menu Plugins', () => {
         .click();
     });
 
+    it('should open Export->Excel context sub-menu then open Feedback->ContactUs sub-menus and expect previous Export menu to no longer exists', () => {
+      const subCommands1 = ['Text', 'Excel'];
+      const subCommands2 = ['Request update from supplier', '', 'Contact Us'];
+      const subCommands2_1 = ['Email us', 'Chat with us', 'Book an appointment'];
+
+      const stub = cy.stub();
+      cy.on('window:alert', stub);
+
+      cy.get(`[style="top: ${GRID_ROW_HEIGHT * 0}px;"] > .slick-cell:nth(5)`)
+        .rightclick({ force: true });
+
+      cy.get('.slick-context-menu.slick-menu-level-0 .slick-menu-command-list')
+        .find('.slick-menu-item .slick-menu-content')
+        .contains(/^Exports$/)
+        .click();
+
+      cy.get('.slick-context-menu.slick-menu-level-1 .slick-menu-command-list')
+        .should('exist')
+        .find('.slick-menu-item .slick-menu-content')
+        .each(($command, index) => expect($command.text()).to.contain(subCommands1[index]));
+
+      // click different sub-menu
+      cy.get('.slick-context-menu.slick-menu-level-0 .slick-menu-command-list')
+        .find('.slick-menu-item .slick-menu-content')
+        .contains('Feedback')
+        .should('exist')
+        .click();
+
+      cy.get('.slick-submenu').should('have.length', 1);
+      cy.get('.slick-context-menu.slick-menu-level-1 .slick-menu-command-list')
+        .should('exist')
+        .find('.slick-menu-item .slick-menu-content')
+        .each(($command, index) => expect($command.text()).to.contain(subCommands2[index]));
+
+      // click on Feedback->ContactUs
+      cy.get('.slick-context-menu.slick-menu-level-1.dropleft') // left align
+        .find('.slick-menu-item .slick-menu-content')
+        .contains('Contact Us')
+        // .should('exist')
+        .trigger('mouseover', { force: true }); // mouseover or click should work
+
+      cy.get('.slick-submenu').should('have.length', 2);
+      cy.get('.slick-context-menu.slick-menu-level-2.dropright') // right align
+        .should('exist')
+        .find('.slick-menu-item .slick-menu-content')
+        .each(($command, index) => expect($command.text()).to.eq(subCommands2_1[index]));
+
+      cy.get('.slick-context-menu.slick-menu-level-2');
+
+      cy.get('.slick-context-menu.slick-menu-level-2 .slick-menu-command-list')
+        .find('.slick-menu-item .slick-menu-content')
+        .contains('Chat with us')
+        .click()
+        .then(() => expect(stub.getCall(0)).to.be.calledWith('Command: contact-chat'));
+
+      cy.get('.slick-submenu').should('have.length', 0);
+    });
+
     it('should open Export->Excel sub-menu & open again Sub-Options on top and expect sub-menu to be recreated with that Sub-Options list instead of the Export->Excel list', () => {
       const subCommands1 = ['Text', 'Excel'];
       const subCommands2 = ['Excel (csv)', 'Excel (xlsx)'];
@@ -853,65 +912,6 @@ describe('Example 24 - Cell Menu & Context Menu Plugins', () => {
         .should('exist')
         .find('.slick-menu-item .slick-menu-content')
         .each(($option, index) => expect($option.text()).to.contain(subOptions[index]));
-    });
-
-    it('should open Export->Excel context sub-menu then open Feedback->ContactUs sub-menus and expect previous Export menu to no longer exists', () => {
-      const subCommands1 = ['Text', 'Excel'];
-      const subCommands2 = ['Request update from supplier', '', 'Contact Us'];
-      const subCommands2_1 = ['Email us', 'Chat with us', 'Book an appointment'];
-
-      const stub = cy.stub();
-      cy.on('window:alert', stub);
-
-      cy.get(`[style="top: ${GRID_ROW_HEIGHT * 0}px;"] > .slick-cell:nth(5)`);
-      cy.get(`[style="top: ${GRID_ROW_HEIGHT * 0}px;"] > .slick-cell:nth(5)`)
-        .rightclick({ force: true });
-
-      cy.get('.slick-context-menu.slick-menu-level-0 .slick-menu-command-list')
-        .find('.slick-menu-item .slick-menu-content')
-        .contains(/^Exports$/)
-        .click();
-
-      cy.get('.slick-context-menu.slick-menu-level-1 .slick-menu-command-list')
-        .should('exist')
-        .find('.slick-menu-item .slick-menu-content')
-        .each(($command, index) => expect($command.text()).to.contain(subCommands1[index]));
-
-      // click different sub-menu
-      cy.get('.slick-context-menu.slick-menu-level-0 .slick-menu-command-list')
-        .find('.slick-menu-item .slick-menu-content')
-        .contains('Feedback')
-        .should('exist')
-        .click();
-
-      cy.get('.slick-submenu').should('have.length', 1);
-      cy.get('.slick-context-menu.slick-menu-level-1 .slick-menu-command-list')
-        .should('exist')
-        .find('.slick-menu-item .slick-menu-content')
-        .each(($command, index) => expect($command.text()).to.contain(subCommands2[index]));
-
-      // click on Feedback->ContactUs
-      cy.get('.slick-context-menu.slick-menu-level-1.dropleft') // left align
-        .find('.slick-menu-item .slick-menu-content')
-        .contains('Contact Us')
-        .should('exist')
-        .trigger('mouseover'); // mouseover or click should work
-
-      cy.get('.slick-submenu').should('have.length', 2);
-      cy.get('.slick-context-menu.slick-menu-level-2.dropright') // right align
-        .should('exist')
-        .find('.slick-menu-item .slick-menu-content')
-        .each(($command, index) => expect($command.text()).to.eq(subCommands2_1[index]));
-
-      cy.get('.slick-context-menu.slick-menu-level-2');
-
-      cy.get('.slick-context-menu.slick-menu-level-2 .slick-menu-command-list')
-        .find('.slick-menu-item .slick-menu-content')
-        .contains('Chat with us')
-        .click()
-        .then(() => expect(stub.getCall(0)).to.be.calledWith('Command: contact-chat'));
-
-      cy.get('.slick-submenu').should('have.length', 0);
     });
   });
 });
