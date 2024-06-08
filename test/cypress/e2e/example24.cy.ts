@@ -810,6 +810,52 @@ describe('Example 24 - Cell Menu & Context Menu Plugins', () => {
         .click();
     });
 
+    it('should open Export->Excel sub-menu & open again Sub-Options on top and expect sub-menu to be recreated with that Sub-Options list instead of the Export->Excel list', () => {
+      const subCommands1 = ['Text', 'Excel'];
+      const subCommands2 = ['Excel (csv)', 'Excel (xlsx)'];
+      const subOptions = ['Low', 'Medium', 'High'];
+
+      cy.get(`[style="top: ${GRID_ROW_HEIGHT * 0}px;"] > .slick-cell:nth(5)`);
+      cy.get(`[style="top: ${GRID_ROW_HEIGHT * 0}px;"] > .slick-cell:nth(5)`)
+        .rightclick({ force: true });
+
+      cy.get('.slick-context-menu.slick-menu-level-0 .slick-menu-command-list')
+        .find('.slick-menu-item .slick-menu-content')
+        .contains(/^Exports$/)
+        .click();
+
+      cy.get('.slick-context-menu.slick-menu-level-1 .slick-menu-command-list')
+        .should('exist')
+        .find('.slick-menu-item .slick-menu-content')
+        .each(($command, index) => expect($command.text()).to.contain(subCommands1[index]));
+
+      cy.get('.slick-context-menu.slick-menu-level-1 .slick-menu-command-list')
+        .find('.slick-menu-item .slick-menu-content')
+        .contains('Excel')
+        .click();
+
+      cy.get('.slick-context-menu.slick-menu-level-2 .slick-menu-command-list')
+        .should('exist')
+        .find('.slick-menu-item .slick-menu-content')
+        .each(($command, index) => expect($command.text()).to.contain(subCommands2[index]));
+
+      cy.get('.slick-context-menu.slick-menu-level-0 .slick-menu-option-list')
+        .find('.slick-menu-item .slick-menu-content')
+        .contains('Sub-Options')
+        .click();
+
+      cy.get('.slick-context-menu.slick-menu-level-1 .slick-menu-option-list').as('optionSubList2');
+
+      cy.get('@optionSubList2')
+        .find('.slick-menu-title')
+        .contains('Change Priority');
+
+      cy.get('@optionSubList2')
+        .should('exist')
+        .find('.slick-menu-item .slick-menu-content')
+        .each(($option, index) => expect($option.text()).to.contain(subOptions[index]));
+    });
+
     it('should open Export->Excel context sub-menu then open Feedback->ContactUs sub-menus and expect previous Export menu to no longer exists', () => {
       const subCommands1 = ['Text', 'Excel'];
       const subCommands2 = ['Request update from supplier', '', 'Contact Us'];
@@ -866,52 +912,6 @@ describe('Example 24 - Cell Menu & Context Menu Plugins', () => {
         .then(() => expect(stub.getCall(0)).to.be.calledWith('Command: contact-chat'));
 
       cy.get('.slick-submenu').should('have.length', 0);
-    });
-
-    it('should open Export->Excel sub-menu & open again Sub-Options on top and expect sub-menu to be recreated with that Sub-Options list instead of the Export->Excel list', () => {
-      const subCommands1 = ['Text', 'Excel'];
-      const subCommands2 = ['Excel (csv)', 'Excel (xlsx)'];
-      const subOptions = ['Low', 'Medium', 'High'];
-
-      cy.get(`[style="top: ${GRID_ROW_HEIGHT * 0}px;"] > .slick-cell:nth(5)`);
-      cy.get(`[style="top: ${GRID_ROW_HEIGHT * 0}px;"] > .slick-cell:nth(5)`)
-        .rightclick({ force: true });
-
-      cy.get('.slick-context-menu.slick-menu-level-0 .slick-menu-command-list')
-        .find('.slick-menu-item .slick-menu-content')
-        .contains(/^Exports$/)
-        .click();
-
-      cy.get('.slick-context-menu.slick-menu-level-1 .slick-menu-command-list')
-        .should('exist')
-        .find('.slick-menu-item .slick-menu-content')
-        .each(($command, index) => expect($command.text()).to.contain(subCommands1[index]));
-
-      cy.get('.slick-context-menu.slick-menu-level-1 .slick-menu-command-list')
-        .find('.slick-menu-item .slick-menu-content')
-        .contains('Excel')
-        .click();
-
-      cy.get('.slick-context-menu.slick-menu-level-2 .slick-menu-command-list')
-        .should('exist')
-        .find('.slick-menu-item .slick-menu-content')
-        .each(($command, index) => expect($command.text()).to.contain(subCommands2[index]));
-
-      cy.get('.slick-context-menu.slick-menu-level-0 .slick-menu-option-list')
-        .find('.slick-menu-item .slick-menu-content')
-        .contains('Sub-Options')
-        .click();
-
-      cy.get('.slick-context-menu.slick-menu-level-1 .slick-menu-option-list').as('optionSubList2');
-
-      cy.get('@optionSubList2')
-        .find('.slick-menu-title')
-        .contains('Change Priority');
-
-      cy.get('@optionSubList2')
-        .should('exist')
-        .find('.slick-menu-item .slick-menu-content')
-        .each(($option, index) => expect($option.text()).to.contain(subOptions[index]));
     });
   });
 });
