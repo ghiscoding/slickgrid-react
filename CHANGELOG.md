@@ -19,7 +19,8 @@ All notable changes to this project will be documented in this file. See [Conven
 ## [5.0.0](https://github.com/ghiscoding/slickgrid-react/compare/v4.7.0...v5.0.0) (2024-05-10)
 
 > [!NOTE]
-> #### Follow the [Migration to 5.0](https://github.com/ghiscoding/slickgrid-react/wiki/Migration-to-5.x) for all the changes
+> #### Follow the [Migration to 5.0](https://github.com/ghiscoding/slickgrid-react/wiki/Migration-to-5.x) for all the changes and take a look at the [v5.0.0](https://github.com/ghiscoding/Slickgrid-react/releases/tag/v5.0.1) release for the announcement and quick info.
+
 
 ### ⚠ BREAKING CHANGES
 

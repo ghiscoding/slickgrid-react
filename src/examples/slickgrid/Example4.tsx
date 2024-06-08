@@ -289,7 +289,7 @@ export default class Example4 extends React.Component<Props, State> {
 
   /** Dispatched event of a Grid State Changed event */
   gridStateChanged(gridState: GridStateChange) {
-    console.log('Client sample, Grid State changed:: ', gridState);
+    console.log('Client sample, Grid State changed:: ', gridState.change);
   }
 
   /** Save current Filters, Sorters in LocaleStorage or DB */
