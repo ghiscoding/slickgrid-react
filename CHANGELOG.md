@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.1.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.0.2...v5.1.0) (2024-06-08)
+
+
+### Features
+
+* add `filterQueryOverride` to GraphQL Service ([#353](https://github.com/ghiscoding/slickgrid-react/issues/353)) ([7157271](https://github.com/ghiscoding/slickgrid-react/commit/71572716fb9e1c9c5b3a88fd4c870fcc856d80a9))
+* add `filterQueryOverride` to OData Service ([#354](https://github.com/ghiscoding/slickgrid-react/issues/354)) ([8e53c4b](https://github.com/ghiscoding/slickgrid-react/commit/8e53c4b2f0d31d6b355ad82da30a224861cff77e))
+* add a `filterPredicate` option for user customization ([#352](https://github.com/ghiscoding/slickgrid-react/issues/352)) ([abd9356](https://github.com/ghiscoding/slickgrid-react/commit/abd93567c41f3574dc57fcf1c67d77ad7439d6cc))
+* add local data StartsWith/EndsWith (`a*z`) filter combo ([#355](https://github.com/ghiscoding/slickgrid-react/issues/355)) ([23f3f9d](https://github.com/ghiscoding/slickgrid-react/commit/23f3f9de9505859bff2f18bf7640f603455ed10b))
+* add optional Top-Header for Draggable Grouping & Header Grouping ([#358](https://github.com/ghiscoding/slickgrid-react/issues/358)) ([e4d1706](https://github.com/ghiscoding/slickgrid-react/commit/e4d1706271807f7aca7299cf8415b681ddab9cdb))
+* add StartsWith/EndsWith (`a*z`) to OData/GraphQL ([#356](https://github.com/ghiscoding/slickgrid-react/issues/356)) ([643f8a8](https://github.com/ghiscoding/slickgrid-react/commit/643f8a85c0fef93910d1318464a4a78fb305724d))
+* enhance Excel `valueParserCallback` with dataContext & new demo ([#350](https://github.com/ghiscoding/slickgrid-react/issues/350)) ([e1e6c0d](https://github.com/ghiscoding/slickgrid-react/commit/e1e6c0def7f458fdd3cb4563a62b6caea6558c23))
+
+
+### Bug Fixes
+
+* **demo:** out of boundaries page Grid Preset should be unset ([#347](https://github.com/ghiscoding/slickgrid-react/issues/347)) ([36a3a85](https://github.com/ghiscoding/slickgrid-react/commit/36a3a855c12933fbb29040e130094ec597bf981b))
+* Draggable Grouping drop zone should always be 100% wide ([b15abe4](https://github.com/ghiscoding/slickgrid-react/commit/b15abe4808570b8ae1a88b5da52d5291c481f908))
+* **TreeData:** addItem should keep current sorted column ([#359](https://github.com/ghiscoding/slickgrid-react/issues/359)) ([734a770](https://github.com/ghiscoding/slickgrid-react/commit/734a770292481af765589cf0ec134696213ad1f6))
+
 ## [5.0.2](https://github.com/ghiscoding/slickgrid-react/compare/v5.0.1...v5.0.2) (2024-05-12)
 
 
