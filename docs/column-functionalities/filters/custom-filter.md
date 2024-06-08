@@ -1,6 +1,6 @@
 #### index
-- [Filter Complex Object](Input-Filter.md#filter-complex-object)
-- [Update Filters Dynamically](Input-Filter.md#update-filters-dynamically)
+- [Filter Complex Object](input-filter.md#filter-complex-object)
+- [Update Filters Dynamically](input-filter.md#update-filters-dynamically)
 
 ### Demo
 [Demo Page](https://ghiscoding.github.io/slickgrid-react/#/slickgrid/Example4) / [Demo Client Component](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example4.tsx) / [Custom InputFilter.ts](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/custom-inputFilter.ts)
