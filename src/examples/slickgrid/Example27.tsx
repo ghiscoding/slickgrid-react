@@ -158,19 +158,15 @@ export default class Example27 extends React.Component<Props, State> {
   }
 
   /**
-   * A simple method to add a new item inside the first group that we find (it's random and is only for demo purposes).
-   * After adding the item, it will sort by parent/child recursively
+   * A simple method to add a new item inside the first group that has children which is "Task 1"
+   * After adding the item, it will resort by parent/child recursively but keep current sort column
    */
   addNewRow() {
     const newId = this.reactGrid.dataView.getItemCount();
-    const parentPropName = 'parentId';
-    const treeLevelPropName = 'treeLevel'; // if undefined in your options, the default prop name is "__treeLevel"
-    const newTreeLevel = 1;
-    // find first parent object and add the new item as a child
-    const childItemFound = this.state.dataset?.find((item) => item[treeLevelPropName] === newTreeLevel);
-    const parentItemFound = this.reactGrid.dataView.getItemByIdx(childItemFound[parentPropName]);
+    // find "Task 1" which has `id = 1`
+    const parentItemFound = this.reactGrid.dataView?.getItemById(1);
 
-    if (childItemFound && parentItemFound) {
+    if (parentItemFound?.__hasChildren) {
       const newItem = {
         id: newId,
         parentId: parentItemFound.id,
@@ -405,9 +401,9 @@ export default class Example27 extends React.Component<Props, State> {
 
         <div className="row">
           <div className="col-md-12">
-            <button onClick={() => this.addNewRow()} data-test="add-item-btn" className="btn btn-primary btn-sm">
-              <span className="mdi mdi-shape-square-plus color-white me-1"></span>
-              <span>Add New Item (in 1st group)</span>
+            <button onClick={() => this.addNewRow()} data-test="add-item-btn" className="btn btn-primary btn-xs btn-icon mx-1">
+              <span className="mdi mdi-plus color-white me-1"></span>
+              <span>Add New Item to "Task 1" group</span>
             </button>
             <button onClick={() => this.updateFirstRow()} data-test="update-item-btn" className="btn btn-outline-secondary btn-xs btn-icon mx-1">
               <span className="icon mdi mdi-pencil me-1"></span>
