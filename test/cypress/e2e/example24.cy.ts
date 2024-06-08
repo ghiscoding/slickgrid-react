@@ -6,6 +6,7 @@ describe('Example 24 - Cell Menu & Context Menu Plugins', () => {
   it('should display Example title', () => {
     cy.visit(`${Cypress.config('baseUrl')}/example24`);
     cy.get('h2').should('contain', 'Example 24: Cell Menu & Context Menu Plugins');
+    cy.get('[data-test="hide-subtitle"]').click();
   });
 
   describe('English Locale', () => {

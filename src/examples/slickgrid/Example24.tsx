@@ -579,12 +579,17 @@ class Example24 extends React.Component<Props, State> {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button"
+            data-test="hide-subtitle"
+            data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-controls="collapseWidthExample">
+            <span className="mdi mdi-chevron-down"></span>
+          </button>
           <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => this.toggleDarkMode()} data-test="toggle-dark-mode">
             <i className="mdi mdi-theme-light-dark"></i>
             <span>Toggle Dark Mode</span>
           </button>
         </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
+        <div className="subtitle collapse show" id="collapseWidthExample" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <div className="row">
           <span className="context-menu">
