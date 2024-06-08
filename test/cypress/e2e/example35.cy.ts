@@ -126,6 +126,8 @@ describe('Example 35 - Row Based Editing', () => {
   });
 
   it('should support translation keys on buttons', () => {
+    cy.get('.action-btns--edit').first().click();
+
     cy.get('.action-btns--update')
       .first()
       .invoke('attr', 'title')
