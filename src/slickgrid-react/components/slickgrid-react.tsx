@@ -749,7 +749,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
 
       if (gridOptions.enableTranslate) {
         this.extensionService.translateAllExtensions(lang);
-        if (gridOptions.createPreHeaderPanel && !gridOptions.enableDraggableGrouping) {
+        if ((gridOptions.createPreHeaderPanel && gridOptions.createTopHeaderPanel) || (gridOptions.createPreHeaderPanel && !gridOptions.enableDraggableGrouping)) {
           this.groupingService.translateGroupingAndColSpan();
         }
       }
@@ -1439,7 +1439,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     this._registeredResources.push(this.gridService, this.gridStateService);
 
     // when using Grouping/DraggableGrouping/Colspan register its Service
-    if (this.gridOptions.createPreHeaderPanel && !this.gridOptions.enableDraggableGrouping) {
+    if ((this.gridOptions.createPreHeaderPanel && this.gridOptions.createTopHeaderPanel) || (this.gridOptions.createPreHeaderPanel && !this.gridOptions.enableDraggableGrouping)) {
       this._registeredResources.push(this.groupingService);
     }
 
