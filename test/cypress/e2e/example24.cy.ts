@@ -863,7 +863,10 @@ describe('Example 24 - Cell Menu & Context Menu Plugins', () => {
       const stub = cy.stub();
       cy.on('window:alert', stub);
 
-      cy.get(`[style="top: ${GRID_ROW_HEIGHT * 0}px;"] > .slick-cell:nth(5)`);
+      cy.get('.slick-viewport-top.slick-viewport-left')
+        .scrollTo('top')
+        .wait(20);
+
       cy.get(`[style="top: ${GRID_ROW_HEIGHT * 0}px;"] > .slick-cell:nth(5)`)
         .rightclick({ force: true });
 

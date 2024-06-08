@@ -155,7 +155,6 @@ describe('Example 10 - Multiple Grids with Row Selection', () => {
     it('should Clear all Filters on 2nd Grid', () => {
       cy.get('#grid2')
         .find('button.slick-grid-menu-button')
-        .trigger('click')
         .click();
 
       cy.get(`.slick-grid-menu:visible`)
