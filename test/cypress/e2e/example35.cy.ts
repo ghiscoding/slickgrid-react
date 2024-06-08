@@ -126,7 +126,7 @@ describe('Example 35 - Row Based Editing', () => {
   });
 
   it('should support translation keys on buttons', () => {
-    cy.get('.action-btns--edit').first().click({ force: true });
+    cy.get(`[style="top: ${GRID_ROW_HEIGHT * 0}px;"] .action-btns--edit`).click({ force: true });
 
     cy.get('.action-btns--update')
       .first()
