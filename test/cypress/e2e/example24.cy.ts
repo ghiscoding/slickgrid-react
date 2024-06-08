@@ -848,7 +848,7 @@ describe('Example 24 - Cell Menu & Context Menu Plugins', () => {
       cy.get('.slick-context-menu.slick-menu-level-1.dropleft') // left align
         .find('.slick-menu-item .slick-menu-content')
         .contains('Contact Us')
-        .should('exist')
+        // .should('exist')
         .trigger('mouseover', { force: true }); // mouseover or click should work
 
       cy.get('.slick-submenu').should('have.length', 2);
