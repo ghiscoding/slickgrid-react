@@ -533,6 +533,7 @@ export default class Example5 extends React.Component<Props, State> {
   }
 
   private resetOptions(options: Partial<OdataOption>) {
+    this.displaySpinner(true);
     const odataService = this.state.gridOptions!.backendServiceApi!.service as GridOdataService;
     odataService.updateOptions(options);
     odataService.clearFilters();

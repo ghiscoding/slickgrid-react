@@ -455,6 +455,7 @@ export default class Example31 extends React.Component<Props, State> {
   // ---
 
   changeCountEnableFlag() {
+    this.displaySpinner(true);
     const isCountEnabled = !this.state.isCountEnabled;
     this.setState((state: State) => ({ ...state, isCountEnabled }));
     this.resetOptions({ enableCount: isCountEnabled });
@@ -476,12 +477,14 @@ export default class Example31 extends React.Component<Props, State> {
   }
 
   setOdataVersion(version: number) {
+    this.displaySpinner(true);
     this.setState((state: State) => ({ ...state, odataVersion: version }));
     this.resetOptions({ version });
     return true;
   }
 
   private resetOptions(options: Partial<OdataOption>) {
+    this.displaySpinner(true);
     const odataService = this.state.gridOptions?.backendServiceApi?.service as GridOdataService;
     odataService.updateOptions(options);
     odataService.clearFilters();

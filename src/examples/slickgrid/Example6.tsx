@@ -427,6 +427,7 @@ class Example6 extends React.Component<Props, State> {
   }
 
   private resetOptions(options: Partial<GraphqlServiceOption>) {
+    this.displaySpinner(true);
     const graphqlService = this.state.gridOptions!.backendServiceApi!.service as GraphqlService;
     this.reactGrid.paginationService!.setCursorBased(options.useCursor as boolean);
     this.reactGrid.paginationService?.goToFirstPage();
