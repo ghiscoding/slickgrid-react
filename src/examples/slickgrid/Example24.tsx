@@ -591,7 +591,7 @@ class Example24 extends React.Component<Props, State> {
             </a>
           </span>
           <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" onClick={() => this.toggleSubTitle()}>
-            <span className="mdi mdi-chevron-down"></span>
+            <span className="mdi mdi-information-outline" title="Toggle sub-title text"></span>
           </button>
           <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => this.toggleDarkMode()} data-test="toggle-dark-mode">
             <i className="mdi mdi-theme-light-dark"></i>
