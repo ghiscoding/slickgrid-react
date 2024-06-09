@@ -590,10 +590,10 @@ class Example24 extends React.Component<Props, State> {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
-          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" onClick={() => this.toggleSubTitle()}>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => this.toggleSubTitle()}>
             <span className="mdi mdi-chevron-down"></span>
           </button>
-          <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => this.toggleDarkMode()} data-test="toggle-dark-mode">
+          <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" data-test="toggle-dark-mode" onClick={() => this.toggleDarkMode()}>
             <i className="mdi mdi-theme-light-dark"></i>
             <span>Toggle Dark Mode</span>
           </button>
