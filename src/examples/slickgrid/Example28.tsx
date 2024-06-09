@@ -433,7 +433,7 @@ export default class Example28 extends React.Component<Props, State> {
 
         <div className="row">
           <div className="col-md-7">
-            <button onClick={() => this.addNewFile()} data-test="add-item-btn" className="btn btn-xs btn-icon btn-primary">
+            <button onClick={() => this.addNewFile()} data-test="add-item-btn" className="btn btn-xs btn-icon btn-primary mx-1">
               <span className="mdi mdi-shape-square-plus me-1"></span>
               <span>Add New Pop Song</span>
             </button>
@@ -449,7 +449,7 @@ export default class Example28 extends React.Component<Props, State> {
               <span className="mdi mdi-arrow-expand me-1"></span>
               <span>Expand All</span>
             </button>
-            <button className='btn btn-outline-secondary btn-xs btn-icon' data-test="clear-filters-btn" onClick={() => this.reactGrid.filterService.clearFilters()}>
+            <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="clear-filters-btn" onClick={() => this.reactGrid.filterService.clearFilters()}>
               <span className="mdi mdi-close me-1"></span>
               <span>Clear Filters</span>
             </button>

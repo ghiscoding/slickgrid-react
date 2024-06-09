@@ -183,7 +183,7 @@ export default class Example14 extends React.Component {
             data-test="remove-frozen-column-button">
             <i className="mdi mdi-close"></i> Remove Frozen Columns
           </button>
-          <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={() => this.setFrozenColumns2(2)}
+          <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" onClick={() => this.setFrozenColumns2(2)}
             data-test="set-3frozen-columns">
             <i className="mdi mdi-pin-outline"></i> Set 3 Frozen Columns
           </button>

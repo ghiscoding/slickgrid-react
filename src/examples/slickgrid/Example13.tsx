@@ -420,16 +420,16 @@ export default class Example13 extends React.Component<Props, State> {
             <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="add-500-rows-btn" onClick={() => this.updateData(500)}>
               500 rows
             </button>
-            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="add-50k-rows-btn" onClick={() => this.updateData(50000)}>
+            <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="add-50k-rows-btn" onClick={() => this.updateData(50000)}>
               50k rows
             </button>
-            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="clear-grouping-btn" onClick={() => this.clearGrouping()}>
+            <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="clear-grouping-btn" onClick={() => this.clearGrouping()}>
               <i className="mdi mdi-close"></i> Clear grouping
             </button>
-            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="collapse-all-btn" onClick={() => this.collapseAllGroups()}>
+            <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="collapse-all-btn" onClick={() => this.collapseAllGroups()}>
               <i className="mdi mdi-arrow-collapse"></i> Collapse all groups
             </button>
-            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="expand-all-btn" onClick={() => this.expandAllGroups()}>
+            <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="expand-all-btn" onClick={() => this.expandAllGroups()}>
               <i className="mdi mdi-arrow-expand"></i> Expand all groups
             </button>
             <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="export-excel-btn" onClick={() => this.exportToExcel()}>
@@ -446,18 +446,18 @@ export default class Example13 extends React.Component<Props, State> {
               onClick={() => this.groupByDuration()}>
               Group by Duration &amp; sort groups by value
             </button>
-            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="group-duration-sort-count-btn"
+            <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="group-duration-sort-count-btn"
               onClick={() => this.groupByDurationOrderByCount(false)}>
               Group by Duration &amp; sort groups by count
             </button>
           </div>
           <div className="row">
             <div className="col-sm-12">
-              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="group-duration-sort-count-collapse-btn"
+              <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="group-duration-sort-count-collapse-btn"
                 onClick={() => this.groupByDurationOrderByCount(true)}>
                 Group by Duration &amp; sort groups by count, aggregate collapsed
               </button>
-              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="group-duration-effort-btn"
+              <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="group-duration-effort-btn"
                 onClick={() => this.groupByDurationEffortDriven()}>
                 Group by Duration then Effort-Driven
               </button>

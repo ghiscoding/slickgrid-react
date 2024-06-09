@@ -350,7 +350,7 @@ class Example35 extends React.Component<Props, State> {
               >
                 Toggle Single/Multi Row Edit
               </button>
-              <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="toggle-language" onClick={() => this.switchLanguage()}>
+              <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="toggle-language" onClick={() => this.switchLanguage()}>
                 <i className="mdi mdi-translate"></i>
                 Switch Language for Action column buttons
               </button>

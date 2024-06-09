@@ -367,14 +367,14 @@ export default class Example20 extends React.Component<Props, State> {
             <span>
               <label htmlFor="">Pinned Rows: </label>
               <input type="number" defaultValue={this.state.frozenRowCount} onInput={($event) => this.changeFrozenRowCount($event)} />
-              <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.setFrozenRowCount()}>
+              <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" onClick={() => this.setFrozenRowCount()}>
                 Set
               </button>
             </span>
             <span style={{ marginLeft: '10px' }}>
               <label htmlFor="">Pinned Columns: </label>
               <input type="number" defaultValue={this.state.frozenColumnCount} onInput={($event) => this.changeFrozenColumnCount($event)} />
-              <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.setFrozenColumnCount()}>
+              <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" onClick={() => this.setFrozenColumnCount()}>
                 Set
               </button>
             </span>
@@ -383,7 +383,7 @@ export default class Example20 extends React.Component<Props, State> {
 
         <div className="row mt-2">
           <div className="col-sm-12">
-            <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={() => this.setFrozenColumns(-1)}
+            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" onClick={() => this.setFrozenColumns(-1)}
               data-test="remove-frozen-column-button">
               <i className="mdi mdi-close"></i> Remove Frozen Columns
             </button>

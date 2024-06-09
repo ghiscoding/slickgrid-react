@@ -479,11 +479,11 @@ class Example6 extends React.Component<Props, State> {
                   onClick={() => this.setFiltersDynamically()}>
                   Set Filters Dynamically
                 </button>
-                <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="set-dynamic-sorting"
+                <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="set-dynamic-sorting"
                   onClick={() => this.setSortingDynamically()}>
                   Set Sorting Dynamically
                 </button>
-                <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="reset-presets"
+                <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="reset-presets"
                   onClick={() => this.resetToOriginalPresets()}>
                   Reset Original Presets
                 </button>

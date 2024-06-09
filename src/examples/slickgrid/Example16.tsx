@@ -336,7 +336,7 @@ export default class Example16 extends React.Component<Props, State> {
               <i className="mdi mdi-swap-vertical me-1"></i>
               Toggle Filtering
             </button>
-            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="toggle-sorting-btn" onClick={() => this.toggleSorting()}>
+            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="toggle-sorting-btn" onClick={() => this.toggleSorting()}>
               <i className="mdi mdi-swap-vertical me-1"></i>
               Toggle Sorting
             </button>
