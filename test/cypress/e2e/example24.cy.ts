@@ -6,7 +6,7 @@ describe('Example 24 - Cell Menu & Context Menu Plugins', () => {
   it('should display Example title', () => {
     cy.visit(`${Cypress.config('baseUrl')}/example24`);
     cy.get('h2').should('contain', 'Example 24: Cell Menu & Context Menu Plugins');
-    cy.get('[data-test="hide-subtitle"]').click();
+    cy.get('[data-test="toggle-subtitle"]').click();
   });
 
   describe('English Locale', () => {
@@ -819,26 +819,31 @@ describe('Example 24 - Cell Menu & Context Menu Plugins', () => {
       cy.get(`[style="top: ${GRID_ROW_HEIGHT * 0}px;"] > .slick-cell:nth(5)`)
         .rightclick({ force: true });
 
+      cy.get('.slick-context-menu').should('be.visible');
       cy.get('.slick-context-menu.slick-menu-level-0 .slick-menu-command-list')
         .find('.slick-menu-item .slick-menu-content')
         .contains(/^Exports$/)
         .click();
 
+      cy.get('.slick-context-menu').should('be.visible');
       cy.get('.slick-context-menu.slick-menu-level-1 .slick-menu-command-list')
         .should('exist')
         .find('.slick-menu-item .slick-menu-content')
         .each(($command, index) => expect($command.text()).to.contain(subCommands1[index]));
 
+      cy.get('.slick-context-menu').should('be.visible');
       cy.get('.slick-context-menu.slick-menu-level-1 .slick-menu-command-list')
         .find('.slick-menu-item .slick-menu-content')
         .contains('Excel')
         .click();
 
+      cy.get('.slick-context-menu').should('be.visible');
       cy.get('.slick-context-menu.slick-menu-level-2 .slick-menu-command-list')
         .should('exist')
         .find('.slick-menu-item .slick-menu-content')
         .each(($command, index) => expect($command.text()).to.contain(subCommands2[index]));
 
+      cy.get('.slick-context-menu').should('be.visible');
       cy.get('.slick-context-menu.slick-menu-level-0 .slick-menu-option-list')
         .find('.slick-menu-item .slick-menu-content')
         .contains('Sub-Options')
@@ -867,11 +872,13 @@ describe('Example 24 - Cell Menu & Context Menu Plugins', () => {
       cy.get(`[style="top: ${GRID_ROW_HEIGHT * 0}px;"] > .slick-cell:nth(5)`)
         .rightclick({ force: true });
 
+      cy.get('.slick-context-menu').should('be.visible');
       cy.get('.slick-context-menu.slick-menu-level-0 .slick-menu-command-list')
         .find('.slick-menu-item .slick-menu-content')
         .contains(/^Exports$/)
         .click();
 
+      cy.get('.slick-context-menu').should('be.visible');
       cy.get('.slick-context-menu.slick-menu-level-1 .slick-menu-command-list')
         .should('exist')
         .find('.slick-menu-item .slick-menu-content')
@@ -891,19 +898,22 @@ describe('Example 24 - Cell Menu & Context Menu Plugins', () => {
         .each(($command, index) => expect($command.text()).to.contain(subCommands2[index]));
 
       // click on Feedback->ContactUs
+      cy.get('.slick-context-menu').should('be.visible');
       cy.get('.slick-context-menu.slick-menu-level-1.dropleft') // left align
         .find('.slick-menu-item .slick-menu-content')
         .contains('Contact Us')
         // .should('exist')
         .trigger('mouseover', { force: true }); // mouseover or click should work
 
+      cy.get('.slick-context-menu').should('be.visible');
       cy.get('.slick-submenu').should('have.length', 2);
       cy.get('.slick-context-menu.slick-menu-level-2.dropright') // right align
         .should('exist')
         .find('.slick-menu-item .slick-menu-content')
         .each(($command, index) => expect($command.text()).to.eq(subCommands2_1[index]));
 
-      cy.get('.slick-context-menu.slick-menu-level-2');
+      cy.get('.slick-context-menu.slick-menu-level-2')
+        .should('be.visible');
 
       cy.get('.slick-context-menu.slick-menu-level-2 .slick-menu-command-list')
         .find('.slick-menu-item .slick-menu-content')

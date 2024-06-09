@@ -601,7 +601,7 @@ class Example24 extends React.Component<Props, State> {
         <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
         <div className="row">
-          <span className="context-menu">
+          <span className="context-menu d-flex gap-4px">
             <strong>Context Menu:</strong>
             <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.showContextCommandsAndOptions(false)}
               data-test="context-menu-priority-only-button">
@@ -613,7 +613,7 @@ class Example24 extends React.Component<Props, State> {
             </button>
           </span>
 
-          <span className="cell-menu">
+          <span className="cell-menu d-flex gap-4px">
             <strong>Cell Menu:</strong>
             <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.showCellMenuCommandsAndOptions(false)}
               data-test="cell-menu-commands-and-options-false-button">
