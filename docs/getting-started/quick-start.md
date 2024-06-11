@@ -168,7 +168,10 @@ The best way to get started is to clone the [Slickgrid-React-Demos](https://gith
 ##### All Live Demo Examples have links to the actual code
 Like to see the code to a particular Example? Just click on the "see code" that is available in every live examples.
 
-### 8. Add Optional Feature like Excel Export
+### 8. CSP Compliance
+The project supports Content Security Policy (CSP) as long as you provide an optional `sanitizer` in your grid options (we recommend DOMPurify). Review the [CSP Compliance](../developer-guides/csp-compliance.md) documentation for more info.
+
+### 9. Add Optional Feature like Excel Export
 Starting with version 3.0.0, the Excel Export is now an optional package and if you want to use it then you'll need to install it via npm from the monorepo library with `npm install @slickgrid-universal/excel-export`. Refer to the [Excel Export - Docs](../grid-functionalities/export-to-excel.md) for more info.
 
 Here's a quick list of some of these optional packages
@@ -177,10 +180,10 @@ Here's a quick list of some of these optional packages
 - [@slickgrid-universal/graphql](https://github.com/ghiscoding/slickgrid-universal/tree/master/packages/graphql)
 - [@slickgrid-universal/odata](https://github.com/ghiscoding/slickgrid-universal/tree/master/packages/odata)
 
-### 9. Missing Features? (fear not)
+### 10. Missing Features? (fear not)
 What if `Slickgrid-React` is missing feature(s) versus the original `SlickGrid`? Fear not and directly use the `SlickGrid` and `DataView` objects that are expose from the start through Event Emitters. For more info continue reading on [Wiki - SlickGrid & DataView objects](../slick-grid-dataview-objects/slickgrid-dataview-objects.md) and [Wiki - Grid & DataView Events](../events/grid-dataview-events.md)
 
-### 10. Having some issues?
+### 11. Having some issues?
 After reading all this HOW TO, what if you have an issue with the grid?
 Please start by searching any related [issues](/ghiscoding/slickgrid-react/issues). If you can't find anything in the issues log and you made sure to also look through the multiple [wiki](/ghiscoding/slickgrid-react/wiki) pages as well, then go ahead and fill in a [new issue](/ghiscoding/slickgrid-react/issues/new) and we'll try to help.
 
