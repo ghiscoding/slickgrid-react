@@ -18,7 +18,7 @@ If you use SASS and you want to change some of the default SVGs, you will find o
 ### Demo
 - Material Theme - [demo](https://ghiscoding.github.io/slickgrid-universal/#/example05)
 - Salesforce Theme - [demo](https://ghiscoding.github.io/slickgrid-universal/#/example06)
-- Bootstrap Theme - visit [Angular-Slickgrid](https://github.com/ghiscoding/Angular-Slickgrid), [Aurelia-Slickgrid](https://github.com/ghiscoding/arelia-slickgrid) or [Slickgrid-React](https://github.com/ghiscoding/slickgrid-react)
+- Bootstrap Theme - visit [Slickgrid-React](https://github.com/ghiscoding/Slickgrid-React), [Slickgrid-React](https://github.com/ghiscoding/slickgrid-react)
 
 ### Using built-in Themes
 The Material & Salesforce Themes are using SVGs internally for the icons used by the grid. Each built-in Themes have CSS and SASS files associated with each theme. To take benefit of this, just import whichever CSS/SASS file associated with the Theme you wish to use.
