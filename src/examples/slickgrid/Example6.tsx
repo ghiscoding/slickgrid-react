@@ -1,4 +1,4 @@
-import { addDay, format } from '@formkit/tempo';
+import { addDay, format as tempoFormat } from '@formkit/tempo';
 import { GraphqlService, GraphqlPaginatedResult, GraphqlServiceApi, GraphqlServiceOption, } from '@slickgrid-universal/graphql';
 import i18next, { TFunction } from 'i18next';
 import {
@@ -151,6 +151,13 @@ class Example6 extends React.Component<Props, State> {
         filterable: true,
         filter: {
           model: Filters.dateRange,
+          filterShortcuts: [
+            {
+              titleKey: 'NEXT_20_DAYS',
+              iconCssClass: 'mdi mdi-calendar',
+              searchTerms: [tempoFormat(new Date(), 'YYYY-MM-DD'), tempoFormat(addDay(new Date(), 20), 'YYYY-MM-DD')],
+            },
+          ]
         }
       },
     ];
@@ -170,8 +177,8 @@ class Example6 extends React.Component<Props, State> {
   }
 
   getGridOptions() {
-    const presetLowestDay = format(addDay(new Date(), -2), 'YYYY-MM-DD');
-    const presetHighestDay = format(addDay(new Date(), 20), 'YYYY-MM-DD');
+    const presetLowestDay = tempoFormat(addDay(new Date(), -2), 'YYYY-MM-DD');
+    const presetHighestDay = tempoFormat(addDay(new Date(), 20), 'YYYY-MM-DD');
 
     return {
       enableFiltering: true,
@@ -369,8 +376,8 @@ class Example6 extends React.Component<Props, State> {
   }
 
   setFiltersDynamically() {
-    const presetLowestDay = format(addDay(new Date(), -2), 'YYYY-MM-DD');
-    const presetHighestDay = format(addDay(new Date(), 20), 'YYYY-MM-DD');
+    const presetLowestDay = tempoFormat(addDay(new Date(), -2), 'YYYY-MM-DD');
+    const presetHighestDay = tempoFormat(addDay(new Date(), 20), 'YYYY-MM-DD');
 
     // we can Set Filters Dynamically (or different filters) afterward through the FilterService
     this.reactGrid?.filterService.updateFilters([
@@ -391,8 +398,8 @@ class Example6 extends React.Component<Props, State> {
   }
 
   resetToOriginalPresets() {
-    const presetLowestDay = format(addDay(new Date(), -2), 'YYYY-MM-DD');
-    const presetHighestDay = format(addDay(new Date(), 20), 'YYYY-MM-DD');
+    const presetLowestDay = tempoFormat(addDay(new Date(), -2), 'YYYY-MM-DD');
+    const presetHighestDay = tempoFormat(addDay(new Date(), 20), 'YYYY-MM-DD');
 
     this.reactGrid.filterService.updateFilters([
       // you can use OperatorType or type them as string, e.g.: operator: 'EQ'
@@ -527,7 +534,7 @@ class Example6 extends React.Component<Props, State> {
             </div>
             <br />
             {this.state.metrics && <span><><b>Metrics: </b>
-              {this.state.metrics.endTime ? format(this.state.metrics.endTime, 'YYYY-MM-DD HH:mm:ss') : ''}
+              {this.state.metrics.endTime ? tempoFormat(this.state.metrics.endTime, 'YYYY-MM-DD HH:mm:ss') : ''}
               | {this.state.metrics.executionTime}ms
               | {this.state.metrics.totalItemCount} items </>
             </span>}
