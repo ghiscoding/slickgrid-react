@@ -36,6 +36,7 @@ import Example33 from './Example33';
 import Example34 from './Example34';
 import Example35 from './Example35';
 import Example36 from './Example36';
+import Example37 from './Example37';
 
 const routes: Array<{ path: string; route: string; component: any; title: string; }> = [
   { path: 'example1', route: '/example1', component: <Example1 />, title: '1- Basic Grid / 2 Grids' },
@@ -72,6 +73,7 @@ const routes: Array<{ path: string; route: string; component: any; title: string
   { path: 'example34', route: '/example34', component: <Example34 />, title: '34- Real-Time Trading Platform' },
   { path: 'example35', route: '/example35', component: <Example35 />, title: '35- Row Based Editing' },
   { path: 'example36', route: '/example36', component: <Example36 />, title: '36- Excel Export Formulas' },
+  { path: 'example37', route: '/example37', component: <Example37 />, title: '37- Footer Totals Row' },
 ];
 
 export default function Routes() {
