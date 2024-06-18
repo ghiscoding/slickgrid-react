@@ -1,3 +1,4 @@
+import { format as tempoFormat } from '@formkit/tempo';
 import i18next, { TFunction } from 'i18next';
 import React from 'react';
 import { withTranslation } from 'react-i18next';
@@ -154,7 +155,11 @@ class Example15 extends React.Component<Props, State> {
         id: 'description', name: 'Description', field: 'description', filterable: true, sortable: true, minWidth: 80, width: 100,
         type: FieldType.string,
         filter: {
-          model: Filters.input
+          model: Filters.input,
+          filterShortcuts: [
+            { titleKey: 'BLANK_VALUES', searchTerms: ['< A'], iconCssClass: 'mdi mdi-filter-minus-outline', },
+            { titleKey: 'NON_BLANK_VALUES', searchTerms: ['> A'], iconCssClass: 'mdi mdi-filter-plus-outline', },
+          ]
         }
       },
       {
@@ -178,7 +183,14 @@ class Example15 extends React.Component<Props, State> {
       },
       {
         id: 'start', name: 'Start', field: 'start', nameKey: 'START', formatter: Formatters.dateIso, sortable: true, minWidth: 75, exportWithFormatter: true, width: 100,
-        type: FieldType.date, filterable: true, filter: { model: Filters.compoundDate }
+        type: FieldType.date, filterable: true,
+        filter: {
+          model: Filters.compoundDate,
+          filterShortcuts: [
+            { titleKey: 'PAST', searchTerms: [tempoFormat(new Date(), 'YYYY-MM-DD')], operator: '<', iconCssClass: 'mdi mdi-calendar', },
+            { titleKey: 'FUTURE', searchTerms: [tempoFormat(new Date(), 'YYYY-MM-DD')], operator: '>', iconCssClass: 'mdi mdi-calendar-clock', },
+          ]
+        }
       },
       {
         id: 'completed', field: 'completed', nameKey: 'COMPLETED', minWidth: 85, maxWidth: 85, formatter: Formatters.checkmarkMaterial, width: 100,
@@ -195,10 +207,11 @@ class Example15 extends React.Component<Props, State> {
 
   getData(count: number) {
     // mock a dataset
+    const currentYear = new Date().getFullYear();
     const tmpData: any[] = [];
     for (let i = 0; i < count; i++) {
       const randomDuration = Math.round(Math.random() * 100);
-      const randomYear = randomBetween(2000, 2025);
+      const randomYear = randomBetween(currentYear - 15, currentYear + 8);
       const randomYearShort = randomBetween(10, 25);
       const randomMonth = randomBetween(1, 12);
       const randomMonthStr = (randomMonth < 10) ? `0${randomMonth}` : randomMonth;
