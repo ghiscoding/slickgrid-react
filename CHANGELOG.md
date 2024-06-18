@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.2.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.1.0...v5.2.0) (2024-06-18)
+
+
+### Features
+
+* add Footer Totals Row and fix footer styling ([#366](https://github.com/ghiscoding/slickgrid-react/issues/366)) ([4f6226e](https://github.com/ghiscoding/slickgrid-react/commit/4f6226e623dbfc369c94ef70d5078adb6a58d335))
+* add new optional `filterShortcuts` to Column Filter ([#365](https://github.com/ghiscoding/slickgrid-react/issues/365)) ([88b8e93](https://github.com/ghiscoding/slickgrid-react/commit/88b8e934591001a0f56d56c3490cf7d88863b704))
+* paste multiline content as single cell ([d415a51](https://github.com/ghiscoding/slickgrid-react/commit/d415a510c43b499922390c798b1f3628aa6969ee))
+
 ## [5.1.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.0.2...v5.1.0) (2024-06-08)
 
 
