@@ -102,7 +102,7 @@
     "@4tw/cypress-drag-drop": "^2.2.5",
     "@faker-js/faker": "^8.4.1",
     "@fnando/sparkline": "^0.3.10",
-    "@formkit/tempo": "^0.1.1",
+    "@formkit/tempo": "^0.1.2",
     "@popperjs/core": "^2.11.8",
     "@release-it/conventional-changelog": "^8.0.1",
     "@slickgrid-universal/composite-editor-component": "~5.2.0",
@@ -116,7 +116,7 @@
     "@types/fnando__sparkline": "^0.3.7",
     "@types/i18next-xhr-backend": "^1.4.2",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.14.4",
+    "@types/node": "^20.14.9",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/sortablejs": "^1.15.8",
@@ -130,7 +130,7 @@
     "copyfiles": "^2.4.1",
     "css-loader": "^7.1.2",
     "custom-event-polyfill": "^1.0.7",
-    "cypress": "^13.11.0",
+    "cypress": "^13.12.0",
     "cypress-real-events": "^1.13.0",
     "dompurify": "^3.1.5",
     "esbuild-loader": "^4.2.0",
@@ -155,9 +155,9 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-i18next": "^14.1.2",
-    "react-router-dom": "^6.23.1",
+    "react-router-dom": "^6.24.0",
     "regenerator-runtime": "^0.14.1",
-    "release-it": "^17.3.0",
+    "release-it": "^17.4.0",
     "rimraf": "^5.0.7",
     "rxjs": "^7.8.1",
     "sass": "^1.77.6",
@@ -167,8 +167,8 @@
     "ts-jest": "^29.1.5",
     "ts-loader": "^9.5.1",
     "typescript": "^5.4.5",
-    "typescript-eslint": "^7.13.1",
-    "webpack": "^5.92.0",
+    "typescript-eslint": "^7.14.1",
+    "webpack": "^5.92.1",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4"
   },
@@ -177,6 +177,6 @@
     "npm": ">=8.5.0"
   },
   "resolutions": {
-    "caniuse-lite": "1.0.30001629"
+    "caniuse-lite": "1.0.30001638"
   }
 }
