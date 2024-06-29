@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.3.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.2.0...v5.3.0) (2024-06-29)
+
+
+### Features
+
+* add onPreHeaderContextMenu for Column Picker usage ([#368](https://github.com/ghiscoding/slickgrid-react/issues/368)) ([c5d16e2](https://github.com/ghiscoding/slickgrid-react/commit/c5d16e246ad046781ff50c4e14ef7a2eae3d1510))
+
+
+### Bug Fixes
+
+* setting date picker should always work ([#369](https://github.com/ghiscoding/slickgrid-react/issues/369)) ([8f68f66](https://github.com/ghiscoding/slickgrid-react/commit/8f68f66a287ed1df39bf9905ba562a5a083e7bde))
+
 ## [5.2.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.1.0...v5.2.0) (2024-06-18)
 
 
