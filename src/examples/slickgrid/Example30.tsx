@@ -455,6 +455,9 @@ export default class Example30 extends React.Component<Props, State> {
       },
       // when using the cellMenu, you can change some of the default options and all use some of the callback methods
       enableCellMenu: true,
+      cellMenu: {
+        preventEventBubbling: false
+      },
       gridMenu: {
         hideToggleDarkModeCommand: false, // hidden by default
         onCommand: (_, args) => {
