@@ -1,10 +1,15 @@
 import React from 'react';
 
-import { Column, Formatters, GridOption, SlickgridReact, SlickgridReactInstance } from '../../slickgrid-react';
+import {
+  type Column,
+  Formatters,
+  type GridOption,
+  SlickgridReact,
+  type SlickgridReactInstance
+} from '../../slickgrid-react';
 
 const NB_ITEMS = 995;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props { }
 
 interface State {
@@ -44,7 +49,7 @@ export default class Example1 extends React.Component<Props, State> {
     this.defineGrids();
 
     // mock some data (different in each dataset)
-    this.setState((state: State, props: Props) => ({
+    this.setState(() => ({
       dataset1: this.mockData(NB_ITEMS),
       dataset2: this.mockData(NB_ITEMS)
     }));

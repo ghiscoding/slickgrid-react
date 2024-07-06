@@ -1,17 +1,18 @@
 import {
-  SlickgridReactInstance,
-  Column,
+  type Column,
   Editors,
   FieldType,
   Formatters,
-  GridOption,
-  GridService,
-  OnEventArgs,
-  SlickDataView,
-  SlickGrid,
+  type GridOption,
+  type GridService,
+  type OnEventArgs,
+  type SlickDataView,
+  type SlickGrid,
   SlickgridReact,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
+
 import './example11.scss';
 
 interface Props { }

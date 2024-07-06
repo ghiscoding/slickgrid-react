@@ -1,23 +1,23 @@
 import {
-  SlickgridReactInstance,
-  Column,
+  type Aggregator,
+  Aggregators,
+  type Column,
+  type ExcelCellValueParserArgs,
+  type ExcelGroupValueParserArgs,
   FieldType,
-  Formatter,
+  type Formatter,
   Formatters,
-  GridOption,
-  SlickgridReact,
-  Aggregator,
-  SlickGrid,
+  type GridOption,
   Editors,
   GroupTotalFormatters,
-  Aggregators,
-  Grouping,
-  ExcelCellValueParserArgs,
-  ExcelGroupValueParserArgs,
-  SlickGroupTotals,
+  type Grouping,
+  type SlickGrid,
+  type SlickGroupTotals,
+  SlickgridReact,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 
 import './example36.scss';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
@@ -26,7 +26,6 @@ interface State extends BaseSlickGridState {
   taxRate: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props { }
 
 interface GroceryItem {
@@ -318,7 +317,7 @@ export default class Example36 extends React.Component<Props, State> {
       },
     };
 
-    this.setState((state: State, props: Props) => ({
+    this.setState(() => ({
       ...this.state,
       columnDefinitions: columns,
       gridOptions,

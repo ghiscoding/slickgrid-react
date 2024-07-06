@@ -1,15 +1,13 @@
 import React from 'react';
-import { Column, GridOption, SlickgridReactInstance, SlickgridReact } from '../../slickgrid-react';
+import { type Column, type GridOption, SlickgridReact, type SlickgridReactInstance } from '../../slickgrid-react';
 import './example7.scss';
 
 let columns1WithHighlightingById: any = {};
 let columns2WithHighlightingById: any = {};
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props { }
 
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface State {
   gridOptions1?: GridOption;
   gridOptions2?: GridOption;

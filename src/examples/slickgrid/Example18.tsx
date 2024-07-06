@@ -2,25 +2,26 @@ import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { TextExportService } from '@slickgrid-universal/text-export';
 import {
   Aggregators,
-  SlickgridReactInstance,
-  Column,
+  type Column,
   DelimiterType,
   FieldType,
   FileType,
   Filters,
   Formatters,
-  GridOption,
-  GroupingGetterFunction,
+  type GridOption,
+  type GroupingGetterFunction,
   GroupTotalFormatters,
   SortComparers,
   SortDirectionNumber,
-  Grouping,
-  SlickDataView,
-  SlickGrid,
-  SlickgridReact
+  type Grouping,
+  type SlickDataView,
+  type SlickGrid,
+  SlickgridReact,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
-import BaseSlickGridState from './state-slick-grid-base';
+
+import type BaseSlickGridState from './state-slick-grid-base';
 
 interface Props { }
 interface State extends BaseSlickGridState {
@@ -307,7 +308,7 @@ export default class Example18 extends React.Component<Props, State> {
   }
 
   setData(rowCount: number) {
-    this.setState((state: State, props: Props) => ({
+    this.setState((state: State) => ({
       ...state,
       dataset: this.loadData(rowCount)
     }));

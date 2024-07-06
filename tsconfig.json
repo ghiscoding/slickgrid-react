@@ -20,6 +20,10 @@
       "es2022",
       "dom"
     ],
+    "types": [
+      "jest",
+      "node"
+    ],
     "typeRoots": [
       "node_modules/@types",
       "src/typings"
@@ -33,11 +37,13 @@
   ],
   "filesGlob": [
     "./src/**/*.ts",
+    "./src/**/*.tsx",
     "./test/**/*.ts",
     "./custom_typings/**/*.d.ts"
   ],
   "include": [
     "src/**/*.ts",
+    "src/**/*.tsx",
     "src/typings/**/*.ts"
   ],
   "typeAcquisition": { "include": ["jest"] }

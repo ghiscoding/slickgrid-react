@@ -1,16 +1,16 @@
 import {
-  SlickgridReactInstance,
-  Column,
+  type Column,
   FieldType,
   Formatters,
-  OperatorString,
+  type GridOption,
+  type GroupingGetterFunction,
+  type OperatorString,
   SlickgridReact,
-  GroupingGetterFunction,
-  GridOption
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
 
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 import './example21.scss';
 
 interface Props { }

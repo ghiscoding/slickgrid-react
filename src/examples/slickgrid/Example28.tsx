@@ -2,25 +2,26 @@ import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import {
   addWhiteSpaces,
   Aggregators,
-  Column,
+  type Column,
   decimalFormatted,
   FieldType,
   Filters,
   findItemInTreeStructure,
-  Formatter,
+  type Formatter,
   Formatters,
-  GridOption,
+  type GridOption,
   isNumber,
   // GroupTotalFormatters,
   // italicFormatter,
-  SlickDataView,
+  type SlickDataView,
   SlickgridReact,
-  SlickgridReactInstance,
-  TreeToggledItem,
+  type SlickgridReactInstance,
+  type TreeToggledItem,
 } from '../../slickgrid-react';
 import React from 'react';
+
+import type BaseSlickGridState from './state-slick-grid-base';
 import './example28.scss'; // provide custom CSS/SASS styling
-import BaseSlickGridState from './state-slick-grid-base';
 
 interface Props { }
 interface State extends BaseSlickGridState {

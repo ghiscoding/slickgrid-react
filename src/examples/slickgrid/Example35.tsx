@@ -1,17 +1,17 @@
-import i18next, { TFunction } from 'i18next';
+import i18next, { type TFunction } from 'i18next';
 import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
 import {
-  FieldType,
   Editors,
+  FieldType,
   Formatters,
-  SlickGrid,
+  type SlickGrid,
   SlickgridReact,
-  SlickgridReactInstance,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
 import { withTranslation } from 'react-i18next';
 
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 import './example35.scss';
 
 const NB_ITEMS = 20;

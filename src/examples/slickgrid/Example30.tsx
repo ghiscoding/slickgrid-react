@@ -2,31 +2,31 @@ import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
 import { SlickCompositeEditor, SlickCompositeEditorComponent } from '@slickgrid-universal/composite-editor-component';
 import React from 'react';
-
 import {
-  AutocompleterOption,
-  Column,
-  CompositeEditorModalType,
-  EditCommand,
+  type AutocompleterOption,
+  type Column,
+  type CompositeEditorModalType,
+  type EditCommand,
   Editors,
   FieldType,
   Filters,
   formatNumber,
-  Formatter,
+  type Formatter,
   Formatters,
-  GridOption,
-  GridStateChange,
-  LongTextEditorOption,
-  OnCompositeEditorChangeEventArgs,
+  type GridOption,
+  type GridStateChange,
+  type LongTextEditorOption,
+  type OnCompositeEditorChangeEventArgs,
   SlickGlobalEditorLock,
-  SlickgridReactInstance,
-  SlickGrid,
+  type SlickgridReactInstance,
+  type SlickGrid,
   SlickgridReact,
   SortComparers,
   type VanillaCalendarOption,
 } from '../../slickgrid-react';
+
 import './example30.scss'; // provide custom CSS/SASS styling
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 
 const NB_ITEMS = 500;
 const URL_COUNTRIES_COLLECTION = 'assets/data/countries.json';

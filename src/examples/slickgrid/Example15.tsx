@@ -1,21 +1,21 @@
 import { format as tempoFormat } from '@formkit/tempo';
-import i18next, { TFunction } from 'i18next';
+import i18next, { type TFunction } from 'i18next';
 import React from 'react';
 import { withTranslation } from 'react-i18next';
 
 import {
-  SlickgridReactInstance,
-  Column,
+  type Column,
   FieldType,
   Filters,
   Formatters,
-  GridOption,
-  GridState,
-  GridStateChange,
-  MultipleSelectOption,
-  SlickgridReact
+  type GridOption,
+  type GridState,
+  type GridStateChange,
+  type MultipleSelectOption,
+  SlickgridReact,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 
 interface Props {
   t: TFunction;

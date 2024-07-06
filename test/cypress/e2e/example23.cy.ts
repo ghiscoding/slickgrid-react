@@ -1,4 +1,4 @@
-import { addDay, format, isAfter, isBefore, isEqual } from "@formkit/tempo";
+import { addDay, format, isAfter, isBefore, isEqual } from '@formkit/tempo';
 
 const presetMinComplete = 5;
 const presetMaxComplete = 80;

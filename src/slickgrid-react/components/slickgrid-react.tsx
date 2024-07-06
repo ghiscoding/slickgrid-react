@@ -1,26 +1,24 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-prototype-builtins */
 // import 3rd party vendor libs
 import i18next from 'i18next';
 import React from 'react';
 
 import {
   // interfaces/types
-  AutocompleterEditor,
-  BackendServiceApi,
-  BackendServiceOption,
-  Column,
-  DataViewOption,
-  EventSubscription,
-  ExtensionList,
-  ExternalResource,
+  type AutocompleterEditor,
+  type BackendServiceApi,
+  type BackendServiceOption,
+  type Column,
+  type DataViewOption,
+  type EventSubscription,
+  type ExtensionList,
+  type ExternalResource,
   GridStateType,
-  ItemMetadata,
-  Locale,
-  Metrics,
-  Pagination,
-  SelectEditor,
-  ServicePagination,
+  type ItemMetadata,
+  type Locale,
+  type Metrics,
+  type Pagination,
+  type SelectEditor,
+  type ServicePagination,
   SlickDataView,
   SlickEventHandler,
   SlickGrid,
@@ -37,10 +35,10 @@ import {
   GridService,
   GridStateService,
   GroupingAndColspanService,
-  Observable,
+  type Observable,
   PaginationService,
   ResizerService,
-  RxJsFacade,
+  type RxJsFacade,
   SharedService,
   SlickGroupItemMetadataProvider,
   SlickgridConfig,
@@ -60,16 +58,16 @@ import { extend } from '@slickgrid-universal/utils';
 import { dequal } from 'dequal/lite';
 import { Constants } from '../constants';
 import { GlobalGridOptions } from '../global-grid-options';
-import { SlickgridReactInstance, GridOption, } from '../models/index';
+import type { SlickgridReactInstance, GridOption, } from '../models/index';
 import {
   ReactUtilService,
   disposeAllSubscriptions,
   TranslaterService,
 } from '../services/index';
-import { Subscription } from 'rxjs';
+import type { Subscription } from 'rxjs';
 
 import { GlobalContainerService } from '../services/singletons';
-import { SlickgridReactProps } from './slickgridReactProps';
+import type { SlickgridReactProps } from './slickgridReactProps';
 
 interface State {
   showPagination: boolean;

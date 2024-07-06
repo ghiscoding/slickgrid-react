@@ -1,12 +1,13 @@
 import eslint from '@eslint/js';
-import cypress from 'eslint-plugin-cypress';
-import tsEslint from 'typescript-eslint';
+import cypress from 'eslint-plugin-cypress/flat';
+import reactPlugin from 'eslint-plugin-react';
+import hooksPlugin from 'eslint-plugin-react-hooks';
+import globals from 'globals';
 import n from 'eslint-plugin-n';
-import tsParser from '@typescript-eslint/parser';
+import tsEslint from 'typescript-eslint';
 
 export default tsEslint.config(
   eslint.configs.recommended,
-  // ...cypress.configs.recommended,
   ...tsEslint.configs.recommended,
   {
     ignores: [
@@ -31,28 +32,32 @@ export default tsEslint.config(
   {
     plugins: {
       '@typescript-eslint': tsEslint.plugin,
+      'react-hooks': hooksPlugin,
+      react: reactPlugin,
       cypress,
       n
     },
-    files: ['**/*.ts'],
-
+    files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
       globals: {
-        // ...globals,
+        ...globals.es2021,
+        ...globals.node,
         Sortable: true,
       },
-      parser: tsParser,
+      parser: tsEslint.parser,
       parserOptions: {
-        project: ['./tsconfig.json']
+        project: ['./tsconfig.json', './test/tsconfig.spec.json', './test/cypress/tsconfig.json']
       }
     },
     settings: {
       node: {
-        tryExtensions: ['.js', '.json', '.node', '.ts', '.d.ts'],
+        tryExtensions: ['.js', '.json', '.node', '.ts', '.tsx', '.d.ts'],
         resolvePaths: ['node_modules/@types']
       }
     },
     rules: {
+      ...reactPlugin.configs['jsx-runtime'].rules,
+      ...hooksPlugin.configs.recommended.rules,
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/ban-types': [
         'error',
@@ -82,7 +87,7 @@ export default tsEslint.config(
       'no-async-promise-executor': 'off',
       'no-case-declarations': 'off',
       'no-cond-assign': 'off',
-      'no-prototype-builtins': 'off',
+      'no-prototype-builtins': [0],
       'no-extra-boolean-cast': 'off',
       'semi': 'off',
       'keyword-spacing': 'error',

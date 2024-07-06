@@ -1,20 +1,21 @@
 import {
-  SlickgridReactInstance,
-  Column,
-  ColumnEditorDualInput,
+  type Column,
+  type ColumnEditorDualInput,
   Editors,
   FieldType,
   Filters,
   formatNumber,
   Formatters,
-  GridOption,
-  SlickGrid,
+  type GridOption,
+  type SlickGrid,
   SlickEventHandler,
   SlickgridReact,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
+
+import type BaseSlickGridState from './state-slick-grid-base';
 import './example20.scss'; // provide custom CSS/SASS styling
-import BaseSlickGridState from './state-slick-grid-base';
 
 interface Props { }
 interface State extends BaseSlickGridState {

@@ -1,22 +1,22 @@
-import { GridOdataService, OdataServiceApi, OdataOption } from '@slickgrid-universal/odata';
+import { GridOdataService, type OdataServiceApi, type OdataOption } from '@slickgrid-universal/odata';
 import { RxJsResource } from '@slickgrid-universal/rxjs-observable';
-import { Observable, of, Subject } from 'rxjs';
-
+import { Observable, of, type Subject } from 'rxjs';
 import {
-  Column,
+  type Column,
   Editors,
   FieldType,
   Filters,
-  GridOption,
-  GridStateChange,
-  Metrics,
+  type GridOption,
+  type GridStateChange,
+  type Metrics,
   OperatorType,
-  Pagination,
-  SlickgridReactInstance,
+  type Pagination,
   SlickgridReact,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
-import BaseSlickGridState from './state-slick-grid-base';
+
+import type BaseSlickGridState from './state-slick-grid-base';
 
 const defaultPageSize = 20;
 const sampleDataRoot = 'assets/data';
@@ -269,12 +269,12 @@ export default class Example31 extends React.Component<Props, State> {
         if (param.includes('$filter=')) {
           const filterBy = param.substring('$filter='.length).replace('%20', ' ');
           if (filterBy.includes('contains')) {
-            const filterMatch = filterBy.match(/contains\(([a-zA-Z\/]+),\s?'(.*?)'/);
+            const filterMatch = filterBy.match(/contains\(([a-zA-Z/]+),\s?'(.*?)'/);
             const fieldName = filterMatch![1].trim();
             (columnFilters as any)[fieldName] = { type: 'substring', term: filterMatch![2].trim() };
           }
           if (filterBy.includes('substringof')) {
-            const filterMatch = filterBy.match(/substringof\('(.*?)',\s([a-zA-Z\/]+)/);
+            const filterMatch = filterBy.match(/substringof\('(.*?)',\s([a-zA-Z/]+)/);
             const fieldName = filterMatch![2].trim();
             (columnFilters as any)[fieldName] = { type: 'substring', term: filterMatch![1].trim() };
           }
@@ -433,19 +433,19 @@ export default class Example31 extends React.Component<Props, State> {
 
   // YOU CAN CHOOSE TO PREVENT EVENT FROM BUBBLING IN THE FOLLOWING 3x EVENTS
   // note however that internally the cancelling the search is more of a rollback
-  handleOnBeforeSort(e: Event) {
+  handleOnBeforeSort(_e: Event) {
     // e.preventDefault();
     // return false;
     return true;
   }
 
-  handleOnBeforeSearchChange(e: Event) {
+  handleOnBeforeSearchChange(_e: Event) {
     // e.preventDefault();
     // return false;
     return true;
   }
 
-  handleOnBeforePaginationChange(e: Event) {
+  handleOnBeforePaginationChange(_e: Event) {
     // e.preventDefault();
     // return false;
     return true;

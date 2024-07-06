@@ -1,18 +1,18 @@
-import { GraphqlService, GraphqlResult, GraphqlServiceApi, } from '@slickgrid-universal/graphql';
+import { GraphqlService, type GraphqlResult, type GraphqlServiceApi, } from '@slickgrid-universal/graphql';
 import {
-  SlickgridReactInstance,
-  Column,
+  type Column,
   Filters,
   Formatters,
-  GridOption,
-  Metrics,
-  MultipleSelectOption,
+  type GridOption,
+  type Metrics,
+  type MultipleSelectOption,
   OperatorType,
-  SlickgridReact
+  SlickgridReact,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
 import './example25.scss'; // provide custom CSS/SASS styling
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 
 const COUNTRIES_API = 'https://countries.trevorblades.com/';
 

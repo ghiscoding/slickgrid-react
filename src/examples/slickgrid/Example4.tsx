@@ -4,22 +4,21 @@ import React from 'react';
 
 import { CustomInputFilter } from './custom-inputFilter';
 import {
-  Column,
+  type Column,
   FieldType,
   Filters,
   Formatters,
-  GridOption,
-  GridStateChange,
-  Metrics,
-  MultipleSelectOption,
+  type GridOption,
+  type GridStateChange,
+  type Metrics,
+  type MultipleSelectOption,
   OperatorType,
-  SlickgridReactInstance,
   SlickgridReact,
+  type SlickgridReactInstance,
   type VanillaCalendarOption,
 } from '../../slickgrid-react';
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface State extends BaseSlickGridState {
   metrics?: Metrics,
 }
@@ -30,7 +29,6 @@ function randomBetween(min: number, max: number) {
 const NB_ITEMS = 1500;
 const URL_SAMPLE_COLLECTION_DATA = 'assets/data/collection_500_numbers.json';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props { }
 
 export default class Example4 extends React.Component<Props, State> {

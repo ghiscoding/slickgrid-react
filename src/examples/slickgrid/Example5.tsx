@@ -1,20 +1,20 @@
 import { format } from '@formkit/tempo';
-import { GridOdataService, OdataServiceApi, OdataOption } from '@slickgrid-universal/odata';
+import { GridOdataService, type OdataServiceApi, type OdataOption } from '@slickgrid-universal/odata';
 
 import {
-  SlickgridReactInstance,
+  type Column,
   FieldType,
   Filters,
-  GridStateChange,
-  Metrics,
+  type GridOption,
+  type GridStateChange,
+  type Metrics,
   OperatorType,
-  Pagination,
+  type Pagination,
   SlickgridReact,
-  GridOption,
-  Column,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 
 const defaultPageSize = 20;
 const sampleDataRoot = 'assets/data';
@@ -37,7 +37,6 @@ interface State extends BaseSlickGridState {
   status: Status;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props { }
 
 export default class Example5 extends React.Component<Props, State> {
@@ -292,18 +291,18 @@ export default class Example5 extends React.Component<Props, State> {
             (columnFilters as any)[fieldName] = { type: 'matchespattern', term: '^' + filterMatch[2].trim() };
           }
           if (filterBy.includes('contains')) {
-            const filterMatch = filterBy.match(/contains\(([a-zA-Z\/]+),\s?'(.*?)'/);
+            const filterMatch = filterBy.match(/contains\(([a-zA-Z/]+),\s?'(.*?)'/);
             const fieldName = filterMatch![1].trim();
             (columnFilters as any)[fieldName] = { type: 'substring', term: filterMatch![2].trim() };
           }
           if (filterBy.includes('substringof')) {
-            const filterMatch = filterBy.match(/substringof\('(.*?)',\s([a-zA-Z\/]+)/);
+            const filterMatch = filterBy.match(/substringof\('(.*?)',\s([a-zA-Z/]+)/);
             const fieldName = filterMatch![2].trim();
             (columnFilters as any)[fieldName] = { type: 'substring', term: filterMatch![1].trim() };
           }
           for (const operator of ['eq', 'ne', 'le', 'lt', 'gt', 'ge']) {
             if (filterBy.includes(operator)) {
-              const re = new RegExp(`([a-zA-Z ]*) ${operator} \'(.*?)\'`);
+              const re = new RegExp(`([a-zA-Z ]*) ${operator} '(.*?)'`);
               const filterMatch = re.exec(filterBy);
               if (Array.isArray(filterMatch)) {
                 const fieldName = filterMatch[1].trim();
@@ -484,19 +483,19 @@ export default class Example5 extends React.Component<Props, State> {
 
   // YOU CAN CHOOSE TO PREVENT EVENT FROM BUBBLING IN THE FOLLOWING 3x EVENTS
   // note however that internally the cancelling the search is more of a rollback
-  handleOnBeforeSort(e: Event) {
+  handleOnBeforeSort(_e: Event) {
     // e.preventDefault();
     // return false;
     return true;
   }
 
-  handleOnBeforeSearchChange(e: Event) {
+  handleOnBeforeSearchChange(_e: Event) {
     // e.preventDefault();
     // return false;
     return true;
   }
 
-  handleOnBeforePaginationChange(e: Event) {
+  handleOnBeforePaginationChange(_e: Event) {
     // e.preventDefault();
     // return false;
     return true;

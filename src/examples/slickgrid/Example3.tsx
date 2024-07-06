@@ -3,26 +3,26 @@ import i18next from 'i18next';
 import React from 'react';
 
 import {
-  SlickgridReactInstance,
-  AutocompleterOption,
-  Column,
-  EditCommand,
+  type AutocompleterOption,
+  type Column,
+  type EditCommand,
   Editors,
-  EditorValidator,
+  type EditorValidator,
   FieldType,
   Filters,
   Formatters,
-  OnEventArgs,
+  type GridOption,
+  type OnEventArgs,
   OperatorType,
   SortComparers,
   SlickGlobalEditorLock,
   SlickgridReact,
-  GridOption,
+  type SlickgridReactInstance,
   type VanillaCalendarOption,
 } from '../../slickgrid-react';
 import { CustomInputEditor } from './custom-inputEditor';
 import { CustomInputFilter } from './custom-inputFilter';
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 
 interface Props { }
 
@@ -133,8 +133,7 @@ export default class Example3 extends React.Component<Props, State> {
         onCellClick: (_e: any, args: OnEventArgs) => {
           console.log(args);
 
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          this.setState((state: State, props: Props) => ({
+          this.setState((state: State) => ({
             ...state,
             alertWarning: `Editing: ${args.dataContext.title}`
           }));
@@ -628,7 +627,7 @@ export default class Example3 extends React.Component<Props, State> {
 
   onCellChanged(_e: Event, args: any) {
     console.log('onCellChange', args);
-    this.setState((state: State, props: Props) => ({
+    this.setState((state: State) => ({
       ...state,
       updatedObject: { ...args.item },
     }));
@@ -639,7 +638,7 @@ export default class Example3 extends React.Component<Props, State> {
     console.log(metadata);
 
     if (metadata.columnDef.id === 'edit') {
-      this.setState((state: State, props: Props) => ({
+      this.setState((state: State) => ({
         ...state,
         alertWarning: `Open a modal window to edit: ${metadata.dataContext.title}`,
       }));
@@ -652,8 +651,7 @@ export default class Example3 extends React.Component<Props, State> {
     } else if (metadata.columnDef.id === 'delete') {
       if (confirm('Are you sure?')) {
         this.reactGrid.gridService.deleteItemById(metadata.dataContext.id);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        this.setState((state: State, props: Props) => ({
+        this.setState((state: State) => ({
           ...state,
           alertWarning: `Deleted: ${metadata.dataContext.title}`,
         }));
@@ -692,8 +690,7 @@ export default class Example3 extends React.Component<Props, State> {
 
     // you can dynamically add your column to your column definitions
     // and then use the spread operator [...cols] OR slice to force React to review the changes
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.setState((state: State, props: Props) => ({
+    this.setState((state: State) => ({
       ...state,
       columnDefinitions: [...this.state.columnDefinitions!, newCol],
     }));
@@ -711,7 +708,7 @@ export default class Example3 extends React.Component<Props, State> {
   dynamicallyRemoveLastColumn() {
     this.state.columnDefinitions.pop();
 
-    this.setState((state: State, props: Props) => ({
+    this.setState((state: State) => ({
       ...state,
       columnDefinitions: this.state.columnDefinitions.slice(),
     }));
@@ -763,9 +760,6 @@ export default class Example3 extends React.Component<Props, State> {
         </div>
       );
     }
-    const fontSizeStyle = {
-      fontSize: '18px',
-    };
 
     const marginTop5px = { marginTop: '5px' };
 

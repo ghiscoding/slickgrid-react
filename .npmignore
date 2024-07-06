@@ -1,5 +1,6 @@
 .chrome
 .circleci
+.eslintcache
 .github
 .gitbook.yaml
 .idea

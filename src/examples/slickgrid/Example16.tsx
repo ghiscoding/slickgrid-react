@@ -1,6 +1,15 @@
-import { SlickgridReactInstance, Column, ExtensionName, Filters, Formatters, GridOption, SlickgridReact, OnEventArgs } from '../../slickgrid-react';
+import {
+  type Column,
+  ExtensionName,
+  Filters,
+  Formatters,
+  type GridOption,
+  type OnEventArgs,
+  SlickgridReact,
+  type SlickgridReactInstance,
+} from '../../slickgrid-react';
 import React from 'react';
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 
 interface Props { }
 interface State extends BaseSlickGridState { }
@@ -49,7 +58,7 @@ export default class Example16 extends React.Component<Props, State> {
     document.title = this.title;
 
     // populate the dataset once the grid is ready
-    this.setState((state: State) => ({ dataset: this.getData() }));
+    this.setState(() => ({ dataset: this.getData() }));
   }
 
   /* Define grid Options and Columns */
@@ -217,7 +226,7 @@ export default class Example16 extends React.Component<Props, State> {
     // final updated dataset, we need to overwrite the DataView dataset (and our local one) with this new dataset that has a new order
     const finalDataset = left.concat(extractedRows.concat(right));
 
-    this.setState((state: State, props: Props) => {
+    this.setState(() => {
       return {
         dataset: finalDataset,
       };

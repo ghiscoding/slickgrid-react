@@ -8,13 +8,12 @@ import {
   type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 
 const NB_ITEMS = 100;
 
 interface State extends BaseSlickGridState { }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props { }
 
 export default class Example2 extends React.Component<Props, State> {
@@ -81,7 +80,7 @@ export default class Example2 extends React.Component<Props, State> {
       footerRowHeight: 28,
     };
 
-    this.setState((state: State, props: Props) => ({
+    this.setState(() => ({
       ...this.state,
       columnDefinitions: columnDefs,
       gridOptions,
@@ -173,7 +172,7 @@ export default class Example2 extends React.Component<Props, State> {
           dataset={this.state.dataset}
           onReactGridCreated={$event => this.reactGridReady($event.detail)}
           onCellChange={$event => this.handleOnCellChange($event.detail.eventData, $event.detail.args)}
-          onColumnsReordered={$event => this.handleOnColumnsReordered()}
+          onColumnsReordered={() => this.handleOnColumnsReordered()}
         />
       </div>
     );

@@ -2,24 +2,24 @@ import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { TextExportService } from '@slickgrid-universal/text-export';
 import {
   Aggregators,
-  SlickgridReactInstance,
-  Column,
+  type Column,
   DelimiterType,
   FieldType,
   FileType,
   Filters,
   Formatters,
-  GridOption,
-  Grouping,
+  type GridOption,
+  type Grouping,
   GroupTotalFormatters,
   SortDirectionNumber,
   SortComparers,
-  SlickDataView,
-  SlickGrid,
+  type SlickDataView,
+  type SlickGrid,
   SlickgridReact,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 
 interface Props { }
 interface State extends BaseSlickGridState {
