@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.3.1](https://github.com/ghiscoding/slickgrid-react/compare/v5.3.0...v5.3.1) (2024-07-06)
+
+
+### Bug Fixes
+
+* Composite Editor should work with Cell Menu ([#370](https://github.com/ghiscoding/slickgrid-react/issues/370)) ([e4d90a0](https://github.com/ghiscoding/slickgrid-react/commit/e4d90a0b5c4418b9d7dcf1f816e20eb7e8f7b3c7))
+
 ## [5.3.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.2.0...v5.3.0) (2024-06-29)
 
 
