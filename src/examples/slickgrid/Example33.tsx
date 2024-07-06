@@ -1,24 +1,24 @@
 import {
-  Column,
-  EditCommand,
+  type Column,
+  type EditCommand,
   Editors,
   FieldType,
   Filters,
-  Formatter,
+  type Formatter,
   Formatters,
-  GridOption,
-  MenuCommandItemCallbackArgs,
+  type GridOption,
+  type MenuCommandItemCallbackArgs,
   OperatorType,
-  SlickgridReactInstance,
+  type SlickGrid,
   SlickgridReact,
-  SlickGrid,
+  type SlickgridReactInstance,
   type VanillaCalendarOption,
 } from '../../slickgrid-react';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
 import React from 'react';
 
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 import './example33.scss';
 
 const NB_ITEMS = 500;

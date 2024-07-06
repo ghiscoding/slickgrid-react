@@ -21,7 +21,7 @@ import {
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import React from 'react';
 
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 import './example32.scss'; // provide custom CSS/SASS styling
 
 const NB_ITEMS = 400;
@@ -66,7 +66,7 @@ const customEditableInputFormatter: Formatter = (_row, _cell, value, columnDef, 
 };
 
 // you can create custom validator to pass to an inline editor
-const myCustomTitleValidator = (value: any, args: any) => {
+const myCustomTitleValidator = (value: any) => {
   if (value === null || value === undefined || !value.length) {
     // we will only check if the field is supplied when it's an inline editing
     return { valid: false, msg: 'This is a required field.' };

@@ -18,7 +18,7 @@ Object.defineProperty(window, '__env', { value: { env: { backendUrl: 'mocked URL
 
 Object.defineProperty(window, 'getComputedStyle', {
   value: () => ({
-    getPropertyValue: (prop) => {
+    getPropertyValue: () => {
       return '';
     }
   })

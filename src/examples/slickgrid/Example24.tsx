@@ -1,22 +1,23 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-import i18next, { TFunction } from 'i18next';
+import i18next, { type TFunction } from 'i18next';
 import React from 'react';
 import { withTranslation } from 'react-i18next';
 
 import {
-  SlickgridReactInstance,
-  Column,
-  ContextMenu,
+  type Column,
+  type ContextMenu,
   ExtensionName,
   FieldType,
   Filters,
-  Formatter,
+  type Formatter,
   Formatters,
-  GridOption,
-  SlickGrid,
+  type GridOption,
+  type SlickGrid,
   SlickgridReact,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
-import BaseSlickGridState from './state-slick-grid-base';
+
+import type BaseSlickGridState from './state-slick-grid-base';
 import './example24.scss'; // provide custom CSS/SASS styling
 
 interface Props {

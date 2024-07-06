@@ -1,22 +1,22 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { TextExportService } from '@slickgrid-universal/text-export';
-import i18next, { TFunction } from 'i18next';
+import i18next, { type TFunction } from 'i18next';
 import {
-  SlickgridReactInstance,
   DelimiterType,
   FieldType,
   FileType,
   Filters,
-  Formatter,
+  type Formatter,
   Formatters,
-  GridOption,
-  GridStateChange,
-  SlickGrid,
+  type GridOption,
+  type GridStateChange,
+  type SlickGrid,
   SlickgridReact,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
 import { withTranslation } from 'react-i18next';
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 
 const NB_ITEMS = 1500;
 
@@ -274,7 +274,6 @@ class Example12 extends React.Component<Props, State> {
   }
 
   render() {
-    const { t } = this.props;
     return !this.state.gridOptions ? '' : (
       <div id="demo-container" className="container-fluid">
         <h2>

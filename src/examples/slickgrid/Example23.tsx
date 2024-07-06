@@ -1,30 +1,31 @@
 import { addDay, format } from '@formkit/tempo';
 import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-import i18next, { TFunction } from 'i18next';
+import i18next, { type TFunction } from 'i18next';
 
 import { CustomInputFilter } from './custom-inputFilter';
 import {
-  SlickgridReactInstance,
-  Column,
-  CurrentFilter,
+  type Column,
+  type CurrentFilter,
   FieldType,
   Filters,
-  Formatter,
+  type Formatter,
   Formatters,
-  GridOption,
-  GridStateChange,
-  Metrics,
-  MultipleSelectOption,
+  type GridOption,
+  type GridStateChange,
+  type GroupingGetterFunction,
+  type Metrics,
+  type MultipleSelectOption,
   OperatorType,
-  SlickGrid,
-  SliderRangeOption,
+  type SlickGrid,
+  type SliderRangeOption,
   SlickgridReact,
-  GroupingGetterFunction
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
-import BaseSlickGridState from './state-slick-grid-base';
 import { withTranslation } from 'react-i18next';
+
+import type BaseSlickGridState from './state-slick-grid-base';
 
 interface Props {
   t: TFunction;
@@ -211,7 +212,7 @@ class Example23 extends React.Component<Props, State> {
       externalResources: [new SlickCustomTooltip(), new ExcelExportService()],
     };
 
-    this.setState((state: State, props: Props) => ({
+    this.setState((state: State) => ({
       ...state,
       gridOptions,
       columnDefinitions,

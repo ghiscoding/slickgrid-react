@@ -16,7 +16,7 @@
     ]
   },
   "include": [
-    "**/*.spec.ts",
+    "**/*.ts",
     "src/typings/**/*.ts",
     "**/*.d.ts"
   ]

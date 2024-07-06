@@ -1,15 +1,15 @@
 import {
-  SlickgridReactInstance,
-  Column,
+  type Column,
   FieldType,
-  Formatter,
+  type Formatter,
   Formatters,
-  GridOption,
+  type GridOption,
   SlickgridReact,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import DOMPurify from 'dompurify';
 import React from 'react';
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 
 interface DataItem {
   id: number;
@@ -39,7 +39,6 @@ const customEnableButtonFormatter: Formatter<DataItem> = (_row: number, _cell: n
     </span>`;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props { }
 
 export default class Example2 extends React.Component<Props, State> {
@@ -139,7 +138,7 @@ export default class Example2 extends React.Component<Props, State> {
       // }
     };
 
-    this.setState((state: State, props: Props) => ({
+    this.setState(() => ({
       ...this.state,
       columnDefinitions: columns,
       gridOptions,

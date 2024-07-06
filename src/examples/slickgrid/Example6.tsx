@@ -1,21 +1,21 @@
 import { addDay, format as tempoFormat } from '@formkit/tempo';
-import { GraphqlService, GraphqlPaginatedResult, GraphqlServiceApi, GraphqlServiceOption, } from '@slickgrid-universal/graphql';
-import i18next, { TFunction } from 'i18next';
+import { GraphqlService, type GraphqlPaginatedResult, type GraphqlServiceApi, type GraphqlServiceOption, } from '@slickgrid-universal/graphql';
+import i18next, { type TFunction } from 'i18next';
 import {
-  CursorPageInfo,
+  type CursorPageInfo,
   FieldType,
   Filters,
   Formatters,
-  GridStateChange,
-  Metrics,
-  MultipleSelectOption,
+  type GridStateChange,
+  type Metrics,
+  type MultipleSelectOption,
   OperatorType,
   SortDirection,
   SlickgridReact,
-  SlickgridReactInstance,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 import { withTranslation } from 'react-i18next';
 
 interface Status { text: string, class: string }
@@ -282,7 +282,7 @@ class Example6 extends React.Component<Props, State> {
       ? { text: 'processing...', class: 'alert alert-danger' }
       : { text: 'finished', class: 'alert alert-success' };
 
-    this.setState((state: any, props: any) => {
+    this.setState((state: any) => {
       return {
         ...state,
         status: newStatus,
@@ -342,7 +342,7 @@ class Example6 extends React.Component<Props, State> {
 
     return new Promise(resolve => {
       setTimeout(() => {
-        this.setState((state: any, props: any) => {
+        this.setState((state: any) => {
           return {
             ...state,
             graphqlQuery: this.graphqlService.buildQuery()
@@ -426,7 +426,7 @@ class Example6 extends React.Component<Props, State> {
   }
 
   serverDelayChanged(e: React.FormEvent<HTMLInputElement>) {
-    const newDelay = +(e.target as HTMLInputElement)?.value ?? '';
+    const newDelay = +((e.target as HTMLInputElement)?.value ?? '');
     this.setState((state: State) => ({ ...state, serverWaitDelay: newDelay }));
   }
 

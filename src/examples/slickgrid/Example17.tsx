@@ -1,14 +1,14 @@
 
-import fetchJsonp from 'fetch-jsonp';
+// import fetchJsonp from 'fetch-jsonp';
 // import 'slickgrid/slick.remotemodel'; // SlickGrid Remote Plugin
 
 import {
-  SlickgridReactInstance,
-  Column,
-  Formatter,
-  GridOption,
+  type Column,
+  type Formatter,
+  type GridOption,
   SlickEventHandler,
-  SlickgridReact
+  SlickgridReact,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
 
@@ -81,7 +81,7 @@ export default class Example17 extends React.Component {
     this._eventHandler.unsubscribeAll();
   }
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
+  reactGridReady(_reactGrid: SlickgridReactInstance) {
     // this.reactGrid = reactGrid;
     // this.gridObj = reactGrid.slickGrid; // grid object
     // this.loaderDataView.setSort('score', -1);
@@ -196,7 +196,7 @@ export default class Example17 extends React.Component {
           dataset={this.dataset}
           customDataView={this.customDataView}
           onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          onViewportChanged={$event => this.onViewportChanged()}
+          onViewportChanged={() => this.onViewportChanged()}
           onSort={$event => this.onSort($event.detail.eventData, $event.detail.args)}
         />
       </div>

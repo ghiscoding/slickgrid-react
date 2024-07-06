@@ -1,18 +1,18 @@
-import i18next, { TFunction } from 'i18next';
+import i18next, { type TFunction } from 'i18next';
 import React from 'react';
 import { withTranslation } from 'react-i18next';
 
 import {
-  SlickgridReactInstance,
   ExtensionName,
   FieldType,
   Filters,
   Formatters,
-  SlickDataView,
-  SlickGrid,
+  type SlickDataView,
+  type SlickgridReactInstance,
+  type SlickGrid,
   SlickgridReact,
 } from '../../slickgrid-react';
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 import './example9.scss'; // provide custom CSS/SASS styling
 
 interface Props {
@@ -239,7 +239,7 @@ class Example9 extends React.Component<Props, State> {
   defineGrid() {
     const columnDefinitions = this.getColumnDefinitions();
     const gridOptions = this.getGridOptions();
-    this.setState((state: any, props: any) => {
+    this.setState((state: any) => {
       return {
         ...state,
         columnDefinitions,
@@ -263,7 +263,7 @@ class Example9 extends React.Component<Props, State> {
         completed: (i % 5 === 0)
       };
     }
-    this.setState((state: any, props: any) => {
+    this.setState((state: any) => {
       return {
         ...state,
         dataset: mockDataset
@@ -282,7 +282,7 @@ class Example9 extends React.Component<Props, State> {
   async switchLanguage() {
     const nextLanguage = (this.state.selectedLanguage === 'en') ? 'fr' : 'en';
     await i18next.changeLanguage(nextLanguage);
-    this.setState((state: any, props: any) => {
+    this.setState((state: any) => {
       return {
         ...state,
         selectedLanguage: nextLanguage

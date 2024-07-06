@@ -1,5 +1,12 @@
-import { SlickgridReactInstance, Column, Filters, GridOption, SlickgridReact } from '../../slickgrid-react';
+import {
+  type Column,
+  Filters,
+  type GridOption,
+  SlickgridReact,
+  type SlickgridReactInstance,
+} from '../../slickgrid-react';
 import React from 'react';
+
 import './example22.scss';
 
 const URL_CUSTOMERS = 'assets/data/customers_100.json';

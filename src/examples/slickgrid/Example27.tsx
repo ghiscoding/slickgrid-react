@@ -1,20 +1,21 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import {
-  SlickgridReactInstance,
-  Column,
+  type Column,
   FieldType,
   Filters,
   Formatters,
-  GridOption,
-  GridStateChange,
+  type GridOption,
+  type GridStateChange,
   GridStateType,
-  TreeToggledItem,
-  TreeToggleStateChange,
+  type TreeToggledItem,
+  type TreeToggleStateChange,
   SlickgridReact,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import React from 'react';
+
 import './example27.scss'; // provide custom CSS/SASS styling
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 
 const NB_ITEMS = 500;
 

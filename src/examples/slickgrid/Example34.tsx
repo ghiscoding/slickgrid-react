@@ -1,22 +1,22 @@
 import {
   Aggregators,
-  Column,
+  type Column,
   createDomElement,
   deepCopy,
   FieldType,
   Filters,
-  Formatter,
+  type Formatter,
   Formatters,
-  GridOption,
+  type GridOption,
   GroupTotalFormatters,
-  SlickgridReactInstance,
   SlickgridReact,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
 import { faker } from '@faker-js/faker';
 import sparkline from '@fnando/sparkline';
 import React from 'react';
 
-import BaseSlickGridState from './state-slick-grid-base';
+import type BaseSlickGridState from './state-slick-grid-base';
 import './example34.scss';
 
 interface Props { }
