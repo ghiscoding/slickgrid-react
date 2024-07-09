@@ -2,8 +2,11 @@
 [Demo Page](https://ghiscoding.github.io/slickgrid-react/#/slickgrid/Example12) / [Demo Component](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example12.tsx)
 
 ### Installation
+
 Install the `react-i18n` library with a backend loader, typically `i18next-xhr-backend`
+
 ##### Install NPM package
+
 ```tsx
 npm install react-i18n i18next-xhr-backend
 ```
@@ -133,14 +136,14 @@ const gridOptions = {
 The final step is of course the actual translations. There's multiple ways to copy them to your `assets` folder. See below for a few ways:
 1. Manually copy the translation keys/values
 2. Manually copy the JSON files to your `assets` folder
-2. For React-CLI, you can modify `react.json` file to copy the JSON files to your `assets` folder via a copy scripts.
+3. For React-CLI, you can modify `react.json` file to copy the JSON files to your `assets` folder via a copy scripts.
    - You can implement something like the [following](https://stackoverflow.com/a/43733694/1212166) (I did not test this one, please report back if this is not accurate)
 ```json
 "copyFiles": {
   "node_modules/slickgrid-react/i18n/*.json": "assets"
 }
 ```
-3. Or modify your `package.json` and add a script to copy the JSON files to your `assets` folder
+4. Or modify your `package.json` and add a script to copy the JSON files to your `assets` folder
    - install NPM packages `cross-env` and `copyfiles` (`npm install copy-files cross-env`)
    - add a new script in your `package.json`
    - run the below script **once** with `npm run copy:i18n` and you should now have the JSON files in your `src/assets` folder
