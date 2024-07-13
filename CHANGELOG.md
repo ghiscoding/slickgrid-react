@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.3.2](https://github.com/ghiscoding/slickgrid-react/compare/v5.3.1...v5.3.2) (2024-07-13)
+
+
+### Bug Fixes
+
+* SASS warnings & other unit test fixes ([#372](https://github.com/ghiscoding/slickgrid-react/issues/372)) ([c526d2b](https://github.com/ghiscoding/slickgrid-react/commit/c526d2b6e89e86607d8620a39dfd52d87bd4434c))
+
 ## [5.3.1](https://github.com/ghiscoding/slickgrid-react/compare/v5.3.0...v5.3.1) (2024-07-06)
 
 
