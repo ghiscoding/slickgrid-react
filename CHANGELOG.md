@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.4.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.3.2...v5.4.0) (2024-07-20)
+
+
+### Features
+
+* add `columnPickerLabel` for custom label ([#375](https://github.com/ghiscoding/slickgrid-react/issues/375)) ([0b86f12](https://github.com/ghiscoding/slickgrid-react/commit/0b86f122ea5f68c07f7657078935f7078d1a5dfa))
+
+
+### Bug Fixes
+
+* `filterQueryOverride` provide all search values ([#374](https://github.com/ghiscoding/slickgrid-react/issues/374)) ([d7825e7](https://github.com/ghiscoding/slickgrid-react/commit/d7825e7e62dbbf9f29e286d7f20a83cffb40a896))
+
 ## [5.3.2](https://github.com/ghiscoding/slickgrid-react/compare/v5.3.1...v5.3.2) (2024-07-13)
 
 
