@@ -1,7 +1,7 @@
 import eslint from '@eslint/js';
 import cypress from 'eslint-plugin-cypress/flat';
 import reactPlugin from 'eslint-plugin-react';
-import hooksPlugin from 'eslint-plugin-react-hooks';
+import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import n from 'eslint-plugin-n';
 import tseslint from 'typescript-eslint';
@@ -23,12 +23,12 @@ export default tseslint.config(
     ],
     plugins: {
       '@typescript-eslint': tseslint.plugin,
-      'react-hooks': hooksPlugin,
+      'react-hooks': reactHooks,
       react: reactPlugin,
       cypress,
       n
     },
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2021,
       globals: globals.browser,
@@ -45,8 +45,11 @@ export default tseslint.config(
       }
     },
     rules: {
-      ...reactPlugin.configs['jsx-runtime'].rules,
-      ...hooksPlugin.configs.recommended.rules,
+      ...reactHooks.configs.recommended.rules,
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
