@@ -4,34 +4,25 @@ import reactPlugin from 'eslint-plugin-react';
 import hooksPlugin from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import n from 'eslint-plugin-n';
-import tsEslint from 'typescript-eslint';
+import tseslint from 'typescript-eslint';
 
-export default tsEslint.config(
-  eslint.configs.recommended,
-  ...tsEslint.configs.recommended,
+export default tseslint.config(
   {
     ignores: [
-      '**/*.css',
-      '**/*.scss',
-      '**/*.html',
-      '**/*.png',
-      '**/*.json',
       '**/*.js',
       '**/*.mjs',
       '**/*/*.d.ts',
-      '**/*.map',
-      '**/*.md',
-      '**.zip',
-      '**/*.json',
-      '**/*.js',
       '**/__tests__/*',
-      '**/dist',
-      '**/*.d.ts',
+      '**/dist',      
     ],
   },
   {
+    extends: [
+      eslint.configs.recommended,
+      ...tseslint.configs.recommended,
+    ],
     plugins: {
-      '@typescript-eslint': tsEslint.plugin,
+      '@typescript-eslint': tseslint.plugin,
       'react-hooks': hooksPlugin,
       react: reactPlugin,
       cypress,
@@ -43,7 +34,7 @@ export default tsEslint.config(
         ...globals.es2021,
         ...globals.node,
       },
-      parser: tsEslint.parser,
+      parser: tseslint.parser,
       parserOptions: {
         project: ['./tsconfig.json', './test/tsconfig.spec.json', './test/cypress/tsconfig.json'],
         tsconfigRootDir: import.meta.dirname,
@@ -51,7 +42,7 @@ export default tsEslint.config(
     },
     settings: {
       node: {
-        tryExtensions: ['.js', '.json', '.node', '.ts', '.tsx', '.d.ts'],
+        tryExtensions: ['.ts'],
         resolvePaths: ['node_modules/@types']
       }
     },
