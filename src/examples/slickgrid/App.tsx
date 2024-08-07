@@ -39,6 +39,7 @@ import Example36 from './Example36';
 import Example37 from './Example37';
 import Example38 from './Example38';
 import Example39 from './Example39';
+import Example40 from './Example40';
 
 const routes: Array<{ path: string; route: string; component: any; title: string; }> = [
   { path: 'example1', route: '/example1', component: <Example1 />, title: '1- Basic Grid / 2 Grids' },
@@ -78,6 +79,7 @@ const routes: Array<{ path: string; route: string; component: any; title: string
   { path: 'example37', route: '/example37', component: <Example37 />, title: '37- Footer Totals Row' },
   { path: 'example38', route: '/example38', component: <Example38 />, title: '38- Infinite Scroll with OData' },
   { path: 'example39', route: '/example39', component: <Example39 />, title: '39- Infinite Scroll with GraphQL' },
+  { path: 'example40', route: '/example40', component: <Example40 />, title: '40- Infinite Scroll from JSON data' },
 ];
 
 export default function Routes() {
