@@ -30,10 +30,8 @@ export default tseslint.config(
     },
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
-      globals: {
-        ...globals.es2021,
-        ...globals.node,
-      },
+      ecmaVersion: 2021,
+      globals: globals.browser,
       parser: tseslint.parser,
       parserOptions: {
         project: ['./tsconfig.json', './test/tsconfig.spec.json', './test/cypress/tsconfig.json'],
