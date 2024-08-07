@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.5.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.4.0...v5.5.0) (2024-08-07)
+
+
+### Features
+
+* Infinite Scroll for Backend Services (OData/GraphQL) ([#386](https://github.com/ghiscoding/slickgrid-react/issues/386)) ([8dc8d7b](https://github.com/ghiscoding/slickgrid-react/commit/8dc8d7bbe277990e516196a2f41c4cc9b7932229))
+* Infinite Scroll for JSON data ([#387](https://github.com/ghiscoding/slickgrid-react/issues/387)) ([2d06248](https://github.com/ghiscoding/slickgrid-react/commit/2d062486b0218289af794f482a2bef35359be2d5))
+
+
+### Bug Fixes
+
+* **deps:** upgrade `react-i18next` to v15 ([#388](https://github.com/ghiscoding/slickgrid-react/issues/388)) ([437bfac](https://github.com/ghiscoding/slickgrid-react/commit/437bfac292d79750c8ed5052300ed3d75d9f4e42))
+
 ## [5.4.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.3.2...v5.4.0) (2024-07-20)
 
 
