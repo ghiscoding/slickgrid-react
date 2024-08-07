@@ -5,6 +5,7 @@ import React from 'react';
 import {
   // interfaces/types
   type AutocompleterEditor,
+  type BackendService,
   type BackendServiceApi,
   type BackendServiceOption,
   type Column,
@@ -116,6 +117,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   protected _isLocalGrid = true;
   protected _paginationOptions: Pagination | undefined;
   protected _registeredResources: ExternalResource[] = [];
+  protected _scrollEndCalled = false;
   protected _gridOptions?: GridOption;
 
   protected get gridOptions(): GridOption {
@@ -332,6 +334,10 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     this.props.containerService.registerInstance('TreeDataService', this.treeDataService);
   }
 
+  get backendService(): BackendService | undefined {
+    return this.gridOptions.backendServiceApi?.service;
+  }
+
   get eventHandler(): SlickEventHandler {
     return this._eventHandler;
   }
@@ -379,6 +385,11 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     this.initialization(this._eventHandler);
     this._isGridInitialized = true;
 
+    // if we have a backendServiceApi and the enablePagination is undefined, we'll assume that we do want to see it, else get that defined value
+    if (!this.hasBackendInfiniteScroll()) {
+      this.gridOptions.enablePagination = !!((this.gridOptions.backendServiceApi && this.gridOptions.enablePagination === undefined) ? true : this.gridOptions.enablePagination);
+    }
+
     if (!this._isPaginationInitialized && !this.props.datasetHierarchical && this._gridOptions?.enablePagination && this._isLocalGrid) {
       this.showPagination = true;
       this.loadLocalGridPagination(this.dataset);
@@ -425,7 +436,10 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     this.backendServiceApi = this._gridOptions?.backendServiceApi;
     this._isLocalGrid = !this.backendServiceApi; // considered a local grid if it doesn't have a backend service set
 
-    this.createBackendApiInternalPostProcessCallback(this._gridOptions);
+    // unless specified, we'll create an internal postProcess callback (currently only available for GraphQL)
+    if (this.gridOptions.backendServiceApi && !this.gridOptions.backendServiceApi?.disableInternalPostProcess) {
+      this.createBackendApiInternalPostProcessCallback(this._gridOptions);
+    }
 
     if (!this.props.customDataView) {
       const dataviewInlineFilters = this._gridOptions.dataView && this._gridOptions.dataView.inlineFilters || false;
@@ -576,7 +590,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       dispose: this.dispose.bind(this),
 
       // return all available Services (non-singleton)
-      backendService: this._gridOptions?.backendServiceApi?.service,
+      backendService: this.backendService,
       eventPubSubService: this._eventPubSubService,
       filterService: this.filterService,
       gridEventService: this.gridEventService,
@@ -618,6 +632,9 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       }
     });
     this.serviceList = [];
+
+    // dispose backend service when defined and a dispose method exists
+    this.backendService?.dispose?.();
 
     // dispose all registered external resources
     this.disposeExternalResources();
@@ -712,8 +729,8 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
 
   /**
    * Define our internal Post Process callback, it will execute internally after we get back result from the Process backend call
-   * For now, this is GraphQL Service ONLY feature and it will basically
-   * refresh the Dataset & Pagination without having the user to create his own PostProcess every time
+   * Currently ONLY available with the GraphQL Backend Service.
+   * The behavior is to refresh the Dataset & Pagination without requiring the user to create his own PostProcess every time
    */
   createBackendApiInternalPostProcessCallback(gridOptions: GridOption) {
     const backendApi = gridOptions?.backendServiceApi;
@@ -899,7 +916,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
           backendApiService.updateSorters(undefined, sortColumns);
         }
         // Pagination "presets"
-        if (backendApiService.updatePagination && gridOptions.presets.pagination) {
+        if (backendApiService.updatePagination && gridOptions.presets.pagination && !this.hasBackendInfiniteScroll()) {
           const { pageNumber, pageSize } = gridOptions.presets.pagination;
           backendApiService.updatePagination(pageNumber, pageSize);
         }
@@ -943,6 +960,56 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
           }
         });
       }
+
+      // when user enables Infinite Scroll
+      if (backendApi.service.options?.infiniteScroll) {
+        this.addBackendInfiniteScrollCallback();
+      }
+    }
+  }
+
+  protected addBackendInfiniteScrollCallback(): void {
+    if (this.grid && this.gridOptions.backendServiceApi && this.hasBackendInfiniteScroll() && !this.gridOptions.backendServiceApi?.onScrollEnd) {
+      const onScrollEnd = () => {
+        this.backendUtilityService.setInfiniteScrollBottomHit(true);
+
+        // even if we're not showing pagination, we still use pagination service behind the scene
+        // to keep track of the scroll position and fetch next set of data (aka next page)
+        // we also need a flag to know if we reached the of the dataset or not (no more pages)
+        this.paginationService.goToNextPage().then(hasNext => {
+          if (!hasNext) {
+            this.backendUtilityService.setInfiniteScrollBottomHit(false);
+          }
+        });
+      };
+      this.gridOptions.backendServiceApi.onScrollEnd = onScrollEnd;
+
+      // subscribe to SlickGrid onScroll to determine when reaching the end of the scroll bottom position
+      // run onScrollEnd() method when that happens
+      this._eventHandler.subscribe(this.grid.onScroll, (_e, args) => {
+        const viewportElm = args.grid.getViewportNode()!;
+        if (
+          ['mousewheel', 'scroll'].includes(args.triggeredBy || '')
+          && this.paginationService?.totalItems
+          && args.scrollTop > 0
+          && Math.ceil(viewportElm.offsetHeight + args.scrollTop) >= args.scrollHeight
+        ) {
+          if (!this._scrollEndCalled) {
+            onScrollEnd();
+            this._scrollEndCalled = true;
+          }
+        }
+      });
+
+      // use postProcess to identify when scrollEnd process is finished to avoid calling the scrollEnd multiple times
+      // we also need to keep a ref of the user's postProcess and call it after our own postProcess
+      const orgPostProcess = this.gridOptions.backendServiceApi.postProcess;
+      this.gridOptions.backendServiceApi.postProcess = (processResult: any) => {
+        this._scrollEndCalled = false;
+        if (orgPostProcess) {
+          orgPostProcess(processResult);
+        }
+      };
     }
   }
 
@@ -1046,7 +1113,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
         }
 
         // display the Pagination component only after calling this refresh data first, we call it here so that if we preset pagination page number it will be shown correctly
-        this.showPagination = (this._gridOptions && (this._gridOptions.enablePagination || (this._gridOptions.backendServiceApi && this._gridOptions.enablePagination === undefined))) ? true : false;
+        this.showPagination = !!(this._gridOptions && (this._gridOptions.enablePagination || (this._gridOptions.backendServiceApi && this._gridOptions.enablePagination === undefined)));
         if (this._paginationOptions && this._gridOptions?.pagination && this._gridOptions?.backendServiceApi) {
           const paginationOptions = this.setPaginationOptionsWhenPresetDefined(this._gridOptions, this._paginationOptions);
 
@@ -1090,10 +1157,14 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
    * Check if there's any Pagination Presets defined in the Grid Options,
    * if there are then load them in the paginationOptions object
    */
-  setPaginationOptionsWhenPresetDefined(gridOptions: GridOption, paginationOptions: Pagination): Pagination {
+  protected setPaginationOptionsWhenPresetDefined(gridOptions: GridOption, paginationOptions: Pagination): Pagination {
     if (gridOptions.presets?.pagination && gridOptions.pagination) {
-      paginationOptions.pageSize = gridOptions.presets.pagination.pageSize;
-      paginationOptions.pageNumber = gridOptions.presets.pagination.pageNumber;
+      if (this.hasBackendInfiniteScroll()) {
+        console.warn('[Aurelia-Slickgrid] `presets.pagination` is not supported with Infinite Scroll, reverting to first page.');
+      } else {
+        paginationOptions.pageSize = gridOptions.presets.pagination.pageSize;
+        paginationOptions.pageNumber = gridOptions.presets.pagination.pageNumber;
+      }
     }
     return paginationOptions;
   }
@@ -1210,9 +1281,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       this.slickPagination.renderPagination(this._elm as HTMLDivElement);
       this._isPaginationInitialized = true;
     } else if (!showPagination) {
-      if (this.slickPagination) {
-        this.slickPagination.dispose();
-      }
+      this.slickPagination?.dispose();
       this._isPaginationInitialized = false;
     }
   }
@@ -1355,6 +1424,10 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     }
   }
 
+  hasBackendInfiniteScroll(gridOptions?: GridOption): boolean {
+    return !!(gridOptions || this.gridOptions).backendServiceApi?.service.options?.infiniteScroll;
+  }
+
   protected mergeGridOptions(gridOptions: GridOption): GridOption {
     // use extend to deep merge & copy to avoid immutable properties being changed in GlobalGridOptions after a route change
     const options = extend(true, {}, GlobalGridOptions, gridOptions) as GridOption;
@@ -1366,9 +1439,6 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     if (options.enableFiltering && !options.showHeaderRow) {
       options.showHeaderRow = options.enableFiltering;
     }
-
-    // if we have a backendServiceApi and the enablePagination is undefined, we'll assume that we do want to see it, else get that defined value
-    options.enablePagination = ((gridOptions.backendServiceApi && gridOptions.enablePagination === undefined) ? true : gridOptions.enablePagination) || false;
 
     // using copy extend to do a deep clone has an unwanted side on objects and pageSizes but ES6 spread has other worst side effects
     // so we will just overwrite the pageSizes when needed, this is the only one causing issues so far.
