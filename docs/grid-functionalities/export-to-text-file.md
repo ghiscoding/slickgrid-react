@@ -100,11 +100,11 @@ What we can see from the example, is that it will use all Formatters (when exist
 ### Export from a Button Click Event
 You can use the export from the Grid Menu and/or you can simply create your own buttons to export.
 #### View
-```html
-<button class="btn btn-default btn-sm" (click)="exportToFile('csv')">
+```tsx
+<button class="btn btn-default btn-sm" onClick={() => this.exportToFile('csv')}>
    Download to CSV
 </button>
-<button class="btn btn-default btn-sm" (click)="exportToFile('txt')">
+<button class="btn btn-default btn-sm" onClick={() => this.exportToFile('txt')}>
     Download to Text
 </button>
 ```
