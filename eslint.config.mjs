@@ -11,9 +11,9 @@ export default tseslint.config(
     ignores: [
       '**/*.js',
       '**/*.mjs',
-      '**/*/*.d.ts',
+      '**/*.d.ts',
       '**/__tests__/*',
-      '**/dist',      
+      '**/dist',
     ],
   },
   {
@@ -46,10 +46,6 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
