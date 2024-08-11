@@ -59,11 +59,18 @@ render() {
   - `onCopyCells`
   - `onCopyCancelled`
   - `onPasteCells`
+  - `onBeforePasteCell`
 
-#### SlickContextMenu (extension)
+#### SlickContextMenu / SlickCellMenu (extension)
   - `onContextMenuClearGrouping`
   - `onContextMenuCollapseAllGroups`
   - `onContextMenuExpandAllGroups`
+  - **Slick Events**
+    - `onAfterMenuShow`
+    - `onBeforeMenuShow`
+    - `onBeforeMenuClose`
+    - `onCommand`
+    - `onOptionSelected`
 
 #### SlickGridMenu (extension)
   - `onGridMenuMenuClose`
@@ -73,6 +80,13 @@ render() {
   - `onGridMenuClearAllFilters`
   - `onGridMenuClearAllSorting`
   - `onGridMenuCommand`
+  - **Slick Events**
+    - `onAfterMenuShow`
+    - `onBeforeMenuShow`
+    - `onBeforeMenuClose`
+    - `onColumnsChanged`
+    - `onMenuClose`
+    - `onCommand`
 
 #### SlickHeaderButtons (extension)
   - `onHeaderButtonCommand`
@@ -132,6 +146,7 @@ render() {
   - `onActiveCellChanged`
   - `onActiveCellPositionChanged`
   - `onAddNewRow`
+  - `onAfterSetColumns`
   - `onAutosizeColumns`
   - `onBeforeAppendCell`
   - `onBeforeCellEditorDestroy`
@@ -153,8 +168,8 @@ render() {
   - `onColumnsResizeDblClick`
   - `onCompositeEditorChange`
   - `onContextMenu`
-  - `onDrag`
   - `onDblClick`
+  - `onDrag`
   - `onDragInit`
   - `onDragStart`
   - `onDragEnd`
@@ -166,12 +181,18 @@ render() {
   - `onHeaderContextMenu`
   - `onHeaderMouseEnter`
   - `onHeaderMouseLeave`
+  - `onHeaderMouseOver`
+  - `onHeaderMouseOut`
   - `onHeaderRowCellRendered`
   - `onHeaderRowMouseEnter`
   - `onHeaderRowMouseLeave`
+  - `onHeaderRowMouseOver`
+  - `onHeaderRowMouseOut`
   - `onKeyDown`
   - `onMouseEnter`
   - `onMouseLeave`
+  - `onPreHeaderClick`
+  - `onPreHeaderContextMenu`
   - `onRendered`
   - `onScroll`
   - `onSelectedRowsChanged`
