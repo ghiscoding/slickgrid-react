@@ -26,7 +26,6 @@ interface State extends BaseSlickGridState {
 
 export default class Example40 extends React.Component<Props, State> {
   reactGrid!: SlickgridReactInstance;
-  scrollEndCalled = false;
   shouldResetOnSort = false;
 
   constructor(public readonly props: Props) {
@@ -101,7 +100,6 @@ export default class Example40 extends React.Component<Props, State> {
     const viewportElm = args.grid.getViewportNode();
     if (
       ['mousewheel', 'scroll'].includes(args.triggeredBy || '')
-      && !this.scrollEndCalled
       && viewportElm.scrollTop > 0
       && Math.ceil(viewportElm.offsetHeight + args.scrollTop) >= args.scrollHeight
     ) {
@@ -109,7 +107,6 @@ export default class Example40 extends React.Component<Props, State> {
       const startIdx = this.reactGrid.dataView?.getItemCount() || 0;
       const newItems = this.loadData(startIdx, FETCH_SIZE);
       this.reactGrid.dataView?.addItems(newItems);
-      this.scrollEndCalled = false;
     }
   }
 
