@@ -323,7 +323,7 @@ export default class Example28 extends React.Component<Props, State> {
       }));
 
       // scroll into the position, after insertion cycle, where the item was added
-      setTimeout(() => {
+      window.setTimeout(() => {
         const rowIndex = this.reactGrid.dataView.getRowById(popFolderItem.id) as number;
         this.reactGrid.slickGrid.scrollRowIntoView(rowIndex + 3);
       }, 10);

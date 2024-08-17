@@ -421,7 +421,7 @@ export default class Example5 extends React.Component<Props, State> {
           }
           const updatedData = filteredData.slice(firstRow, firstRow + top!);
 
-          setTimeout(() => {
+          window.setTimeout(() => {
             const backendResult: any = { query };
             if (!this.state.isCountEnabled) {
               backendResult['totalRecordCount'] = countTotalItems;

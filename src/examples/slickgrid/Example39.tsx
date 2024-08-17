@@ -347,7 +347,7 @@ class Example39 extends React.Component<Props, State> {
             },
           };
 
-          setTimeout(() => {
+          window.setTimeout(() => {
             this.setState((state: State) => ({
               ...state,
               graphqlQuery: this.state.gridOptions!.backendServiceApi!.service.buildQuery()

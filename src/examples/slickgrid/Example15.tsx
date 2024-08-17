@@ -85,7 +85,7 @@ class Example15 extends React.Component<Props, State> {
     // this.reactGrid.slickGrid.autosizeColumns();
     this.reactGrid.gridService.resetGrid(this.getColumnDefinitions());
     this.reactGrid.paginationService!.changeItemPerPage(DEFAULT_PAGE_SIZE);
-    setTimeout(() => localStorage[LOCAL_STORAGE_KEY] = null);
+    window.setTimeout(() => localStorage[LOCAL_STORAGE_KEY] = null);
   }
 
   /* Define grid Options and Columns */

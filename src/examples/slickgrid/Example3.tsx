@@ -440,7 +440,7 @@ export default class Example3 extends React.Component<Props, State> {
 
           // OR 3- use a Promise
           // collectionAsync: new Promise<any>((resolve) => {
-          //   setTimeout(() => {
+          //   window.setTimeout(() => {
           //     resolve(Array.from(Array(NB_ITEMS).keys()).map(k => ({ value: k, label: k, prefix: 'Task', suffix: 'days' })));
           //   }, 500);
           // }),
@@ -465,7 +465,7 @@ export default class Example3 extends React.Component<Props, State> {
         filter: {
           collectionAsync: fetch(URL_SAMPLE_COLLECTION_DATA),
           // collectionAsync: new Promise((resolve) => {
-          //   setTimeout(() => {
+          //   window.setTimeout(() => {
           //     resolve(Array.from(Array(this.dataset.length).keys()).map(k => ({ value: k, label: `Task ${k}` })));
           //   });
           // }),
@@ -518,7 +518,7 @@ export default class Example3 extends React.Component<Props, State> {
     const newRows = this.mockData(1, lastRowIndex);
 
     // wrap into a timer to simulate a backend async call
-    setTimeout(() => {
+    window.setTimeout(() => {
       // at any time, we can poke the 'collection' property and modify it
       const requisiteColumnDef = this.state.columnDefinitions?.find(
         (column: Column) => column.id === 'prerequisites'

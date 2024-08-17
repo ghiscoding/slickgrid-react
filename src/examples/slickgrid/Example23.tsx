@@ -266,8 +266,8 @@ class Example23 extends React.Component<Props, State> {
   }
 
   refreshMetrics(_e: Event, args: any) {
-    if (args && args.current >= 0) {
-      setTimeout(() => {
+    if (args?.current >= 0) {
+      window.setTimeout(() => {
         this.setState((state: State) => {
           return {
             ...state,
