@@ -375,7 +375,7 @@ export default class Example38 extends React.Component<Props, State> {
           }
           const updatedData = filteredData.slice(firstRow, firstRow + top!);
 
-          setTimeout(() => {
+          window.setTimeout(() => {
             const backendResult: any = { query };
             backendResult['value'] = updatedData;
             backendResult['@odata.count'] = countTotalItems;

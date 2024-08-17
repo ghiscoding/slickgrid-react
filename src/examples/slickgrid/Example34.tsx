@@ -101,7 +101,7 @@ export default class Example34 extends React.Component<Props, State> {
     <li>to show SlickGrid HUGE PERF., do the following: (1) lower Changes Rate (2) increase both Changes per Cycle and (3) lower Highlight Duration
   </ul>`;
 
-  timer: any;
+  timer?: number;
   reactGrid!: SlickgridReactInstance;
 
   constructor(public readonly props: Props) {
@@ -123,7 +123,7 @@ export default class Example34 extends React.Component<Props, State> {
     document.title = this.title;
     this.defineGrid();
 
-    setTimeout(() => {
+    window.setTimeout(() => {
       this.startSimulation();
     }, this.state.refreshRate);
   }
@@ -335,11 +335,11 @@ export default class Example34 extends React.Component<Props, State> {
       // but the cell highlight actually does that for us so we can skip it
     }
 
-    this.timer = setTimeout(this.startSimulation.bind(this), this.state.refreshRate || 0);
+    this.timer = window.setTimeout(this.startSimulation.bind(this), this.state.refreshRate || 0);
   }
 
   stopSimulation() {
-    clearTimeout(this.timer);
+    window.clearTimeout(this.timer);
   }
 
   findColumnById(columnName: string): Column {
@@ -377,7 +377,7 @@ export default class Example34 extends React.Component<Props, State> {
         this.reactGrid.slickGrid.setCellCssStyles(`highlight_${[column.id]}${row}`, hash);
 
         // remove highlight after x amount of time
-        setTimeout(() => this.removeUnsavedStylingFromCell(item, column, row), this.state.highlightDuration);
+        window.setTimeout(() => this.removeUnsavedStylingFromCell(item, column, row), this.state.highlightDuration);
       }
     }
   }

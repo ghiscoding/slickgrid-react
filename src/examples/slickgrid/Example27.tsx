@@ -232,7 +232,7 @@ export default class Example27 extends React.Component<Props, State> {
   }
 
   hideSpinner() {
-    setTimeout(() => {
+    window.setTimeout(() => {
       this.setState((state: State) => ({ ...state, loadingClass: '' }));
     }, 200); // delay the hide spinner a bit to avoid show/hide too quickly
   }

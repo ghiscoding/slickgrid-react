@@ -85,7 +85,7 @@ export default class Example32 extends React.Component<Props, State> {
           // you will need to provide an `asyncPost` function returning a Promise and also `asyncPostFormatter` formatter to display the result once the Promise resolves
           formatter: () => `<div><span class="mdi mdi-load mdi-spin"></span> loading...</div>`,
           asyncProcess: () => new Promise(resolve => {
-            setTimeout(() => resolve({ ratio: Math.random() * 10 / 10, lifespan: Math.random() * 100 }), this.state.serverApiDelay);
+            window.setTimeout(() => resolve({ ratio: Math.random() * 10 / 10, lifespan: Math.random() * 100 }), this.state.serverApiDelay);
           }),
           asyncPostFormatter: this.tooltipTaskAsyncFormatter as Formatter,
 
@@ -189,7 +189,7 @@ export default class Example32 extends React.Component<Props, State> {
 
           // 2- delay the opening by a simple Promise and `setTimeout`
           asyncProcess: () => new Promise(resolve => {
-            setTimeout(() => resolve({}), this.state.serverApiDelay); // delayed by half a second
+            window.setTimeout(() => resolve({}), this.state.serverApiDelay); // delayed by half a second
           }),
           asyncPostFormatter: this.tooltipFormatter.bind(this) as Formatter,
         },
@@ -244,7 +244,7 @@ export default class Example32 extends React.Component<Props, State> {
 
           // OR 2- use a Promise
           collectionAsync: new Promise<any>((resolve) => {
-            setTimeout(() => {
+            window.setTimeout(() => {
               resolve(Array.from(Array(this.state.dataset?.length).keys()).map(k => ({ value: k, label: k, prefix: 'Task', suffix: 'days' })));
             }, 500);
           }),
@@ -261,7 +261,7 @@ export default class Example32 extends React.Component<Props, State> {
         filter: {
           // collectionAsync: fetch(URL_SAMPLE_COLLECTION_DATA),
           collectionAsync: new Promise((resolve) => {
-            setTimeout(() => {
+            window.setTimeout(() => {
               resolve(Array.from(Array(this.state.dataset?.length).keys()).map(k => ({ value: k, label: `Task ${k}` })));
             });
           }),

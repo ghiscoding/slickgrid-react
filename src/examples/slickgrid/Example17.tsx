@@ -88,7 +88,7 @@ export default class Example17 extends React.Component {
     // this.gridObj.setSortColumn('score', false);
 
     // // simulate a delayed search to preload the first page
-    // setTimeout(() => this.searchChanged(this.search), 100);
+    // window.setTimeout(() => this.searchChanged(this.search), 100);
   }
 
   defineGrid() {
