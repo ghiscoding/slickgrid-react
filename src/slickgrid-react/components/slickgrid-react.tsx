@@ -1556,18 +1556,12 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     if (this._isDatasetHierarchicalInitialized && this.datasetHierarchical) {
       sortedDatasetResult = this.treeDataService.sortHierarchicalDataset(this.datasetHierarchical);
       flatDatasetOutput = sortedDatasetResult.flat;
-    } else if (Array.isArray(flatDatasetInput) && flatDatasetInput.length > 0) {
-      if (this._gridOptions?.treeDataOptions?.initialSort) {
-        // else we need to first convert the flat dataset to a hierarchical dataset and then sort
-        sortedDatasetResult = this.treeDataService.convertFlatParentChildToTreeDatasetAndSort(flatDatasetInput, this._columnDefinitions, this._gridOptions);
-        this.sharedService.hierarchicalDataset = sortedDatasetResult.hierarchical;
-        flatDatasetOutput = sortedDatasetResult.flat;
-      } else {
-        // else we assume that the user provided an array that is already sorted (user's responsability)
-        // and so we can simply convert the array to a tree structure and we're done, no need to sort
-        this.sharedService.hierarchicalDataset = this.treeDataService.convertFlatParentChildToTreeDataset(flatDatasetInput, this.gridOptions);
-        flatDatasetOutput = flatDatasetInput || [];
-      }
+    } else if (this._gridOptions && Array.isArray(flatDatasetInput) && flatDatasetInput.length > 0) {
+      // we need to first convert the flat dataset to a hierarchical dataset and then sort it
+      // we'll also add props, by mutation, required by the TreeDataService on the flat array like `__hasChildren`, `parentId` and anything else to work properly
+      sortedDatasetResult = this.treeDataService.convertFlatParentChildToTreeDatasetAndSort(flatDatasetInput, this._columnDefinitions, this._gridOptions);
+      this.sharedService.hierarchicalDataset = sortedDatasetResult.hierarchical;
+      flatDatasetOutput = sortedDatasetResult.flat;
     }
 
     // if we add/remove item(s) from the dataset, we need to also refresh our tree data filters
