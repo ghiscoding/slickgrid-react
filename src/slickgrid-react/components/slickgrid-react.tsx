@@ -1556,7 +1556,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     if (this._isDatasetHierarchicalInitialized && this.datasetHierarchical) {
       sortedDatasetResult = this.treeDataService.sortHierarchicalDataset(this.datasetHierarchical);
       flatDatasetOutput = sortedDatasetResult.flat;
-    } else if (Array.isArray(flatDatasetInput) && flatDatasetInput.length > 0) {
+    } else if (this._gridOptions && Array.isArray(flatDatasetInput) && flatDatasetInput.length > 0) {
       // we need to first convert the flat dataset to a hierarchical dataset and then sort it
       // we'll also add props, by mutation, required by the TreeDataService on the flat array like `__hasChildren`, `parentId` and anything else to work properly
       sortedDatasetResult = this.treeDataService.convertFlatParentChildToTreeDatasetAndSort(flatDatasetInput, this._columnDefinitions, this._gridOptions);
