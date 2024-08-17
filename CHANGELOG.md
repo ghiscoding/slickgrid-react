@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.5.2](https://github.com/ghiscoding/slickgrid-react/compare/v5.5.1...v5.5.2) (2024-08-17)
+
+
+### Bug Fixes
+
+* use setTimeout/setInterval from window object with correct TS type ([#397](https://github.com/ghiscoding/slickgrid-react/issues/397)) ([badb990](https://github.com/ghiscoding/slickgrid-react/commit/badb99004117c2678fb5736707d74da7b9abcc52))
+
 ## [5.5.1](https://github.com/ghiscoding/slickgrid-react/compare/v5.5.0...v5.5.1) (2024-08-17)
 
 
