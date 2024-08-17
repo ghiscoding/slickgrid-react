@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.5.1](https://github.com/ghiscoding/slickgrid-react/compare/v5.5.0...v5.5.1) (2024-08-17)
+
+
+### Bug Fixes
+
+* Tree Data should work without initial sort, fixes [#394](https://github.com/ghiscoding/slickgrid-react/issues/394) ([#395](https://github.com/ghiscoding/slickgrid-react/issues/395)) ([f7abf41](https://github.com/ghiscoding/slickgrid-react/commit/f7abf418ac04e1ff85c4106c504df342f0dd44df)), closes [#393](https://github.com/ghiscoding/slickgrid-react/issues/393)
+
 ## [5.5.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.4.0...v5.5.0) (2024-08-07)
 
 
