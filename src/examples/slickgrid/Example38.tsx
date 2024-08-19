@@ -504,7 +504,7 @@ export default class Example38 extends React.Component<Props, State> {
 
           <div className="row">
             <div className="col-sm-12">
-              <button className="btn btn-outline-secondary btn-sm" data-test="clear-filters-sorting"
+              <button className="btn btn-outline-secondary btn-sm btn-icon me-1" data-test="clear-filters-sorting"
                 onClick={() => this.clearAllFiltersAndSorts()} title="Clear all Filters & Sorts">
                 <i className="mdi mdi-filter-remove-outline"></i>
                 Clear all Filter & Sorts
