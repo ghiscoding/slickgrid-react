@@ -28,6 +28,6 @@
       allowedVersions: '<6.0.0',
     },
   ],
-  schedule: ['every 2 weeks on friday'],
+  schedule: ['on friday'],
   ignoreDeps: ['react-i18next', 'typescript'],
 }
