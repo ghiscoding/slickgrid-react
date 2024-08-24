@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.6.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.5.2...v5.6.0) (2024-08-24)
+
+
+### Features
+
+* migrate back to Vanilla-Calendar-Pro ([1716f40](https://github.com/ghiscoding/slickgrid-react/commit/1716f40c8de94d52f2bacaea42993f4d1dd62236))
+
 ## [5.5.2](https://github.com/ghiscoding/slickgrid-react/compare/v5.5.1...v5.5.2) (2024-08-17)
 
 
