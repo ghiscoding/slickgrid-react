@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.7.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.6.0...v5.7.0) (2024-08-31)
+
+
+### Features
+
+* new Drag & Drop to Recycle Bin demo ([#402](https://github.com/ghiscoding/slickgrid-react/issues/402)) ([f6fd61c](https://github.com/ghiscoding/slickgrid-react/commit/f6fd61c293242fde6f4a9139157c08853aae55c8))
+
+
+### Bug Fixes
+
+* unflattening tree->flat array multiple times ([#403](https://github.com/ghiscoding/slickgrid-react/issues/403)) ([0797efa](https://github.com/ghiscoding/slickgrid-react/commit/0797efae7f72dd93166338370ade30b681e0429d))
+
+
+### Performance Improvements
+
+* provide PubSub to SlickGrid/DataView avoid looping all events ([#401](https://github.com/ghiscoding/slickgrid-react/issues/401)) ([474f4ba](https://github.com/ghiscoding/slickgrid-react/commit/474f4baa50e0ca53b4c2b025ce5535f70a260aaa))
+
 ## [5.6.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.5.2...v5.6.0) (2024-08-24)
 
 
