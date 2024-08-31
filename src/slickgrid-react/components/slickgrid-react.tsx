@@ -76,12 +76,6 @@ interface State {
   paginationService: PaginationService;
 }
 
-class CustomEventPubSubService extends EventPubSubService {
-  set elementSource(value: Element) {
-    this._elementSource = value;
-  }
-}
-
 export class SlickgridReact<TData = any> extends React.Component<SlickgridReactProps, State> {
   protected _mounted = false;
   protected setStateValue(key: string, value: any, callback?: () => void): void {
@@ -268,22 +262,22 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     this._gridOptions = this.mergeGridOptions(props.gridOptions || {});
 
     // initialize and assign all Service Dependencies
-    this._eventPubSubService = this.props.externalServices?.eventPubSubService ?? new CustomEventPubSubService();
+    this._eventPubSubService = new EventPubSubService();
     this._eventPubSubService.eventNamingStyle = EventNamingStyle.camelCase;
 
-    this.backendUtilityService = this.props.externalServices?.backendUtilityService ?? new BackendUtilityService();
-    this.gridEventService = this.props.externalServices?.gridEventService ?? new GridEventService();
-    this.sharedService = this.props.externalServices?.sharedService ?? new SharedService();
-    this.collectionService = this.props.externalServices?.collectionService ?? new CollectionService(this.props.translaterService);
-    this.extensionUtility = this.props.externalServices?.extensionUtility ?? new ExtensionUtility(this.sharedService, this.backendUtilityService, this.props.translaterService);
+    this.backendUtilityService = new BackendUtilityService();
+    this.gridEventService = new GridEventService();
+    this.sharedService = new SharedService();
+    this.collectionService = new CollectionService(this.props.translaterService);
+    this.extensionUtility = new ExtensionUtility(this.sharedService, this.backendUtilityService, this.props.translaterService);
     this.filterFactory = new FilterFactory(slickgridConfig, this.props.translaterService, this.collectionService);
-    this.filterService = this.props.externalServices?.filterService ?? new FilterService(this.filterFactory as any, this._eventPubSubService, this.sharedService, this.backendUtilityService);
-    this.resizerService = this.props.externalServices?.resizerService ?? new ResizerService(this._eventPubSubService);
-    this.sortService = this.props.externalServices?.sortService ?? new SortService(this.sharedService, this._eventPubSubService, this.backendUtilityService);
-    this.treeDataService = this.props.externalServices?.treeDataService ?? new TreeDataService(this._eventPubSubService, this.sharedService, this.sortService);
-    this.paginationService = this.props.externalServices?.paginationService ?? new PaginationService(this._eventPubSubService, this.sharedService, this.backendUtilityService);
+    this.filterService = new FilterService(this.filterFactory as any, this._eventPubSubService, this.sharedService, this.backendUtilityService);
+    this.resizerService = new ResizerService(this._eventPubSubService);
+    this.sortService = new SortService(this.sharedService, this._eventPubSubService, this.backendUtilityService);
+    this.treeDataService = new TreeDataService(this._eventPubSubService, this.sharedService, this.sortService);
+    this.paginationService = new PaginationService(this._eventPubSubService, this.sharedService, this.backendUtilityService);
 
-    this.extensionService = this.props.externalServices?.extensionService ?? new ExtensionService(
+    this.extensionService = new ExtensionService(
       this.extensionUtility,
       this.filterService,
       this._eventPubSubService,
@@ -294,9 +288,9 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       () => this.gridService
     );
 
-    this.gridStateService = this.props.externalServices?.gridStateService ?? new GridStateService(this.extensionService, this.filterService, this._eventPubSubService, this.sharedService, this.sortService, this.treeDataService);
-    this.gridService = this.props.externalServices?.gridService ?? new GridService(this.gridStateService, this.filterService, this._eventPubSubService, this.paginationService, this.sharedService, this.sortService, this.treeDataService);
-    this.groupingService = this.props.externalServices?.groupingAndColspanService ?? new GroupingAndColspanService(this.extensionUtility, this._eventPubSubService);
+    this.gridStateService = new GridStateService(this.extensionService, this.filterService, this._eventPubSubService, this.sharedService, this.sortService, this.treeDataService);
+    this.gridService = new GridService(this.gridStateService, this.filterService, this._eventPubSubService, this.paginationService, this.sharedService, this.sortService, this.treeDataService);
+    this.groupingService = new GroupingAndColspanService(this.extensionUtility, this._eventPubSubService);
 
     this.serviceList = [
       this.extensionService,
@@ -358,13 +352,13 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
 
   componentDidMount() {
     this._mounted = true;
-    if (this._elm && this._eventPubSubService instanceof CustomEventPubSubService) {
-      (this._eventPubSubService as CustomEventPubSubService).elementSource = this._elm;
+    if (this._elm && this._eventPubSubService instanceof EventPubSubService) {
+      this._eventPubSubService.elementSource = this._elm;
 
       // React doesn't play well with Custom Events & also the render is called after the constructor which brings a second problem
       // to fix both issues, we need to do the following:
-      // loop through all component and subscribe to all props that startsWith "on", assuming they are custom event
-      // and call their listener with event is dispatching
+      // loop through all component props and subscribe to the ones that startsWith "on", we'll assume that it's the custom events
+      // we'll and call their listeners when events are dispatching
       for (const prop in this.props) {
         if (prop.startsWith('on')) {
           this.subscriptions.push(
@@ -450,7 +444,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
         this.sharedService.groupItemMetadataProvider = this.groupItemMetadataProvider;
         dataViewOptions = { ...dataViewOptions, groupItemMetadataProvider: this.groupItemMetadataProvider };
       }
-      this.dataView = new SlickDataView<TData>(dataViewOptions as Partial<DataViewOption>);
+      this.dataView = new SlickDataView<TData>(dataViewOptions as Partial<DataViewOption>, this._eventPubSubService);
       this._eventPubSubService.publish('onDataviewCreated', this.dataView);
     }
 
@@ -480,7 +474,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     }
 
     // build SlickGrid Grid, also user might optionally pass a custom dataview (e.g. remote model)
-    this.grid = new SlickGrid(`#${this.props.gridId}`, this.props.customDataView || this.dataView, this._columnDefinitions, this._gridOptions);
+    this.grid = new SlickGrid(`#${this.props.gridId}`, this.props.customDataView || this.dataView, this._columnDefinitions, this._gridOptions, this._eventPubSubService);
     this.sharedService.dataView = this.dataView;
     this.sharedService.slickGrid = this.grid;
     this.sharedService.gridContainerElement = this._elm as HTMLDivElement;
@@ -780,36 +774,6 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     }
 
     if (dataView && grid) {
-      const slickgridEventPrefix = '';
-
-      // expose all Slick Grid Events through dispatch
-      for (const prop in grid) {
-        if (grid.hasOwnProperty(prop) && prop.startsWith('on')) {
-          const gridEventName = this._eventPubSubService.getEventNameByNamingConvention(prop, slickgridEventPrefix);
-          this._eventHandler.subscribe((grid as any)[prop], (event, args: any) => {
-            if (this.props.hasOwnProperty(prop)) {
-              const callback = this.props[prop as keyof SlickgridReactProps];
-              return typeof callback === 'function' && callback(new CustomEvent(gridEventName, { detail: { eventData: event, args } }));
-            }
-            return true;
-          });
-        }
-      }
-
-      // expose all Slick DataView Events through dispatch
-      for (const prop in dataView) {
-        if (dataView.hasOwnProperty(prop) && prop.startsWith('on')) {
-          this._eventHandler.subscribe((dataView as any)[prop], (event, args: any) => {
-            const dataViewEventName = this._eventPubSubService.getEventNameByNamingConvention(prop, slickgridEventPrefix);
-            if (this.props.hasOwnProperty(prop)) {
-              const callback = this.props[prop as keyof SlickgridReactProps];
-              return typeof callback === 'function' && callback(new CustomEvent(dataViewEventName, { detail: { eventData: event, args } }));
-            }
-            return true;
-          });
-        }
-      }
-
       // on cell click, mainly used with the columnDef.action callback
       this.gridEventService.bindOnBeforeEditCell(grid);
       this.gridEventService.bindOnCellChange(grid);
