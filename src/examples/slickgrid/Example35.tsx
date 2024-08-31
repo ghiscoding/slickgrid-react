@@ -1,9 +1,11 @@
 import i18next, { type TFunction } from 'i18next';
 import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
 import {
+  type Column,
   Editors,
   FieldType,
   Formatters,
+  type GridOption,
   type SlickGrid,
   SlickgridReact,
   type SlickgridReactInstance,
@@ -73,7 +75,7 @@ class Example35 extends React.Component<Props, State> {
 
   /* Define grid Options and Columns */
   defineGrid() {
-    const columnDefinitions = [
+    const columnDefinitions: Column[] = [
       {
         id: 'title',
         name: 'Title',
@@ -133,7 +135,7 @@ class Example35 extends React.Component<Props, State> {
       },
     ];
 
-    const gridOptions = {
+    const gridOptions: GridOption = {
       enableAutoResize: false,
       gridHeight: 350,
       gridWidth: 800,
@@ -272,7 +274,7 @@ class Example35 extends React.Component<Props, State> {
   }
 
   toggleSingleMultiRowEdit() {
-    const gridOptions = {
+    const gridOptions: GridOption = {
       ...this.state.gridOptions,
       ...{
         rowBasedEditOptions: {

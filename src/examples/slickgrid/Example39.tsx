@@ -4,8 +4,10 @@ import i18next, { type TFunction } from 'i18next';
 import React from 'react';
 import { withTranslation } from 'react-i18next';
 import {
+  type Column,
   FieldType,
   Filters,
+  type GridOption,
   type Metrics,
   type MultipleSelectOption,
   type OnRowCountChangedEventArgs,
@@ -71,7 +73,7 @@ class Example39 extends React.Component<Props, State> {
     this.reactGrid = reactGrid;
   }
 
-  getColumnsDefinition() {
+  getColumnsDefinition(): Column[] {
     return [
       {
         id: 'name', field: 'name', nameKey: 'NAME', width: 60,
@@ -125,7 +127,7 @@ class Example39 extends React.Component<Props, State> {
     });
   }
 
-  getGridOptions() {
+  getGridOptions(): GridOption {
     return {
       enableAutoResize: true,
       autoResize: {

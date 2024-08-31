@@ -3,10 +3,12 @@ import React from 'react';
 import { withTranslation } from 'react-i18next';
 
 import {
+  type Column,
   ExtensionName,
   FieldType,
   Filters,
   Formatters,
+  type GridOption,
   type SlickDataView,
   type SlickgridReactInstance,
   type SlickGrid,
@@ -72,7 +74,7 @@ class Example9 extends React.Component<Props, State> {
     this.dataView = reactGrid && reactGrid.dataView;
   }
 
-  getColumnDefinitions() {
+  getColumnDefinitions(): Column[] {
     return [
       { id: 'title', name: 'Title', field: 'title', nameKey: 'TITLE', filterable: true, type: FieldType.string },
       { id: 'duration', name: 'Duration', field: 'duration', nameKey: 'DURATION', sortable: true, filterable: true, type: FieldType.string },
@@ -98,7 +100,7 @@ class Example9 extends React.Component<Props, State> {
     ];
   }
 
-  getGridOptions() {
+  getGridOptions(): GridOption {
     return {
       columnPicker: {
         hideForceFitButton: true,

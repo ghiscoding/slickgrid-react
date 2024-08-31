@@ -2,8 +2,10 @@ import { format as dateFormatter } from '@formkit/tempo';
 import React from 'react';
 import {
   Aggregators,
+  type Column,
   FieldType,
   Formatters,
+  type GridOption,
   type Grouping,
   type Metrics,
   type OnRowCountChangedEventArgs,
@@ -50,7 +52,7 @@ export default class Example40 extends React.Component<Props, State> {
     this.reactGrid = reactGrid;
   }
 
-  getColumnsDefinition() {
+  getColumnsDefinition(): Column[] {
     return [
       { id: 'title', name: 'Title', field: 'title', sortable: true, minWidth: 100, filterable: true },
       { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true, minWidth: 100, filterable: true, type: FieldType.number },
@@ -74,7 +76,7 @@ export default class Example40 extends React.Component<Props, State> {
     });
   }
 
-  getGridOptions() {
+  getGridOptions(): GridOption {
     return {
       autoResize: {
         container: '#demo-container',

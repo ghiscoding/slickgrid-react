@@ -2,6 +2,7 @@ import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { TextExportService } from '@slickgrid-universal/text-export';
 import i18next, { type TFunction } from 'i18next';
 import {
+  type Column,
   DelimiterType,
   FieldType,
   FileType,
@@ -98,7 +99,7 @@ class Example12 extends React.Component<Props, State> {
 
   /* Define grid Options and Columns */
   defineGrid() {
-    const columnDefinitions = [
+    const columnDefinitions: Column[] = [
       {
         id: 'title', name: 'Title', field: 'id', nameKey: 'TITLE', minWidth: 100,
         formatter: taskTranslateFormatter,
@@ -148,7 +149,7 @@ class Example12 extends React.Component<Props, State> {
       // { id: 'completed', name: 'Completed', field: 'completed', nameKey: 'COMPLETED', formatter: translateFormatter, sortable: true, minWidth: 100 }
     ];
 
-    const gridOptions = {
+    const gridOptions: GridOption = {
       autoResize: {
         container: '#demo-container',
         rightPadding: 10

@@ -1,5 +1,11 @@
 import React from 'react';
-import { type Column, type GridOption, SlickgridReact, type SlickgridReactInstance } from '../../slickgrid-react';
+import {
+  type Column,
+  type GridOption,
+  type SlickEventData,
+  SlickgridReact,
+  type SlickgridReactInstance
+} from '../../slickgrid-react';
 import './example7.scss';
 
 let columns1WithHighlightingById: any = {};
@@ -69,7 +75,7 @@ export default class Example7 extends React.Component<Props, State> {
   }
 
   defineGrid() {
-    const gridOptions1 = {
+    const gridOptions1: GridOption = {
       enableAutoResize: true,
       enableHeaderButton: true,
       enableHeaderMenu: false,
@@ -80,27 +86,27 @@ export default class Example7 extends React.Component<Props, State> {
       enableFiltering: false,
       enableExcelCopyBuffer: true,
       excelCopyBufferOptions: {
-        onCopyCells: (e: Event, args: any) => console.log('onCopyCells', e, args),
-        onPasteCells: (e: Event, args: any) => console.log('onPasteCells', e, args),
-        onCopyCancelled: (e: Event, args: any) => console.log('onCopyCancelled', e, args),
+        onCopyCells: (e, args) => console.log('onCopyCells', e, args),
+        onPasteCells: (e, args) => console.log('onPasteCells', e, args),
+        onCopyCancelled: (e, args) => console.log('onCopyCancelled', e, args),
       },
       enableCellNavigation: true,
       gridHeight: 275,
       headerButton: {
         // you can use the "onCommand" (in Grid Options) and/or the "action" callback (in Column Definition)
-        onCommand: (_e: Event, args: any) => this.handleOnCommand(_e, args, 1)
+        onCommand: (_e, args) => this.handleOnCommand(_e, args, 1)
       }
     };
 
     // grid 2 options, same as grid 1 + extras
-    const gridOptions2 = {
+    const gridOptions2: GridOption = {
       ...gridOptions1,
       enableHeaderMenu: true,
       enableFiltering: true,
       // frozenColumn: 2,
       // frozenRow: 2,
       headerButton: {
-        onCommand: (_e: Event, args: any) => this.handleOnCommand(_e, args, 2)
+        onCommand: (_e, args) => this.handleOnCommand(_e, args, 2)
       }
     };
 
@@ -120,7 +126,7 @@ export default class Example7 extends React.Component<Props, State> {
     });
   }
 
-  handleOnCommand(_e: Event, args: any, gridNo: 1 | 2) {
+  handleOnCommand(_e: SlickEventData, args: any, gridNo: 1 | 2) {
     const column = args.column;
     const button = args.button;
     const command = args.command;

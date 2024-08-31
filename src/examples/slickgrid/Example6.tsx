@@ -2,10 +2,12 @@ import { addDay, format as tempoFormat } from '@formkit/tempo';
 import { GraphqlService, type GraphqlPaginatedResult, type GraphqlServiceApi, type GraphqlServiceOption, } from '@slickgrid-universal/graphql';
 import i18next, { type TFunction } from 'i18next';
 import {
+  type Column,
   type CursorPageInfo,
   FieldType,
   Filters,
   Formatters,
+  type GridOption,
   type GridStateChange,
   type Metrics,
   type MultipleSelectOption,
@@ -92,7 +94,7 @@ class Example6 extends React.Component<Props, State> {
     this.reactGrid = reactGrid;
   }
 
-  getColumnsDefinition() {
+  getColumnsDefinition(): Column[] {
     return [
       {
         id: 'name', field: 'name', nameKey: 'NAME', width: 60, columnGroupKey: 'CUSTOMER_INFORMATION',
@@ -176,7 +178,7 @@ class Example6 extends React.Component<Props, State> {
     });
   }
 
-  getGridOptions() {
+  getGridOptions(): GridOption {
     const currentYear = new Date().getFullYear();
     const presetLowestDay = `${currentYear}-01-01`;
     const presetHighestDay = `${currentYear}-02-15`;
@@ -271,6 +273,7 @@ class Example6 extends React.Component<Props, State> {
       } as GraphqlServiceApi
     };
   }
+
   clearAllFiltersAndSorts() {
     if (this.reactGrid?.gridService) {
       this.reactGrid.gridService.clearAllFiltersAndSorts();

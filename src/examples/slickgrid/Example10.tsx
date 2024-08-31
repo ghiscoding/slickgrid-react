@@ -71,7 +71,7 @@ export default class Example10 extends React.Component<Props, State> {
 
   /* Define grid Options and Columns */
   defineGrids() {
-    const columnDefinitions1 = [
+    const columnDefinitions1: Column[] = [
       { id: 'title', name: 'Title', field: 'title', sortable: true, type: FieldType.string, filterable: true },
       { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true, type: FieldType.number, filterable: true },
       { id: 'complete', name: '% Complete', field: 'percentComplete', formatter: Formatters.percentCompleteBar, type: FieldType.number, filterable: true, sortable: true },
@@ -96,7 +96,7 @@ export default class Example10 extends React.Component<Props, State> {
       }
     ];
 
-    const columnDefinitions2 = [
+    const columnDefinitions2: Column[] = [
       { id: 'title', name: 'Title', field: 'title', sortable: true, type: FieldType.string, filterable: true },
       { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true, type: FieldType.number, filterable: true },
       { id: 'complete', name: '% Complete', field: 'percentComplete', formatter: Formatters.percentCompleteBar, type: FieldType.number, filterable: true, sortable: true },

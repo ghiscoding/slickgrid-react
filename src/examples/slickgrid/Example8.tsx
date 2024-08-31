@@ -1,7 +1,9 @@
 import i18next, { type TFunction } from 'i18next';
 import {
   type Column,
-  Formatters, type SlickDataView,
+  Formatters,
+  type GridOption,
+  type SlickDataView,
   type SlickGrid, SlickgridReact,
   type SlickgridReactInstance
 } from '../../slickgrid-react';
@@ -166,7 +168,7 @@ class Example8 extends React.Component<Props, State> {
     return columnDefinitions;
   }
 
-  getGridOptions() {
+  getGridOptions(): GridOption {
     return {
       enableAutoResize: true,
       enableHeaderMenu: true,
@@ -181,7 +183,7 @@ class Example8 extends React.Component<Props, State> {
         hideColumnHideCommand: false,
         subItemChevronClass: 'mdi mdi-chevron-down mdi-rotate-270',
         // you can use the "onCommand" (in Grid Options) and/or the "action" callback (in Column Definition)
-        onCommand: (_e: Event, args: any) => {
+        onCommand: (_e, args) => {
           // e.preventDefault(); // preventing default event would keep the menu open after the execution
           const command = args.item?.command;
           if (command.includes('hello-')) {

@@ -1,6 +1,8 @@
 import React from 'react';
 import {
+  type Column,
   Formatters,
+  type GridOption,
   SlickGlobalEditorLock,
   SlickgridReact,
   type SlickgridReactInstance,
@@ -38,7 +40,7 @@ export default class Example41 extends React.Component<Props, State> {
     this.reactGrid = reactGrid;
   }
 
-  getColumnsDefinition() {
+  getColumnsDefinition(): Column[] {
     return [
       {
         id: 'name',
@@ -71,7 +73,7 @@ export default class Example41 extends React.Component<Props, State> {
     });
   }
 
-  getGridOptions() {
+  getGridOptions(): GridOption {
     return {
       enableAutoResize: false,
       gridHeight: 225,

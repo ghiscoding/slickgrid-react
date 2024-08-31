@@ -59,7 +59,7 @@ export default class Example22 extends React.Component<Props, State> {
   // Grid2 definition
   defineGrids() {
     // grid 1
-    const columnDefinitions1 = [
+    const columnDefinitions1: Column[] = [
       { id: 'title', name: 'Title', field: 'title', sortable: true, minWidth: 100 },
       { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true, minWidth: 100 },
       { id: '%', name: '% Complete', field: 'percentComplete', sortable: true, minWidth: 100 },
@@ -77,7 +77,7 @@ export default class Example22 extends React.Component<Props, State> {
     };
 
     // grid 2
-    const columnDefinitions2 = [
+    const columnDefinitions2: Column[] = [
       { id: 'name', name: 'Name', field: 'name', filterable: true, sortable: true, },
       {
         id: 'gender', name: 'Gender', field: 'gender', filterable: true, sortable: true,
