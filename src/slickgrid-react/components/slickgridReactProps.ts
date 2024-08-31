@@ -1,28 +1,13 @@
 import type {
-  BackendUtilityService,
-  CollectionService,
   Column,
   ContainerService,
   ExtensionList,
-  ExtensionService,
-  ExtensionUtility,
-  FilterService,
   GridOption,
-  GridEventService,
-  GridService,
-  GridStateService,
-  GroupingAndColspanService,
   Pagination,
-  PaginationService,
-  ResizerService,
-  RxJsFacade,
-  SharedService,
   SlickControlList,
   SlickDataView,
   SlickPluginList,
-  SortService,
   TranslaterService,
-  TreeDataService,
   OnActiveCellChangedEventArgs,
   DragRowMove,
   OnAddNewRowEventArgs,
@@ -68,7 +53,6 @@ import type {
   PagingInfo,
   SlickGrid,
 } from '@slickgrid-universal/common';
-import type { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
 import type { SlickgridReactInstance } from '../models';
 import type { ReactUtilService } from '../services';
 
@@ -78,24 +62,6 @@ export interface SlickgridReactProps {
   reactUtilService: ReactUtilService;
   containerService: ContainerService;
   translaterService: TranslaterService;
-  externalServices?: {
-    backendUtilityService?: BackendUtilityService,
-    collectionService?: CollectionService,
-    eventPubSubService?: EventPubSubService,
-    extensionService?: ExtensionService,
-    extensionUtility?: ExtensionUtility,
-    filterService?: FilterService,
-    gridEventService?: GridEventService,
-    gridService?: GridService,
-    gridStateService?: GridStateService,
-    groupingAndColspanService?: GroupingAndColspanService,
-    paginationService?: PaginationService,
-    resizerService?: ResizerService,
-    rxjs?: RxJsFacade,
-    sharedService?: SharedService,
-    sortService?: SortService,
-    treeDataService?: TreeDataService,
-  }
   customDataView?: SlickDataView;
   dataset: any[];
   datasetHierarchical?: any[] | null;
