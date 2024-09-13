@@ -15,6 +15,7 @@ One of the best JavasSript datagrid [SlickGrid](https://github.com/mleibman/Slic
 📘 [Documentation](https://ghiscoding.gitbook.io/slickgrid-react/getting-started/quick-start) website powered by GitBook  for version 4+ (_... or use the [Wikis](https://github.com/ghiscoding/Slickgrid-React/wiki) for older versions_).
 
 ## Installation
+Available in Stackblitz (Codeflow) below, this can also be used to provide an issue repro.
 
 [![Open in Codeflow](https://developer.stackblitz.com/img/open_in_codeflow.svg)](https:///pr.new/ghiscoding/slickgrid-react)
 
