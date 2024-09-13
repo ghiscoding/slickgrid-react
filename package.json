@@ -119,7 +119,7 @@
     "@webpack-cli/serve": "^2.0.5",
     "bootstrap": "^5.3.3",
     "clean-webpack-plugin": "^4.0.0",
-    "concurrently": "^8.2.2",
+    "concurrently": "^9.0.1",
     "copy-webpack-plugin": "^12.0.2",
     "copyfiles": "^2.4.1",
     "css-loader": "^7.1.2",
