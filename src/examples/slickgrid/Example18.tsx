@@ -354,11 +354,11 @@ export default class Example18 extends React.Component<Props, State> {
     }), setStateCallback);
   }
 
-  clearGrouping() {
-    if (this.draggableGroupingPlugin?.setDroppedGroups) {
-      this.draggableGroupingPlugin.clearDroppedGroups();
+  clearGrouping(invalidateRows = true) {
+    this.draggableGroupingPlugin?.clearDroppedGroups();
+    if (invalidateRows) {
+      this.gridObj?.invalidate(); // invalidate all rows and re-render
     }
-    this.gridObj.invalidate(); // invalidate all rows and re-render
   }
 
   collapseAllGroups() {
@@ -384,45 +384,27 @@ export default class Example18 extends React.Component<Props, State> {
     });
   }
 
-  groupByDuration() {
-    this.clearGrouping();
-    this.clearGroupingSelects();
-
-    if (this.draggableGroupingPlugin) {
-      this.showPreHeader();
-      this.draggableGroupingPlugin.setDroppedGroups('duration');
-      this.gridObj.invalidate(); // invalidate all rows and re-render
-    }
-    // use JS to change 1st select dropdown value
-    this.dynamicallyChangeSelectGroupByValue(0, 'duration');
-  }
-
   groupByDurationOrderByCount(sortedByCount = false) {
     this.setState((state: State) => ({ ...state, durationOrderByCount: sortedByCount }));
+    this.clearGrouping(false);
 
-    this.clearGrouping();
-    this.groupByDuration();
+    if (this.draggableGroupingPlugin?.setDroppedGroups) {
+      this.showPreHeader();
+      this.draggableGroupingPlugin.setDroppedGroups('duration');
 
-    // you need to manually add the sort icon(s) in UI
-    const sortColumns = sortedByCount ? [] : [{ columnId: 'duration', sortAsc: true }];
-    this.reactGrid.filterService.setSortColumnIcons(sortColumns);
-    this.gridObj.invalidate(); // invalidate all rows and re-render
+      // you need to manually add the sort icon(s) in UI
+      const sortColumns = sortedByCount ? [] : [{ columnId: 'duration', sortAsc: true }];
+      this.gridObj?.setSortColumns(sortColumns);
+      this.gridObj?.invalidate(); // invalidate all rows and re-render
+    }
   }
 
   groupByDurationEffortDriven() {
-    this.clearGrouping();
-    if (this.draggableGroupingPlugin) {
+    this.clearGrouping(false);
+    if (this.draggableGroupingPlugin?.setDroppedGroups) {
       this.showPreHeader();
-      const groupingFields = ['duration', 'effortDriven'];
-      this.draggableGroupingPlugin.setDroppedGroups(groupingFields);
-      this.gridObj.invalidate(); // invalidate all rows and re-render
-
-      // you need to manually add the sort icon(s) in UI
-      const sortColumns = [{ columnId: 'duration', sortAsc: true }];
-      this.reactGrid.filterService.setSortColumnIcons(sortColumns);
-
-      // use JS to change 1st select dropdown value
-      groupingFields.forEach((groupingVal, index) => this.dynamicallyChangeSelectGroupByValue(index, groupingVal));
+      this.draggableGroupingPlugin.setDroppedGroups(['duration', 'effortDriven']);
+      this.gridObj?.invalidate(); // invalidate all rows and re-render
     }
   }
 
