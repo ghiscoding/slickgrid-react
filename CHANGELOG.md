@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.7.1](https://github.com/ghiscoding/slickgrid-react/compare/v5.7.0...v5.7.1) (2024-09-14)
+
+
+### Performance Improvements
+
+* don't invalidate grid rows more than once ([#409](https://github.com/ghiscoding/slickgrid-react/issues/409)) ([3ccdfb6](https://github.com/ghiscoding/slickgrid-react/commit/3ccdfb6f7a815944ab81b1e573c9c1a7cb8aefed))
+* upgrade Slickgrid-Universal with perf improvements ([#410](https://github.com/ghiscoding/slickgrid-react/issues/410)) ([0ebe810](https://github.com/ghiscoding/slickgrid-react/commit/0ebe8102acd9f94d6b68d5b2adc86cba9a9c6acf))
+
 ## [5.7.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.6.0...v5.7.0) (2024-08-31)
 
 
