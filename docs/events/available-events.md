@@ -84,6 +84,7 @@ render() {
   - `onGridMenuClearAllPinning`
   - `onGridMenuClearAllFilters`
   - `onGridMenuClearAllSorting`
+  - `onGridMenuColumnsChanged`
   - `onGridMenuCommand`
   - **Slick Events**
     - `onAfterMenuShow`
