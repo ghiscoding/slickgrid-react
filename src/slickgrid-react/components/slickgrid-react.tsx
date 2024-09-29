@@ -71,7 +71,7 @@ import type { Subscription } from 'rxjs';
 import { GlobalContainerService } from '../services/singletons';
 import type { SlickgridReactProps } from './slickgridReactProps';
 
-const WARN_NO_PREPARSE_DATE_SIZE = 5000; // data size to warn user when pre-parse isn't enabled
+const WARN_NO_PREPARSE_DATE_SIZE = 10000; // data size to warn user when pre-parse isn't enabled
 
 interface State {
   showPagination: boolean;
@@ -1564,10 +1564,10 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   }
 
   protected suggestDateParsingWhenHelpful() {
-    if (this.dataView?.getItemCount() > WARN_NO_PREPARSE_DATE_SIZE && !this.gridOptions.preParseDateColumns && this.grid.getColumns().some(c => isColumnDateType(c.type))) {
+    if (/* !this.gridOptions.silenceWarnings && */ this.dataView?.getItemCount() > WARN_NO_PREPARSE_DATE_SIZE && !this.gridOptions.preParseDateColumns && this.grid.getColumns().some(c => isColumnDateType(c.type))) {
       console.warn(
         '[Slickgrid-Universal] For getting better perf, we suggest you enable the `preParseDateColumns` grid option, ' +
-        'for more info visit:: https://ghiscoding.gitbook.io/slickgrid-universal/column-functionalities/sorting#pre-parse-date-columns-for-better-perf'
+        'for more info visit => https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/sorting#pre-parse-date-columns-for-better-perf'
       );
     }
   }
