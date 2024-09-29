@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.8.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.7.1...v5.8.0) (2024-09-29)
+
+
+### Features
+
+* option to improve Date Sorting by pre-parsing date items only once ([#412](https://github.com/ghiscoding/slickgrid-react/issues/412)) ([1a4b752](https://github.com/ghiscoding/slickgrid-react/commit/1a4b7527bff56262af733b9a4816a0d5cd5a1ba0))
+
 ## [5.7.1](https://github.com/ghiscoding/slickgrid-react/compare/v5.7.0...v5.7.1) (2024-09-14)
 
 
