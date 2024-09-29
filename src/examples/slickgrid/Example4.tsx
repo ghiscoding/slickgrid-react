@@ -26,7 +26,7 @@ interface State extends BaseSlickGridState {
 function randomBetween(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
-const NB_ITEMS = 1500;
+const NB_ITEMS = 5500;
 const URL_SAMPLE_COLLECTION_DATA = 'assets/data/collection_500_numbers.json';
 
 interface Props { }
@@ -233,6 +233,7 @@ export default class Example4 extends React.Component<Props, State> {
         ],
       },
       externalResources: [new ExcelExportService()],
+      preParseDateColumns: '__' // or true
     };
   }
 
@@ -246,6 +247,10 @@ export default class Example4 extends React.Component<Props, State> {
       gridOptions,
       dataset: this.mockData(NB_ITEMS),
     }));
+  }
+
+  logItems() {
+    console.log(this.reactGrid.dataView?.getItems());
   }
 
   mockData(itemCount: number, startingIndex = 0): any[] {
@@ -382,6 +387,9 @@ export default class Example4 extends React.Component<Props, State> {
         <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="set-dynamic-sorting"
           onClick={() => this.setSortingDynamically()}>
           Set Sorting Dynamically
+        </button>
+        <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={() => this.logItems()}>
+          <span title="console.log all dataset items">Log Items</span>
         </button>
 
         <SlickgridReact gridId="grid4"
