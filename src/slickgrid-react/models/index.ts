@@ -1,3 +1,3 @@
-export * from './slickgridReactInstance.interface';
-export * from './reactComponentOutput.interface';
-export * from './gridOption.interface';
+export type * from './slickgridReactInstance.interface';
+export type * from './reactComponentOutput.interface';
+export type * from './gridOption.interface';

@@ -53,6 +53,7 @@
     "dev": "webpack serve --env development",
     "delete:dist": "rimraf dist",
     "lint": "eslint --cache .",
+    "lint:fix": "eslint --fix .",
     "build:cjs": "tsc --project src/slickgrid-react/tsconfig.build.json --outDir dist/cjs --module commonjs --declaration false",
     "postbuild:cjs": "copyfiles --up 2 src/slickgrid-react/**/*.html dist/cjs",
     "build:esm": "tsc --project src/slickgrid-react/tsconfig.build.json --outDir dist/esm --module esnext --target es2018 --declaration false",
