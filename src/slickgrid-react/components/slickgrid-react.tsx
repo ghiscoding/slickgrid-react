@@ -49,6 +49,7 @@ import {
   // utilities
   autoAddEditorFormatterToColumnsWithEditor,
   emptyElement,
+  isColumnDateType,
 } from '@slickgrid-universal/common';
 import { EventPubSubService } from '@slickgrid-universal/event-pub-sub';
 import { SlickFooterComponent } from '@slickgrid-universal/custom-footer-component';
@@ -69,6 +70,8 @@ import type { Subscription } from 'rxjs';
 
 import { GlobalContainerService } from '../services/singletons';
 import type { SlickgridReactProps } from './slickgridReactProps';
+
+const WARN_NO_PREPARSE_DATE_SIZE = 5000; // data size to warn user when pre-parse isn't enabled
 
 interface State {
   showPagination: boolean;
@@ -273,7 +276,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     this.filterFactory = new FilterFactory(slickgridConfig, this.props.translaterService, this.collectionService);
     this.filterService = new FilterService(this.filterFactory as any, this._eventPubSubService, this.sharedService, this.backendUtilityService);
     this.resizerService = new ResizerService(this._eventPubSubService);
-    this.sortService = new SortService(this.sharedService, this._eventPubSubService, this.backendUtilityService);
+    this.sortService = new SortService(this.collectionService, this.sharedService, this._eventPubSubService, this.backendUtilityService);
     this.treeDataService = new TreeDataService(this._eventPubSubService, this.sharedService, this.sortService);
     this.paginationService = new PaginationService(this._eventPubSubService, this.sharedService, this.backendUtilityService);
 
@@ -402,6 +405,8 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     if (this.gridOptions.darkMode) {
       this.setDarkMode(true);
     }
+
+    this.suggestDateParsingWhenHelpful();
   }
 
   initialization(eventHandler: SlickEventHandler) {
@@ -709,6 +714,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     if (this.props.datasetHierarchical && this.props.datasetHierarchical !== prevProps.datasetHierarchical) {
       this.datasetHierarchical = this.props.datasetHierarchical;
     }
+    this.suggestDateParsingWhenHelpful();
   }
 
   columnDefinitionsChanged() {
@@ -825,6 +831,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
           this.handleOnItemCountChanged(dataView.getFilteredItemCount() || 0, dataView.getItemCount() || 0);
         });
         this._eventHandler.subscribe(dataView.onSetItemsCalled, (_e, args) => {
+          this.sharedService.isItemsDateParsed = false;
           this.handleOnItemCountChanged(dataView.getFilteredItemCount() || 0, args.itemCount);
 
           // when user has resize by content enabled, we'll force a full width calculation since we change our entire dataset
@@ -1554,6 +1561,15 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
         return { ...column, editorClass: column.editor?.model };
       }
     });
+  }
+
+  protected suggestDateParsingWhenHelpful() {
+    if (this.dataView?.getItemCount() > WARN_NO_PREPARSE_DATE_SIZE && !this.gridOptions.preParseDateColumns && this.grid.getColumns().some(c => isColumnDateType(c.type))) {
+      console.warn(
+        '[Slickgrid-Universal] For getting better perf, we suggest you enable the `preParseDateColumns` grid option, ' +
+        'for more info visit:: https://ghiscoding.gitbook.io/slickgrid-universal/column-functionalities/sorting#pre-parse-date-columns-for-better-perf'
+      );
+    }
   }
 
   /**
