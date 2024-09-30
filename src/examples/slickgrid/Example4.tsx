@@ -26,7 +26,7 @@ interface State extends BaseSlickGridState {
 function randomBetween(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
-const NB_ITEMS = 5500;
+const NB_ITEMS = 10500;
 const URL_SAMPLE_COLLECTION_DATA = 'assets/data/collection_500_numbers.json';
 
 interface Props { }
