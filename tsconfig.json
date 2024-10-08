@@ -23,7 +23,6 @@
       "dom"
     ],
     "types": [
-      "jest",
       "node"
     ],
     "typeRoots": [
@@ -47,6 +46,5 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/typings/**/*.ts"
-  ],
-  "typeAcquisition": { "include": ["jest"] }
+  ]
 }
