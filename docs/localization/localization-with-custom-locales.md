@@ -9,7 +9,7 @@ There are 2 ways of using and defining Custom Locales, see below on how to achie
 English is the default, if that is the locale you want to use then there's nothing to do, move along...
 
 #### Any other Locales (not English)
-To use any other Locales, you will need to create a TypeScript (or JavaScript) of all the Locale Texts required for the library to work properly (if you forget to define a locale text, it will simply show up in English). For example, if we define a French Locale, it would look like this (for the complete list of required field take a look at the default [English Locale](https://github.com/ghiscoding/slickgrid-react-demos/blob/master/webpack-bs4-demo-with-locales/src/locales/en.ts))
+To use any other Locales, you will need to create a TypeScript (or JavaScript) of all the Locale Texts required for the library to work properly (if you forget to define a locale text, it will simply show up in English). For example, if we define a French Locale, it would look like this (for the complete list of required field take a look at the default [English Locale](https://github.com/ghiscoding/slickgrid-react-demos/blob/main/bootstrap5-i18n-demo/src/assets/locales/en/translation.json))
 ```ts
 // localeFrench.ts or fr.ts
 export const localeFrench = {
