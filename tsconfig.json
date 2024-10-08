@@ -10,20 +10,18 @@
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "allowJs": true,
+    "allowJs": false,
     "baseUrl": "src",
+    "isolatedModules": true,
+    "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "lib": [
-      "es2022",
-      "dom"
+      "dom", "dom.iterable", "ES2022"
     ],
-    "types": [
-      "jest",
-      "node"
-    ],
+    "types": ["node"],
     "typeRoots": [
       "node_modules/@types",
       "src/typings"
@@ -42,9 +40,6 @@
     "./custom_typings/**/*.d.ts"
   ],
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/typings/**/*.ts"
-  ],
-  "typeAcquisition": { "include": ["jest"] }
+    "src"
+  ]
 }

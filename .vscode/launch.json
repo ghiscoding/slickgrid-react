@@ -5,60 +5,35 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Edge",
-      "request": "launch",
-      "type": "pwa-msedge",
-      "url": "http://localhost:8080",
-      "webRoot": "${workspaceRoot}/src",
-      "userDataDir": "${workspaceRoot}/.chrome",
-      "sourceMapPathOverrides": {
-        "webpack:///./src/*": "${webRoot}/*",
-        "webpack://slickgrid-react/./src/*": "${webRoot}/*"
-      }
-    },
-    {
       "name": "Chrome Debugger",
-      "type": "chrome",
       "request": "launch",
-      "breakOnLoad": false,
+      "type": "chrome",
       "url": "http://localhost:8080",
-      "webRoot": "${workspaceRoot}/src",
-      "userDataDir": "${workspaceRoot}/.chrome",
-      "sourceMapPathOverrides": {
-        "webpack:///./src/*": "${webRoot}/*",
-        "webpack://slickgrid-react/./src/*": "${webRoot}/*"
+      "webRoot": "${workspaceFolder}/src",
+      "pathMapping": {
+        "/@fs/": ""
       }
     },
     {
-      "type": "node",
+      "type": "msedge",
       "request": "launch",
-      "name": "Jest Current Spec File",
-      "program": "${workspaceFolder}/node_modules/jest/bin/jest",
-      "args": [
-        "--runInBand",
-        "${fileBasename}",
-        "--config",
-        "${workspaceFolder}/test/jest.config.js"
-      ],
-      "console": "internalConsole",
-      "internalConsoleOptions": "neverOpen",
-      "disableOptimisticBPs": true
+      "name": "Ms Edge Debugger",
+      "url": "http://localhost:8080",
+      "webRoot": "${workspaceFolder}/src",
+      "pathMapping": {
+        "/@fs/": ""
+      }
     },
     {
+      "name": "Vitest - Debug Current Test File",
       "type": "node",
       "request": "launch",
-      "name": "Jest Selected Test Name",
-      "program": "${workspaceFolder}/node_modules/jest/bin/jest",
-      "args": [
-        "--runInBand",
-        "${fileBasename}",
-        "--config",
-        "${workspaceFolder}/test/jest.config.js",
-        "-t=${selectedText}$",
-        "--watch"
-      ],
-      "console": "internalConsole",
-      "internalConsoleOptions": "neverOpen"
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "${relativeFile}",  "--no-watch", "--config", "./test/vitest.config.mts"],
+      "smartStep": true,
+      "console": "integratedTerminal"
     }
   ]
 }

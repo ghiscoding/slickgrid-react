@@ -24,12 +24,14 @@ import { CustomInputEditor } from './custom-inputEditor';
 import { CustomInputFilter } from './custom-inputFilter';
 import type BaseSlickGridState from './state-slick-grid-base';
 
+import SAMPLE_COLLECTION_DATA from './data/collection_100_numbers.json';
+import SAMPLE_COLLECTION_DATA_URL from './data/collection_100_numbers.json?url';
+import COUNTRIES_COLLECTION from './data/countries.json';
+import COUNTRY_NAMES from './data/country_names.json';
+
 interface Props { }
 
 const NB_ITEMS = 100;
-const URL_SAMPLE_COLLECTION_DATA = 'assets/data/collection_100_numbers.json';
-const URL_COUNTRIES_COLLECTION = 'assets/data/countries.json';
-const URL_COUNTRY_NAMES = 'assets/data/country_names.json';
 
 // you can create custom validator to pass to an inline editor
 const myCustomTitleValidator: EditorValidator = (value: any) => {
@@ -373,12 +375,12 @@ export default class Example3 extends React.Component<Props, State> {
         editor: {
           model: Editors.autocompleter,
           customStructure: { label: 'name', value: 'code' },
-          collectionAsync: fetch(URL_COUNTRIES_COLLECTION),
+          collectionAsync: Promise.resolve(COUNTRIES_COLLECTION),
         },
         filter: {
           model: Filters.autocompleter,
           customStructure: { label: 'name', value: 'code' },
-          collectionAsync: fetch(URL_COUNTRIES_COLLECTION),
+          collectionAsync: Promise.resolve(COUNTRIES_COLLECTION),
         },
       },
       {
@@ -390,11 +392,11 @@ export default class Example3 extends React.Component<Props, State> {
         minWidth: 100,
         editor: {
           model: Editors.autocompleter,
-          collectionAsync: fetch(URL_COUNTRY_NAMES),
+          collectionAsync: Promise.resolve(COUNTRY_NAMES),
         },
         filter: {
           model: Filters.autocompleter,
-          collectionAsync: fetch(URL_COUNTRY_NAMES),
+          collectionAsync: Promise.resolve(COUNTRY_NAMES),
         },
       },
       {
@@ -430,20 +432,13 @@ export default class Example3 extends React.Component<Props, State> {
         type: FieldType.string,
         editor: {
           // We can load the 'collection' asynchronously (on first load only, after that we will simply use 'collection')
-          // 3 ways are supported (react-http-client, react-fetch-client OR even Promise)
+          // 3 ways are supported (fetch, Promise or RxJS when available)
 
-          // 1- USE HttpClient from 'react-http-client' to load collection asynchronously
-          // collectionAsync: this.http.createRequest(URL_SAMPLE_COLLECTION_DATA).asGet().send(),
+          // 1- use `fetch`
+          // collectionAsync: fetch(URL_SAMPLE_COLLECTION_DATA),
 
-          // OR 2- use 'react-fetch-client', they are both supported
-          collectionAsync: fetch(URL_SAMPLE_COLLECTION_DATA),
-
-          // OR 3- use a Promise
-          // collectionAsync: new Promise<any>((resolve) => {
-          //   window.setTimeout(() => {
-          //     resolve(Array.from(Array(NB_ITEMS).keys()).map(k => ({ value: k, label: k, prefix: 'Task', suffix: 'days' })));
-          //   }, 500);
-          // }),
+          // OR 2- use a Promise
+          collectionAsync: Promise.resolve(SAMPLE_COLLECTION_DATA),
 
           // OR a regular 'collection' load
           // collection: Array.from(Array(NB_ITEMS).keys()).map(k => ({ value: k, label: k, prefix: 'Task', suffix: 'days' })),
@@ -463,7 +458,8 @@ export default class Example3 extends React.Component<Props, State> {
           model: Editors.multipleSelect,
         },
         filter: {
-          collectionAsync: fetch(URL_SAMPLE_COLLECTION_DATA),
+          collectionAsync: fetch(SAMPLE_COLLECTION_DATA_URL),
+          // collectionAsync: Promise.resolve(SAMPLE_COLLECTION_DATA),
           // collectionAsync: new Promise((resolve) => {
           //   window.setTimeout(() => {
           //     resolve(Array.from(Array(this.dataset.length).keys()).map(k => ({ value: k, label: `Task ${k}` })));

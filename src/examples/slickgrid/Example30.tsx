@@ -24,12 +24,12 @@ import {
   SortComparers,
   type VanillaCalendarOption,
 } from '../../slickgrid-react';
+import URL_COUNTRIES_COLLECTION from './data/countries.json';
 
 import './example30.scss'; // provide custom CSS/SASS styling
 import type BaseSlickGridState from './state-slick-grid-base';
 
 const NB_ITEMS = 500;
-const URL_COUNTRIES_COLLECTION = 'assets/data/countries.json';
 
 /**
  * Check if the current item (cell) is editable or not
@@ -332,7 +332,7 @@ export default class Example30 extends React.Component<Props, State> {
           model: Editors.autocompleter,
           massUpdate: true,
           customStructure: { label: 'name', value: 'code' },
-          collectionAsync: fetch(URL_COUNTRIES_COLLECTION),
+          collectionAsync: Promise.resolve(URL_COUNTRIES_COLLECTION),
           editorOptions: { minLength: 0 }
         },
         filter: {

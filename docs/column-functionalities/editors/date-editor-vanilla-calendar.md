@@ -10,7 +10,7 @@ The Date Editor is provided through an external library named [Vanilla-Calendar-
 > **Note** Also just so you know, `editorOptions` is used by all other editors as well to expose external library like Autocompleter, Multiple-Select, etc...
 
 ### Demo
-[Demo Page](https://ghiscoding.github.io/slickgrid-universal/#/example12) | [Demo Component](https://github.com/ghiscoding/slickgrid-universal/blob/master/examples/webpack-demo-vanilla-bundle/src/examples/example12.ts)
+[Demo Page](https://ghiscoding.github.io/slickgrid-react/#/example30) | [Demo Component](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example30.tsx)
 
 ### Editor Options
 You can use any of the Vanilla-Calendar [settings](https://vanilla-calendar.pro/docs/reference/additionally/settings) by adding them to `editorOptions` as shown below.

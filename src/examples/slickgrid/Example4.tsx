@@ -18,6 +18,7 @@ import {
   type VanillaCalendarOption,
 } from '../../slickgrid-react';
 import type BaseSlickGridState from './state-slick-grid-base';
+import URL_SAMPLE_COLLECTION_DATA from './data/collection_500_numbers.json';
 
 interface State extends BaseSlickGridState {
   metrics?: Metrics,
@@ -27,7 +28,6 @@ function randomBetween(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 const NB_ITEMS = 10500;
-const URL_SAMPLE_COLLECTION_DATA = 'assets/data/collection_500_numbers.json';
 
 interface Props { }
 
@@ -109,13 +109,13 @@ export default class Example4 extends React.Component<Props, State> {
         filter: {
           model: Filters.multipleSelect,
           // We can load the "collection" asynchronously (on first load only, after that we will simply use "collection")
-          // 3 ways are supported (react-http-client, react-fetch-client OR even Promise)
+          // 3 ways are supported (fetch, Promise or RxJS when available)
 
-          // 1- USE HttpClient from "react-http-client" to load collection asynchronously
-          // collectionAsync: this.http.createRequest(URL_SAMPLE_COLLECTION_DATA).asGet().send(),
+          // 1- use `fetch`
+          // collectionAsync: fetch(URL_SAMPLE_COLLECTION_DATA),
 
-          // OR 2- use "react-fetch-client", they are both supported
-          collectionAsync: fetch(URL_SAMPLE_COLLECTION_DATA),
+          // OR 2- use a Promise
+          collectionAsync: Promise.resolve(URL_SAMPLE_COLLECTION_DATA),
 
           // collectionFilterBy & collectionSortBy accept a single or multiple options
           // we can exclude certains values 365 & 360 from the dropdown filter

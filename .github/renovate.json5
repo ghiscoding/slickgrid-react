@@ -11,15 +11,7 @@
     },
     {
       packageNames: ['node'],
-      allowedVersions: '16.15.0',
-    },
-    {
-      packageNames: ['npm'],
-      allowedVersions: '8.5.0',
-    },
-    {
-      packageNames: ['i18next'],
-      allowedVersions: '22.5.0',
+      allowedVersions: '18.19.0',
     },
 
     // rimraf new major releases dropped support for Node 18, we'll have to wait our next major to upgrade them
@@ -29,5 +21,4 @@
     },
   ],
   schedule: ['every 2 weeks on friday'],
-  ignoreDeps: ['react-i18next'],
 }

@@ -15,9 +15,9 @@ import {
 } from '../../slickgrid-react';
 import React from 'react';
 import type BaseSlickGridState from './state-slick-grid-base';
+import Data from './data/customers_100.json';
 
 const defaultPageSize = 20;
-const sampleDataRoot = 'assets/data';
 const CARET_HTML_ESCAPED = '%5E';
 const PERCENT_HTML_ESCAPED = '%25';
 
@@ -337,112 +337,109 @@ export default class Example5 extends React.Component<Props, State> {
         throw new Error('Server could not sort using the field "Company"');
       }
 
-      // read the json and create a fresh copy of the data that we are free to modify
-      fetch(`${sampleDataRoot}/customers_100.json`)
-        .then(response => response.json())
-        .then(response => {
-          let data = response as any[];
+      // read the JSON and create a fresh copy of the data that we are free to modify
+      let data = Data as unknown as { name: string; gender: string; company: string; id: string, category: { id: string; name: string; }; }[];
+      data = JSON.parse(JSON.stringify(data));
 
-          // Sort the data
-          if (orderBy?.length > 0) {
-            const orderByClauses = orderBy.split(',');
-            for (const orderByClause of orderByClauses) {
-              const orderByParts = orderByClause.split(' ');
-              const orderByField = orderByParts[0];
+      // Sort the data
+      if (orderBy?.length > 0) {
+        const orderByClauses = orderBy.split(',');
+        for (const orderByClause of orderByClauses) {
+          const orderByParts = orderByClause.split(' ');
+          const orderByField = orderByParts[0];
 
-              let selector = (obj: any): string => obj;
-              for (const orderByFieldPart of orderByField.split('/')) {
-                const prevSelector = selector;
-                selector = (obj: any) => {
-                  return prevSelector(obj)[orderByFieldPart as any];
-                };
-              }
-
-              const sort = orderByParts[1] ?? 'asc';
-              switch (sort.toLocaleLowerCase()) {
-                case 'asc':
-                  data = data.sort((a, b) => selector(a).localeCompare(selector(b)));
-                  break;
-                case 'desc':
-                  data = data.sort((a, b) => selector(b).localeCompare(selector(a)));
-                  break;
-              }
-            }
+          let selector = (obj: any): string => obj;
+          for (const orderByFieldPart of orderByField.split('/')) {
+            const prevSelector = selector;
+            selector = (obj: any) => {
+              return prevSelector(obj)[orderByFieldPart as any];
+            };
           }
 
-          // Read the result field from the JSON response.
-          let firstRow = skip;
-          let filteredData = data;
-          if (columnFilters) {
-            for (const columnId in columnFilters) {
-              if (columnFilters.hasOwnProperty(columnId)) {
-                filteredData = filteredData.filter(column => {
-                  const filterType = (columnFilters as any)[columnId].type;
-                  const searchTerm = (columnFilters as any)[columnId].term;
-                  let colId = columnId;
-                  if (columnId?.indexOf(' ') !== -1) {
-                    const splitIds = columnId.split(' ');
-                    colId = splitIds[splitIds.length - 1];
-                  }
-                  let filterTerm;
-                  let col = column;
-                  for (const part of colId.split('/')) {
-                    filterTerm = (col as any)[part];
-                    col = filterTerm;
-                  }
-
-                  if (filterTerm) {
-                    const [term1, term2] = Array.isArray(searchTerm) ? searchTerm : [searchTerm];
-
-                    switch (filterType) {
-                      case 'eq': return filterTerm.toLowerCase() === term1;
-                      case 'ne': return filterTerm.toLowerCase() !== term1;
-                      case 'le': return filterTerm.toLowerCase() <= term1;
-                      case 'lt': return filterTerm.toLowerCase() < term1;
-                      case 'gt': return filterTerm.toLowerCase() > term1;
-                      case 'ge': return filterTerm.toLowerCase() >= term1;
-                      case 'ends': return filterTerm.toLowerCase().endsWith(term1);
-                      case 'starts': return filterTerm.toLowerCase().startsWith(term1);
-                      case 'starts+ends': return filterTerm.toLowerCase().startsWith(term1) && filterTerm.toLowerCase().endsWith(term2);
-                      case 'substring': return filterTerm.toLowerCase().includes(term1);
-                      case 'matchespattern': return new RegExp((term1 as string).replace(new RegExp(PERCENT_HTML_ESCAPED, 'g'), '.*'), 'i').test(filterTerm);
-                    }
-                  }
-                });
-              }
-            }
-            countTotalItems = filteredData.length;
+          const sort = orderByParts[1] ?? 'asc';
+          switch (sort.toLocaleLowerCase()) {
+            case 'asc':
+              data = data.sort((a, b) => selector(a).localeCompare(selector(b)));
+              break;
+            case 'desc':
+              data = data.sort((a, b) => selector(b).localeCompare(selector(a)));
+              break;
           }
+        }
+      }
 
-          // make sure page skip is not out of boundaries, if so reset to first page & remove skip from query
-          if (firstRow > filteredData.length) {
-            query = query.replace(`$skip=${firstRow}`, '');
-            firstRow = 0;
+      // Read the result field from the JSON response.
+      let firstRow = skip;
+      let filteredData = data;
+      if (columnFilters) {
+        for (const columnId in columnFilters) {
+          if (columnFilters.hasOwnProperty(columnId)) {
+            filteredData = filteredData.filter(column => {
+              const filterType = (columnFilters as any)[columnId].type;
+              const searchTerm = (columnFilters as any)[columnId].term;
+              let colId = columnId;
+              if (columnId?.indexOf(' ') !== -1) {
+                const splitIds = columnId.split(' ');
+                colId = splitIds[splitIds.length - 1];
+              }
+              let filterTerm;
+              let col = column;
+              for (const part of colId.split('/')) {
+                filterTerm = (col as any)[part];
+                col = filterTerm;
+              }
+
+              if (filterTerm) {
+                const [term1, term2] = Array.isArray(searchTerm) ? searchTerm : [searchTerm];
+
+                switch (filterType) {
+                  case 'eq': return filterTerm.toLowerCase() === term1;
+                  case 'ne': return filterTerm.toLowerCase() !== term1;
+                  case 'le': return filterTerm.toLowerCase() <= term1;
+                  case 'lt': return filterTerm.toLowerCase() < term1;
+                  case 'gt': return filterTerm.toLowerCase() > term1;
+                  case 'ge': return filterTerm.toLowerCase() >= term1;
+                  case 'ends': return filterTerm.toLowerCase().endsWith(term1);
+                  case 'starts': return filterTerm.toLowerCase().startsWith(term1);
+                  case 'starts+ends': return filterTerm.toLowerCase().startsWith(term1) && filterTerm.toLowerCase().endsWith(term2);
+                  case 'substring': return filterTerm.toLowerCase().includes(term1);
+                  case 'matchespattern': return new RegExp((term1 as string).replace(new RegExp(PERCENT_HTML_ESCAPED, 'g'), '.*'), 'i').test(filterTerm);
+                }
+              }
+            });
           }
-          const updatedData = filteredData.slice(firstRow, firstRow + top!);
+        }
+        countTotalItems = filteredData.length;
+      }
 
-          window.setTimeout(() => {
-            const backendResult: any = { query };
-            if (!this.state.isCountEnabled) {
-              backendResult['totalRecordCount'] = countTotalItems;
-            }
+      // make sure page skip is not out of boundaries, if so reset to first page & remove skip from query
+      if (firstRow > filteredData.length) {
+        query = query.replace(`$skip=${firstRow}`, '');
+        firstRow = 0;
+      }
+      const updatedData = filteredData.slice(firstRow, firstRow + top!);
 
-            if (this.state.odataVersion === 4) {
-              backendResult['value'] = updatedData;
-              if (this.state.isCountEnabled) {
-                backendResult['@odata.count'] = countTotalItems;
-              }
-            } else {
-              backendResult['d'] = { results: updatedData };
-              if (this.state.isCountEnabled) {
-                backendResult['d']['__count'] = countTotalItems;
-              }
-            }
+      window.setTimeout(() => {
+        const backendResult: any = { query };
+        if (!this.state.isCountEnabled) {
+          backendResult['totalRecordCount'] = countTotalItems;
+        }
 
-            // console.log('Backend Result', backendResult);
-            resolve(backendResult);
-          }, 150);
-        });
+        if (this.state.odataVersion === 4) {
+          backendResult['value'] = updatedData;
+          if (this.state.isCountEnabled) {
+            backendResult['@odata.count'] = countTotalItems;
+          }
+        } else {
+          backendResult['d'] = { results: updatedData };
+          if (this.state.isCountEnabled) {
+            backendResult['d']['__count'] = countTotalItems;
+          }
+        }
+
+        // console.log('Backend Result', backendResult);
+        resolve(backendResult);
+      }, 150);
     });
   }
 

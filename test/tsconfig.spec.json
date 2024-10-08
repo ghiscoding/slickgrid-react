@@ -10,8 +10,6 @@
     ],
     "types": [
       "cypress",
-      "jest",
-      "jest-extended",
       "node"
     ]
   },

@@ -14,13 +14,15 @@ doc
 ISSUE_TEMPLATE.md
 package-scripts.js
 screenshots
-webpack.config.js
+vite.config.mts
+vite-env.d.ts
 
 docs
 website
 index.ejs
 react-project
 react_project
+index.html
 favicon.ico
 **/tsconfig.build.json
 **/tsconfig.spec.json
