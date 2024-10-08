@@ -21,5 +21,4 @@
     },
   ],
   schedule: ['every 2 weeks on friday'],
-  ignoreDeps: ['react-i18next'],
 }
