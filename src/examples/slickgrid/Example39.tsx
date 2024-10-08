@@ -14,6 +14,7 @@ import {
   SlickgridReact,
   type SlickgridReactInstance,
 } from '../../slickgrid-react';
+import SAMPLE_COLLECTION_DATA_URL from './data/customers_100.json?url';
 
 import type BaseSlickGridState from './state-slick-grid-base';
 import './example39.scss';
@@ -33,7 +34,6 @@ interface State extends BaseSlickGridState {
   tagDataClass: string,
 }
 
-const sampleDataRoot = 'assets/data';
 const GRAPHQL_QUERY_DATASET_NAME = 'users';
 const FAKE_SERVER_DELAY = 250;
 
@@ -105,7 +105,7 @@ class Example39 extends React.Component<Props, State> {
             property: 'company',
             sortDesc: false
           },
-          collectionAsync: fetch(`${sampleDataRoot}/customers_100.json`).then(e => e.json()),
+          collectionAsync: fetch(SAMPLE_COLLECTION_DATA_URL).then(e => e.json()),
           filterOptions: {
             filter: true // adds a filter on top of the multi-select dropdown
           } as MultipleSelectOption
@@ -248,7 +248,7 @@ class Example39 extends React.Component<Props, State> {
       let orderByField = '';
       let orderByDir = '';
 
-      fetch(`${sampleDataRoot}/customers_100.json`)
+      fetch(SAMPLE_COLLECTION_DATA_URL)
         .then(e => e.json())
         .then((data: any) => {
           let filteredData: Array<{ id: number; name: string; gender: string; company: string; category: { id: number; name: string; }; }> = data;

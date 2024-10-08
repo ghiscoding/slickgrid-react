@@ -9,7 +9,7 @@ import React from 'react';
 
 import './example22.scss';
 
-const URL_CUSTOMERS = 'assets/data/customers_100.json';
+import URL_CUSTOMERS_URL from './data/customers_100.json?url';
 
 interface Props { }
 interface State {
@@ -26,7 +26,7 @@ export default class Example22 extends React.Component<Props, State> {
   subTitle = `This example demonstrate the creation of multiple grids in Bootstrap Tabs
    <ol>
     <li>Regular mocked data with javascript</li>
-    <li>Load dataset through Fetch-Client. Also note we need to call a "resizeGrid()" after focusing on this tab</li>
+    <li>Load dataset through Fetch. Also note we need to call a "resizeGrid()" after focusing on this tab</li>
   </ol>`;
 
   reactGrid2!: SlickgridReactInstance;
@@ -112,8 +112,8 @@ export default class Example22 extends React.Component<Props, State> {
   }
 
   async loadGrid2Data() {
-    // load data with Fetch-Client
-    const response2 = await fetch(URL_CUSTOMERS);
+    // load data with Fetch
+    const response2 = await fetch(URL_CUSTOMERS_URL);
     const dataset2 = await response2['json']();
 
     this.setState((state: State) => ({ ...state, dataset2 }));

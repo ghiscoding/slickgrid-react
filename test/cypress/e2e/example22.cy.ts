@@ -24,7 +24,7 @@ describe('Example 22 - Grids in Bootstrap Tabs', () => {
     cy.get(`.tab-pane#javascript [style="top: ${GRID_ROW_HEIGHT * 5}px;"] > .slick-cell:nth(0)`).should('contain', 'Task 5');
   });
 
-  it('should change open next Tab "Fetch-Client" and expect a grid with 3 columns', () => {
+  it('should change open next Tab "Fetch" and expect a grid with 3 columns', () => {
     cy.get('#fetch-tab').click();
 
     cy.get('#slickGridContainer-grid2')

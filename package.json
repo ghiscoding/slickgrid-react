@@ -88,13 +88,9 @@
     "@slickgrid-universal/empty-warning-component": "~5.8.0",
     "@slickgrid-universal/event-pub-sub": "~5.8.0",
     "@slickgrid-universal/pagination-component": "~5.8.0",
-    "@vitejs/plugin-react-swc": "^3.7.1",
     "dequal": "^2.0.3",
     "i18next": "^23.15.1",
-    "sortablejs": "^1.15.3",
-    "vite": "^5.4.8",
-    "vite-plugin-svgr": "^4.2.0",
-    "vite-tsconfig-paths": "^5.0.1"
+    "sortablejs": "^1.15.3"
   },
   "devDependencies": {
     "@4tw/cypress-drag-drop": "^2.2.5",
@@ -119,6 +115,7 @@
     "@types/react-dom": "^18.3.0",
     "@types/sortablejs": "^1.15.8",
     "@types/text-encoding-utf-8": "^1.0.5",
+    "@vitejs/plugin-react": "^4.3.2",
     "bootstrap": "^5.3.3",
     "concurrently": "^9.0.1",
     "copyfiles": "^2.4.1",
@@ -149,11 +146,13 @@
     "sass": "^1.79.4",
     "serve": "^14.2.3",
     "typescript": "^5.6.2",
-    "typescript-eslint": "^8.7.0"
+    "typescript-eslint": "^8.7.0",
+    "vite": "^5.4.8",
+    "vite-plugin-svgr": "^4.2.0",
+    "vite-tsconfig-paths": "^5.0.1"
   },
   "engines": {
-    "node": ">=16.15.0",
-    "npm": ">=8.5.0"
+    "node": ">=18.19.0"
   },
   "resolutions": {
     "caniuse-lite": "1.0.30001664"

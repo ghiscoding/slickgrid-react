@@ -23,9 +23,9 @@ import React from 'react';
 
 import type BaseSlickGridState from './state-slick-grid-base';
 import './example32.scss'; // provide custom CSS/SASS styling
+import URL_COUNTRIES_COLLECTION_URL from './data/countries.json?url';
 
 const NB_ITEMS = 400;
-const URL_COUNTRIES_COLLECTION = 'assets/data/countries.json';
 
 /**
  * Check if the current item (cell) is editable or not
@@ -322,7 +322,7 @@ export default class Example32 extends React.Component<Props, State> {
           model: Editors.autocompleter,
           massUpdate: true,
           customStructure: { label: 'name', value: 'code' },
-          collectionAsync: fetch(URL_COUNTRIES_COLLECTION),
+          collectionAsync: fetch(URL_COUNTRIES_COLLECTION_URL),
         },
         filter: {
           model: Filters.inputText,
