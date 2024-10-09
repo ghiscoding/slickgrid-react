@@ -239,7 +239,7 @@ export default class Example32 extends React.Component<Props, State> {
         sortable: true,
         type: FieldType.string,
         editor: {
-          // OR 1- use "fetch client", they are both supported
+          // OR 1- use `fetch`, Promise or RxJS when available
           // collectionAsync: fetch(URL_SAMPLE_COLLECTION_DATA),
 
           // OR 2- use a Promise

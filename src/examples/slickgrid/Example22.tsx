@@ -193,7 +193,7 @@ export default class Example22 extends React.Component<Props, State> {
                 role="tab"
                 aria-controls="fetch"
                 aria-selected="false"
-                onClick={() => this.resizeGrid2()}>Fetch-Client</a>
+                onClick={() => this.resizeGrid2()}>Fetch</a>
             </li>
           </ul>
 
@@ -213,7 +213,7 @@ export default class Example22 extends React.Component<Props, State> {
               id="fetch"
               role="tabpanel"
               aria-labelledby="fetch-tab">
-              <h4>Grid 2 - Load a JSON dataset through Fetch-Client</h4>
+              <h4>Grid 2 - Load a JSON dataset through Fetch</h4>
               <SlickgridReact gridId="grid2"
                 columnDefinitions={this.state.columnDefinitions2}
                 gridOptions={this.state.gridOptions2}

@@ -1268,7 +1268,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
 
       if (collectionAsync instanceof Promise) {
         // wait for the "collectionAsync", once resolved we will save it into the "collection"
-        // the collectionAsync can be of 3 types HttpClient, HttpFetch or a Promise
+        // the collectionAsync can be of 3 types Fetch, Promise or RxJS when available
         collectionAsync.then((response: any | any[]) => {
           if (Array.isArray(response)) {
             this.updateEditorCollection(column, response); // from Promise
