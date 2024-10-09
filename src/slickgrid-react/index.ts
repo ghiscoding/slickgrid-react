@@ -13,7 +13,6 @@ import type {
 
 // expose all public classes
 export {
-  ReactUtilService,
   TranslaterService,
   disposeAllSubscriptions
 } from './services/index';

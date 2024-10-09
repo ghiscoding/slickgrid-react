@@ -62,7 +62,6 @@ import { Constants } from '../constants';
 import { GlobalGridOptions } from '../global-grid-options';
 import type { SlickgridReactInstance, GridOption, } from '../models/index';
 import {
-  ReactUtilService,
   disposeAllSubscriptions,
   TranslaterService,
 } from '../services/index';
@@ -186,7 +185,6 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   instances: SlickgridReactInstance | null = null;
 
   static defaultProps = {
-    reactUtilService: new ReactUtilService(),
     containerService: GlobalContainerService,
     translaterService: new TranslaterService(),
     dataset: [],
