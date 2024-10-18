@@ -1,13 +1,10 @@
-// import 3rd party vendor libs
-import i18next from 'i18next';
-import React from 'react';
-
 import {
   // interfaces/types
   type AutocompleterEditor,
   type BackendService,
   type BackendServiceApi,
   type BackendServiceOption,
+  type BasePaginationComponent,
   type Column,
   type DataViewOption,
   type EventSubscription,
@@ -18,8 +15,8 @@ import {
   type Locale,
   type Metrics,
   type Pagination,
+  type PaginationMetadata,
   type SelectEditor,
-  type ServicePagination,
   SlickDataView,
   SlickEventHandler,
   SlickGrid,
@@ -56,18 +53,18 @@ import { SlickFooterComponent } from '@slickgrid-universal/custom-footer-compone
 import { SlickEmptyWarningComponent } from '@slickgrid-universal/empty-warning-component';
 import { SlickPaginationComponent } from '@slickgrid-universal/pagination-component';
 import { extend } from '@slickgrid-universal/utils';
-
 import { dequal } from 'dequal/lite';
+import i18next from 'i18next';
+import React from 'react';
+import type { Subscription } from 'rxjs';
+
 import { Constants } from '../constants';
 import { GlobalGridOptions } from '../global-grid-options';
 import type { SlickgridReactInstance, GridOption, } from '../models/index';
-import {
-  disposeAllSubscriptions,
-  TranslaterService,
-} from '../services/index';
-import type { Subscription } from 'rxjs';
-
+import { disposeAllSubscriptions } from '../services/utilities';
 import { GlobalContainerService } from '../services/singletons';
+import { loadComponentDynamically } from '../services/reactUtils';
+import { TranslaterService } from '../services/translater.service';
 import type { SlickgridReactProps } from './slickgridReactProps';
 
 const WARN_NO_PREPARSE_DATE_SIZE = 10000; // data size to warn user when pre-parse isn't enabled
@@ -152,7 +149,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   // components
   slickEmptyWarning: SlickEmptyWarningComponent | undefined;
   slickFooter: SlickFooterComponent | undefined;
-  slickPagination: SlickPaginationComponent | undefined;
+  slickPagination: BasePaginationComponent | undefined;
 
   // services
   backendUtilityService!: BackendUtilityService;
@@ -165,12 +162,6 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   gridService: GridService;
   gridStateService: GridStateService;
   groupingService: GroupingAndColspanService;
-  protected get paginationService(): PaginationService {
-    return this.state?.paginationService;
-  }
-  protected set paginationService(value: PaginationService) {
-    this.setStateValue('paginationService', value);
-  }
   resizerService!: ResizerService;
   rxjs?: RxJsFacade;
   sharedService: SharedService;
@@ -247,6 +238,13 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     }
 
     this._isDatasetHierarchicalInitialized = true;
+  }
+
+  protected get paginationService(): PaginationService {
+    return this.state?.paginationService;
+  }
+  protected set paginationService(value: PaginationService) {
+    this.setStateValue('paginationService', value);
   }
 
   constructor(public readonly props: SlickgridReactProps) {
@@ -589,12 +587,12 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       // return all available Services (non-singleton)
       backendService: this.backendService,
       eventPubSubService: this._eventPubSubService,
+      extensionService: this.extensionService,
       filterService: this.filterService,
       gridEventService: this.gridEventService,
       gridStateService: this.gridStateService,
       gridService: this.gridService,
       groupingService: this.groupingService,
-      extensionService: this.extensionService,
       paginationService: this.paginationService,
       resizerService: this.resizerService,
       sortService: this.sortService,
@@ -1019,7 +1017,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
    * On a Pagination changed, we will trigger a Grid State changed with the new pagination info
    * Also if we use Row Selection or the Checkbox Selector with a Backend Service (Odata, GraphQL), we need to reset any selection
    */
-  paginationChanged(pagination: ServicePagination) {
+  paginationChanged(pagination: PaginationMetadata) {
     const isSyncGridSelectionEnabled = this.gridStateService?.needToPreserveRowSelection() ?? false;
     if (this.grid && !isSyncGridSelectionEnabled && this.gridOptions?.backendServiceApi && (this.gridOptions.enableRowSelection || this.gridOptions.enableCheckboxSelector)) {
       this.grid.setSelectedRows([]);
@@ -1224,8 +1222,8 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       this.paginationService.totalItems = this.totalItems;
       this.paginationService.init(this.grid, paginationOptions, this.backendServiceApi);
       this.subscriptions.push(
-        this._eventPubSubService.subscribe<ServicePagination>('onPaginationChanged', paginationChanges => this.paginationChanged(paginationChanges)),
-        this._eventPubSubService.subscribe<ServicePagination>('onPaginationOptionsChanged', paginationChanges => this.paginationOptionsChanged(paginationChanges)),
+        this._eventPubSubService.subscribe<PaginationMetadata>('onPaginationChanged', paginationChanges => this.paginationChanged(paginationChanges)),
+        this._eventPubSubService.subscribe<PaginationMetadata>('onPaginationOptionsChanged', paginationChanges => this.paginationOptionsChanged(paginationChanges)),
         this._eventPubSubService.subscribe<{ visible: boolean; }>('onPaginationVisibilityChanged', (visibility: { visible: boolean }) => {
           this.showPagination = visibility?.visible ?? false;
           if (this.gridOptions?.backendServiceApi) {
@@ -1247,11 +1245,22 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
    * @param {Boolean} showPagination - show (new render) or not (dispose) the Pagination
    * @param {Boolean} shouldDisposePaginationService - when disposing the Pagination, do we also want to dispose of the Pagination Service? (defaults to True)
    */
-  protected renderPagination(showPagination = true) {
-    if (this._gridOptions?.enablePagination && !this._isPaginationInitialized && showPagination) {
-      this.slickPagination = new SlickPaginationComponent(this.paginationService, this._eventPubSubService, this.sharedService, this.props.translaterService);
-      this.slickPagination.renderPagination(this._elm as HTMLDivElement);
-      this._isPaginationInitialized = true;
+  protected async renderPagination(showPagination = true) {
+    if (this.grid && this._gridOptions?.enablePagination && !this._isPaginationInitialized && showPagination) {
+      if (this.gridOptions.customPaginationComponent) {
+        const paginationContainer = document.createElement('section');
+        this._elm!.appendChild(paginationContainer);
+        const { component } = await loadComponentDynamically<BasePaginationComponent>(this.gridOptions.customPaginationComponent, paginationContainer);
+        this.slickPagination = component;
+      } else {
+        this.slickPagination = new SlickPaginationComponent();
+      }
+
+      if (this.slickPagination) {
+        this.slickPagination.init(this.grid, this.paginationService, this._eventPubSubService, this.props.translaterService);
+        this.slickPagination.renderPagination(this._elm as HTMLDivElement);
+        this._isPaginationInitialized = true;
+      }
     } else if (!showPagination) {
       this.slickPagination?.dispose();
       this._isPaginationInitialized = false;
