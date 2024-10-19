@@ -61,6 +61,7 @@
 * [Infinite Scroll](grid-functionalities/infinite-scroll.md)
 * [Pinning (frozen) of Columns/Rows](grid-functionalities/frozen-columns-rows.md)
 * [Providing data to the grid](grid-functionalities/providing-grid-data.md)
+* [Row Detail](grid-functionalities/row-detail.md)
 * [Row Selection](grid-functionalities/row-selection.md)
 * [Tree Data Grid](grid-functionalities/tree-data-grid.md)
 * [Row Based Editing Plugin](grid-functionalities/Row-based-edit.md)
