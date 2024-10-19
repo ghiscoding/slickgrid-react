@@ -63,7 +63,7 @@ import { GlobalGridOptions } from '../global-grid-options';
 import type { SlickgridReactInstance, GridOption, } from '../models/index';
 import { disposeAllSubscriptions } from '../services/utilities';
 import { GlobalContainerService } from '../services/singletons';
-import { loadComponentDynamically } from '../services/reactUtils';
+import { loadReactComponentDynamically } from '../services/reactUtils';
 import { TranslaterService } from '../services/translater.service';
 import type { SlickgridReactProps } from './slickgridReactProps';
 
@@ -1130,7 +1130,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   protected setPaginationOptionsWhenPresetDefined(gridOptions: GridOption, paginationOptions: Pagination): Pagination {
     if (gridOptions.presets?.pagination && gridOptions.pagination) {
       if (this.hasBackendInfiniteScroll()) {
-        console.warn('[Aurelia-Slickgrid] `presets.pagination` is not supported with Infinite Scroll, reverting to first page.');
+        console.warn('[Slickgrid-React] `presets.pagination` is not supported with Infinite Scroll, reverting to first page.');
       } else {
         paginationOptions.pageSize = gridOptions.presets.pagination.pageSize;
         paginationOptions.pageNumber = gridOptions.presets.pagination.pageNumber;
@@ -1250,7 +1250,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       if (this.gridOptions.customPaginationComponent) {
         const paginationContainer = document.createElement('section');
         this._elm!.appendChild(paginationContainer);
-        const { component } = await loadComponentDynamically<BasePaginationComponent>(this.gridOptions.customPaginationComponent, paginationContainer);
+        const { component } = await loadReactComponentDynamically<BasePaginationComponent>(this.gridOptions.customPaginationComponent, paginationContainer);
         this.slickPagination = component;
       } else {
         this.slickPagination = new SlickPaginationComponent();
@@ -1453,7 +1453,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     this._registeredResources = [];
   }
 
-  /** Pre-Register any Resource that don't require SlickGrid to be instantiated (for example RxJS Resource) */
+  /** Pre-Register any Resource that don't require SlickGrid to be instantiated (for example RxJS Resource & RowDetail) */
   protected preRegisterResources() {
     this._registeredResources = this.gridOptions.externalResources || [];
 
