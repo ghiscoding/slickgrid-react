@@ -1573,7 +1573,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   }
 
   protected suggestDateParsingWhenHelpful() {
-    if (/* !this.gridOptions.silenceWarnings && */ this.dataView?.getItemCount() > WARN_NO_PREPARSE_DATE_SIZE && !this.gridOptions.preParseDateColumns && this.grid.getColumns().some(c => isColumnDateType(c.type))) {
+    if (!this.gridOptions.silenceWarnings && this.dataView?.getItemCount() > WARN_NO_PREPARSE_DATE_SIZE && !this.gridOptions.preParseDateColumns && this.grid.getColumns().some(c => isColumnDateType(c.type))) {
       console.warn(
         '[Slickgrid-Universal] For getting better perf, we suggest you enable the `preParseDateColumns` grid option, ' +
         'for more info visit => https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/sorting#pre-parse-date-columns-for-better-perf'
