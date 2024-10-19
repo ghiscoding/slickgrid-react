@@ -283,7 +283,7 @@ export class SlickRowDetailView extends UniversalSlickRowDetailView {
   // protected functions
   // ------------------
 
-  protected addViewInfoToViewsRef(item: any, root?: Root) {
+  protected addViewInfoToViewsRef(item: any, root: Root | null) {
     const viewInfo: CreatedView = {
       id: item[this.datasetIdPropName],
       dataContext: item,
