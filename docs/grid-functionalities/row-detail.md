@@ -57,6 +57,12 @@ export class GridExample {
       rowSelectionOptions: {
         selectActiveRow: true
       },
+      preRegisterExternalExtensions: (pubSubService) => {
+        // Row Detail View is a special case because of its requirement to create extra column definition dynamically
+        // so it must be pre-registered before SlickGrid is instantiated, we can do so via this option
+        const rowDetail = new SlickRowDetailView(pubSubService as EventPubSubService);
+        return [{ name: ExtensionName.rowDetailView, instance: rowDetail }];
+      },
       rowDetailView: {
         // We can load the "process" asynchronously via Fetch, Promise, ...
         process: (item) => this.http.get(`api/item/${item.id}`),
@@ -250,6 +256,12 @@ export class GridExample {
   getGridOptions(): GridOption {
     return {
       enableRowDetailView: true,
+      preRegisterExternalExtensions: (pubSubService) => {
+        // Row Detail View is a special case because of its requirement to create extra column definition dynamically
+        // so it must be pre-registered before SlickGrid is instantiated, we can do so via this option
+        const rowDetail = new SlickRowDetailView(pubSubService as EventPubSubService);
+        return [{ name: ExtensionName.rowDetailView, instance: rowDetail }];
+      },
       rowDetailView: {
         // We can load the "process" asynchronously via Fetch, Promise, ...
         process: (item) => this.http.get(`api/item/${item.id}`),
@@ -287,6 +299,12 @@ export class GridExample {
   getGridOptions(): GridOption {
     return {
       enableRowDetailView: true,
+      preRegisterExternalExtensions: (pubSubService) => {
+        // Row Detail View is a special case because of its requirement to create extra column definition dynamically
+        // so it must be pre-registered before SlickGrid is instantiated, we can do so via this option
+        const rowDetail = new SlickRowDetailView(pubSubService as EventPubSubService);
+        return [{ name: ExtensionName.rowDetailView, instance: rowDetail }];
+      },
       rowDetailView: {
         // ...
         // ViewComponent Template to load when row detail data is ready
