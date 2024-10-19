@@ -42,6 +42,7 @@ import Example38 from './Example38';
 import Example39 from './Example39';
 import Example40 from './Example40';
 import Example41 from './Example41';
+import Example42 from './Example42';
 
 const routes: Array<{ path: string; route: string; component: any; title: string; }> = [
   { path: 'example1', route: '/example1', component: <Example1 />, title: '1- Basic Grid / 2 Grids' },
@@ -84,6 +85,7 @@ const routes: Array<{ path: string; route: string; component: any; title: string
   { path: 'example39', route: '/example39', component: <Example39 />, title: '39- Infinite Scroll with GraphQL' },
   { path: 'example40', route: '/example40', component: <Example40 />, title: '40- Infinite Scroll from JSON data' },
   { path: 'example41', route: '/example41', component: <Example41 />, title: '41- Drag & Drop' },
+  { path: 'example42', route: '/example42', component: <Example42 />, title: '42- Custom Pagination' },
 ];
 
 export default function Routes() {

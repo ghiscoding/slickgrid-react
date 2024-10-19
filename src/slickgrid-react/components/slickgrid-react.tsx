@@ -1,13 +1,10 @@
-// import 3rd party vendor libs
-import i18next from 'i18next';
-import React from 'react';
-
 import {
   // interfaces/types
   type AutocompleterEditor,
   type BackendService,
   type BackendServiceApi,
   type BackendServiceOption,
+  type BasePaginationComponent,
   type Column,
   type DataViewOption,
   type EventSubscription,
@@ -18,8 +15,8 @@ import {
   type Locale,
   type Metrics,
   type Pagination,
+  type PaginationMetadata,
   type SelectEditor,
-  type ServicePagination,
   SlickDataView,
   SlickEventHandler,
   SlickGrid,
@@ -35,7 +32,7 @@ import {
   GridEventService,
   GridService,
   GridStateService,
-  GroupingAndColspanService,
+  HeaderGroupingService,
   type Observable,
   PaginationService,
   ResizerService,
@@ -56,18 +53,18 @@ import { SlickFooterComponent } from '@slickgrid-universal/custom-footer-compone
 import { SlickEmptyWarningComponent } from '@slickgrid-universal/empty-warning-component';
 import { SlickPaginationComponent } from '@slickgrid-universal/pagination-component';
 import { extend } from '@slickgrid-universal/utils';
-
 import { dequal } from 'dequal/lite';
+import i18next from 'i18next';
+import React from 'react';
+import type { Subscription } from 'rxjs';
+
 import { Constants } from '../constants';
 import { GlobalGridOptions } from '../global-grid-options';
 import type { SlickgridReactInstance, GridOption, } from '../models/index';
-import {
-  disposeAllSubscriptions,
-  TranslaterService,
-} from '../services/index';
-import type { Subscription } from 'rxjs';
-
+import { disposeAllSubscriptions } from '../services/utilities';
 import { GlobalContainerService } from '../services/singletons';
+import { loadReactComponentDynamically } from '../services/reactUtils';
+import { TranslaterService } from '../services/translater.service';
 import type { SlickgridReactProps } from './slickgridReactProps';
 
 const WARN_NO_PREPARSE_DATE_SIZE = 10000; // data size to warn user when pre-parse isn't enabled
@@ -152,7 +149,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   // components
   slickEmptyWarning: SlickEmptyWarningComponent | undefined;
   slickFooter: SlickFooterComponent | undefined;
-  slickPagination: SlickPaginationComponent | undefined;
+  slickPagination: BasePaginationComponent | undefined;
 
   // services
   backendUtilityService!: BackendUtilityService;
@@ -164,13 +161,8 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   gridEventService: GridEventService;
   gridService: GridService;
   gridStateService: GridStateService;
-  groupingService: GroupingAndColspanService;
-  protected get paginationService(): PaginationService {
-    return this.state?.paginationService;
-  }
-  protected set paginationService(value: PaginationService) {
-    this.setStateValue('paginationService', value);
-  }
+  groupingService!: HeaderGroupingService;
+  headerGroupingService: HeaderGroupingService;
   resizerService!: ResizerService;
   rxjs?: RxJsFacade;
   sharedService: SharedService;
@@ -249,6 +241,13 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     this._isDatasetHierarchicalInitialized = true;
   }
 
+  protected get paginationService(): PaginationService {
+    return this.state?.paginationService;
+  }
+  protected set paginationService(value: PaginationService) {
+    this.setStateValue('paginationService', value);
+  }
+
   constructor(public readonly props: SlickgridReactProps) {
     super(props);
     const slickgridConfig = new SlickgridConfig();
@@ -291,7 +290,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
 
     this.gridStateService = new GridStateService(this.extensionService, this.filterService, this._eventPubSubService, this.sharedService, this.sortService, this.treeDataService);
     this.gridService = new GridService(this.gridStateService, this.filterService, this._eventPubSubService, this.paginationService, this.sharedService, this.sortService, this.treeDataService);
-    this.groupingService = new GroupingAndColspanService(this.extensionUtility, this._eventPubSubService);
+    this.headerGroupingService = new HeaderGroupingService(this.extensionUtility);
 
     this.serviceList = [
       this.extensionService,
@@ -299,7 +298,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       this.gridEventService,
       this.gridService,
       this.gridStateService,
-      this.groupingService,
+      this.headerGroupingService,
       this.paginationService,
       this.resizerService,
       this.sortService,
@@ -320,7 +319,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     this.props.containerService.registerInstance('GridEventService', this.gridEventService);
     this.props.containerService.registerInstance('GridService', this.gridService);
     this.props.containerService.registerInstance('GridStateService', this.gridStateService);
-    this.props.containerService.registerInstance('GroupingAndColspanService', this.groupingService);
+    this.props.containerService.registerInstance('HeaderGroupingService', this.headerGroupingService);
     this.props.containerService.registerInstance('PaginationService', this.paginationService);
     this.props.containerService.registerInstance('ResizerService', this.resizerService);
     this.props.containerService.registerInstance('SharedService', this.sharedService);
@@ -589,12 +588,13 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       // return all available Services (non-singleton)
       backendService: this.backendService,
       eventPubSubService: this._eventPubSubService,
+      extensionService: this.extensionService,
       filterService: this.filterService,
       gridEventService: this.gridEventService,
       gridStateService: this.gridStateService,
       gridService: this.gridService,
-      groupingService: this.groupingService,
-      extensionService: this.extensionService,
+      groupingService: this.headerGroupingService,
+      headerGroupingService: this.headerGroupingService,
       paginationService: this.paginationService,
       resizerService: this.resizerService,
       sortService: this.sortService,
@@ -763,7 +763,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       if (gridOptions.enableTranslate) {
         this.extensionService.translateAllExtensions(lang);
         if ((gridOptions.createPreHeaderPanel && gridOptions.createTopHeaderPanel) || (gridOptions.createPreHeaderPanel && !gridOptions.enableDraggableGrouping)) {
-          this.groupingService.translateGroupingAndColSpan();
+          this.headerGroupingService.translateHeaderGrouping();
         }
       }
     });
@@ -1019,7 +1019,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
    * On a Pagination changed, we will trigger a Grid State changed with the new pagination info
    * Also if we use Row Selection or the Checkbox Selector with a Backend Service (Odata, GraphQL), we need to reset any selection
    */
-  paginationChanged(pagination: ServicePagination) {
+  paginationChanged(pagination: PaginationMetadata) {
     const isSyncGridSelectionEnabled = this.gridStateService?.needToPreserveRowSelection() ?? false;
     if (this.grid && !isSyncGridSelectionEnabled && this.gridOptions?.backendServiceApi && (this.gridOptions.enableRowSelection || this.gridOptions.enableCheckboxSelector)) {
       this.grid.setSelectedRows([]);
@@ -1132,7 +1132,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   protected setPaginationOptionsWhenPresetDefined(gridOptions: GridOption, paginationOptions: Pagination): Pagination {
     if (gridOptions.presets?.pagination && gridOptions.pagination) {
       if (this.hasBackendInfiniteScroll()) {
-        console.warn('[Aurelia-Slickgrid] `presets.pagination` is not supported with Infinite Scroll, reverting to first page.');
+        console.warn('[Slickgrid-React] `presets.pagination` is not supported with Infinite Scroll, reverting to first page.');
       } else {
         paginationOptions.pageSize = gridOptions.presets.pagination.pageSize;
         paginationOptions.pageNumber = gridOptions.presets.pagination.pageNumber;
@@ -1224,8 +1224,8 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       this.paginationService.totalItems = this.totalItems;
       this.paginationService.init(this.grid, paginationOptions, this.backendServiceApi);
       this.subscriptions.push(
-        this._eventPubSubService.subscribe<ServicePagination>('onPaginationChanged', paginationChanges => this.paginationChanged(paginationChanges)),
-        this._eventPubSubService.subscribe<ServicePagination>('onPaginationOptionsChanged', paginationChanges => this.paginationOptionsChanged(paginationChanges)),
+        this._eventPubSubService.subscribe<PaginationMetadata>('onPaginationChanged', paginationChanges => this.paginationChanged(paginationChanges)),
+        this._eventPubSubService.subscribe<PaginationMetadata>('onPaginationOptionsChanged', paginationChanges => this.paginationOptionsChanged(paginationChanges)),
         this._eventPubSubService.subscribe<{ visible: boolean; }>('onPaginationVisibilityChanged', (visibility: { visible: boolean }) => {
           this.showPagination = visibility?.visible ?? false;
           if (this.gridOptions?.backendServiceApi) {
@@ -1247,11 +1247,22 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
    * @param {Boolean} showPagination - show (new render) or not (dispose) the Pagination
    * @param {Boolean} shouldDisposePaginationService - when disposing the Pagination, do we also want to dispose of the Pagination Service? (defaults to True)
    */
-  protected renderPagination(showPagination = true) {
-    if (this._gridOptions?.enablePagination && !this._isPaginationInitialized && showPagination) {
-      this.slickPagination = new SlickPaginationComponent(this.paginationService, this._eventPubSubService, this.sharedService, this.props.translaterService);
-      this.slickPagination.renderPagination(this._elm as HTMLDivElement);
-      this._isPaginationInitialized = true;
+  protected async renderPagination(showPagination = true) {
+    if (this.grid && this._gridOptions?.enablePagination && !this._isPaginationInitialized && showPagination) {
+      if (this.gridOptions.customPaginationComponent) {
+        const paginationContainer = document.createElement('section');
+        this._elm!.appendChild(paginationContainer);
+        const { component } = await loadReactComponentDynamically<BasePaginationComponent>(this.gridOptions.customPaginationComponent, paginationContainer);
+        this.slickPagination = component;
+      } else {
+        this.slickPagination = new SlickPaginationComponent();
+      }
+
+      if (this.slickPagination) {
+        this.slickPagination.init(this.grid, this.paginationService, this._eventPubSubService, this.props.translaterService);
+        this.slickPagination.renderPagination(this._elm as HTMLDivElement);
+        this._isPaginationInitialized = true;
+      }
     } else if (!showPagination) {
       this.slickPagination?.dispose();
       this._isPaginationInitialized = false;
@@ -1444,7 +1455,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     this._registeredResources = [];
   }
 
-  /** Pre-Register any Resource that don't require SlickGrid to be instantiated (for example RxJS Resource) */
+  /** Pre-Register any Resource that don't require SlickGrid to be instantiated (for example RxJS Resource & RowDetail) */
   protected preRegisterResources() {
     this._registeredResources = this.gridOptions.externalResources || [];
 
@@ -1480,7 +1491,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
 
     // when using Grouping/DraggableGrouping/Colspan register its Service
     if ((this.gridOptions.createPreHeaderPanel && this.gridOptions.createTopHeaderPanel) || (this.gridOptions.createPreHeaderPanel && !this.gridOptions.enableDraggableGrouping)) {
-      this._registeredResources.push(this.groupingService);
+      this._registeredResources.push(this.headerGroupingService);
     }
 
     // when using Tree Data View, register its Service
@@ -1562,7 +1573,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   }
 
   protected suggestDateParsingWhenHelpful() {
-    if (/* !this.gridOptions.silenceWarnings && */ this.dataView?.getItemCount() > WARN_NO_PREPARSE_DATE_SIZE && !this.gridOptions.preParseDateColumns && this.grid.getColumns().some(c => isColumnDateType(c.type))) {
+    if (!this.gridOptions.silenceWarnings && this.dataView?.getItemCount() > WARN_NO_PREPARSE_DATE_SIZE && !this.gridOptions.preParseDateColumns && this.grid.getColumns().some(c => isColumnDateType(c.type))) {
       console.warn(
         '[Slickgrid-Universal] For getting better perf, we suggest you enable the `preParseDateColumns` grid option, ' +
         'for more info visit => https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/sorting#pre-parse-date-columns-for-better-perf'

@@ -53,8 +53,11 @@ export interface SlickgridReactInstance {
   /** Grid State Service */
   gridStateService: GridStateService;
 
-  /** Grouping (and colspan) Service */
+  /** @deprecated @use `headerGroupingService` */
   groupingService: HeaderGroupingService;
+
+  /** Grouping (and colspan) Service */
+  headerGroupingService: HeaderGroupingService;
 
   /** Pagination Service (allows you to programmatically go to first/last page, etc...) */
   paginationService?: PaginationService;
