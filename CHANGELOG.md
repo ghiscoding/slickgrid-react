@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.9.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.8.0...v5.9.0) (2024-10-19)
+
+### Features
+
+* add Row Detail feature with new example ([#421](https://github.com/ghiscoding/slickgrid-react/issues/421)) ([0816349](https://github.com/ghiscoding/slickgrid-react/commit/0816349aaed18a85eb3f0f620859912d554e85ee))
+* allow providing a Custom Pagination Component ([#420](https://github.com/ghiscoding/slickgrid-react/issues/420)) ([58facc5](https://github.com/ghiscoding/slickgrid-react/commit/58facc56d55640f64b34455b6f484bc23916458b))
+
 ## [5.8.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.7.1...v5.8.0) (2024-09-29)
 
 
