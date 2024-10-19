@@ -579,7 +579,7 @@ class Example24 extends React.Component<Props, State> {
 
   render() {
     return !this.state.gridOptions ? '' : (
-      <div id="demo-container" className="container-fluid">
+      <div id="demo-container" className="container-fluid grid24">
         <h2>
           {this.title}
           <span className="float-end font18">
