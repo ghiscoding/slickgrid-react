@@ -88,6 +88,7 @@
     "@slickgrid-universal/empty-warning-component": "~5.9.0",
     "@slickgrid-universal/event-pub-sub": "~5.9.0",
     "@slickgrid-universal/pagination-component": "~5.9.0",
+    "@slickgrid-universal/row-detail-view-plugin": "~5.9.0",
     "dequal": "^2.0.3",
     "i18next": "^23.16.1",
     "sortablejs": "^1.15.3"

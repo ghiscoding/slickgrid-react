@@ -305,17 +305,17 @@ There are a few methods available from the `TreeDataService` (only listing the i
 - `applyToggledItemStateChanges(x)`: apply different tree toggle state changes (to ALL rows, the entire dataset) by providing an array of parentIds
 
 For example
-```ts
+```tsx
 export default class Example extends React.Component<Props, State> {
-  aureliaGrid?: AureliaGridInstance;
+  reactGrid?: SlickgridReactInstance;
 
-  reactGridReady(aureliaGrid: AureliaGridInstance) {
-    this.reactGrid = aureliaGrid;
+  reactGridReady(reactGrid: SlickgridReactInstance) {
+    this.reactGrid = reactGrid;
   }
 
   getTreeDataState() {
     // for example get current Tree Data toggled state
-    console.log(this.aureliaGrid.getCurrentToggleState());
+    console.log(this.reactGrid.getCurrentToggleState());
   }
 }
 ```
