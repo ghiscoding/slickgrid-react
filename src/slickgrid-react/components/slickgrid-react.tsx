@@ -32,7 +32,7 @@ import {
   GridEventService,
   GridService,
   GridStateService,
-  GroupingAndColspanService,
+  HeaderGroupingService,
   type Observable,
   PaginationService,
   ResizerService,
@@ -161,7 +161,8 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   gridEventService: GridEventService;
   gridService: GridService;
   gridStateService: GridStateService;
-  groupingService: GroupingAndColspanService;
+  groupingService!: HeaderGroupingService;
+  headerGroupingService: HeaderGroupingService;
   resizerService!: ResizerService;
   rxjs?: RxJsFacade;
   sharedService: SharedService;
@@ -289,7 +290,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
 
     this.gridStateService = new GridStateService(this.extensionService, this.filterService, this._eventPubSubService, this.sharedService, this.sortService, this.treeDataService);
     this.gridService = new GridService(this.gridStateService, this.filterService, this._eventPubSubService, this.paginationService, this.sharedService, this.sortService, this.treeDataService);
-    this.groupingService = new GroupingAndColspanService(this.extensionUtility, this._eventPubSubService);
+    this.headerGroupingService = new HeaderGroupingService(this.extensionUtility);
 
     this.serviceList = [
       this.extensionService,
@@ -297,7 +298,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       this.gridEventService,
       this.gridService,
       this.gridStateService,
-      this.groupingService,
+      this.headerGroupingService,
       this.paginationService,
       this.resizerService,
       this.sortService,
@@ -318,7 +319,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     this.props.containerService.registerInstance('GridEventService', this.gridEventService);
     this.props.containerService.registerInstance('GridService', this.gridService);
     this.props.containerService.registerInstance('GridStateService', this.gridStateService);
-    this.props.containerService.registerInstance('GroupingAndColspanService', this.groupingService);
+    this.props.containerService.registerInstance('HeaderGroupingService', this.headerGroupingService);
     this.props.containerService.registerInstance('PaginationService', this.paginationService);
     this.props.containerService.registerInstance('ResizerService', this.resizerService);
     this.props.containerService.registerInstance('SharedService', this.sharedService);
@@ -592,7 +593,8 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       gridEventService: this.gridEventService,
       gridStateService: this.gridStateService,
       gridService: this.gridService,
-      groupingService: this.groupingService,
+      groupingService: this.headerGroupingService,
+      headerGroupingService: this.headerGroupingService,
       paginationService: this.paginationService,
       resizerService: this.resizerService,
       sortService: this.sortService,
@@ -761,7 +763,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       if (gridOptions.enableTranslate) {
         this.extensionService.translateAllExtensions(lang);
         if ((gridOptions.createPreHeaderPanel && gridOptions.createTopHeaderPanel) || (gridOptions.createPreHeaderPanel && !gridOptions.enableDraggableGrouping)) {
-          this.groupingService.translateGroupingAndColSpan();
+          this.headerGroupingService.translateHeaderGrouping();
         }
       }
     });
@@ -1489,7 +1491,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
 
     // when using Grouping/DraggableGrouping/Colspan register its Service
     if ((this.gridOptions.createPreHeaderPanel && this.gridOptions.createTopHeaderPanel) || (this.gridOptions.createPreHeaderPanel && !this.gridOptions.enableDraggableGrouping)) {
-      this._registeredResources.push(this.groupingService);
+      this._registeredResources.push(this.headerGroupingService);
     }
 
     // when using Tree Data View, register its Service
