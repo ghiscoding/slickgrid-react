@@ -5,7 +5,7 @@ import type {
   GridEventService,
   GridService,
   GridStateService,
-  GroupingAndColspanService,
+  HeaderGroupingService,
   PaginationService,
   ResizerService,
   SlickDataView,
@@ -54,7 +54,7 @@ export interface SlickgridReactInstance {
   gridStateService: GridStateService;
 
   /** Grouping (and colspan) Service */
-  groupingService: GroupingAndColspanService;
+  groupingService: HeaderGroupingService;
 
   /** Pagination Service (allows you to programmatically go to first/last page, etc...) */
   paginationService?: PaginationService;

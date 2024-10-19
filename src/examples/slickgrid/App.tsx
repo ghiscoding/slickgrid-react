@@ -20,6 +20,7 @@ import Example15 from './Example15';
 import Example16 from './Example16';
 import Example17 from './Example17';
 import Example18 from './Example18';
+import Example19 from './Example19';
 import Example20 from './Example20';
 import Example21 from './Example21';
 import Example22 from './Example22';
@@ -61,6 +62,7 @@ const routes: Array<{ path: string; route: string; component: any; title: string
   { path: 'example16', route: '/example16', component: <Example16 />, title: '16- Row Move Plugin' },
   { path: 'example17', route: '/example17', component: <Example17 />, title: '17- Remote Model' },
   { path: 'example18', route: '/example18', component: <Example18 />, title: '18- Draggable Grouping' },
+  { path: 'example19', route: '/example19', component: <Example19 />, title: '19- Row Detail View' },
   { path: 'example20', route: '/example20', component: <Example20 />, title: '20- Pinned Columns/Rows' },
   { path: 'example21', route: '/example21', component: <Example21 />, title: '21- Grid AutoHeight (full height)' },
   { path: 'example22', route: '/example22', component: <Example22 />, title: '22- with Bootstrap Tabs' },

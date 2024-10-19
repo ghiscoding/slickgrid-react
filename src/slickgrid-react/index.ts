@@ -2,12 +2,14 @@ import 'regenerator-runtime/runtime.js';
 export * from '@slickgrid-universal/common';
 
 import { SlickgridReact } from './components/slickgrid-react';
+import { SlickRowDetailView } from './extensions/slickRowDetailView';
 import type { SlickgridEventAggregator } from './components/slickgridEventAggregator';
 import type { SlickgridConfig } from './slickgrid-config';
 
 import type {
   SlickgridReactInstance,
   SlickgridReactComponentOutput,
+  RowDetailView,
   GridOption,
 } from './models/index';
 
@@ -22,6 +24,8 @@ export {
   type SlickgridReactInstance,
   type SlickgridReactComponentOutput,
   type GridOption,
+  type RowDetailView,
   SlickgridReact,
-  SlickgridConfig
+  SlickgridConfig,
+  SlickRowDetailView,
 };

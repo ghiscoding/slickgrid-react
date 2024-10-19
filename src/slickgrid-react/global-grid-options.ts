@@ -1,5 +1,5 @@
 import { type Column, DelimiterType, EventNamingStyle, FileType, Filters, OperatorType, type TreeDataOption } from '@slickgrid-universal/common';
-import type { GridOption } from './models/index';
+import type { GridOption, RowDetailView } from './models/index';
 
 /**
  * Default Options that can be passed to the Slickgrid-React
@@ -227,6 +227,15 @@ export const GlobalGridOptions: Partial<GridOption> = {
     pageSize: 25,
     totalItems: 0
   },
+  rowDetailView: {
+    collapseAllOnSort: true,
+    cssClass: 'detail-view-toggle',
+    panelRows: 1,
+    keyPrefix: '__',
+    useRowClick: false,
+    useSimpleViewportCalc: true,
+    saveDetailViewOnScroll: false,
+  } as RowDetailView,
   headerRowHeight: 35,
   rowHeight: 35,
   topPanelHeight: 30,
