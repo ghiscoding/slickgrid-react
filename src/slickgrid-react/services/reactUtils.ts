@@ -9,7 +9,7 @@ export function loadReactComponentDynamically<T = any>(customComponent: any, tar
     root.render(React.createElement(customComponent, { ...props, ref: compRef }));
 
     queueMicrotask(() => {
-      resolve({ component: compRef.current as T, root });
+      resolve({ component: compRef.current as T, root: root as Root });
     });
   });
 }
