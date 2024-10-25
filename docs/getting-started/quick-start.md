@@ -43,11 +43,10 @@ You could also compile the SASS files with your own customization, for that simp
 
 ```scss
 /* for example, let's change the mouse hover color */
-$cell-odd-background-color: lightyellow;
-$row-mouse-hover-color: lightgreen;
-
-/* make sure to add the @import the SlickGrid Bootstrap Theme AFTER the variables changes */
-@import '@slickgrid-universal/common/dist/styles/sass/slickgrid-theme-bootstrap.scss';
+@use '@slickgrid-universal/common/dist/styles/sass/slickgrid-theme-bootstrap.scss' with (
+  $cell-odd-background-color: lightyellow,
+  $row-mouse-hover-color: lightgreen
+);
 ```
 
 ### 4. Install/Setup `I18N` for Localization (optional)

@@ -966,11 +966,11 @@ export default class Example30 extends React.Component<Props, State> {
     return `<div class="autocomplete-container-list">
       <div class="autocomplete-left">
         <!--<img src="http://i.stack.imgur.com/pC1Tv.jpg" width="50" />-->
-        <span class="fa ${item.icon}"></span>
+        <span class="mdi ${item.icon}"></span>
       </div>
       <div>
         <span class="autocomplete-top-left">
-          <span class="fa ${item.itemTypeName === 'I' ? 'mdi-information-outline' : 'mdi-content-copy'}"></span>
+          <span class="mdi ${item.itemTypeName === 'I' ? 'mdi-information-outline' : 'mdi-content-copy'}"></span>
           ${item.itemName}
         </span>
       <div>
@@ -984,11 +984,11 @@ export default class Example30 extends React.Component<Props, State> {
     return `<div class="autocomplete-container-list">
           <div class="autocomplete-left">
             <!--<img src="http://i.stack.imgur.com/pC1Tv.jpg" width="50" />-->
-            <span class="fa ${item.icon}"></span>
+            <span class="mdi ${item.icon}"></span>
           </div>
           <div>
             <span class="autocomplete-top-left">
-              <span class="fa ${item.itemTypeName === 'I' ? 'mdi-information-outline' : 'mdi-content-copy'}"></span>
+              <span class="mdi ${item.itemTypeName === 'I' ? 'mdi-information-outline' : 'mdi-content-copy'}"></span>
               ${item.itemName}
             </span>
             <span class="autocomplete-top-right">${formatNumber(item.listPrice, 2, 2, false, '$')}</span>

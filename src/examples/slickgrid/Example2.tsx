@@ -34,7 +34,7 @@ const myCustomCheckmarkFormatter: Formatter<DataItem> = (_row, _cell, value) => 
 const customEnableButtonFormatter: Formatter<DataItem> = (_row: number, _cell: number, value: any) => {
   return `<span style="margin-left: 5px">
       <button class="btn btn-xs btn-default">
-        <i class="fa ${value ? 'mdi-check-circle' : 'mdi-circle'}" style="color: ${value ? 'black' : 'lavender'}"></i>
+        <i class="mdi ${value ? 'mdi-check-circle' : 'mdi-circle'}" style="color: ${value ? 'black' : 'lavender'}"></i>
       </button>
     </span>`;
 };

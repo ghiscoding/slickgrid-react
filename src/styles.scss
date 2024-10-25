@@ -2,8 +2,20 @@
 
 $navbar-height: 56px;
 $side-menu-width: 250px;
+$button-border-color: #ababab;
+$button-style-bg-color: #fff;
 
-@import '@slickgrid-universal/common/dist/styles/sass/variables';
+// -- 1. load with modern `@use`
+// @use '@slickgrid-universal/common/dist/styles/sass/slickgrid-theme-bootstrap.scss';
+@use '@slickgrid-universal/common/dist/styles/sass/slickgrid-theme-bootstrap.scss' with (
+  $slick-input-focus-box-shadow: 0 0 0 0.25rem #0d6efd40,
+  $slick-button-border-color: $button-border-color
+);
+
+// -- 2. load with legacy `@import`
+// $slick-primary-color: red;
+// $slick-link-color: red;
+// @import '@slickgrid-universal/common/dist/styles/sass/slickgrid-theme-bootstrap.scss';
 
 .bold {
   font-weight: bold;
@@ -144,14 +156,14 @@ section {
 
 .button-style {
   cursor: pointer;
-  background-color: var(--slick-button-style-bg-color, $slick-button-style-bg-color);
-  border: 1px solid #{var(--slick-button-border-color, $slick-button-border-color)};
+  background-color: var(--slick-button-style-bg-color, $button-style-bg-color);
+  border: 1px solid #{var(--slick-button-border-color, $button-border-color)};
   border-radius: 2px;
   justify-content: center;
   text-align: center;
 
   &:hover {
-    border-color: color.adjust($slick-button-border-color, $lightness: -10%);
+    border-color: color.adjust($button-border-color, $lightness: -10%);
   }
 }
 
