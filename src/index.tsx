@@ -2,7 +2,6 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import i18n from 'i18next';
 import Backend from 'i18next-http-backend';
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { initReactI18next } from 'react-i18next';
 import { HashRouter } from 'react-router-dom';
@@ -11,7 +10,6 @@ import App from './examples/slickgrid/App';
 import localeEn from './assets/locales/en/translation.json';
 import localeFr from './assets/locales/fr/translation.json';
 import './styles.scss';
-import './slickgrid.scss';
 
 i18n
   .use(Backend)
