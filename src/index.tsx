@@ -1,5 +1,4 @@
 import 'bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import i18n from 'i18next';
 import Backend from 'i18next-http-backend';
 import { createRoot } from 'react-dom/client';
