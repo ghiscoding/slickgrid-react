@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.10.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.9.0...v5.10.0) (2024-11-02)
+
+### Features
+
+* replace `[@import](https://github.com/import)` with `[@use](https://github.com/use)` to fix SASS 2.0 deprecations ([7aa4490](https://github.com/ghiscoding/slickgrid-react/commit/7aa4490f7004c23bbb865549e9eed32c4cb02bc8))
+* switch to SASS `[@use](https://github.com/use)` and remove any `[@import](https://github.com/import)` to fix deprecations ([#422](https://github.com/ghiscoding/slickgrid-react/issues/422)) ([0ab3721](https://github.com/ghiscoding/slickgrid-react/commit/0ab37211a2654ebce30e58b91edfbb3af8a588e4))
+
+### Bug Fixes
+
+* issue with Example30 scss file, invalid rgb value, fixes [#427](https://github.com/ghiscoding/slickgrid-react/issues/427) ([#428](https://github.com/ghiscoding/slickgrid-react/issues/428)) ([28cad57](https://github.com/ghiscoding/slickgrid-react/commit/28cad572a805dc4ce7677191db9a6ffaf2e3fbf9))
+* more styling fixes after switching to [@use](https://github.com/use) instead of [@imports](https://github.com/imports) ([#429](https://github.com/ghiscoding/slickgrid-react/issues/429)) ([ad503d0](https://github.com/ghiscoding/slickgrid-react/commit/ad503d09e81c7b36264584b5685d215d9aeaa751))
+
 ## [5.9.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.8.0...v5.9.0) (2024-10-19)
 
 ### Features
