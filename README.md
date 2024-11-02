@@ -24,6 +24,10 @@ Refer to the **[Docs - Quick Start](https://ghiscoding.gitbook.io/slickgrid-reac
 ### NPM Package
 [slickgrid-react on NPM](https://www.npmjs.com/package/slickgrid-react)
 
+### Troubleshooting
+
+This project **does not** work well with `React.StrictMode`, so please make sure to disable it to avoid pulling your hair for days. 
+
 ### Versions Compatibility
 
 > **Note** please be aware that only the latest version of Slickgrid-React is supported and will receive bug fixes. The reason older versions are not supported is simply because it's already a lot of work to maintain for a single developer.
