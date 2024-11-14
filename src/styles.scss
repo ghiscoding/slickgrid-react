@@ -6,7 +6,7 @@ $button-border-color: #ababab;
 $button-style-bg-color: #fff;
 $primary-color: #1b75fb;
 
-@use 'bootstrap' with (
+@use 'bootstrap/scss/bootstrap' with (
   $primary: $primary-color
 );
 
