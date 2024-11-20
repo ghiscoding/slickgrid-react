@@ -403,8 +403,8 @@ export default class Example27 extends React.Component<Props, State> {
         <div className="row">
           <div className="col-md-12">
             <button onClick={() => this.addNewRow()} data-test="add-item-btn" className="btn btn-primary btn-xs btn-icon mx-1">
-              <span className="mdi mdi-plus color-white me-1"></span>
-              <span>Add New Item to "Task 1" group</span>
+              <span className="mdi mdi-plus text-white me-1"></span>
+              <span className="text-white">Add New Item to "Task 1" group</span>
             </button>
             <button onClick={() => this.updateFirstRow()} data-test="update-item-btn" className="btn btn-outline-secondary btn-xs btn-icon mx-1">
               <span className="icon mdi mdi-pencil me-1"></span>

@@ -358,7 +358,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       // React doesn't play well with Custom Events & also the render is called after the constructor which brings a second problem
       // to fix both issues, we need to do the following:
       // loop through all component props and subscribe to the ones that startsWith "on", we'll assume that it's the custom events
-      // we'll and call their listeners when events are dispatching
+      // we'll then call the assigned listener(s) when events are dispatching
       for (const prop in this.props) {
         if (prop.startsWith('on')) {
           this.subscriptions.push(

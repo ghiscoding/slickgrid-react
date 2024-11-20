@@ -135,7 +135,6 @@ export interface SlickgridReactProps {
   onRowsOrCountChanged?: (e: CustomEvent<{ eventData: any; args: OnRowsOrCountChangedEventArgs; }>) => void;
   onSetItemsCalled?: (e: CustomEvent<{ eventData: any; args: OnSetItemsCalledEventArgs; }>) => void;
 
-
   // Slickgrid-React events
   onAfterExportToExcel?: (e: CustomEvent<any>) => void;
   onBeforePaginationChange?: (e: CustomEvent<any>) => void;

@@ -23,7 +23,9 @@ interface DataItem {
   phone: string;
   completed: number;
 }
-interface State extends BaseSlickGridState { }
+interface State extends BaseSlickGridState {
+  resizerPaused: boolean;
+}
 
 // create my custom Formatter with the Formatter type
 const myCustomCheckmarkFormatter: Formatter<DataItem> = (_row, _cell, value) => {
@@ -57,7 +59,6 @@ export default class Example2 extends React.Component<Props, State> {
   `;
 
   reactGrid!: SlickgridReactInstance;
-  resizerPaused = false;
 
   constructor(public readonly props: Props) {
     super(props);
@@ -66,6 +67,7 @@ export default class Example2 extends React.Component<Props, State> {
       gridOptions: undefined,
       columnDefinitions: [],
       dataset: [],
+      resizerPaused: false,
     };
   }
 
@@ -139,8 +141,8 @@ export default class Example2 extends React.Component<Props, State> {
       // }
     };
 
-    this.setState(() => ({
-      ...this.state,
+    this.setState((state) => ({
+      ...state,
       columnDefinitions: columns,
       gridOptions,
       dataset: this.getData(),
@@ -182,8 +184,11 @@ export default class Example2 extends React.Component<Props, State> {
   }
 
   togglePauseResizer() {
-    this.resizerPaused = !this.resizerPaused;
-    this.reactGrid?.resizerService.pauseResizer(this.resizerPaused);
+    this.setState((state) => ({
+      ...state,
+      resizerPaused: !state.resizerPaused
+    }));
+    this.reactGrid?.resizerService.pauseResizer(this.state.resizerPaused);
   }
 
   toggleCompletedProperty(item: any) {
@@ -214,7 +219,7 @@ export default class Example2 extends React.Component<Props, State> {
         <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
         <button className="btn btn-outline-secondary btn-sm btn-icon"
           onClick={() => this.togglePauseResizer()}>
-          Pause auto-resize: <b>{this.resizerPaused}</b>
+          Pause auto-resize: <b>{this.state.resizerPaused + ''}</b>
         </button>
 
         <SlickgridReact gridId="grid2"
