@@ -90,7 +90,7 @@
     "@slickgrid-universal/pagination-component": "~5.10.1",
     "@slickgrid-universal/row-detail-view-plugin": "~5.10.1",
     "dequal": "^2.0.3",
-    "i18next": "^23.16.5",
+    "i18next": "^24.0.0",
     "sortablejs": "^1.15.3"
   },
   "devDependencies": {
