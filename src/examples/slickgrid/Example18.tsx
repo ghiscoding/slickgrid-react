@@ -510,7 +510,7 @@ export default class Example18 extends React.Component<Props, State> {
               <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="expand-all-btn" onClick={() => this.expandAllGroups()}>
                 <i className="mdi mdi-arrow-expand"></i> Expand all groups
               </button>
-              <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" onClick={() => this.toggleDraggableGroupingRow()}>
+              <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="toggle-draggable-grouping-row" onClick={() => this.toggleDraggableGroupingRow()}>
                 Toggle Draggable Grouping Row
               </button>
               <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" onClick={() => this.exportToExcel()}>
