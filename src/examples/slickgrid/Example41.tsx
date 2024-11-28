@@ -259,8 +259,8 @@ export default class Example41 extends React.Component<Props, State> {
             <h6 className="subtitle italic">
               <ul>
                 <li>Click to select, Ctrl-click to toggle selection(s).</li>
-                <li>Drag one or more rows by the handle icon to reorder.</li>
-                <li>Drag one or more rows by selection and drag to the recycle bin to delete.</li>
+                <li>Drag one or more rows by the handle icon (1st column) to reorder.</li>
+                <li>Drag one or more rows by selection (2nd or 3rd column) and drag to the recycle bin to delete.</li>
               </ul>
             </h6>
           </div>

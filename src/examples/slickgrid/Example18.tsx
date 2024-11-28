@@ -3,7 +3,6 @@ import { TextExportService } from '@slickgrid-universal/text-export';
 import {
   Aggregators,
   type Column,
-  DelimiterType,
   FieldType,
   FileType,
   Filters,
@@ -376,14 +375,6 @@ export default class Example18 extends React.Component<Props, State> {
     });
   }
 
-  exportToCsv(type = 'csv') {
-    this.textExportService.exportToFile({
-      delimiter: (type === 'csv') ? DelimiterType.comma : DelimiterType.tab,
-      filename: 'myExport',
-      format: (type === 'csv') ? FileType.csv : FileType.txt
-    });
-  }
-
   groupByDurationOrderByCount(sortedByCount = false) {
     this.setState((state: State) => ({ ...state, durationOrderByCount: sortedByCount }));
     this.clearGrouping(false);
@@ -463,7 +454,7 @@ export default class Example18 extends React.Component<Props, State> {
 
   toggleDraggableGroupingRow() {
     this.clearGroupsAndSelects();
-    this.gridObj.setPreHeaderPanelVisibility(!this.gridObj.getOptions().showPreHeaderPanel);
+    this.gridObj.setTopHeaderPanelVisibility(!this.gridObj.getOptions().showTopHeaderPanel);
   }
 
   toggleDarkMode() {
@@ -519,7 +510,7 @@ export default class Example18 extends React.Component<Props, State> {
               <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="expand-all-btn" onClick={() => this.expandAllGroups()}>
                 <i className="mdi mdi-arrow-expand"></i> Expand all groups
               </button>
-              <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" onClick={() => this.toggleDraggableGroupingRow()}>
+              <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="toggle-draggable-grouping-row" onClick={() => this.toggleDraggableGroupingRow()}>
                 Toggle Draggable Grouping Row
               </button>
               <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" onClick={() => this.exportToExcel()}>
