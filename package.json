@@ -94,7 +94,7 @@
     "sortablejs": "^1.15.3"
   },
   "peerDependencies": {
-    "react": "^18.0.0"
+    "react": ">=18.0.0"
   },
   "devDependencies": {
     "@4tw/cypress-drag-drop": "^2.2.5",
