@@ -22,11 +22,15 @@ Available in Stackblitz (Codeflow) below, this can also be used to provide an is
 Refer to the **[Docs - Quick Start](https://ghiscoding.gitbook.io/slickgrid-react/getting-started/quick-start)** and/or clone the [Slickgrid-React-Demos](https://github.com/ghiscoding/slickgrid-react-demos) repository. Please consult all documentation before opening new issues, also consider asking installation and/or general questions on [Stack Overflow](https://stackoverflow.com/search?tab=newest&q=slickgrid) unless you think there's a bug with the library.
 
 ### NPM Package
-[slickgrid-react on NPM](https://www.npmjs.com/package/slickgrid-react)
+
+```sh
+npm install slickgrid-react
+```
 
 ### Troubleshooting
 
-This project **does not** work well with `React.StrictMode`, so please make sure to disable it to avoid pulling your hair for days. 
+> [!WARNING]
+> This project **does not** work well with `React.StrictMode`, so please make sure to disable it to avoid pulling your hair for hours...
 
 ### Versions Compatibility
 
