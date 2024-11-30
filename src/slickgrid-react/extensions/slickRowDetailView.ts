@@ -246,7 +246,6 @@ export class SlickRowDetailView extends UniversalSlickRowDetailView {
       const detailContainer = document.createElement('section');
       containerElements[containerElements.length - 1]!.appendChild(detailContainer);
 
-      console.log('elm', containerElements[containerElements.length - 1])
       const { root } = await loadReactComponentDynamically(this._preloadComponent, detailContainer as HTMLElement);
       const viewObj = this._views.find(obj => obj.id === item[this.datasetIdPropName]);
       this._root = root;

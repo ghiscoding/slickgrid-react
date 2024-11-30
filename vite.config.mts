@@ -12,13 +12,6 @@ export default defineConfig(() => {
       emptyOutDir: true,
       outDir: './website',
     },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          api: 'modern-compiler',
-        },
-      },
-    },
     plugins: [react()],
     preview: {
       port: 8080

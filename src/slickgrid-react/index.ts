@@ -3,7 +3,6 @@ export * from '@slickgrid-universal/common';
 
 import { SlickgridReact } from './components/slickgrid-react';
 import { SlickRowDetailView } from './extensions/slickRowDetailView';
-import type { SlickgridEventAggregator } from './components/slickgridEventAggregator';
 import type { SlickgridConfig } from './slickgrid-config';
 
 import type {
@@ -20,7 +19,6 @@ export {
 } from './services/index';
 
 export {
-  type SlickgridEventAggregator,
   type SlickgridReactInstance,
   type SlickgridReactComponentOutput,
   type GridOption,
