@@ -1,15 +1,10 @@
 import type {
   Column,
   ContainerService,
+  DragRowMove,
   ExtensionList,
   GridOption,
-  Pagination,
-  SlickControlList,
-  SlickDataView,
-  SlickPluginList,
-  TranslaterService,
   OnActiveCellChangedEventArgs,
-  DragRowMove,
   OnAddNewRowEventArgs,
   OnAutosizeColumnsEventArgs,
   OnBeforeAppendCellEventArgs,
@@ -50,8 +45,13 @@ import type {
   OnRowsChangedEventArgs,
   OnRowsOrCountChangedEventArgs,
   OnSetItemsCalledEventArgs,
+  Pagination,
   PagingInfo,
+  SlickControlList,
+  SlickDataView,
   SlickGrid,
+  SlickPluginList,
+  TranslaterService,
 } from '@slickgrid-universal/common';
 import type { SlickgridReactInstance } from '../models';
 

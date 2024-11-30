@@ -12,7 +12,6 @@ import {
   type ExternalResource,
   GridStateType,
   type ItemMetadata,
-  type Locale,
   type Metrics,
   type Pagination,
   type PaginationMetadata,
@@ -58,7 +57,6 @@ import i18next from 'i18next';
 import React from 'react';
 import type { Subscription } from 'rxjs';
 
-import { Constants } from '../constants';
 import { GlobalGridOptions } from '../global-grid-options';
 import type { SlickgridReactInstance, GridOption, } from '../models/index';
 import { disposeAllSubscriptions } from '../services/utilities';
@@ -136,15 +134,10 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
 
   groupItemMetadataProvider?: SlickGroupItemMetadataProvider;
   backendServiceApi: BackendServiceApi | undefined;
-  locales!: Locale;
   metrics?: Metrics;
   showPagination = false;
   serviceList: any[] = [];
   subscriptions: Array<EventSubscription | Subscription> = [];
-  paginationData?: {
-    gridOptions: GridOption;
-    paginationService: PaginationService;
-  };
 
   // components
   slickEmptyWarning: SlickEmptyWarningComponent | undefined;
@@ -217,7 +210,9 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   set datasetHierarchical(newHierarchicalDataset: any[] | undefined) {
     const isDatasetEqual = dequal(newHierarchicalDataset, this.sharedService?.hierarchicalDataset ?? []);
     const prevFlatDatasetLn = this._currentDatasetLength;
-    this.sharedService.hierarchicalDataset = newHierarchicalDataset;
+    if (this.sharedService) {
+      this.sharedService.hierarchicalDataset = newHierarchicalDataset;
+    }
 
     if (newHierarchicalDataset && this.props.columnDefinitions && this.filterService?.clearFilters) {
       this.filterService.clearFilters();
@@ -428,7 +423,6 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     this._currentDatasetLength = this._dataset.length;
     this._gridOptions = this.mergeGridOptions(this._gridOptions);
     this._paginationOptions = this._gridOptions?.pagination;
-    this.locales = this._gridOptions?.locales ?? Constants.locales;
     this.backendServiceApi = this._gridOptions?.backendServiceApi;
     this._isLocalGrid = !this.backendServiceApi; // considered a local grid if it doesn't have a backend service set
 
@@ -718,7 +712,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   columnDefinitionsChanged() {
     this._columnDefinitions = this.props.columnDefinitions;
     if (this._isGridInitialized) {
-      this.updateColumnDefinitionsList(this.props.columnDefinitions);
+      this.updateColumnDefinitionsList(this._columnDefinitions);
     }
     if (this._columnDefinitions.length > 0) {
       this.copyColumnWidthsReference(this._columnDefinitions);
@@ -1217,10 +1211,6 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   /** Initialize the Pagination Service once */
   protected initializePaginationService(paginationOptions: Pagination) {
     if (this.grid && this.gridOptions) {
-      this.paginationData = {
-        gridOptions: this.gridOptions,
-        paginationService: this.paginationService,
-      };
       this.paginationService.totalItems = this.totalItems;
       this.paginationService.init(this.grid, paginationOptions, this.backendServiceApi);
       this.subscriptions.push(
@@ -1575,7 +1565,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   protected suggestDateParsingWhenHelpful() {
     if (this.dataView?.getItemCount() > WARN_NO_PREPARSE_DATE_SIZE && !this.gridOptions.silenceWarnings && !this.gridOptions.preParseDateColumns && this.grid.getColumns().some(c => isColumnDateType(c.type))) {
       console.warn(
-        '[Slickgrid-Universal] For getting better perf, we suggest you enable the `preParseDateColumns` grid option, ' +
+        '[Slickgrid-React] For getting better perf, we suggest you enable the `preParseDateColumns` grid option, ' +
         'for more info visit => https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/sorting#pre-parse-date-columns-for-better-perf'
       );
     }
