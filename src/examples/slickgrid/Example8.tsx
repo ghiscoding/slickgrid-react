@@ -1,12 +1,5 @@
 import i18next, { type TFunction } from 'i18next';
-import {
-  type Column,
-  Formatters,
-  type GridOption,
-  type SlickDataView,
-  type SlickGrid, SlickgridReact,
-  type SlickgridReactInstance
-} from '../../slickgrid-react';
+import { type Column, Formatters, type GridOption, SlickgridReact, } from '../../slickgrid-react';
 import React from 'react';
 import { withTranslation } from 'react-i18next';
 
@@ -44,10 +37,6 @@ class Example8 extends React.Component<Props, State> {
     </ul>
   `;
 
-  reactGrid!: SlickgridReactInstance;
-  gridObj!: SlickGrid;
-  dataView!: SlickDataView;
-
   constructor(public readonly props: Props) {
     const defaultLang = 'en';
 
@@ -71,12 +60,6 @@ class Example8 extends React.Component<Props, State> {
     // populate the dataset once the grid is ready
     this.getData();
 
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-    this.gridObj = reactGrid?.slickGrid;
-    this.dataView = reactGrid?.dataView;
   }
 
   getColumnDefinitions() {
@@ -274,7 +257,6 @@ class Example8 extends React.Component<Props, State> {
           columnDefinitions={this.state.columnDefinitions}
           gridOptions={this.state.gridOptions}
           dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
         />
       </div>
     );

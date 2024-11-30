@@ -1,30 +1,26 @@
 import React from 'react';
-import type { SlickDataView, SlickGrid, SlickRowDetailView } from 'slickgrid-react';
+import type { RowDetailViewProps } from 'slickgrid-react';
 
 import './example19-detail-view.scss';
 
-interface Props {
-  model: {
-    duration: Date;
-    percentComplete: number;
-    reporter: string;
-    start: Date;
-    finish: Date;
-    effortDriven: boolean;
-    assignee: string;
-    title: string;
-  };
-  addon: SlickRowDetailView;
-  grid: SlickGrid;
-  dataView: SlickDataView;
-  parent: any;
+interface Item {
+  assignee: string;
+  duration: Date;
+  percentComplete: number;
+  reporter: string;
+  start: Date;
+  finish: Date;
+  effortDriven: boolean;
+  title: string;
+  rowId: number;
 }
+
 interface State {
   assignee: string;
 }
 
-export class Example19DetailView extends React.Component<Props, State> {
-  constructor(public readonly props: Props) {
+export class Example19DetailView extends React.Component<RowDetailViewProps<Item>, State> {
+  constructor(public readonly props: RowDetailViewProps<Item>) {
     super(props);
     this.state = {
       assignee: props.model?.assignee || ''
@@ -32,7 +28,7 @@ export class Example19DetailView extends React.Component<Props, State> {
   }
 
   assigneeChanged(newAssignee: string) {
-    this.setState((props: Props, state: State) => {
+    this.setState((props: RowDetailViewProps<Item>, state: State) => {
       return { ...state, assignee: newAssignee }
     });
   }

@@ -48,13 +48,13 @@ export default class Example5 extends React.Component<Props, State> {
     <ul class="small">
       <li>Only "Name" field is sortable for the demo (because we use JSON files), however "multiColumnSort: true" is also supported</li>
       <li>This example also demos the Grid State feature, open the console log to see the changes</li>
-      <li>String column also support operator (>, >=, <, <=, <>, !=, =, ==, *)
+      <li>String column also support operator (>, >=, <, <=, <>, !=, =, ==, *)</li>
       <ul>
         <li>The (*) can be used as startsWith (ex.: "abc*" => startsWith "abc") / endsWith (ex.: "*xyz" => endsWith "xyz")</li>
         <li>The other operators can be used on column type number for example: ">=100" (greater than or equal to 100)</li>
       </ul>
       <li>OData Service could be replaced by other Service type in the future (GraphQL or whichever you provide)</li>
-      <li>You can also preload a grid with certain "presets" like Filters / Sorters / Pagination <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grid-state-preset" target="_blank">Wiki - Grid Preset</a>
+      <li>You can also preload a grid with certain "presets" like Filters / Sorters / Pagination <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grid-state-preset" target="_blank">Wiki - Grid Preset</a></li>
       <li><span class="text-danger">NOTE:</span> For demo purposes, the last column (filter & sort) will always throw an
         error and its only purpose is to demo what would happen when you encounter a backend server error
         (the UI should rollback to previous state before you did the action).
@@ -549,6 +549,7 @@ export default class Example5 extends React.Component<Props, State> {
             </a>
           </span>
         </h2>
+
         <div className="row">
           <div className="col-sm-9">
             <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>

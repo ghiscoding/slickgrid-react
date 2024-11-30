@@ -3,7 +3,6 @@ import { TextExportService } from '@slickgrid-universal/text-export';
 import {
   Aggregators,
   type Column,
-  DelimiterType,
   FieldType,
   FileType,
   Filters,
@@ -285,14 +284,6 @@ export default class Example13 extends React.Component<Props, State> {
     this.excelExportService.exportToExcel({
       filename: 'Export',
       format: FileType.xlsx
-    });
-  }
-
-  exportToCsv(type = 'csv') {
-    this.textExportService.exportToFile({
-      delimiter: (type === 'csv') ? DelimiterType.comma : DelimiterType.tab,
-      filename: 'myExport',
-      format: (type === 'csv') ? FileType.csv : FileType.txt
     });
   }
 

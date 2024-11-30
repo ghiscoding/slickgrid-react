@@ -57,7 +57,7 @@ class Example12 extends React.Component<Props, State> {
         <ul>
           <li>What if your select options have totally different value/label pair? In this case, you can use the <b>customStructure: { label: 'customLabel', value: 'customValue'}</b> to change the property name(s) to use.'</li>
           <li>What if you want to use "customStructure" and translation? Simply pass this flag <b>enableTranslateLabel: true</b></li>
-          <li>More info on the Select Filter <a href="https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/filters/select-filter" target="_blank">Wiki page</a>
+          <li>More info on the Select Filter <a href="https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/filters/select-filter" target="_blank">Wiki page</a></li>
         </ul>
         <li>For more info about "Download to File", read the <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/export-to-text-file" target="_blank">Wiki page</a></li>
       </ol>
