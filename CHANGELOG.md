@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.10.2](https://github.com/ghiscoding/slickgrid-react/compare/v5.10.1...v5.10.2) (2024-11-30)
+
+### Bug Fixes
+
+* add missing peer dep on React ([#438](https://github.com/ghiscoding/slickgrid-react/issues/438)) ([d0b3de2](https://github.com/ghiscoding/slickgrid-react/commit/d0b3de2d07376761d34cc3916fd587bb9c4e2704))
+* add missing peer dep on React ([#439](https://github.com/ghiscoding/slickgrid-react/issues/439)) ([d2e8583](https://github.com/ghiscoding/slickgrid-react/commit/d2e85833e2c01da2b53fad37500eb0bd980228dd))
+* update Slickgrid-Universal to fix a few UI issues ([#440](https://github.com/ghiscoding/slickgrid-react/issues/440)) ([5717f82](https://github.com/ghiscoding/slickgrid-react/commit/5717f82b770c64c77eb58031401690d3bbf324ca))
+
 ## [5.10.1](https://github.com/ghiscoding/slickgrid-react/compare/v5.10.0...v5.10.1) (2024-11-09)
 
 ### Bug Fixes
