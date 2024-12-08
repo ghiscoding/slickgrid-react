@@ -681,11 +681,7 @@ export default class Example3 extends React.Component<Props, State> {
     };
 
     // you can dynamically add your column to your column definitions
-    // and then use the spread operator [...cols] OR slice to force React to review the changes
-    this.setState((state: State) => ({
-      ...state,
-      columnDefinitions: [...this.state.columnDefinitions!, newCol],
-    }));
+    this.state.columnDefinitions.push(newCol);
 
     // NOTE if you use an Extensions (Checkbox Selector, Row Detail, ...) that modifies the column definitions in any way
     // you MUST use 'getAllColumnDefinitions()' from the GridService, using this will be ALL columns including the 1st column that is created internally
@@ -693,23 +689,15 @@ export default class Example3 extends React.Component<Props, State> {
     /*
     const allColumns = this.reactGrid.gridService.getAllColumnDefinitions();
     allColumns.push(newCol);
-    this.columnDefinitions = [...allColumns]; // (or use slice) reassign to column definitions for React to do dirty checking
     */
   }
 
   dynamicallyRemoveLastColumn() {
     this.state.columnDefinitions.pop();
 
-    this.setState((state: State) => ({
-      ...state,
-      columnDefinitions: this.state.columnDefinitions.slice(),
-    }));
-
     /*
     // remove your column the full set of columns
-    // and use slice or spread [...] to trigger an React dirty change
     allOriginalColumns.pop();
-    this.columnDefinitions = allOriginalColumns.slice();
     */
   }
 
