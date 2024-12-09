@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
   type Column,
   Formatters,
@@ -7,106 +5,64 @@ import {
   SlickgridReact,
   type SlickgridReactInstance
 } from '../../slickgrid-react';
+import { useState } from 'react';
 
 const NB_ITEMS = 995;
 
-interface Props { }
+export default function Example1() {
+  const title = 'Example 1: Basic Grids';
+  document.title = title;
 
-interface State {
-  title: string;
-  subTitle: string;
-  gridOptions1?: GridOption;
-  gridOptions2?: GridOption;
-  columnDefinitions1: Column[];
-  columnDefinitions2: Column[];
-  dataset1: any[];
-  dataset2: any[];
-}
+  const [darkModeGrid1, setDarkModeGrid1] = useState(isBrowserDarkModeEnabled());
+  const [reactGrid1, setReactGrid1] = useState<SlickgridReactInstance>();
 
-export default class Example1 extends React.Component<Props, State> {
-  private _darkModeGrid1 = false;
-  reactGrid1!: SlickgridReactInstance;
+  // mock some data (different in each dataset)
+  const [dataset1] = useState<any[]>(mockData(NB_ITEMS));
+  const [dataset2] = useState<any[]>(mockData(NB_ITEMS));
 
-  constructor(public readonly props: Props) {
-    super(props);
-
-    this.state = {
-      title: 'Example 1: Basic Grids',
-      subTitle: `Simple Grids with Fixed Sizes (800 x 225)`,
-      gridOptions1: undefined,
-      gridOptions2: undefined,
-      columnDefinitions1: [],
-      columnDefinitions2: [],
-      dataset1: [],
-      dataset2: []
-    };
+  function reactGrid1Ready(reactGrid: SlickgridReactInstance) {
+    setReactGrid1(reactGrid);
   }
 
-  componentDidMount() {
-    document.title = this.state.title;
-
-    // define the grid options & columns and then create the grid itself
-    this.defineGrids();
-
-    // mock some data (different in each dataset)
-    this.setState(() => ({
-      dataset1: this.mockData(NB_ITEMS),
-      dataset2: this.mockData(NB_ITEMS)
-    }));
-  }
-
-  reactGrid1Ready(reactGrid: SlickgridReactInstance) {
-    this.reactGrid1 = reactGrid;
-  }
-
-  isBrowserDarkModeEnabled() {
+  function isBrowserDarkModeEnabled() {
     return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
   }
 
   /* Define grid Options and Columns */
-  defineGrids() {
-    const columns: Column[] = [
-      { id: 'title', name: 'Title', field: 'title', sortable: true, minWidth: 100 },
-      { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true, minWidth: 100 },
-      { id: '%', name: '% Complete', field: 'percentComplete', sortable: true, minWidth: 100 },
-      { id: 'start', name: 'Start', field: 'start', formatter: Formatters.dateIso },
-      { id: 'finish', name: 'Finish', field: 'finish', formatter: Formatters.dateIso },
-      { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven', sortable: true, minWidth: 100 }
-    ];
-    this._darkModeGrid1 = this.isBrowserDarkModeEnabled();
-    const gridOptions1: GridOption = {
-      darkMode: this._darkModeGrid1,
-      gridHeight: 225,
-      gridWidth: 800,
-      enableAutoResize: false,
-      enableSorting: true
-    };
+  const columnDefinitions1: Column[] = [
+    { id: 'title', name: 'Title', field: 'title', sortable: true, minWidth: 100 },
+    { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true, minWidth: 100 },
+    { id: '%', name: '% Complete', field: 'percentComplete', sortable: true, minWidth: 100 },
+    { id: 'start', name: 'Start', field: 'start', formatter: Formatters.dateIso },
+    { id: 'finish', name: 'Finish', field: 'finish', formatter: Formatters.dateIso },
+    { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven', sortable: true, minWidth: 100 }
+  ];
+  const columnDefinitions2: Column[] = [...columnDefinitions1];
 
-    // copy the same Grid Options and Column Definitions to 2nd grid
-    // but also add Pagination in this grid
-    const gridOptions2: GridOption = {
-      darkMode: false,
-      gridHeight: 225,
-      gridWidth: 800,
-      enableAutoResize: false,
-      enableSorting: true,
-      enablePagination: true,
-      pagination: {
-        pageSizes: [5, 10, 20, 25, 50],
-        pageSize: 5
-      },
-    };
+  const gridOptions1: GridOption = {
+    darkMode: darkModeGrid1,
+    gridHeight: 225,
+    gridWidth: 800,
+    enableAutoResize: false,
+    enableSorting: true
+  };
 
-    this.setState((state: State) => ({
-      ...state,
-      columnDefinitions1: columns,
-      columnDefinitions2: columns,
-      gridOptions1,
-      gridOptions2
-    }));
-  }
+  // copy the same Grid Options and Column Definitions to 2nd grid
+  // but also add Pagination in this grid
+  const gridOptions2: GridOption = {
+    darkMode: false,
+    gridHeight: 225,
+    gridWidth: 800,
+    enableAutoResize: false,
+    enableSorting: true,
+    enablePagination: true,
+    pagination: {
+      pageSizes: [5, 10, 20, 25, 50],
+      pageSize: 5
+    },
+  };
 
-  mockData(count: number) {
+  function mockData(count: number) {
     // mock a dataset
     const mockDataset: any[] = [];
     for (let i = 0; i < count; i++) {
@@ -129,57 +85,58 @@ export default class Example1 extends React.Component<Props, State> {
     return mockDataset;
   }
 
-  toggleDarkModeGrid1() {
-    this._darkModeGrid1 = !this._darkModeGrid1;
-    if (this._darkModeGrid1) {
+  function toggleDarkModeGrid1() {
+    const isDarkMode = !darkModeGrid1;
+    setDarkModeGrid1(isDarkMode);
+    if (darkModeGrid1) {
       document.querySelector('.grid-container1')?.classList.add('dark-mode');
     } else {
       document.querySelector('.grid-container1')?.classList.remove('dark-mode');
     }
-    this.reactGrid1.slickGrid?.setOptions({ darkMode: this._darkModeGrid1 });
+    reactGrid1?.slickGrid?.setOptions({ darkMode: darkModeGrid1 });
   }
 
-  render() {
-    return !this.state.gridOptions1 ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.state.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example1.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle">{this.state.subTitle}</div>
-
-        <h3>
-          <div className="column">
-            <span className="mr-3">Grid 1</span>
-            <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => this.toggleDarkModeGrid1()} data-test="toggle-dark-mode">
-              <i className="mdi mdi-theme-light-dark"></i>
-              <span>Toggle Dark Mode</span>
-            </button>
-          </div>
-        </h3>
-
-        <div className="grid-container1">
-          <SlickgridReact gridId="grid1"
-            columnDefinitions={this.state.columnDefinitions1}
-            gridOptions={this.state.gridOptions1!}
-            dataset={this.state.dataset1}
-            onReactGridCreated={$event => this.reactGrid1Ready($event.detail)} />
-        </div>
-
-        <hr />
-
-        <h3>Grid 2 <small>(with local Pagination)</small></h3>
-        <SlickgridReact gridId="grid2"
-          columnDefinitions={this.state.columnDefinitions2}
-          gridOptions={this.state.gridOptions2!}
-          dataset={this.state.dataset2} />
+  return !gridOptions1 ? '' : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        {title}
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example1.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+      </h2>
+      <div className="subtitle">
+        Simple Grids with Fixed Sizes (800 x 225)
       </div>
-    );
-  }
+
+      <h3>
+        <div className="column">
+          <span className="mr-3">Grid 1</span>
+          <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => toggleDarkModeGrid1()} data-test="toggle-dark-mode">
+            <i className="mdi mdi-theme-light-dark"></i>
+            <span>Toggle Dark Mode</span>
+          </button>
+        </div>
+      </h3>
+
+      <div className="grid-container1">
+        <SlickgridReact gridId="grid1"
+          columnDefinitions={columnDefinitions1}
+          gridOptions={gridOptions1!}
+          dataset={dataset1}
+          onReactGridCreated={$event => reactGrid1Ready($event.detail)} />
+      </div>
+
+      <hr />
+
+      <h3>Grid 2 <small>(with local Pagination)</small></h3>
+      <SlickgridReact gridId="grid2"
+        columnDefinitions={columnDefinitions2}
+        gridOptions={gridOptions2!}
+        dataset={dataset2} />
+    </div>
+  );
 }
