@@ -12,8 +12,9 @@ const NB_ITEMS = 995;
 export default function Example1() {
   const title = 'Example 1: Basic Grids';
   document.title = title;
+  const defaultBrowserDarkMode = isBrowserDarkModeEnabled();
 
-  const [darkModeGrid1, setDarkModeGrid1] = useState(isBrowserDarkModeEnabled());
+  const [darkModeGrid1, setDarkModeGrid1] = useState(defaultBrowserDarkMode);
   const [reactGrid1, setReactGrid1] = useState<SlickgridReactInstance>();
 
   // mock some data (different in each dataset)
@@ -40,7 +41,7 @@ export default function Example1() {
   const columnDefinitions2: Column[] = [...columnDefinitions1];
 
   const gridOptions1: GridOption = {
-    darkMode: darkModeGrid1,
+    darkMode: defaultBrowserDarkMode,
     gridHeight: 225,
     gridWidth: 800,
     enableAutoResize: false,
@@ -88,12 +89,12 @@ export default function Example1() {
   function toggleDarkModeGrid1() {
     const isDarkMode = !darkModeGrid1;
     setDarkModeGrid1(isDarkMode);
-    if (darkModeGrid1) {
+    if (isDarkMode) {
       document.querySelector('.grid-container1')?.classList.add('dark-mode');
     } else {
       document.querySelector('.grid-container1')?.classList.remove('dark-mode');
     }
-    reactGrid1?.slickGrid?.setOptions({ darkMode: darkModeGrid1 });
+    reactGrid1?.slickGrid?.setOptions({ darkMode: isDarkMode });
   }
 
   return !gridOptions1 ? '' : (
