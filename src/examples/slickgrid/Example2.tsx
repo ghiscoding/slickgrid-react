@@ -136,6 +136,10 @@ export default function Example2() {
     return phone;
   }
 
+  function reactGridReady(instance: SlickgridReactInstance) {
+    setReactGrid(instance);
+  }
+
   function togglePauseResizer() {
     const isPaused = !resizerPaused;
     setResizerPaused(isPaused);
@@ -154,10 +158,6 @@ export default function Example2() {
     }
   }
 
-  function reactGridReady(instance: SlickgridReactInstance) {
-    setReactGrid(instance);
-  }
-
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -170,16 +170,19 @@ export default function Example2() {
           </a>
         </span>
       </h2>
-      Grid with Custom and/or included Slickgrid Formatters (<a href="https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/formatters" target="_blank">Docs</a>).
-      <ul>
-        <li>The 2 last columns are using Custom Formatters</li>
-        <ul><li>The "Completed" column uses a the "onCellClick" event and a formatter to simulate a toggle action</li></ul>
-        <li>
-          Support Excel Copy Buffer (SlickGrid Copy Manager Plugin), you can use it by simply enabling "enableExcelCopyBuffer" flag.
-          Note that it will only evaluate Formatter when the "exportWithFormatter" flag is enabled (through "ExcelExportOptions" or "TextExportOptions" or the column definition)
-        </li>
-        <li>This example also has auto-resize enabled, and we also demo how you can pause the resizer if you wish to</li>
-      </ul>
+      <div className="subtitle">
+        Grid with Custom and/or included Slickgrid Formatters (<a href="https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/formatters" target="_blank">Docs</a>).
+        <ul>
+          <li>The 2 last columns are using Custom Formatters</li>
+          <ul><li>The "Completed" column uses a the "onCellClick" event and a formatter to simulate a toggle action</li></ul>
+          <li>
+            Support Excel Copy Buffer (SlickGrid Copy Manager Plugin), you can use it by simply enabling "enableExcelCopyBuffer" flag.
+            Note that it will only evaluate Formatter when the "exportWithFormatter" flag is enabled (through "ExcelExportOptions" or "TextExportOptions" or the column definition)
+          </li>
+          <li>This example also has auto-resize enabled, and we also demo how you can pause the resizer if you wish to</li>
+        </ul>
+      </div>
+
       <button className="btn btn-outline-secondary btn-sm btn-icon"
         onClick={() => togglePauseResizer()}>
         Pause auto-resize: <b>{resizerPaused + ''}</b>
