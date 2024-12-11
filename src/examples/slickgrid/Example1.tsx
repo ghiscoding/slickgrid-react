@@ -21,36 +21,28 @@ export default function Example1() {
   const [dataset1] = useState<any[]>(mockData(NB_ITEMS));
   const [dataset2] = useState<any[]>(mockData(NB_ITEMS));
 
-  function reactGrid1Ready(reactGrid: SlickgridReactInstance) {
-    setReactGrid1(reactGrid);
-  }
-
-  function isBrowserDarkModeEnabled() {
-    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
-  }
-
   /* Define grid Options and Columns */
-  const columnDefinitions1: Column[] = [
+  const [columnDefinitions1] = useState<Column[]>([
     { id: 'title', name: 'Title', field: 'title', sortable: true, minWidth: 100 },
     { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true, minWidth: 100 },
     { id: '%', name: '% Complete', field: 'percentComplete', sortable: true, minWidth: 100 },
     { id: 'start', name: 'Start', field: 'start', formatter: Formatters.dateIso },
     { id: 'finish', name: 'Finish', field: 'finish', formatter: Formatters.dateIso },
     { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven', sortable: true, minWidth: 100 }
-  ];
-  const columnDefinitions2: Column[] = [...columnDefinitions1];
+  ]);
+  const [columnDefinitions2] = useState<Column[]>([...columnDefinitions1]);
 
-  const gridOptions1: GridOption = {
+  const [gridOptions1] = useState<GridOption>({
     darkMode: defaultBrowserDarkMode,
     gridHeight: 225,
     gridWidth: 800,
     enableAutoResize: false,
     enableSorting: true
-  };
+  });
 
   // copy the same Grid Options and Column Definitions to 2nd grid
   // but also add Pagination in this grid
-  const gridOptions2: GridOption = {
+  const [gridOptions2] = useState<GridOption>({
     darkMode: false,
     gridHeight: 225,
     gridWidth: 800,
@@ -61,7 +53,11 @@ export default function Example1() {
       pageSizes: [5, 10, 20, 25, 50],
       pageSize: 5
     },
-  };
+  });
+
+  function isBrowserDarkModeEnabled() {
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+  }
 
   function mockData(count: number) {
     // mock a dataset
@@ -86,6 +82,10 @@ export default function Example1() {
     return mockDataset;
   }
 
+  function reactGrid1Ready(reactGrid: SlickgridReactInstance) {
+    setReactGrid1(reactGrid);
+  }
+
   function toggleDarkModeGrid1() {
     const isDarkMode = !darkModeGrid1;
     setDarkModeGrid1(isDarkMode);
@@ -97,7 +97,7 @@ export default function Example1() {
     reactGrid1?.slickGrid?.setOptions({ darkMode: isDarkMode });
   }
 
-  return !gridOptions1 ? '' : (
+  return (
     <div id="demo-container" className="container-fluid">
       <h2>
         {title}

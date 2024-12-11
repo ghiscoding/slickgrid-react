@@ -72,7 +72,6 @@ export default function Example3() {
   const [alertWarning, setAlertWarning] = useState('');
   const [dataset] = useState(getData(NB_ITEMS));
   const [reactGrid, setReactGrid] = useState<SlickgridReactInstance>();
-  const marginTop5px = { marginTop: '5px' };
 
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([
     {
@@ -433,7 +432,7 @@ export default function Example3() {
     },
   ]);
 
-  const gridOptions: GridOption = {
+  const [gridOptions] = useState<GridOption>({
     autoEdit: isAutoEdit,
     autoCommitEdit: false,
     autoResize: {
@@ -449,7 +448,7 @@ export default function Example3() {
       editCommand.execute();
     },
     i18n: i18next,
-  };
+  });
 
   /** Add a new row to the grid and refresh the Filter collection */
   function addItem() {
@@ -661,7 +660,7 @@ export default function Example3() {
     }
   }
 
-  return !gridOptions ? '' : (
+  return (
     <div id='demo-container' className='container-fluid'>
       <h2>
         {title}
@@ -733,7 +732,7 @@ export default function Example3() {
               </label>
             </span>
           </div>
-          <div className='row' style={marginTop5px}>
+          <div className='row' style={{ marginTop: '5px' }}>
             <div className='col-sm-12'>
               <button className='btn btn-outline-secondary btn-sm btn-icon' onClick={() => reactGrid?.filterService.clearFilters()}>
                 Clear Filters
@@ -759,7 +758,7 @@ export default function Example3() {
               </button>
             </div>
           </div>
-          <div className='row' style={marginTop5px}>
+          <div className='row' style={{ marginTop: '5px' }}>
             <div className='col-sm-12'>
               <button
                 className='btn btn-outline-secondary btn-sm btn-icon'

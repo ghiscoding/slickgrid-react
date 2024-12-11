@@ -59,12 +59,12 @@ export default function Example2() {
       id: 'completed', name: 'Completed', field: 'completed', type: FieldType.number, sortable: true, minWidth: 100,
       formatter: customEnableButtonFormatter,
       onCellClick: (_e, args) => {
-        toggleCompletedProperty(args && args.dataContext);
+        toggleCompletedProperty(args?.dataContext);
       }
     }
   ];
 
-  const gridOptions: GridOption = {
+  const [gridOptions] = useState<GridOption>({
     autoResize: {
       container: '#demo-container',
       rightPadding: 10
@@ -100,7 +100,7 @@ export default function Example2() {
     //   onPasteCells: (e, args: { ranges: SelectedRange[] }) => console.log('onPasteCells', args.ranges),
     //   onCopyCancelled: (e, args: { ranges: SelectedRange[] }) => console.log('onCopyCancelled', args.ranges),
     // }
-  };
+  });
 
   // mock a dataset
   function getData() {
@@ -158,7 +158,7 @@ export default function Example2() {
     }
   }
 
-  return !gridOptions ? '' : (
+  return (
     <div id="demo-container" className="container-fluid">
       <h2>
         {title}

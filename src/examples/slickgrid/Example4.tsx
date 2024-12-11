@@ -36,7 +36,7 @@ export default function Example4() {
     }
   }, []);
 
-  const columnDefinitions: Column[] = [
+  const [columnDefinitions] = useState<Column[]>([
     {
       id: 'title',
       name: 'Title',
@@ -159,9 +159,9 @@ export default function Example4() {
         } as MultipleSelectOption,
       }
     }
-  ];
+  ]);
 
-  const gridOptions: GridOption = {
+  const [gridOptions] = useState<GridOption>({
     autoResize: {
       container: '#demo-container',
       rightPadding: 10
@@ -187,7 +187,7 @@ export default function Example4() {
     },
     externalResources: [new ExcelExportService()],
     preParseDateColumns: '__' // or true
-  };
+  });
 
   function logItems() {
     console.log(reactGrid?.dataView?.getItems());
@@ -244,24 +244,6 @@ export default function Example4() {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
-  function setFiltersDynamically() {
-    // we can Set Filters Dynamically (or different filters) afterward through the FilterService
-    reactGrid?.filterService.updateFilters([
-      { columnId: 'duration', searchTerms: [2, 25, 48, 50] },
-      { columnId: 'complete', searchTerms: [95], operator: '<' },
-      { columnId: 'effort-driven', searchTerms: [true] },
-      { columnId: 'start', operator: '>=', searchTerms: ['2001-02-28'] },
-    ]);
-  }
-
-  function setSortingDynamically() {
-    reactGrid?.sortService.updateSorting([
-      // orders matter, whichever is first in array will be the first sorted column
-      { columnId: 'duration', direction: 'ASC' },
-      { columnId: 'start', direction: 'DESC' },
-    ]);
-  }
-
   function reactGridReady(instance: SlickgridReactInstance) {
     setReactGrid(instance);
   }
@@ -287,7 +269,25 @@ export default function Example4() {
     reactGrid?.slickGrid.navigateTop();
   }
 
-  return !gridOptions ? '' : (
+  function setFiltersDynamically() {
+    // we can Set Filters Dynamically (or different filters) afterward through the FilterService
+    reactGrid?.filterService.updateFilters([
+      { columnId: 'duration', searchTerms: [2, 25, 48, 50] },
+      { columnId: 'complete', searchTerms: [95], operator: '<' },
+      { columnId: 'effort-driven', searchTerms: [true] },
+      { columnId: 'start', operator: '>=', searchTerms: ['2001-02-28'] },
+    ]);
+  }
+
+  function setSortingDynamically() {
+    reactGrid?.sortService.updateSorting([
+      // orders matter, whichever is first in array will be the first sorted column
+      { columnId: 'duration', direction: 'ASC' },
+      { columnId: 'start', direction: 'DESC' },
+    ]);
+  }
+
+  return (
     <div id="demo-container" className="container-fluid">
       <h2>
         {title}
