@@ -432,7 +432,7 @@ export default function Example3() {
     },
   ]);
 
-  const [gridOptions] = useState<GridOption>({
+  const gridOptions: GridOption = {
     autoEdit: isAutoEdit,
     autoCommitEdit: false,
     autoResize: {
@@ -448,7 +448,7 @@ export default function Example3() {
       editCommand.execute();
     },
     i18n: i18next,
-  });
+  };
 
   /** Add a new row to the grid and refresh the Filter collection */
   function addItem() {

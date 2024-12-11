@@ -64,7 +64,7 @@ export default function Example2() {
     }
   ];
 
-  const [gridOptions] = useState<GridOption>({
+  const gridOptions: GridOption = {
     autoResize: {
       container: '#demo-container',
       rightPadding: 10
@@ -100,7 +100,7 @@ export default function Example2() {
     //   onPasteCells: (e, args: { ranges: SelectedRange[] }) => console.log('onPasteCells', args.ranges),
     //   onCopyCancelled: (e, args: { ranges: SelectedRange[] }) => console.log('onCopyCancelled', args.ranges),
     // }
-  });
+  };
 
   // mock a dataset
   function getData() {

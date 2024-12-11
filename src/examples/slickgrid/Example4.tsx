@@ -36,7 +36,7 @@ export default function Example4() {
     }
   }, []);
 
-  const [columnDefinitions] = useState<Column[]>([
+  const columnDefinitions: Column[] = [
     {
       id: 'title',
       name: 'Title',
@@ -159,9 +159,9 @@ export default function Example4() {
         } as MultipleSelectOption,
       }
     }
-  ]);
+  ];
 
-  const [gridOptions] = useState<GridOption>({
+  const gridOptions: GridOption = {
     autoResize: {
       container: '#demo-container',
       rightPadding: 10
@@ -187,7 +187,7 @@ export default function Example4() {
     },
     externalResources: [new ExcelExportService()],
     preParseDateColumns: '__' // or true
-  });
+  };
 
   function logItems() {
     console.log(reactGrid?.dataView?.getItems());
