@@ -402,7 +402,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   }
 
   initialization(eventHandler: SlickEventHandler) {
-    if (!this._gridOptions || !this._columnDefinitions) {
+    if (!this._columnDefinitions) {
       throw new Error('Using `<SlickgridReact>` requires columnDefinitions, it seems that you might have forgot to provide the missing bindable model.');
     }
 
