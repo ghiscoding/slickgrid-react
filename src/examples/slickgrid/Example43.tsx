@@ -95,12 +95,10 @@ export default function Example43() {
     <div id="demo-container" className="container-fluid">
       <h2>
         Example 43: Dynamically Create Grid from CSV / Excel import
-        <span className="float-end">
-          <a
-            style={{ fontSize: '18px' }}
-            target="_blank"
-            href="https://github.com/ghiscoding/slickgrid-universal/blob/master/demos/vue/src/components/Example43.vue"
-          >
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example43.tsx">
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
