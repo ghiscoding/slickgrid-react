@@ -11,6 +11,10 @@ export default function Example43() {
   const [uploadFileRef, setUploadFileRef] = useState('');
   const [showSubTitle, setShowSubTitle] = useState(true);
 
+  function destroyGrid() {
+    setGridCreated(false);
+  }
+
   function handleFileImport(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -112,12 +116,12 @@ export default function Example43() {
         </button>
       </h2>
 
-      <div className="subtitle">
+      {showSubTitle && <div className="subtitle">
         Allow creating a grid dynamically by importing an external CSV or Excel file. This script demo will read the CSV file and will
         consider the first row as the column header and create the column definitions accordingly, while the next few rows will be
         considered the dataset. Note that this example is demoing a CSV file import but in your application you could easily implemnt
         an Excel file uploading.
-      </div>
+      </div>}
 
       <div>A default CSV file can be download <a id="template-dl" href={templateUrl}>here</a>.</div>
 
@@ -131,6 +135,7 @@ export default function Example43() {
           <button id="uploadBtn" data-test="static-data-btn" className="btn btn-outline-secondary" onClick={() => handleDefaultCsv()}>
             Use default CSV data
           </button>
+          <button className="btn btn-outline-secondary ms-1" onClick={() => destroyGrid()}>Destroy Grid</button>
         </div>
       </div>
 
