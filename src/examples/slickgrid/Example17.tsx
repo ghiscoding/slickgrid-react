@@ -1,5 +1,3 @@
-
-// import fetchJsonp from 'fetch-jsonp';
 // import 'slickgrid/slick.remotemodel'; // SlickGrid Remote Plugin
 
 import {
