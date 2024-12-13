@@ -274,7 +274,7 @@ export default function Example3() {
             // http.get(`http://gd.geobytes.com/AutoCompleteCity?q=${searchText}`).subscribe(data => updateCallback(data));
 
             /** with JSONP AJAX will work locally but not on the GitHub demo because of CORS */
-            fetchJsonp<string[]>(`http://gd.geobytes.com/AutoCompleteCity?q=${searchText}`, { crossorigin: true })
+            fetchJsonp<string[]>(`http://gd.geobytes.com/AutoCompleteCity?q=${searchText}`)
               .then((response) => response.json())
               .then((json) => updateCallback(json))
               .catch((ex) => console.log('invalid JSONP response', ex));
@@ -297,7 +297,7 @@ export default function Example3() {
             // http.get(`http://gd.geobytes.com/AutoCompleteCity?q=${searchText}`).subscribe(data => updateCallback(data));
 
             /** with JSONP AJAX will work locally but not on the GitHub demo because of CORS */
-            fetchJsonp<string[]>(`http://gd.geobytes.com/AutoCompleteCity?q=${searchText}`, { crossorigin: true })
+            fetchJsonp<string[]>(`http://gd.geobytes.com/AutoCompleteCity?q=${searchText}`)
               .then((response) => response.json())
               .then((json) => updateCallback(json))
               .catch((ex) => console.log('invalid JSONP response', ex));
