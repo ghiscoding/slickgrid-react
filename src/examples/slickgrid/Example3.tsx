@@ -634,7 +634,6 @@ export default function Example3() {
 
     /*
     // remove your column the full set of columns
-    // and use slice or spread [...] to trigger an React dirty change
     allOriginalColumns.pop();
     columnDefinitions = allOriginalColumns.slice();
     */

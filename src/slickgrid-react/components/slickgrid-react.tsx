@@ -22,6 +22,7 @@ import {
 
   // services
   BackendUtilityService,
+  collectionObserver,
   CollectionService,
   EventNamingStyle,
   ExtensionService,
@@ -97,6 +98,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   protected _currentDatasetLength = 0;
   protected _dataset: any[] | null = null;
   protected _elm?: HTMLDivElement | null;
+  protected _collectionObservers: Array<null | ({ disconnect: () => void; })> = [];
   protected _eventHandler!: SlickEventHandler;
   protected _eventPubSubService!: EventPubSubService;
   protected _hideHeaderRowAfterPageLoad = false;
@@ -602,6 +604,9 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     this.instances = reactElementInstance;
     this.setStateValue('instances', reactElementInstance);
     this._eventPubSubService.publish(`onReactGridCreated`, reactElementInstance);
+
+    // subscribe to column definitions assignment changes
+    this.observeColumnDefinitions();
   }
 
   componentWillUnmount(shouldEmptyDomElementContainer = false) {
@@ -614,6 +619,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       this.emptyGridContainerElm();
     }
 
+    this._collectionObservers.forEach(obs => obs?.disconnect());
     this._eventPubSubService.publish(`onAfterGridDestroyed`, true);
 
     // dispose of all Services
@@ -696,7 +702,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
 
     if (this.props.columnDefinitions !== prevProps.columnDefinitions) {
       this._columnDefinitions = this.props.columnDefinitions;
-      this.columnDefinitionsChanged();
+      this.columnDefinitionsChanged(this.props.columnDefinitions);
     }
 
     if (this.props.dataset !== prevProps.dataset) {
@@ -709,8 +715,10 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     this.suggestDateParsingWhenHelpful();
   }
 
-  columnDefinitionsChanged() {
-    this._columnDefinitions = this.props.columnDefinitions;
+  columnDefinitionsChanged(columnDefinitions?: Column[]) {
+    if (columnDefinitions) {
+      this._columnDefinitions = columnDefinitions;
+    }
     if (this._isGridInitialized) {
       this.updateColumnDefinitionsList(this._columnDefinitions);
     }
@@ -1175,6 +1183,16 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   //
   // protected functions
   // ------------------
+
+  /**
+   * assignment changes are not triggering on the column definitions, for that
+   * we can use our internal array observer for any changes done via (push, pop, shift, ...)
+   */
+  protected observeColumnDefinitions(): void {
+    this._collectionObservers.push(
+      collectionObserver(this._columnDefinitions, this.columnDefinitionsChanged.bind(this))
+    );
+  }
 
   /**
    * Loop through all column definitions and copy the original optional `width` properties optionally provided by the user.
