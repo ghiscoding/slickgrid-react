@@ -111,7 +111,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   protected _paginationOptions: Pagination | undefined;
   protected _registeredResources: ExternalResource[] = [];
   protected _scrollEndCalled = false;
-  protected _gridOptions?: GridOption;
+  protected _gridOptions: GridOption = {};
 
   protected get gridOptions(): GridOption {
     return this._gridOptions || {} as GridOption;
@@ -404,8 +404,8 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   }
 
   initialization(eventHandler: SlickEventHandler) {
-    if (!this._gridOptions || !this._columnDefinitions) {
-      throw new Error('Using `<SlickgridReact>` requires columnDefinitions and gridOptions, it seems that you might have forgot to provide them since at least of them is undefined.');
+    if (!this._columnDefinitions) {
+      throw new Error('Using `<SlickgridReact>` requires columnDefinitions, it seems that you might have forgot to provide the missing bindable model.');
     }
 
     this._gridOptions.translater = this.props.translaterService;
@@ -421,7 +421,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     this._eventPubSubService.publish(`onBeforeGridCreate`, true);
 
     // make sure the dataset is initialized (if not it will throw an error that it cannot getLength of null)
-    this._dataset = this._dataset || this.props.dataset || [];
+    this._dataset ||= this.props.dataset || [];
     this._currentDatasetLength = this._dataset.length;
     this._gridOptions = this.mergeGridOptions(this._gridOptions);
     this._paginationOptions = this._gridOptions?.pagination;
@@ -673,7 +673,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
   }
 
   emptyGridContainerElm() {
-    const gridContainerId = this._gridOptions?.gridContainerId ?? 'grid1';
+    const gridContainerId = this._gridOptions?.gridContainerId || 'grid1';
     const gridContainerElm = document.querySelector(`#${gridContainerId}`) as HTMLDivElement;
     emptyElement(gridContainerElm);
   }
