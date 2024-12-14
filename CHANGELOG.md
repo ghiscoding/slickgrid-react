@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.11.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.10.2...v5.11.0) (2024-12-14)
+
+### Features
+
+* allow using SlickgridReact component w/o grid options ([#445](https://github.com/ghiscoding/slickgrid-react/issues/445)) ([0b2fb80](https://github.com/ghiscoding/slickgrid-react/commit/0b2fb80c5826792c89ceaec471b8f8e9ca977526))
+* dynamically create grid from imported CSV data ([#447](https://github.com/ghiscoding/slickgrid-react/issues/447)) ([0068a33](https://github.com/ghiscoding/slickgrid-react/commit/0068a33c9948cecc41d71baaab43bcae3f480686))
+
+### Bug Fixes
+
+* add missing collection observer to watch changes ([#443](https://github.com/ghiscoding/slickgrid-react/issues/443)) ([ca9340d](https://github.com/ghiscoding/slickgrid-react/commit/ca9340ddbbf5dcb9cfdbe2744a54b02cd31e8d31))
+
 ## [5.10.2](https://github.com/ghiscoding/slickgrid-react/compare/v5.10.1...v5.10.2) (2024-11-30)
 
 ### Bug Fixes
