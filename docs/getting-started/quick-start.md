@@ -148,16 +148,16 @@ export default class Example1 extends React.Component<Props, State> {
 }
 ```
 
-### 6. Explore the Wiki page content
-The last step is really to explore all the pages that are available in this Wiki, all the documentation will be place in here and so you should visit it often. For example a good starter is to look at the following
+### 6. Explore the Documentation page content
+The last step is really to explore all the pages that are available in the documentation, everything you need to use the library should be available in here and so you should visit it often. For example a good starter is to look at the following
 
-- for all the `Grid Options`, take a look at [Wiki - Grid Options](https://github.com/ghiscoding/slickgrid-universal/blob/master/packages/common/src/interfaces/gridOption.interface.ts)
+- for all the `Grid Options`, take a look at all the [Grid Options](https://github.com/ghiscoding/slickgrid-universal/blob/master/packages/common/src/interfaces/gridOption.interface.ts) interface.
 - [Formatters](../column-functionalities/formatters.md)
 - [Editors](../column-functionalities/editors.md)
 - [Filters](../column-functionalities/filters/select-filter.md)
 - [Grid Menu](../grid-functionalities/grid-menu.md)
-- ... and much more, just explorer the Wikis through the sidebar index (on your right)
-  - it gets updated very frequently, we usually mention any new/updated wikis in any new version release
+- ... and much more, just explore the Documentations
+  - it gets updated very frequently, we usually mention any new/updated documentations in any new version release
 
 ### 7. Get Started
 The best way to get started is to clone the [Slickgrid-React-Demos](https://github.com/ghiscoding/slickgrid-react-demos), it has multiple examples and it is also updated frequently since it is used for the GitHub Bootstrap 5 demo page. `Slickgrid-React` has 2 `Bootstrap` themes, you can see a demo of each one below.
@@ -179,11 +179,11 @@ Here's a quick list of some of these optional packages
 - [@slickgrid-universal/odata](https://github.com/ghiscoding/slickgrid-universal/tree/master/packages/odata)
 
 ### 10. Missing Features? (fear not)
-What if `Slickgrid-React` is missing feature(s) versus the original `SlickGrid`? Fear not and directly use the `SlickGrid` and `DataView` objects that are expose from the start through Event Emitters. For more info continue reading on [Wiki - SlickGrid & DataView objects](../slick-grid-dataview-objects/slickgrid-dataview-objects.md) and [Wiki - Grid & DataView Events](../events/grid-dataview-events.md)
+What if `Slickgrid-React` is missing feature(s) versus the original `SlickGrid`? Fear not and directly use the `SlickGrid` and `DataView` objects that are expose from the start through Event Emitters. For more info continue reading on the Documentation "SlickGrid & DataView objects" and "Grid & DataView Events"
 
 ### 11. Having some issues?
 After reading all this HOW TO, what if you have an issue with the grid?
-Please start by searching any related [issues](/ghiscoding/slickgrid-react/issues). If you can't find anything in the issues log and you made sure to also look through the multiple [wiki](/ghiscoding/slickgrid-react/wiki) pages as well, then go ahead and fill in a [new issue](/ghiscoding/slickgrid-react/issues/new) and we'll try to help.
+Please start by searching any related [issues](/ghiscoding/slickgrid-react/issues). If you can't find anything in the issues log and you made sure to also look through the multiple documentation available, then go ahead and fill in a [new issue](/ghiscoding/slickgrid-react/issues/new) and we'll try to help.
 
 ### Final word
 This project is Open Source and is, for the most part, mainly done in spare time. So please be respectful when creating issues (and fill in the issue template) and I will try to help you out. If you like my work, you can also [buy me a coffee](https://ko-fi.com/N4N679OT) ☕️, some part of the code happens when I'm at StarBucks... That is it, thank you and don't forget to ⭐ it if you like the lib 😉
