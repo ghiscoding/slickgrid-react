@@ -296,7 +296,7 @@ export default function Example3() {
             /** with React Http, note this demo won't work because of CORS */
             // http.get(`http://gd.geobytes.com/AutoCompleteCity?q=${searchText}`).subscribe(data => updateCallback(data));
 
-            /** with JSONP AJAX will work locally but not on the GitHub demo because of CORS */
+            /** with JSONP will work locally but not on the GitHub demo because of CORS */
             fetchJsonp<string[]>(`http://gd.geobytes.com/AutoCompleteCity?q=${searchText}`)
               .then((response) => response.json())
               .then((json) => updateCallback(json))
