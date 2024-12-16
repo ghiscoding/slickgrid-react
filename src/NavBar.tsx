@@ -1,5 +1,7 @@
 import React from 'react';
 
+import ReactLogo from './assets/react-logo.png?url';
+
 export class NavBar extends React.Component {
   render() {
     return (
@@ -9,6 +11,7 @@ export class NavBar extends React.Component {
             <i className="mdi mdi-github"></i>
             <span className="ms-2">Slickgrid-React</span>
           </a>
+          <img src={ReactLogo} className="logo" height="34" />
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-target="#navbarContent"
             aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
