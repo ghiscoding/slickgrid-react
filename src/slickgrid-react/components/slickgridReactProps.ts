@@ -4,6 +4,7 @@ import type {
   DragRowMove,
   ExtensionList,
   GridOption,
+  HeaderButtonOnCommandArgs,
   OnActiveCellChangedEventArgs,
   OnAddNewRowEventArgs,
   OnAutosizeColumnsEventArgs,
@@ -52,6 +53,14 @@ import type {
   SlickGrid,
   SlickPluginList,
   TranslaterService,
+  SlickRange,
+  GridMenuCommandItemCallbackArgs,
+  GridMenuEventWithElementCallbackArgs,
+  MenuCommandItemCallbackArgs,
+  HeaderMenuCommandItemCallbackArgs,
+  PaginationChangedArgs,
+  MenuFromCellCallbackArgs,
+  MenuOptionItemCallbackArgs,
 } from '@slickgrid-universal/common';
 import type { SlickgridReactInstance } from '../models';
 
@@ -137,19 +146,99 @@ export interface SlickgridReactProps {
 
   // Slickgrid-React events
   onAfterExportToExcel?: (e: CustomEvent<any>) => void;
-  onBeforePaginationChange?: (e: CustomEvent<any>) => void;
   onBeforeExportToExcel?: (e: CustomEvent<any>) => void;
   onBeforeFilterChange?: (e: CustomEvent<any>) => void;
   onBeforeFilterClear?: (e: CustomEvent<any>) => void;
   onBeforeSortChange?: (e: CustomEvent<any>) => void;
   onBeforeToggleTreeCollapse?: (e: CustomEvent<any>) => void;
+  onContextMenuClearGrouping?: (e: CustomEvent<any>) => void;
+  onContextMenuCollapseAllGroups?: (e: CustomEvent<any>) => void;
+  onContextMenuExpandAllGroups?: (e: CustomEvent<any>) => void;
+  onAfterMenuShow?: (e: CustomEvent<{ eventData: any; args: MenuFromCellCallbackArgs }>) => void;
+  onBeforeMenuShow?: (e: CustomEvent<{ eventData: any; args: MenuFromCellCallbackArgs }>) => void;
+  onBeforeMenuClose?: (e: CustomEvent<{ eventData: any; args: MenuFromCellCallbackArgs }>) => void;
+  onCommand?: (e: CustomEvent<{ eventData: any; args: MenuCommandItemCallbackArgs | MenuOptionItemCallbackArgs }>) => void;
+  onOptionSelected?: (
+    e: CustomEvent<{ eventData: any; args: MenuCommandItemCallbackArgs | MenuOptionItemCallbackArgs }>
+  ) => void;
+  onColumnPickerColumnsChanged?: (
+    e: CustomEvent<{
+      eventData: any;
+      args: {
+        columnId: string;
+        showing: boolean;
+        allColumns: Column[];
+        visibleColumns: Column[];
+        columns: Column[];
+        grid: SlickGrid;
+      };
+    }>
+  ) => void;
+  onColumnsChanged?: (
+    e: CustomEvent<{
+      eventData: any;
+      args: {
+        columnId: string;
+        showing: boolean;
+        allColumns: Column[];
+        visibleColumns: Column[];
+        columns: Column[];
+        grid: SlickGrid;
+      };
+    }>
+  ) => void;
+  onGridMenuMenuClose?: (e: CustomEvent<{ eventData: any; args: GridMenuEventWithElementCallbackArgs }>) => void;
+  onGridMenuBeforeMenuShow?: (e: CustomEvent<{ eventData: any; args: GridMenuEventWithElementCallbackArgs }>) => void;
+  onGridMenuAfterMenuShow?: (e: CustomEvent<{ eventData: any; args: GridMenuEventWithElementCallbackArgs }>) => void;
+  onGridMenuClearAllPinning?: (e: CustomEvent<any>) => void;
+  onGridMenuClearAllFilters?: (e: CustomEvent<any>) => void;
+  onGridMenuClearAllSorting?: (e: CustomEvent<any>) => void;
+  onGridMenuColumnsChanged?: (
+    e: CustomEvent<{
+      eventData: any;
+      args: {
+        columnId: string;
+        showing: boolean;
+        allColumns: Column[];
+        visibleColumns: Column[];
+        columns: Column[];
+        grid: SlickGrid;
+      };
+    }>
+  ) => void;
+  onGridMenuCommand?: (e: CustomEvent<{ eventData: any; args: GridMenuCommandItemCallbackArgs }>) => void;
+  onHeaderButtonCommand?: (e: CustomEvent<{ eventData: any; args: HeaderButtonOnCommandArgs }>) => void;
+  onCopyCells?: (e: CustomEvent<{ eventData: any; args: { ranges: SlickRange[] } }>) => void;
+  onCopyCancelled?: (e: CustomEvent<{ eventData: any; args: { ranges: SlickRange[] } }>) => void;
+  onPasteCells?: (e: CustomEvent<{ eventData: any; args: { ranges: SlickRange[] } }>) => void;
+  onBeforePasteCell?: (
+    e: CustomEvent<{ eventData: any; args: { cell: number; row: number; item: any; columnDef: Column; value: any } }>
+  ) => void;
+  onHeaderMenuHideColumns?: (e: CustomEvent<{ eventData: any; args: { columns: Column[]; hiddenColumn: Column[] } }>) => void;
+  onHeaderMenuCommand?: (e: CustomEvent<{ eventData: any; args: MenuCommandItemCallbackArgs }>) => void;
+  onHeaderMenuColumnResizeByContent?: (e: CustomEvent<{ eventData: any; args: { columnId: string } }>) => void;
+  onHeaderMenuBeforeMenuShow?: (e: CustomEvent<{ eventData: any; args: HeaderMenuCommandItemCallbackArgs }>) => void;
+  onHeaderMenuAfterMenuShow?: (e: CustomEvent<{ eventData: any; args: HeaderMenuCommandItemCallbackArgs }>) => void;
+  onItemAdded?: (e: CustomEvent<any>) => void;
+  onItemDeleted?: (e: CustomEvent<any>) => void;
+  onItemUpdated?: (e: CustomEvent<any>) => void;
+  onItemUpserted?: (e: CustomEvent<any>) => void;
+  onFullResizeByContentRequested?: (e: CustomEvent<any>) => void;
+  onGridStateChanged?: (e: CustomEvent<any>) => void;
+  onBeforePaginationChange?: (e: CustomEvent<any>) => void;
+  onPaginationChanged?: (e: CustomEvent<PaginationChangedArgs>) => void;
+  onPaginationRefreshed?: (e: CustomEvent<any>) => void;
+  onPaginationVisibilityChanged?: (e: CustomEvent<any>) => void;
+  onPaginationSetCursorBased?: (e: CustomEvent<any>) => void;
+  onGridBeforeResize?: (e: CustomEvent<any>) => void;
+  onGridAfterResize?: (e: CustomEvent<any>) => void;
+  onBeforeResizeByContent?: (e: CustomEvent<any>) => void;
+  onAfterResizeByContent?: (e: CustomEvent<any>) => void;
+  onSelectedRowIdsChanged?: (e: CustomEvent<any>) => void;
+  onSortCleared?: (e: CustomEvent<any>) => void;
   onFilterChanged?: (e: CustomEvent<any>) => void;
   onFilterCleared?: (e: CustomEvent<any>) => void;
-  onItemDeleted?: (e: CustomEvent<any>) => void;
-  onGridStateChanged?: (e: CustomEvent<any>) => void;
-  onPaginationChanged?: (e: CustomEvent<any>) => void;
   onReactGridCreated?: (e: CustomEvent<any>) => void;
-  onSelectedRowIdsChanged?: (e: CustomEvent<any>) => void;
   onSortChanged?: (e: CustomEvent<any>) => void;
   onToggleTreeCollapsed?: (e: CustomEvent<any>) => void;
   onTreeItemToggled?: (e: CustomEvent<any>) => void;
