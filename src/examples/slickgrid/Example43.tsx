@@ -135,7 +135,7 @@ export default function Example43() {
           <button id="uploadBtn" data-test="static-data-btn" className="btn btn-outline-secondary" onClick={() => handleDefaultCsv()}>
             Use default CSV data
           </button>
-          <button className="btn btn-outline-secondary ms-1" onClick={() => destroyGrid()}>Destroy Grid</button>
+          <button className="btn btn-outline-danger ms-1" onClick={() => destroyGrid()}>Destroy Grid</button>
         </div>
       </div>
 
