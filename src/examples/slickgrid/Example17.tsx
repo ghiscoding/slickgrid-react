@@ -1,203 +1,155 @@
-// import 'slickgrid/slick.remotemodel'; // SlickGrid Remote Plugin
+import { ExcelExportService } from '@slickgrid-universal/excel-export';
+import { type Column, type GridOption, SlickgridReact, toCamelCase } from '../../slickgrid-react';
+import { useState } from 'react';
 
-import {
-  type Column,
-  type Formatter,
-  type GridOption,
-  SlickEventHandler,
-  SlickgridReact,
-  type SlickgridReactInstance,
-} from '../../slickgrid-react';
-import React from 'react';
+export default function Example17() {
+  const [gridCreated, setGridCreated] = useState(false);
+  const [gridOptions, setGridOptions] = useState<GridOption>();
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset, setDataset] = useState<any[]>([]);
+  const templateUrl = new URL('./data/users.csv', import.meta.url).href;
+  const [uploadFileRef, setUploadFileRef] = useState('');
+  const [showSubTitle, setShowSubTitle] = useState(true);
 
-interface Props { }
-
-const brandFormatter: Formatter = (_row, _cell, _value, _columnDef, dataContext) => {
-  return dataContext && dataContext.brand && dataContext.brand.name || '';
-};
-
-const mpnFormatter: Formatter = (_row, _cell, _value, _columnDef, dataContext) => {
-  let link = '';
-  if (dataContext && dataContext.octopart_url && dataContext.mpn) {
-    link = `<a href="${dataContext.octopart_url}" target="_blank">${dataContext.mpn}</a>`;
-  }
-  return link;
-};
-
-export default class Example17 extends React.Component {
-  search = '';
-  private _eventHandler = new SlickEventHandler();
-
-  title = 'Example 17: Octopart Catalog Search - Remote Model Plugin';
-  subTitle = `
-    This example demonstrates how to use "slick.remotemodel.js" or any Remote implementation through an external Remote Service
-    <ul>
-      <li>Your browser might block access to the Octopart query, if you get "block content" then just unblock it.</li>
-      <li>If the demo throws some errors, try again later (there's a limit per day).</li>
-      <li>
-        Uses <a href="https://github.com/6pac/SlickGrid/blob/master/slick.remotemodel.js" target="_blank">slick.remotemodel.js</a>
-        which is hooked up to load search results from Octopart, but can easily be extended
-        to support any JSONP-compatible backend that accepts paging parameters.
-      </li>
-      <li>
-        This demo implements a custom DataView, however please note that you are on your own to implement all necessary DataView methods
-        for Sorting, Filtering, etc...
-      </li>
-      <li>
-        Soure code for this example is available <a href="https://github.com/ghiscoding/slickgrid-react/blob/master/doc/github-demo/src/examples/slickgrid/example17.tsx" target="_blank">here</a>
-      </li>
-    </ul>
-  `;
-  reactGrid!: SlickgridReactInstance;
-  columnDefinitions: Column[] = [];
-  customDataView: any;
-  dataset = [];
-  gridObj: any;
-  gridOptions!: GridOption;
-  loaderDataView: any;
-  loading = false; // spinner when loading data
-
-  constructor(public readonly props: Props) {
-    super(props);
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-    // this.loaderDataView = new Slick.Data.RemoteModel!();
-    // this.customDataView = this.loaderDataView && this.loaderDataView.data;
+  function destroyGrid() {
+    setGridCreated(false);
   }
 
-  componentDidMount() {
-    document.title = this.title;
-    this.hookAllLoaderEvents();
-
-    // set default search
-    // this.search = 'switch';
-    // this.loaderDataView.setSearch(this.search);
+  function handleFileImport(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const content = e.target.result;
+        dynamicallyCreateGrid(content);
+      };
+      reader.readAsText(file);
+    }
   }
 
-  componentWillUnmount() {
-    // unsubscribe all SlickGrid events
-    this._eventHandler.unsubscribeAll();
+  function handleDefaultCsv() {
+    const staticDataCsv = `First Name,Last Name,Age,Type\nBob,Smith,33,Teacher\nJohn,Doe,20,Student\nJane,Doe,21,Student`;
+    dynamicallyCreateGrid(staticDataCsv);
+    setUploadFileRef('');
   }
 
-  reactGridReady(_reactGrid: SlickgridReactInstance) {
-    // this.reactGrid = reactGrid;
-    // this.gridObj = reactGrid.slickGrid; // grid object
-    // this.loaderDataView.setSort('score', -1);
-    // this.gridObj.setSortColumn('score', false);
+  function dynamicallyCreateGrid(csvContent: string) {
+    // dispose of any previous grid before creating a new one
+    setGridCreated(false);
 
-    // // simulate a delayed search to preload the first page
-    // window.setTimeout(() => this.searchChanged(this.search), 100);
-  }
+    const dataRows = csvContent?.split('\n');
+    const colDefs: Column[] = [];
+    const outputData: any[] = [];
 
-  defineGrid() {
-    this.columnDefinitions = [
-      { id: 'mpn', name: 'MPN', field: 'mpn', formatter: mpnFormatter, width: 100, sortable: true },
-      { id: 'brand', name: 'Brand', field: 'brand.name', formatter: brandFormatter, width: 100, sortable: true },
-      { id: 'short_description', name: 'Description', field: 'short_description', width: 520 },
-    ];
+    // create column definitions
+    dataRows.forEach((dataRow, rowIndex) => {
+      const cellValues = dataRow.split(',');
+      const dataEntryObj: any = {};
 
-    this.gridOptions = {
-      enableAutoResize: true,
-      autoResize: {
-        container: '#demo-container',
-        rightPadding: 10
-      },
-      enableCellNavigation: true,
-      enableColumnReorder: false,
-      enableGridMenu: false,
-      multiColumnSort: false
-    };
-  }
-
-  hookAllLoaderEvents() {
-    if (this._eventHandler && this._eventHandler.subscribe && this.loaderDataView && this.loaderDataView.onDataLoading && this.loaderDataView.onDataLoaded) {
-      this._eventHandler.subscribe(this.loaderDataView.onDataLoading, () => this.loading = true);
-      this._eventHandler.subscribe(this.loaderDataView.onDataLoaded, (_e: any, args: any) => {
-        if (args && this.gridObj && this.gridObj.invalidateRow && this.gridObj.updateRowCount && this.gridObj.render) {
-          for (let i = args.from; i <= args.to; i++) {
-            this.gridObj.invalidateRow(i);
-          }
-          this.gridObj.updateRowCount();
-          this.gridObj.render();
-          this.loading = false;
+      if (rowIndex === 0) {
+        // the 1st row is considered to be the header titles, we can create the column definitions from it
+        for (const cellVal of cellValues) {
+          const camelFieldName = toCamelCase(cellVal);
+          colDefs.push({
+            id: camelFieldName,
+            name: cellVal,
+            field: camelFieldName,
+            filterable: true,
+            sortable: true,
+          });
         }
-      });
-    }
-  }
+      } else {
+        // at this point all column defs were created and we can loop through them and
+        // we can now start adding data as an object and then simply push it to the dataset array
+        cellValues.forEach((cellVal, colIndex) => {
+          dataEntryObj[colDefs[colIndex].id] = cellVal;
+        });
 
-  searchChanged(newValue: string) {
-    if (newValue && this.gridObj && this.gridObj.getViewport && this.loaderDataView && this.loaderDataView.ensureData && this.loaderDataView.setSearch) {
-      const vp = this.gridObj.getViewport();
-      this.loaderDataView.setSearch(newValue);
-      this.loaderDataView.ensureData(vp.top, vp.bottom);
-    }
-  }
-
-  onSort(_e: Event, args: any) {
-    if (this.gridObj && this.gridObj.getViewport && this.loaderDataView && this.loaderDataView.ensureData && this.loaderDataView.setSort) {
-      const vp = this.gridObj.getViewport();
-      if (args && args.sortCol && args.sortCol.field) {
-        this.loaderDataView.setSort(args.sortCol.field, args.sortAsc ? 1 : -1);
+        // a unique "id" must be provided, if not found then use the row index and push it to the dataset
+        if ('id' in dataEntryObj) {
+          outputData.push(dataEntryObj);
+        } else {
+          outputData.push({ ...dataEntryObj, id: rowIndex });
+        }
       }
-      this.loaderDataView.ensureData(vp.top, vp.bottom);
-    }
+    });
+
+    setGridOptions({
+      gridHeight: 300,
+      gridWidth: 800,
+      enableFiltering: true,
+      enableExcelExport: true,
+      externalResources: [new ExcelExportService()],
+      headerRowHeight: 35,
+      rowHeight: 33,
+    });
+
+    setDataset(outputData);
+    setColumnDefinitions(colDefs);
+    setGridCreated(true);
   }
 
-  onViewportChanged() {
-    if (this.gridObj && this.gridObj.getViewport && this.loaderDataView && this.loaderDataView.ensureData) {
-      const vp = this.gridObj.getViewport();
-      this.loaderDataView.ensureData(vp.top, vp.bottom);
-    }
+  function toggleSubTitle() {
+    setShowSubTitle(!showSubTitle);
+    const action = !showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
   }
 
-  render() {
-    return (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example17.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
+  return (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 17: Dynamically Create Grid from CSV / Excel import
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example17.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+        <button
+          className="ms-2 btn btn-outline-secondary btn-sm btn-icon"
+          type="button"
+          data-test="toggle-subtitle"
+          onClick={() => toggleSubTitle()}
+        >
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
+      </h2>
 
-        <hr />
+      {showSubTitle && <div className="subtitle">
+        Allow creating a grid dynamically by importing an external CSV or Excel file. This script demo will read the CSV file and will
+        consider the first row as the column header and create the column definitions accordingly, while the next few rows will be
+        considered the dataset. Note that this example is demoing a CSV file import but in your application you could easily implemnt
+        an Excel file uploading.
+      </div>}
 
-        <div className="col-md-6"
-          style={{ marginBottom: '15px' }}>
-          <label>Octopart Catalog Search <small>(throttle search to 1.5sec)</small></label>
-          <input type="text"
-            className="form-control"
-            value="search & throttle:1500" />
+      <div>A default CSV file can be download <a id="template-dl" href={templateUrl}>here</a>.</div>
+
+      <div className="d-flex mt-5 align-items-end">
+        <div className="file-upload" style={{ maxWidth: '300px' }}>
+          <label htmlFor="formFile" className="form-label">Choose a CSV file…</label>
+          <input className="form-control" type="file" data-test="file-upload-input" value={uploadFileRef} onChange={($event) => handleFileImport($event)} />
         </div>
-
-        <div className="alert alert-danger col-md-7" role="alert">
-          <strong>Note:</strong>
-          this demo no longer displays any results because the WebAPI Key to connect and query the <b>Octopart Component
-            Search</b> is no longer valid. However the concept remains valid, which is to use your own Custom DataView
-          instead of the default SlickGrid DataView used by this library.
+        <span className="mx-3">or</span>
+        <div>
+          <button id="uploadBtn" data-test="static-data-btn" className="btn btn-outline-secondary" onClick={() => handleDefaultCsv()}>
+            Use default CSV data
+          </button>
+          <button className="btn btn-outline-secondary ms-1" onClick={() => destroyGrid()}>Destroy Grid</button>
         </div>
-
-        {this.loading && <div className="alert alert-warning col-md-6"
-          role="alert">
-          <i className="mdi mdi-sync mdi-spin"></i>
-          <span>Loading...</span>
-        </div>}
-
-        <SlickgridReact gridId="grid1"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          customDataView={this.customDataView}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          onViewportChanged={() => this.onViewportChanged()}
-          onSort={$event => this.onSort($event.detail.eventData, $event.detail.args)}
-        />
       </div>
-    );
-  }
+
+      <hr />
+
+      <div className="grid-container-zone">
+        {gridCreated &&
+          <SlickgridReact
+            gridId="grid17"
+            columnDefinitions={columnDefinitions}
+            gridOptions={gridOptions}
+            dataset={dataset}
+          />}
+      </div>
+    </div >
+  )
 }

@@ -43,7 +43,6 @@ import Example39 from './Example39';
 import Example40 from './Example40';
 import Example41 from './Example41';
 import Example42 from './Example42';
-import Example43 from './Example43';
 
 const routes: Array<{ path: string; route: string; component: any; title: string; }> = [
   { path: 'example1', route: '/example1', component: <Example1 />, title: '1- Basic Grid / 2 Grids' },
@@ -62,7 +61,7 @@ const routes: Array<{ path: string; route: string; component: any; title: string
   { path: 'example14', route: '/example14', component: <Example14 />, title: '14- Column Span & Header Grouping' },
   { path: 'example15', route: '/example15', component: <Example15 />, title: '15- Grid State & Local Storage' },
   { path: 'example16', route: '/example16', component: <Example16 />, title: '16- Row Move Plugin' },
-  { path: 'example17', route: '/example17', component: <Example17 />, title: '17- Remote Model' },
+  { path: 'example17', route: '/example17', component: <Example17 />, title: '17- Create Grid from CSV' },
   { path: 'example18', route: '/example18', component: <Example18 />, title: '18- Draggable Grouping' },
   { path: 'example19', route: '/example19', component: <Example19 />, title: '19- Row Detail View' },
   { path: 'example20', route: '/example20', component: <Example20 />, title: '20- Pinned Columns/Rows' },
@@ -87,7 +86,6 @@ const routes: Array<{ path: string; route: string; component: any; title: string
   { path: 'example40', route: '/example40', component: <Example40 />, title: '40- Infinite Scroll from JSON data' },
   { path: 'example41', route: '/example41', component: <Example41 />, title: '41- Drag & Drop' },
   { path: 'example42', route: '/example42', component: <Example42 />, title: '42- Custom Pagination' },
-  { path: 'example43', route: '/example43', component: <Example43 />, title: '43- Create Grid from CSV' },
 ];
 
 export default function Routes() {
