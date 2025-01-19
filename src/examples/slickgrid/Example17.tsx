@@ -16,14 +16,16 @@ export default function Example17() {
   }
 
   function handleFileImport(event: any) {
-    const file = event.target.files[0];
-    if (file) {
+    const file: File = event.target.files[0];
+    if (file.name.endsWith('.csv')) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         const content = e.target.result;
         dynamicallyCreateGrid(content);
       };
       reader.readAsText(file);
+    } else {
+      alert('File must be a CSV file');
     }
   }
 
@@ -135,7 +137,8 @@ export default function Example17() {
           <button id="uploadBtn" data-test="static-data-btn" className="btn btn-outline-secondary" onClick={() => handleDefaultCsv()}>
             Use default CSV data
           </button>
-          <button className="btn btn-outline-secondary ms-1" onClick={() => destroyGrid()}>Destroy Grid</button>
+          &nbsp;/
+          <button className="btn btn-outline-danger btn-sm ms-2" onClick={() => destroyGrid()}>Destroy Grid</button>
         </div>
       </div>
 
