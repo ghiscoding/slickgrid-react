@@ -31,9 +31,7 @@ export default function Example4() {
   const [dataset] = useState(getData(NB_ITEMS));
 
   useEffect(() => {
-    return () => {
-      saveCurrentGridState();
-    }
+    saveCurrentGridState();
   }, []);
 
   const columnDefinitions: Column[] = [
