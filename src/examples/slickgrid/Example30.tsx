@@ -1082,8 +1082,7 @@ export default class Example30 extends React.Component<Props, State> {
           onCompositeEditorChange={$event => this.handleOnCompositeEditorChange($event.detail.eventData, $event.detail.args)}
           onItemDeleted={$event => this.handleItemDeleted($event.detail)}
           onGridStateChanged={$event => this.handleOnGridStateChanged($event.detail)}
-          onFilterChanged={() => this.handleReRenderUnsavedStyling()}
-          onPaginationChanged={() => this.handleReRenderUnsavedStyling()}
+          onRowsOrCountChanged={() => this.handleReRenderUnsavedStyling()}
           onValidationError={$event => this.handleValidationError($event.detail.eventData, $event.detail.args)}
         />
       </div>
