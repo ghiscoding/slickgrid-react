@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.12.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.11.0...v5.12.0) (2025-01-21)
+
+### Features
+
+* add `rowspan` implementation ([#454](https://github.com/ghiscoding/slickgrid-react/issues/454)) ([f5ef799](https://github.com/ghiscoding/slickgrid-react/commit/f5ef7992462197592c740a1121ca1ec64828c13f))
+
+### Bug Fixes
+
+* add all missing events to Slickgrid-React props def ([6abbc94](https://github.com/ghiscoding/slickgrid-react/commit/6abbc94c107f23a355da60546f9ef1f085bb2f1a))
+
 ## [5.11.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.10.2...v5.11.0) (2024-12-14)
 
 ### Features
