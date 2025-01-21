@@ -235,7 +235,7 @@ export default function Example44() {
           <a
             style={{ fontSize: '18px' }}
             target="_blank"
-            href="https://github.com/ghiscoding/slickgrid-universal/blob/master/demos/vue/src/components/Example44.vue"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example44.tsx"
           >
             <span className="mdi mdi-link-variant"></span> code
           </a>
