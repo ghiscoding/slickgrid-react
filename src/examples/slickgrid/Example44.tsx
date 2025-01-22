@@ -63,7 +63,7 @@ export default function Example44() {
   }, []);
 
   const rowCellValueFormatter: Formatter = (row, cell, value) => {
-    return `<div className="cellValue">${value.toFixed(2)}</div><div className="valueComment">${row}.${cell}</div>`;
+    return `<div class="cellValue">${value.toFixed(2)}</div><div class="valueComment">${row}.${cell}</div>`;
   };
 
   // the columns field property is type-safe, try to add a different string not representing one of DataItems properties
