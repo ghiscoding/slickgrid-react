@@ -11,7 +11,6 @@
   - [Example of Custom Formatter with Native DOM Element](#example-of-custom-formatter-with-native-dom-element)
 * [Common Formatter Options](#common-formatter-options)
 * [PostRenderer Formatter](#postrender-formatter)
-* [UI Sample](#ui-sample)
 
 ### Demo
 [Demo Page](https://ghiscoding.github.io/slickgrid-react/#/slickgrid/Example2) / [Demo ViewModel](https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example2.tsx)
@@ -22,13 +21,12 @@
 
 A good example of a `Formatter` could be a column name `isActive` which is a `boolean` field with input data as `True` or `False`. User would prefer to simply see a checkbox as a visual indication representing the `True` flag, for this behavior you can use `Formatters.checkmark` which will use Material Design icon of `mdi-check` when `True` or an empty string when `False`.
 
-For a [UI sample](#ui-sample), scroll down below.
-
 #### Provided Formatters
 
 `Slickgrid-Universal` ships with a few `Formatters` by default which helps with common fields, you can see the [entire list here](https://github.com/ghiscoding/slickgrid-universal/blob/master/packages/common/src/formatters/index.ts#L37).
 
-> **Note** you might not need a Formatter when a simple CSS style and class might be enough, think about using `cssClass` column property as much as possible since it has much better perf.
+> **Note** you might not need a Formatter when simple CSS styling and class might be enough, think about using `cssClass` column property as much as possible since it has much better perf.
+> For example: `{ cssClass: 'text-right' }` on your column definition (or any other class) to align on the right.
 
 **List of provided `Formatters`**
 
@@ -304,6 +302,3 @@ const renderSparklineFormatter: Formatter = (row: number, cell: number, value: a
 ```
 
 A **Better Solution** is to use Custom Formatters **as much as possible** because using an React Components with `asyncPostRender` are **SLOW** (you are warned). They are slow because they require a full cycle, cannot be cached and are rendered **after** each rows are rendered (because of their asynchronous nature), while Custom Formatters are rendered at the same time as the row itself since they are synchronous in nature.
-
-## UI Sample
-![Default Slickgrid Example](https://github.com/ghiscoding/slickgrid-react/blob/master/screenshots/formatters.png)
