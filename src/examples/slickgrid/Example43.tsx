@@ -16,6 +16,7 @@ export default function Example43() {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [showSubTitle, setShowSubTitle] = useState(false);
   const [dataset] = useState(loadData());
+  const excelExportService = new ExcelExportService();
   const metadata: Record<number, ItemMetadata> = {
     // 10001: Davolio
     0: {
@@ -141,7 +142,7 @@ export default function Example43() {
     enableColumnReorder: true,
     enableCellRowSpan: true,
     enableExcelExport: true,
-    externalResources: [new ExcelExportService()],
+    externalResources: [excelExportService],
     enableExcelCopyBuffer: true,
     autoEdit: true,
     editable: false,
@@ -158,6 +159,10 @@ export default function Example43() {
     },
     rowTopOffsetRenderType: 'top', // rowspan doesn't render well with 'transform', default is 'top'
   };
+
+  function exportToExcel() {
+    excelExportService.exportToExcel({ filename: 'export', format: 'xlsx' });
+  }
 
   function navigateDown() {
     reactGrid?.slickGrid?.navigateDown();
@@ -478,6 +483,9 @@ export default function Example43() {
       <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon mx-1" onClick={() => toggleEditing()} data-test="toggle-editing">
         <span className="mdi mdi-pencil-outline"></span>
         <span>Toggle Editing: <span id="isEditable" className="text-italic">{isEditable + ''}</span></span>
+      </button>
+      <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="export-excel-btn" onClick={() => exportToExcel()}>
+        <i className="mdi mdi-file-excel-outline text-success"></i> Export to Excel
       </button>
 
       <SlickgridReact gridId="grid43"
