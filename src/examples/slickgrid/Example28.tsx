@@ -143,6 +143,7 @@ export default class Example28 extends React.Component<Props, State> {
 
     const gridOptions: GridOption = {
       autoResize: {
+        autoHeight: false,
         container: '#demo-container',
         rightPadding: 10
       },
