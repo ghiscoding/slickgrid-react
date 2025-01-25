@@ -16,7 +16,7 @@ export default function Example43() {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [showSubTitle, setShowSubTitle] = useState(false);
   const [dataset] = useState(loadData());
-  const excelExportService = new ExcelExportService();
+  const [excelExportService] = useState<ExcelExportService>(new ExcelExportService());
   const metadata: Record<number, ItemMetadata> = {
     // 10001: Davolio
     0: {
