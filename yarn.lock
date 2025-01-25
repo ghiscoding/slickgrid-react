@@ -1476,10 +1476,10 @@
   dependencies:
     undici-types "~6.19.2"
 
-"@types/node@^22.10.7":
-  version "22.10.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.10.7.tgz#14a1ca33fd0ebdd9d63593ed8d3fbc882a6d28d7"
-  integrity sha512-V09KvXxFiutGp6B7XkpaDXlNadZxrzajcY50EuoLIpQ6WWYCSvf19lVIazzfIzQvhUN2HjX12spLojTnhuKlGg==
+"@types/node@^22.10.10":
+  version "22.10.10"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.10.10.tgz#85fe89f8bf459dc57dfef1689bd5b52ad1af07e6"
+  integrity sha512-X47y/mPNzxviAGY5TcYPtYL8JsY3kAq2n8fMmKoRCxq/c4v4pyGNCzM2R6+M5/umG4ZfHuT+sgqDYqWc9rJ6ww==
   dependencies:
     undici-types "~6.20.0"
 
@@ -2661,10 +2661,10 @@ custom-event-polyfill@^1.0.7:
   resolved "https://registry.yarnpkg.com/custom-event-polyfill/-/custom-event-polyfill-1.0.7.tgz#9bc993ddda937c1a30ccd335614c6c58c4f87aee"
   integrity sha512-TDDkd5DkaZxZFM8p+1I3yAlvM3rSr1wbrOliG4yJiwinMZN8z/iGL7BTlDkrJcYTmgUSb4ywVCc3ZaUtOtC76w==
 
-cypress-real-events@^1.13.0:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/cypress-real-events/-/cypress-real-events-1.13.0.tgz#6b7cd32dcac172db1493608f97a2576c7d0bd5af"
-  integrity sha512-LoejtK+dyZ1jaT8wGT5oASTPfsNV8/ClRp99ruN60oPj8cBJYod80iJDyNwfPAu4GCxTXOhhAv9FO65Hpwt6Hg==
+cypress-real-events@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/cypress-real-events/-/cypress-real-events-1.14.0.tgz#c5495db50a2bd247f4accde983af7153566945d3"
+  integrity sha512-XmI8y3OZLh6cjRroPalzzS++iv+pGCaD9G9kfIbtspgv7GVsDt30dkZvSXfgZb4rAN+3pOkMVB7e0j4oXydW7Q==
 
 cypress@^14.0.0:
   version "14.0.0"
@@ -4202,10 +4202,10 @@ human-signals@^8.0.0:
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-8.0.0.tgz#2d3d63481c7c2319f0373428b01ffe30da6df852"
   integrity sha512-/1/GPCpDUCCYwlERiYjxoczfP0zfvZMU/OWgQPMya9AbAE24vseigFdhAMObpc8Q4lc/kjutPfUddDYyAmejnA==
 
-i18next-http-backend@^2.7.1:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/i18next-http-backend/-/i18next-http-backend-2.7.1.tgz#c754e51c242e8029445263d4351096c67feea102"
-  integrity sha512-vPksHIckysGgykCD8JwCr2YsJEml9Cyw+Yu2wtb4fQ7xIn9RH/hkUDh5UkwnIzb0kSL4SJ30Ab/sCInhQxbCgg==
+i18next-http-backend@^2.7.3:
+  version "2.7.3"
+  resolved "https://registry.yarnpkg.com/i18next-http-backend/-/i18next-http-backend-2.7.3.tgz#335e5884b4c5446cdb4817cb35e81ee4ac7be9f4"
+  integrity sha512-FgZxrXdRA5u44xfYsJlEBL4/KH3f2IluBpgV/7riW0YW2VEyM8FzVt2XHAOi6id0Ppj7vZvCZVpp5LrGXnc8Ig==
   dependencies:
     cross-fetch "4.0.0"
 
@@ -7196,10 +7196,10 @@ vite-tsconfig-paths@^5.1.4:
     globrex "^0.1.2"
     tsconfck "^3.0.3"
 
-vite@^6.0.10:
-  version "6.0.10"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-6.0.10.tgz#48685694c36d8c8f87b93f3fd0de089d3930b361"
-  integrity sha512-MEszunEcMo6pFsfXN1GhCFQqnE25tWRH0MA4f0Q7uanACi4y1Us+ZGpTMnITwCTnYzB2b9cpmnelTlxgTBmaBA==
+vite@^6.0.11:
+  version "6.0.11"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-6.0.11.tgz#224497e93e940b34c3357c9ebf2ec20803091ed8"
+  integrity sha512-4VL9mQPKoHy4+FE0NnRE/kbY51TOfaknxAjt3fJbGJxhIpBZiqVzlZDEesWWsuREXHwNdAoOFZ9MkPEVXczHwg==
   dependencies:
     esbuild "^0.24.2"
     postcss "^8.4.49"
