@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.12.1](https://github.com/ghiscoding/slickgrid-react/compare/v5.12.0...v5.12.1) (2025-01-25)
+
+### Bug Fixes
+
+* add `autoResize.autoHeight` to resize by dataset length ([#457](https://github.com/ghiscoding/slickgrid-react/issues/457)) ([9b91f6a](https://github.com/ghiscoding/slickgrid-react/commit/9b91f6a57c4ee34c861dfeaf620ed206766b304d))
+* RowSpan should work with Excel Export and merge cells ([#456](https://github.com/ghiscoding/slickgrid-react/issues/456)) ([c68b606](https://github.com/ghiscoding/slickgrid-react/commit/c68b6068bed722e3f0ac36ffafcf3560404ee0fc))
+
 ## [5.12.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.11.0...v5.12.0) (2025-01-21)
 
 ### Features
