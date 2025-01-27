@@ -63,7 +63,7 @@ This project **does not** work well with `React.StrictMode`, so please make sure
 
 ### Versions Compatibility
 
-> **Note** please be aware that only the latest version of Slickgrid-React is supported and will receive bug fixes. The reason older versions are not supported is simply because it's already a lot of work to maintain for a single developer.
+> **Note** please be aware that only the latest version of Slickgrid-React is supported and will receive bug fixes. It's already a lot of work to maintain for a single developer like me.
 
 | Slickgrid-React | React version | Migration Guide | Notes |
 |-------------------|-----------------|-----------------|------|
@@ -75,6 +75,7 @@ This project **does not** work well with `React.StrictMode`, so please make sure
 ### Styling Themes
 
 Multiple styling themes are available
+- Default (UI agnostic)
 - Bootstrap (see all Slickgrid-React [live demos](https://ghiscoding.github.io/slickgrid-react/))
 - Material (see [Slickgrid-Universal](https://ghiscoding.github.io/slickgrid-universal/#/example07))
 - Salesforce (see [Slickgrid-Universal](https://ghiscoding.github.io/slickgrid-universal/#/example16))
