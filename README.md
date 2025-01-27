@@ -24,6 +24,39 @@ Refer to the **[Docs - Quick Start](https://ghiscoding.gitbook.io/slickgrid-reac
 ### NPM Package
 [slickgrid-react on NPM](https://www.npmjs.com/package/slickgrid-react)
 
+
+#### Basic Usage
+
+```tsx
+import { type Column, type GridOption, SlickgridReact } from 'slickgrid-react';
+
+export default function Example() {
+  const [dataset] = useState(getData());
+
+  const columnDefinitions: Column[] = [
+    { id: 'firstName', name: 'First Name', field: 'firstName'},
+    { id: 'lastName', name: 'Last Name', field: 'lastName'},
+    { id: 'age', name: 'Age', field: 'age' }
+  ]);
+  const gridOptions: GridOption = { /*...*/ }); // optional grid options
+
+  function getData() {
+    return [
+    { id: 1, firstName: 'John', lastName: 'Doe', age: 20 },
+    { id: 2, firstName: 'Jane', lastName: 'Smith', age: 21 }
+    ];
+  }
+
+  return (
+    <SlickgridReact gridId="grid1"
+        columnDefinitions={columnDefinitions}
+        gridOptions={gridOptions}
+        dataset={dataset}
+     />
+  );
+}
+```
+
 ### Troubleshooting
 
 This project **does not** work well with `React.StrictMode`, so please make sure to disable it to avoid pulling your hair for days. 
