@@ -68,6 +68,7 @@ export default tseslint.config(
       'no-case-declarations': 'off',
       'no-prototype-builtins': 'off',
       'no-extra-boolean-cast': 'off',
+      "react-hooks/exhaustive-deps": 'off',
       'semi': 'off',
     }
   });
