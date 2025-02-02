@@ -34,9 +34,9 @@ export default function Example() {
   const [dataset] = useState(getData());
 
   const columnDefinitions: Column[] = [
-    { id: 'firstName', name: 'First Name', field: 'firstName'},
-    { id: 'lastName', name: 'Last Name', field: 'lastName'},
-    { id: 'age', name: 'Age', field: 'age' }
+    { id: 'firstName', name: 'First Name', field: 'firstName', sortable: true },
+    { id: 'lastName', name: 'Last Name', field: 'lastName', sortable: true },
+    { id: 'age', name: 'Age', field: 'age', type: 'number', sortable: true }
   ]);
   const gridOptions: GridOption = { /*...*/ }); // optional grid options
 
@@ -63,7 +63,7 @@ This project **does not** work well with `React.StrictMode`, so please make sure
 
 ### Versions Compatibility
 
-> **Note** please be aware that only the latest version of Slickgrid-React is supported and will receive bug fixes. It's already a lot of work to maintain for a single developer like me.
+> **Note** please be aware that only the latest major version of Slickgrid-React will be supported and receive bug fixes (it's already a lot of work to maintain for a single developer like me).
 
 | Slickgrid-React | React version | Migration Guide | Notes |
 |-------------------|-----------------|-----------------|------|
@@ -87,7 +87,7 @@ Also note that all of these themes also have **Dark Theme** equivalent and even 
 - [Bootstrap 5 demo](https://ghiscoding.github.io/slickgrid-react) / [examples repo](https://github.com/ghiscoding/slickgrid-react-demos/tree/main/bootstrap5-i18n-demo)
 
 #### Working Demos
-For a complete set of working demos (40+ examples), we strongly suggest you to clone the [Slickgrid-React Demos](https://github.com/ghiscoding/slickgrid-react-demos) repository (instructions are provided in the demo repo). The repo provides multiple demos and they are updated every time a new version is out, so it is updated frequently and is also used as the GitHub live demo page.
+For a complete set of working demos (40+ examples), we strongly suggest you to clone the [Slickgrid-React Demos](https://github.com/ghiscoding/slickgrid-react-demos) repository (instructions are provided inside it). The repo provides multiple examples and are updated every time a new release is out, so it is updated frequently and is used as the GitHub live demo page.
 
 ## License
 [MIT License](LICENSE)
@@ -99,11 +99,13 @@ Check out the [Releases](https://github.com/ghiscoding/slickgrid-react/releases)
 Slickgrid-Universal has **100%** Unit Test Coverage and all Slickgrid-React Examples are tested with [Cypress](https://www.cypress.io/) as E2E tests.
 
 ### Like it? ⭐ it
-You like **Slickgrid-React**? Be sure to upvote ⭐, and perhaps support me with caffeine [☕](https://ko-fi.com/ghiscoding) and feel free to contribute. 👷👷‍♀️
+You like **Slickgrid-React**? Be sure to upvote ⭐, and perhaps support me with caffeine [☕](https://ko-fi.com/ghiscoding) or GitHub sponsoring and feel free to contribute. 👷👷‍♀️
 
 <a href='https://ko-fi.com/ghiscoding' target='_blank'><img height='32' style='border:0px;height:32px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 
 ## Sponsors
+
+Thanks to all my sponsors!
 
 <div>
   <span>

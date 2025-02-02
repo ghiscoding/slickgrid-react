@@ -92,7 +92,7 @@ jobs:
 
       - name: Website Dev Build
         if: ${{ inputs.dryrun != true }}
-        run: yarn build:demo
+        run: yarn vite:build
 
         # deploy (re-publish) GitHub demo page with a Prod build but only when merging to "master" branch
         # and the commit message contains the text "chore: release"
