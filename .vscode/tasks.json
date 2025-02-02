@@ -10,7 +10,7 @@
     {
       "label": "Build GitHub Demo (prod build)",
       "type": "shell",
-      "command": "yarn run build:demo",
+      "command": "yarn run vite:build",
       "problemMatcher": []
     },
     {
@@ -28,7 +28,7 @@
     {
       "label": "Start Library Development",
       "type": "shell",
-      "command": "yarn start",
+      "command": "yarn vite:start",
       "problemMatcher": []
     },
     {
