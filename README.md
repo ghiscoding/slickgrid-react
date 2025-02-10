@@ -24,6 +24,11 @@ Refer to the **[Docs - Quick Start](https://ghiscoding.gitbook.io/slickgrid-reac
 ### NPM Package
 [slickgrid-react on NPM](https://www.npmjs.com/package/slickgrid-react)
 
+#### Install it
+
+```sh
+npm install slickgrid-react
+```
 
 #### Basic Usage
 
