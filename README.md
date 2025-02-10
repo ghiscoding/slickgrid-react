@@ -31,19 +31,19 @@ Refer to the **[Docs - Quick Start](https://ghiscoding.gitbook.io/slickgrid-reac
 import { type Column, type GridOption, SlickgridReact } from 'slickgrid-react';
 
 export default function Example() {
-  const [dataset] = useState(getData());
+  const [dataset, setDataset] = useState(getData());
 
   const columnDefinitions: Column[] = [
     { id: 'firstName', name: 'First Name', field: 'firstName', sortable: true },
     { id: 'lastName', name: 'Last Name', field: 'lastName', sortable: true },
-    { id: 'age', name: 'Age', field: 'age', type: 'number', sortable: true }
+    { id: 'age', name: 'Age', field: 'age', type: 'number', sortable: true },
   ]);
   const gridOptions: GridOption = { /*...*/ }); // optional grid options
 
   function getData() {
     return [
-    { id: 1, firstName: 'John', lastName: 'Doe', age: 20 },
-    { id: 2, firstName: 'Jane', lastName: 'Smith', age: 21 }
+      { id: 1, firstName: 'John', lastName: 'Doe', age: 20 },
+      { id: 2, firstName: 'Jane', lastName: 'Smith', age: 21 },
     ];
   }
 
@@ -59,7 +59,7 @@ export default function Example() {
 
 ### Troubleshooting
 
-This project **does not** work well with `React.StrictMode`, so please make sure to disable it to avoid pulling your hair for days. 
+This project **does not** work well with `React.StrictMode`, so please make sure to disable it to avoid getting mad at the library :P 
 
 ### Versions Compatibility
 
