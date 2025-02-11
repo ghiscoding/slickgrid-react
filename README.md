@@ -24,6 +24,11 @@ Refer to the **[Docs - Quick Start](https://ghiscoding.gitbook.io/slickgrid-reac
 ### NPM Package
 [slickgrid-react on NPM](https://www.npmjs.com/package/slickgrid-react)
 
+#### Install it
+
+```sh
+npm install slickgrid-react
+```
 
 #### Basic Usage
 
@@ -31,19 +36,19 @@ Refer to the **[Docs - Quick Start](https://ghiscoding.gitbook.io/slickgrid-reac
 import { type Column, type GridOption, SlickgridReact } from 'slickgrid-react';
 
 export default function Example() {
-  const [dataset] = useState(getData());
+  const [dataset, setDataset] = useState(getData());
 
   const columnDefinitions: Column[] = [
     { id: 'firstName', name: 'First Name', field: 'firstName', sortable: true },
     { id: 'lastName', name: 'Last Name', field: 'lastName', sortable: true },
-    { id: 'age', name: 'Age', field: 'age', type: 'number', sortable: true }
+    { id: 'age', name: 'Age', field: 'age', type: 'number', sortable: true },
   ]);
   const gridOptions: GridOption = { /*...*/ }); // optional grid options
 
   function getData() {
     return [
-    { id: 1, firstName: 'John', lastName: 'Doe', age: 20 },
-    { id: 2, firstName: 'Jane', lastName: 'Smith', age: 21 }
+      { id: 1, firstName: 'John', lastName: 'Doe', age: 20 },
+      { id: 2, firstName: 'Jane', lastName: 'Smith', age: 21 },
     ];
   }
 
@@ -59,7 +64,7 @@ export default function Example() {
 
 ### Troubleshooting
 
-This project **does not** work well with `React.StrictMode`, so please make sure to disable it to avoid pulling your hair for days. 
+This project **does not** work well with `React.StrictMode`, so please make sure to disable it to avoid getting mad at the library :P 
 
 ### Versions Compatibility
 
@@ -101,7 +106,7 @@ Slickgrid-Universal has **100%** Unit Test Coverage and all Slickgrid-React Exam
 ### Like it? ⭐ it
 You like **Slickgrid-React**? Be sure to upvote ⭐, and perhaps support me with caffeine [☕](https://ko-fi.com/ghiscoding) or GitHub sponsoring and feel free to contribute. 👷👷‍♀️
 
-<a href='https://ko-fi.com/ghiscoding' target='_blank'><img height='32' style='border:0px;height:32px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+<a href='https://ko-fi.com/N4N679OT' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi3.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 ## Sponsors
 
