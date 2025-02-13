@@ -14,13 +14,15 @@
 ### Description
 A Row Detail allows you to open a detail panel which can contain extra and/or more detailed information about a row. For example, we have a user list but we want to display detailed information about this user (his full address, account info, last purchasers, ...) but these are extra details that we don't want to display this in the user grid (for performance and real estate reasons)... so a Row Detail is perfect for that use case.
 
-> **NOTE 2** Also please note that whenever you scroll back and forth, the Row Detail will be rendered and re-rendered multiple times when you scroll or open/collapse other Row Details. For that reason, you should avoid adding too many dynamic elements (like form with inputs) because whenever a re-render kicks in, it will most often reset these elements. So it is totally fine to use it to show extra details (hence where its name comes from "Row Detail" to show more detailed info) and even though it works with dynamic elements, you have to know its limitation.
-
 > **NOTE** Please note that because of the complexity behind Row Detail, the following features cannot be mixed with Row Detail because they will cause UI problems
 > - Grouping
 > - Pagination
 > - Tree Data
 > - RowSpan
+
+> **NOTE 2** Also please note that because SlickGrid is using its built-in Virtual Scroll feature by default (for perf reasons), this will call render and re-render multiple times and that happens whenever the Row Detail gets out of the grid viewport. 
+> For this reason, you should avoid using dynamic elements (i.e. form inputs) because whenever a re-render kicks in, it will reset and re-render these elements as if nothing happened. 
+> So you should consider using Row Detail mainly for showing static data (hence where its name comes from "Row Detail" to show more detailed info) and even though it works with dynamic elements, you have to know its limitation. 
 
 ##### NOTE
 There is currently a known problem with Row Detail when loading the Row Detail Components, it currently shows console warnings (see below), however these are just warnings and they don't show up in Production code. If anyone knows how to fix it please provide a Pull Request as a contribution (please note that the suggestion to use `root.render()` does NOT work as intended hence why we call `createRoot()` every time a row detail is rendered).
