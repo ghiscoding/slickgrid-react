@@ -139,7 +139,7 @@
     "react-i18next": "^15.4.0",
     "react-router-dom": "^7.1.5",
     "regenerator-runtime": "^0.14.1",
-    "release-it": "^18.1.2",
+    "release-it": "^19.0.0-next.0",
     "rimraf": "^5.0.10",
     "rxjs": "^7.8.1",
     "sass": "^1.84.0",
