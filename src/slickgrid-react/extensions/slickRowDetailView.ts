@@ -301,7 +301,7 @@ export class SlickRowDetailView extends UniversalSlickRowDetailView {
   protected disposeViewComponent(expandedView: CreatedView): CreatedView | void {
     if (expandedView) {
       if (expandedView?.root) {
-        const container = this.gridContainerElement.getElementsByClassName(`${ROW_DETAIL_CONTAINER_PREFIX}${this._views[0].id}`);
+        const container = this.gridContainerElement.getElementsByClassName(`${ROW_DETAIL_CONTAINER_PREFIX}${expandedView.id}`);
         if (container?.length) {
           expandedView.root.unmount();
           container[0].textContent = '';
