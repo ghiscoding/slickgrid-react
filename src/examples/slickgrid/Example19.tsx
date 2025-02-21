@@ -34,7 +34,6 @@ function randomNumber(min: number, max: number) {
 export default class Example19 extends React.Component<Props, State> {
   private _darkMode = false;
   reactGrid!: SlickgridReactInstance;
-  shouldResetOnSort = false;
 
   constructor(public readonly props: Props) {
     super(props);
@@ -279,7 +278,7 @@ export default class Example19 extends React.Component<Props, State> {
 
   render() {
     return !this.state.gridOptions ? '' : (
-      <div className="demo40">
+      <div className="demo19">
         <div id="demo-container" className="container-fluid">
           <h2>
             Example 19: Row Detail View

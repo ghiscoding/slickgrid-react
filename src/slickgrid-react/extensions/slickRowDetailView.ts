@@ -29,6 +29,7 @@ export interface CreatedView {
 export class SlickRowDetailView extends UniversalSlickRowDetailView {
   protected _component?: any;
   protected _preloadComponent?: any;
+  protected _preloadRoot?: Root;
   protected _views: CreatedView[] = [];
   protected _subscriptions: EventSubscription[] = [];
   protected _userProcessFn?: (item: any) => Promise<any>;
@@ -142,6 +143,9 @@ export class SlickRowDetailView extends UniversalSlickRowDetailView {
 
           if (this.onAsyncEndUpdate) {
             this._eventHandler.subscribe(this.onAsyncEndUpdate, async (event, args) => {
+              // dispose preload if exists
+              this._preloadRoot?.unmount();
+
               // triggers after backend called "onAsyncResponse.notify()"
               await this.renderViewModel(args?.item);
 
@@ -249,6 +253,7 @@ export class SlickRowDetailView extends UniversalSlickRowDetailView {
       const { root } = await loadReactComponentDynamically(this._preloadComponent, detailContainer as HTMLElement);
       const viewObj = this._views.find(obj => obj.id === item[this.datasetIdPropName]);
       this._root = root;
+      this._preloadRoot = root;
       if (viewObj) {
         viewObj.root = root;
       }
@@ -259,6 +264,7 @@ export class SlickRowDetailView extends UniversalSlickRowDetailView {
   async renderViewModel(item: any) {
     const containerElements = this.gridContainerElement.getElementsByClassName(`${ROW_DETAIL_CONTAINER_PREFIX}${item[this.datasetIdPropName]}`);
     if (this._component && containerElements?.length) {
+      // render row detail
       const bindableData = {
         model: item,
         addon: this,
