@@ -358,13 +358,15 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
       // we'll then call the assigned listener(s) when events are dispatching
       for (const prop in this.props) {
         if (prop.startsWith('on')) {
-          this.subscriptions.push(
-            this._eventPubSubService.subscribe(prop, (data: unknown) => {
-              const callback: any = this.props[prop as keyof SlickgridReactProps];
-              const gridEventName = this._eventPubSubService.getEventNameByNamingConvention(prop, '');
-              typeof callback === 'function' && callback.call(null, new CustomEvent(gridEventName, { detail: data }));
-            })
-          );
+          const eventCallback: any = this.props[prop as keyof SlickgridReactProps];
+          if (typeof eventCallback === 'function') {
+            this.subscriptions.push(
+              this._eventPubSubService.subscribe(prop, (data: unknown) => {
+                const gridEventName = this._eventPubSubService.getEventNameByNamingConvention(prop, '');
+                eventCallback.call(null, new CustomEvent(gridEventName, { detail: data }));
+              })
+            );
+          }
         }
       }
     }
@@ -603,14 +605,14 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     // all instances (SlickGrid, DataView & all Services)
     this.instances = reactElementInstance;
     this.setStateValue('instances', reactElementInstance);
-    this._eventPubSubService.publish(`onReactGridCreated`, reactElementInstance);
+    this._eventPubSubService.publish('onReactGridCreated', reactElementInstance);
 
     // subscribe to column definitions assignment changes
     this.observeColumnDefinitions();
   }
 
   componentWillUnmount(shouldEmptyDomElementContainer = false) {
-    this._eventPubSubService.publish(`onBeforeGridDestroy`, this.grid);
+    this._eventPubSubService.publish('onBeforeGridDestroy', this.grid);
     this._eventHandler?.unsubscribeAll();
     i18next.off('languageChanged');
 
@@ -620,7 +622,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
     }
 
     this._collectionObservers.forEach(obs => obs?.disconnect());
-    this._eventPubSubService.publish(`onAfterGridDestroyed`, true);
+    this._eventPubSubService.publish('onAfterGridDestroyed', true);
 
     // dispose of all Services
     this.serviceList.forEach((service: any) => {
@@ -826,8 +828,13 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
         this.loadFilterPresetsWhenDatasetInitialized();
 
         // When data changes in the DataView, we need to refresh the metrics and/or display a warning if the dataset is empty
-        this._eventHandler.subscribe(dataView.onRowCountChanged, () => {
-          grid.invalidate();
+        this._eventHandler.subscribe(dataView.onRowCountChanged, (_e, args) => {
+          if (!gridOptions.enableRowDetailView || !Array.isArray(args.changedRows) || args.changedRows.length === args.itemCount) {
+            grid.invalidate();
+          } else {
+            grid.invalidateRows(args.changedRows);
+            grid.render();
+          }
           this.handleOnItemCountChanged(dataView.getFilteredItemCount() || 0, dataView.getItemCount() || 0);
         });
         this._eventHandler.subscribe(dataView.onSetItemsCalled, (_e, args) => {

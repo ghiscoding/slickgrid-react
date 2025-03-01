@@ -155,8 +155,10 @@ export interface SlickgridReactProps {
   onContextMenuCollapseAllGroups?: (e: CustomEvent<any>) => void;
   onContextMenuExpandAllGroups?: (e: CustomEvent<any>) => void;
   onAfterMenuShow?: (e: CustomEvent<{ eventData: any; args: MenuFromCellCallbackArgs }>) => void;
+  onAfterGridDestroyed?: (e: CustomEvent<{ eventData: any; args: MenuFromCellCallbackArgs }>) => void;
   onBeforeMenuShow?: (e: CustomEvent<{ eventData: any; args: MenuFromCellCallbackArgs }>) => void;
   onBeforeMenuClose?: (e: CustomEvent<{ eventData: any; args: MenuFromCellCallbackArgs }>) => void;
+  onBeforeGridDestroy?: (e: CustomEvent<{ eventData: any; args: MenuFromCellCallbackArgs }>) => void;
   onCommand?: (e: CustomEvent<{ eventData: any; args: MenuCommandItemCallbackArgs | MenuOptionItemCallbackArgs }>) => void;
   onOptionSelected?: (
     e: CustomEvent<{ eventData: any; args: MenuCommandItemCallbackArgs | MenuOptionItemCallbackArgs }>
