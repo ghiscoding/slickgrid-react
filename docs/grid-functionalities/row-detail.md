@@ -440,3 +440,203 @@ addNewColumn() {
   }
 }
 ```
+
+## Row Detail with Inner Grid
+
+You can also add an inner grid inside a Row Detail, however there are a few things to know off and remember. Any time a Row Detail is falling outside the main grid viewport, it will be unmounted and until it comes back into the viewport which is then remounted. The process of unmounting and remounting means that Row Detail previous states aren't preserved, however you could use Grid State & Presets to overcome this problem.
+
+##### Component
+
+Main Grid Component
+
+```tsx
+import React from 'react';
+import { type Column, ExtensionName, type GridOption, SlickgridReact, type SlickgridReactInstance, SlickRowDetailView, } from 'slickgrid-react';
+
+import { Preload } from './preload';
+import { type Distributor, InnerGridComponent, type OrderData } from './inner-grid';
+
+interface State extends BaseSlickGridState { }
+
+export default class Example45 extends React.Component<Props, State> {
+  reactGrid!: SlickgridReactInstance;
+  constructor(public readonly props: Props) {
+    super(props);
+
+    this.state = {
+      gridOptions: undefined,
+      columnDefinitions: [],
+      dataset: this.getData(),
+    };
+  }
+
+  get rowDetailInstance() {
+    return this.reactGrid?.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView);
+  }
+
+  componentDidMount() {
+    this.defineGrid();
+  }
+
+  reactGridReady(reactGrid: SlickgridReactInstance) {
+    this.reactGrid = reactGrid;
+  }
+
+  getColumnDefinitions(): Column[] {
+    return [/* ... */];
+  }
+
+  defineGrid() {
+    const columnDefinitions = this.getColumnDefinitions();
+    const gridOptions = this.getGridOptions();
+
+    this.setState((props: Props, state: any) => {
+      return { ...state, columnDefinitions, gridOptions };
+    });
+  }
+
+  getGridOptions(): GridOption {
+    return {
+      enableRowDetailView: true,
+      rowSelectionOptions: {
+        selectActiveRow: true
+      },
+      preRegisterExternalExtensions: (pubSubService) => {
+        // Row Detail View is a special case because of its requirement to create extra column definition dynamically
+        // so it must be pre-registered before SlickGrid is instantiated, we can do so via this option
+        const rowDetail = new SlickRowDetailView(pubSubService as EventPubSubService);
+        return [{ name: ExtensionName.rowDetailView, instance: rowDetail }];
+      },
+      rowDetailView: {
+        process: (item: any) => simulateServerAsyncCall(item),
+        loadOnce: false, // IMPORTANT, you can't use loadOnce with inner grid because only HTML template are re-rendered, not JS events
+        panelRows: 10,
+        preloadComponent: PreloadComponent,
+        viewComponent:  InnerGridComponent,
+      },
+    };
+  }
+
+  render() {
+    return !this.state.gridOptions ? '' : (
+      <div id="demo-container" className="container-fluid">
+        <SlickgridReact gridId="grid45"
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions}
+          dataset={this.state.dataset}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+        />
+      </div >
+    );
+  }
+}
+```
+
+Now, let's define our Inner Grid Component
+
+```tsx
+import React from 'react';
+import { type Column, type GridOption, type GridState, type RowDetailViewProps, SlickgridReact, type SlickgridReactInstance } from 'slickgrid-react';
+
+import type MainGrid from './MainGrid';
+
+export interface Distributor { /* ... */ }
+export interface OrderData { /* ... */ }
+
+interface State {
+  innerGridOptions?: GridOption;
+  innerColDefs: Column[];
+  innerDataset: any[];
+}
+interface Props { }
+
+export class MainGridDetailView extends React.Component<RowDetailViewProps<Distributor, typeof MainGrid>, State> {
+  reactGrid!: SlickgridReactInstance;
+  innerGridClass = '';
+
+  constructor(public readonly props: RowDetailViewProps<Distributor, typeof MainGrid>) {
+    super(props);
+    this.state = {
+      innerGridOptions: undefined,
+      innerColDefs: [],
+      innerDataset: [...props.model.orderData],
+    };
+    this.innerGridClass = `row-detail-${this.props.model.id}`;
+  }
+
+  componentDidMount() {
+    this.defineGrid();
+  }
+
+  getColumnDefinitions(): Column[] {
+    return [
+      { id: 'orderId', field: 'orderId', name: 'Order ID', filterable: true, sortable: true },
+      { id: 'shipCity', field: 'shipCity', name: 'Ship City', filterable: true, sortable: true },
+      { id: 'freight', field: 'freight', name: 'Freight', filterable: true, sortable: true, type: 'number' },
+      { id: 'shipName', field: 'shipName', name: 'Ship Name', filterable: true, sortable: true },
+    ];
+  }
+
+  defineGrid() {
+    const innerColDefs = this.getColumnDefinitions();
+    const innerGridOptions = this.getGridOptions();
+
+    this.setState((props: Props, state: any) => {
+      return {
+        ...state,
+        innerColDefs,
+        innerGridOptions,
+      };
+    });
+  }
+
+  getGridOptions(): GridOption {
+    // OPTIONALLY reapply Grid State as Presets before unmounting the compoment
+    const gridStateStr = sessionStorage.getItem(`gridstate_${innerGridClass.value}`);
+    let gridState: GridState | undefined;
+    if (gridStateStr) {
+      gridState = JSON.parse(gridStateStr);
+    }
+
+    return {
+      autoResize: {
+        container: `.${this.innerGridClass}`,
+      },
+      enableFiltering: true,
+      enableSorting: true,
+      enableCellNavigation: true,
+      datasetIdPropertyName: 'orderId', // reapply grid state presets
+      presets: gridState,
+    };
+  }
+
+  // OPTIONALLY save Grid State before unmounting the compoment
+  handleBeforeGridDestroy() {
+    if (this.props.model.isUsingInnerGridStatePresets) {
+      const gridState = this.reactGrid.gridStateService.getCurrentGridState();
+      sessionStorage.setItem(`gridstate_${this.innerGridClass}`, JSON.stringify(gridState));
+    }
+  }
+
+  reactGridReady(reactGrid: SlickgridReactInstance) {
+    this.reactGrid = reactGrid;
+  }
+
+  render() {
+    return (
+      <div className={`${this.innerGridClass}`}>
+        <h4>Order Details (id: {this.props.model.id})</h4>
+        <div className="container-fluid">
+          {!this.state.showGrid ? '' : <SlickgridReact gridId={`innergrid-${this.props.model.id}`}
+            columnDefinitions={this.state.innerColDefs}
+            gridOptions={this.state.innerGridOptions}
+            dataset={this.state.innerDataset}
+            onReactGridCreated={$event => this.reactGridReady($event.detail)}
+            onBeforeGridDestroy={() => this.handleBeforeGridDestroy()}
+          />}
+        </div>
+      </div>
+    );
+  }
+}
+```
