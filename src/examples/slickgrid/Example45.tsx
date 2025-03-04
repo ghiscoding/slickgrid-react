@@ -244,6 +244,7 @@ export default class Example45 extends React.Component<Props, State> {
 
   changeUsingInnerGridStatePresets() {
     const isUsingInnerGridStatePresets = !this.state.isUsingInnerGridStatePresets;
+    this.closeAllRowDetail();
     this.setState((state: State) => ({ ...state, isUsingInnerGridStatePresets }));
     return true;
   }
