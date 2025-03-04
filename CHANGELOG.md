@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.13.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.12.2...v5.13.0) (2025-03-01)
+
+### Features
+
+* Row Detail with inner grids ([#467](https://github.com/ghiscoding/slickgrid-react/issues/467)) ([377a211](https://github.com/ghiscoding/slickgrid-react/commit/377a211a1b0703cfec958e8776f21d7109cc4f84))
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([#461](https://github.com/ghiscoding/slickgrid-react/issues/461)) ([041dd42](https://github.com/ghiscoding/slickgrid-react/commit/041dd4288a004d2c32d24d2e7cf7aa589deb827c))
+* Row Detail could end up unmounting wrong panel index ([#465](https://github.com/ghiscoding/slickgrid-react/issues/465)) ([2edf4c2](https://github.com/ghiscoding/slickgrid-react/commit/2edf4c21aad83206ea06d524a5c7731bbcdcff71))
+* Row Detail preload comp should call unmount lifecycle ([#464](https://github.com/ghiscoding/slickgrid-react/issues/464)) ([494bc92](https://github.com/ghiscoding/slickgrid-react/commit/494bc924c38d83386a887140b56b7577b05cbf54))
+
 ## [5.12.2](https://github.com/ghiscoding/slickgrid-react/compare/v5.12.1...v5.12.2) (2025-02-08)
 
 ### Bug Fixes

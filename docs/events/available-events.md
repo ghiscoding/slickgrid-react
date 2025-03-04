@@ -167,6 +167,7 @@ render() {
   - `onBeforeFooterRowCellDestroy`
   - `onBeforeHeaderCellDestroy`
   - `onBeforeHeaderRowCellDestroy`
+  - `onBeforeRemoveCachedRow`
   - `onBeforeSetColumns`
   - `onBeforeSort`
   - `onBeforeUpdateColumns`
