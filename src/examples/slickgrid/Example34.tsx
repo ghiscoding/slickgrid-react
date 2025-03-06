@@ -224,6 +224,7 @@ export default class Example34 extends React.Component<Props, State> {
     const gridOptions: GridOption = {
       autoResize: {
         container: '.trading-platform',
+        autoHeight: false,
         rightPadding: 0,
         bottomPadding: 10,
       },
