@@ -198,11 +198,11 @@ export class SlickRowDetailView extends UniversalSlickRowDetailView {
           // hook some events needed by the Plugin itself
 
           // we need to redraw the open detail views if we change column position (column reorder)
-          this.eventHandler.subscribe(this._grid.onColumnsReordered, this.redrawAllViewComponents.bind(this));
+          this.eventHandler.subscribe(this._grid.onColumnsReordered, this.redrawAllViewComponents.bind(this, false));
 
           // on row selection changed, we also need to redraw
           if (this.gridOptions.enableRowSelection || this.gridOptions.enableCheckboxSelector) {
-            this._eventHandler.subscribe(this._grid.onSelectedRowsChanged, this.redrawAllViewComponents.bind(this));
+            this._eventHandler.subscribe(this._grid.onSelectedRowsChanged, this.redrawAllViewComponents.bind(this, false));
           }
 
           // on column sort/reorder, all row detail are collapsed so we can dispose of all the Views as well
@@ -210,7 +210,7 @@ export class SlickRowDetailView extends UniversalSlickRowDetailView {
 
           // on filter changed, we need to re-render all Views
           this._subscriptions.push(
-            this.eventPubSubService?.subscribe(['onFilterChanged', 'onGridMenuColumnsChanged', 'onColumnPickerColumnsChanged'], this.redrawAllViewComponents.bind(this)),
+            this.eventPubSubService?.subscribe(['onFilterChanged', 'onGridMenuColumnsChanged', 'onColumnPickerColumnsChanged'], this.redrawAllViewComponents.bind(this, false)),
             this.eventPubSubService?.subscribe(['onGridMenuClearAllFilters', 'onGridMenuClearAllSorting'], () => window.setTimeout(() => this.redrawAllViewComponents())),
           );
         }
@@ -221,11 +221,12 @@ export class SlickRowDetailView extends UniversalSlickRowDetailView {
   }
 
   /** Redraw (re-render) all the expanded row detail View Components */
-  async redrawAllViewComponents() {
+  async redrawAllViewComponents(forceRedraw = false) {
     this.resetRenderedRows();
     const promises: Promise<void>[] = [];
     this._views.forEach((view) => {
-      if (!view.rendered) {
+      if (!view.rendered || forceRedraw) {
+        forceRedraw && this.disposeViewComponent(view);
         promises.push(this.redrawViewComponent(view))
       }
     });
@@ -282,13 +283,6 @@ export class SlickRowDetailView extends UniversalSlickRowDetailView {
         parent: this.rowDetailViewOptions?.parent,
       } as ViewModelBindableInputData;
       const viewObj = this._views.find(obj => obj.id === item[this.datasetIdPropName]);
-
-      // remove any previous mounted views, if found then unmount them and delete them from our references array
-      // const viewIdx = this._views.findIndex((obj) => obj.id === item[this.datasetIdPropName]);
-      // if (this._views[viewIdx]?.root) {
-      //   this._views[viewIdx].root.unmount();
-      //   this._views.splice(viewIdx, 1);
-      // }
 
       // load our Row Detail React Component dynamically, typically we would want to use `root.render()` after the preload component (last argument below)
       // BUT the root render doesn't seem to work and shows a blank element, so we'll use `createRoot()` every time even though it shows a console log in Dev
