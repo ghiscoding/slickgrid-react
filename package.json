@@ -129,7 +129,7 @@
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "globals": "^15.15.0",
+    "globals": "^16.0.0",
     "i18next-http-backend": "^2.7.3",
     "isomorphic-fetch": "^3.0.0",
     "native-copyfiles": "^0.3.2",
