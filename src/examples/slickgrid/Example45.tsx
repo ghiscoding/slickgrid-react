@@ -48,7 +48,7 @@ export default class Example45 extends React.Component<Props, State> {
     // return this.extensions.rowDetailView.instance || {};
 
     // OR option 2
-    return this.reactGrid?.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView);
+    return this.reactGrid?.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView) as SlickRowDetailView;
   }
 
   componentDidMount() {
@@ -253,6 +253,10 @@ export default class Example45 extends React.Component<Props, State> {
     this.rowDetailInstance.collapseAll();
   }
 
+  redrawAllRowDetail() {
+    this.rowDetailInstance.redrawAllViewComponents(true);
+  }
+
   detailViewRowCountChanged(val: number | string) {
     this.setState((state: State) => ({ ...state, detailViewRowCount: +val }));
   }
@@ -315,7 +319,9 @@ export default class Example45 extends React.Component<Props, State> {
               <button className="btn btn-outline-secondary btn-sm btn-icon ms-1" data-test="collapse-all-btn" onClick={() => this.closeAllRowDetail()}>
                 Close all Row Details
               </button>
-              &nbsp;&nbsp;
+              <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="redraw-all-btn" onClick={() => this.redrawAllRowDetail()}>
+                Force redraw all Row Details
+              </button>
 
               <span className="d-inline-flex gap-4px">
                 <label htmlFor="detailViewRowCount">Detail View Rows Shown: </label>
