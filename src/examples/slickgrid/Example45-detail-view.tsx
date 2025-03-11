@@ -122,7 +122,7 @@ export class Example45DetailView extends React.Component<RowDetailViewProps<Dist
     return (
       <div className={`${this.innerGridClass}`}>
         <h4>{this.props.model.companyName} - Order Details (id: {this.props.model.id})</h4>
-        <div className="container-fluid">
+        <div className="container-fluid innergrid">
           {!this.state.showGrid ? '' : <SlickgridReact gridId={`innergrid-${this.props.model.id}`}
             columnDefinitions={this.state.innerColDefs}
             gridOptions={this.state.innerGridOptions}

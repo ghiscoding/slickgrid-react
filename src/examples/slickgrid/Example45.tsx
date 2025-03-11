@@ -173,7 +173,8 @@ export default class Example45 extends React.Component<Props, State> {
     return {
       autoResize: {
         container: '#demo-container',
-        rightPadding: 10
+        autoHeight: false, // works with/without autoHeight
+        rightPadding: 10,
       },
       enableFiltering: true,
       enableRowDetailView: true,
