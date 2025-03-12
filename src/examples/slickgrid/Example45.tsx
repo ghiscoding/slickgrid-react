@@ -22,6 +22,7 @@ interface Props { }
 interface State extends BaseSlickGridState {
   detailViewRowCount: number;
   serverWaitDelay: number;
+  isUsingAutoHeight: boolean;
   isUsingInnerGridStatePresets: boolean;
 }
 
@@ -37,6 +38,7 @@ export default class Example45 extends React.Component<Props, State> {
       dataset: this.getData(NB_ITEMS),
       detailViewRowCount: 9,
       serverWaitDelay: FAKE_SERVER_DELAY,
+      isUsingAutoHeight: false,
       isUsingInnerGridStatePresets: false,
     };
   }
@@ -173,7 +175,7 @@ export default class Example45 extends React.Component<Props, State> {
     return {
       autoResize: {
         container: '#demo-container',
-        autoHeight: false, // works with/without autoHeight
+        autoHeight: this.state.isUsingAutoHeight, // works with/without autoHeight
         rightPadding: 10,
       },
       enableFiltering: true,
@@ -247,6 +249,14 @@ export default class Example45 extends React.Component<Props, State> {
     const isUsingInnerGridStatePresets = !this.state.isUsingInnerGridStatePresets;
     this.closeAllRowDetail();
     this.setState((state: State) => ({ ...state, isUsingInnerGridStatePresets }));
+    return true;
+  }
+
+  changeUsingResizerAutoHeight() {
+    const isUsingAutoHeight = !this.state.isUsingAutoHeight;
+    this.setState((state: State) => ({ ...state, isUsingAutoHeight }));
+    this.reactGrid.slickGrid?.setOptions({ autoResize: { ...this.state.gridOptions?.autoResize, autoHeight: isUsingAutoHeight } });
+    this.reactGrid.resizerService.resizeGrid();
     return true;
   }
 
@@ -349,6 +359,20 @@ export default class Example45 extends React.Component<Props, State> {
                     title="should we use Grid State/Presets to keep the inner grid state whenever Row Details are out and back to viewport and re-rendered"
                   >
                     Use Inner Grid State/Presets
+                  </span>
+                </label>
+
+                <label className="checkbox-inline control-label ms-2" htmlFor="useResizeAutoHeight">
+                  <input
+                    type="checkbox"
+                    id="useResizeAutoHeight"
+                    data-test="use-auto-height"
+                    defaultChecked={this.state.isUsingAutoHeight}
+                    onClick={() => this.changeUsingResizerAutoHeight()} />
+                  <span
+                    title="should we use Grid State/Presets to keep the inner grid state whenever Row Details are out and back to viewport and re-rendered"
+                  >
+                    Use <code>autoResize.autoHeight</code>
                   </span>
                 </label>
               </span>

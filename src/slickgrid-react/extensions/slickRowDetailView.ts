@@ -290,7 +290,7 @@ export class SlickRowDetailView extends UniversalSlickRowDetailView {
         viewObj.root = root;
         viewObj.rendered = true;
       } else {
-        this.addViewInfoToViewsRef(item, root);
+        this.upsertViewRefs(item, root);
       }
     }
   }
@@ -299,13 +299,19 @@ export class SlickRowDetailView extends UniversalSlickRowDetailView {
   // protected functions
   // ------------------
 
-  protected addViewInfoToViewsRef(item: any, root: Root | null) {
+  protected upsertViewRefs(item: any, root: Root | null) {
+    const viewIdx = this._views.findIndex(obj => obj.id === item[this.datasetIdPropName]);
     const viewInfo: CreatedView = {
       id: item[this.datasetIdPropName],
       dataContext: item,
       root,
       rendered: !!root,
     };
+    if (viewIdx >= 0) {
+      this._views[viewIdx] = viewInfo;
+    } else {
+      this._views.push(viewInfo);
+    }
     addToArrayWhenNotExists(this._views, viewInfo, this.datasetIdPropName);
   }
 
@@ -341,7 +347,7 @@ export class SlickRowDetailView extends UniversalSlickRowDetailView {
     // expanding
     if (args?.item?.__collapsed) {
       // expanding row detail
-      this.addViewInfoToViewsRef(args.item, null);
+      this.upsertViewRefs(args.item, null);
     } else {
       // collapsing, so dispose of the View
       this.disposeViewByItem(args.item, true);
