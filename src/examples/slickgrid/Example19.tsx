@@ -17,14 +17,16 @@ import type BaseSlickGridState from './state-slick-grid-base';
 import { Example19Preload } from './Example19-preload';
 import { Example19DetailView } from './Example19-detail-view';
 
+const FAKE_SERVER_DELAY = 250;
 const NB_ITEMS = 1000;
 
 interface Props { }
 
 interface State extends BaseSlickGridState {
-  detailViewRowCount: number,
-  flashAlertType: string,
-  message: string,
+  detailViewRowCount: number;
+  flashAlertType: string;
+  serverWaitDelay: number;
+  message: string;
 }
 
 function randomNumber(min: number, max: number) {
@@ -44,6 +46,7 @@ export default class Example19 extends React.Component<Props, State> {
       dataset: this.loadData(),
       detailViewRowCount: 9,
       message: '',
+      serverWaitDelay: FAKE_SERVER_DELAY,
       flashAlertType: 'info',
     };
   }
@@ -102,6 +105,11 @@ export default class Example19 extends React.Component<Props, State> {
     });
   }
 
+  serverDelayChanged(e: React.FormEvent<HTMLInputElement>) {
+    const newDelay = +((e.target as HTMLInputElement)?.value ?? '');
+    this.setState((state: State) => ({ ...state, serverWaitDelay: newDelay }));
+  }
+
   showFlashMessage(message: string, alertType = 'info') {
     this.setState((props, state) => {
       return { ...state, message, flashAlertType: alertType }
@@ -124,7 +132,7 @@ export default class Example19 extends React.Component<Props, State> {
 
         // resolve the data after delay specified
         resolve(itemDetail);
-      }, 1000);
+      }, this.state.serverWaitDelay);
     });
   }
 
@@ -323,6 +331,12 @@ export default class Example19 extends React.Component<Props, State> {
                   data-test="set-count-btn">
                   Set
                 </button>
+                <label htmlFor="serverdelay" className="ms-2">Server Delay: </label>
+                <input id="serverdelay" type="number"
+                  defaultValue={this.state.serverWaitDelay}
+                  data-test="server-delay" style={{ width: '55px' }}
+                  onInput={($event) => this.serverDelayChanged($event)}
+                  title="input a fake timer delay to simulate slow server response" />
               </span>
             </div>
             {this.state.message ? <div className={'alert alert-' + this.state.flashAlertType + ' col-sm-6'} data-test="flash-msg">{this.state.message}</div> : ''}
