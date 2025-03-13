@@ -49,6 +49,9 @@
   ],
   "scripts": {
     "delete:dist": "rimraf dist",
+    "dev": "vite",
+    "vite:build": "tsc && vite build",
+    "vite:preview": "vite preview",
     "lint": "eslint --cache .",
     "lint:no-cache": "eslint .",
     "lint:fix": "eslint --fix .",
@@ -66,9 +69,6 @@
     "cypress:ci": "cypress run --config-file test/cypress.config.ts",
     "preview:release": "release-it --dry-run",
     "release": "release-it --only-version",
-    "vite:build": "tsc && vite build",
-    "vite:preview": "vite preview",
-    "vite:start": "vite",
     "are-type-wrong": "attw --pack ."
   },
   "browserslist": [
