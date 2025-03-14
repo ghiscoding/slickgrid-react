@@ -86,7 +86,10 @@ const Example45DetailView: React.FC<RowDetailViewProps<Distributor, typeof Examp
   }
 
   function handleBeforeGridDestroy() {
-    console.log('inner grid will be destroyed');
+    if (props.model.isUsingInnerGridStatePresets) {
+      const gridState = reactGridRef.current?.gridStateService.getCurrentGridState();
+      sessionStorage.setItem(`gridstate_${innerGridClass}`, JSON.stringify(gridState));
+    }
   }
 
   function reactGridReady(reactGrid: SlickgridReactInstance) {
