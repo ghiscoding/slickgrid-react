@@ -25,6 +25,7 @@ const Example45: React.FC = () => {
   const [isUsingInnerGridStatePresets, setIsUsingInnerGridStatePresets] = useState<boolean>(false);
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+  const isUsingInnerGridStatePresetsRef = useRef(isUsingInnerGridStatePresets);
 
   useEffect(() => {
     defineGrid();
@@ -35,11 +36,15 @@ const Example45: React.FC = () => {
     };
   }, []);
 
-  const rowDetailInstance = () => {
-    return reactGridRef.current?.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView) as SlickRowDetailView;
-  };
+  useEffect(() => {
+    isUsingInnerGridStatePresetsRef.current = isUsingInnerGridStatePresets;
+  }, [isUsingInnerGridStatePresets]);
 
-  const getColumnDefinitions = (): Column[] => {
+  function rowDetailInstance() {
+    return reactGridRef.current?.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView) as SlickRowDetailView;
+  }
+
+  function getColumnDefinitions(): Column[] {
     return [
       {
         id: 'companyId',
@@ -89,17 +94,17 @@ const Example45: React.FC = () => {
         filterable: true,
       },
     ];
-  };
+  }
 
-  const defineGrid = () => {
+  function defineGrid() {
     const columnDefinitions = getColumnDefinitions();
     const gridOptions = getGridOptions();
 
     setColumnDefinitions(columnDefinitions);
     setGridOptions(gridOptions);
-  };
+  }
 
-  const simulateServerAsyncCall = (item: Distributor) => {
+  function simulateServerAsyncCall(item: Distributor) {
     let orderData: OrderData[] = [];
     if (item.id % 3) {
       orderData = [
@@ -133,14 +138,14 @@ const Example45: React.FC = () => {
       window.setTimeout(() => {
         const itemDetail = item;
         itemDetail.orderData = orderData;
-        itemDetail.isUsingInnerGridStatePresets = isUsingInnerGridStatePresets;
+        itemDetail.isUsingInnerGridStatePresets = isUsingInnerGridStatePresetsRef.current;
 
         resolve(itemDetail);
       }, serverWaitDelay);
     });
-  };
+  }
 
-  const getGridOptions = (): GridOption => {
+  function getGridOptions(): GridOption {
     return {
       autoResize: {
         container: '#demo-container',
@@ -163,7 +168,7 @@ const Example45: React.FC = () => {
         viewComponent: Example45DetailView,
       },
     };
-  };
+  }
 
   function getData(count: number): Distributor[] {
     const mockDataset: Distributor[] = [];
@@ -184,7 +189,7 @@ const Example45: React.FC = () => {
     return mockDataset;
   };
 
-  const changeDetailViewRowCount = () => {
+  function changeDetailViewRowCount() {
     const options = rowDetailInstance().getOptions();
     if (options && options.panelRows) {
       options.panelRows = detailViewRowCount;
@@ -192,39 +197,39 @@ const Example45: React.FC = () => {
     }
   };
 
-  const changeUsingInnerGridStatePresets = () => {
+  function changeUsingInnerGridStatePresets() {
     const newIsUsingInnerGridStatePresets = !isUsingInnerGridStatePresets;
     closeAllRowDetail();
     setIsUsingInnerGridStatePresets(newIsUsingInnerGridStatePresets);
     return true;
-  };
+  }
 
-  const closeAllRowDetail = () => {
+  function closeAllRowDetail() {
     rowDetailInstance().collapseAll();
-  };
+  }
 
-  const redrawAllRowDetail = () => {
+  function redrawAllRowDetail() {
     rowDetailInstance().redrawAllViewComponents(true);
-  };
+  }
 
-  const detailViewRowCountChanged = (val: number | string) => {
+  function detailViewRowCountChanged(val: number | string) {
     setDetailViewRowCount(+val);
-  };
+  }
 
-  const serverDelayChanged = (e: React.FormEvent<HTMLInputElement>) => {
+  function serverDelayChanged(e: React.FormEvent<HTMLInputElement>) {
     const newDelay = +((e.target as HTMLInputElement)?.value ?? '');
     setServerWaitDelay(newDelay);
-  };
+  }
 
-  const toggleDarkMode = () => {
+  function toggleDarkMode() {
     closeAllRowDetail();
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
     toggleBodyBackground(newDarkMode);
     reactGridRef.current?.slickGrid.setOptions({ darkMode: newDarkMode });
-  };
+  }
 
-  const toggleBodyBackground = (darkMode: boolean) => {
+  function toggleBodyBackground(darkMode: boolean) {
     if (darkMode) {
       document.querySelector<HTMLDivElement>('.panel-wm-content')!.classList.add('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'dark';
@@ -232,7 +237,7 @@ const Example45: React.FC = () => {
       document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
     }
-  };
+  }
 
   return !gridOptions ? null : (
     <div className="demo45">
@@ -273,7 +278,7 @@ const Example45: React.FC = () => {
               <label htmlFor="serverdelay" className="ms-2">Server Delay: </label>
               <input id="serverdelay" type="number" defaultValue={serverWaitDelay} data-test="server-delay" style={{ width: '55px' }} onInput={serverDelayChanged} title="input a fake timer delay to simulate slow server response" />
               <label className="checkbox-inline control-label ms-2" htmlFor="useInnerGridStatePresets">
-                <input type="checkbox" id="useInnerGridStatePresets" data-test="use-inner-grid-state-presets" className="me-1" defaultChecked={isUsingInnerGridStatePresets} onClick={changeUsingInnerGridStatePresets} />
+                <input type="checkbox" id="useInnerGridStatePresets" data-test="use-inner-grid-state-presets" className="me-1" checked={isUsingInnerGridStatePresets} onChange={changeUsingInnerGridStatePresets} />
                 <span title="should we use Grid State/Presets to keep the inner grid state whenever Row Details are out and back to viewport and re-rendered">
                   Use Inner Grid State/Presets
                 </span>
