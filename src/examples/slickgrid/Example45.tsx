@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { type EventPubSubService } from '@slickgrid-universal/event-pub-sub';
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   type Column,
   ExtensionName,
@@ -10,56 +10,41 @@ import {
   SlickRowDetailView,
 } from '../../slickgrid-react';
 
-import type BaseSlickGridState from './state-slick-grid-base';
 import { Example45Preload } from './Example45-preload';
-import { type Distributor, Example45DetailView, type OrderData } from './Example45-detail-view';
+import Example45DetailView, { type Distributor, type OrderData } from './Example45-detail-view';
 
 const FAKE_SERVER_DELAY = 250;
 const NB_ITEMS = 995;
 
-interface Props { }
+const Example45: React.FC = () => {
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset] = useState<Distributor[]>(getData(NB_ITEMS));
+  const [detailViewRowCount, setDetailViewRowCount] = useState<number>(9);
+  const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
+  const [isUsingInnerGridStatePresets, setIsUsingInnerGridStatePresets] = useState<boolean>(false);
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+  const isUsingInnerGridStatePresetsRef = useRef(isUsingInnerGridStatePresets);
 
-interface State extends BaseSlickGridState {
-  detailViewRowCount: number;
-  serverWaitDelay: number;
-  isUsingInnerGridStatePresets: boolean;
-}
-
-export default class Example45 extends React.Component<Props, State> {
-  private _darkMode = false;
-  reactGrid!: SlickgridReactInstance;
-  constructor(public readonly props: Props) {
-    super(props);
-
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: this.getData(NB_ITEMS),
-      detailViewRowCount: 9,
-      serverWaitDelay: FAKE_SERVER_DELAY,
-      isUsingInnerGridStatePresets: false,
+  useEffect(() => {
+    defineGrid();
+    return () => {
+      // make sure it's back to light mode before unmounting
+      document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
+      document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
     };
+  }, []);
+
+  useEffect(() => {
+    isUsingInnerGridStatePresetsRef.current = isUsingInnerGridStatePresets;
+  }, [isUsingInnerGridStatePresets]);
+
+  function rowDetailInstance() {
+    return reactGridRef.current?.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView) as SlickRowDetailView;
   }
 
-  get rowDetailInstance() {
-    // you can get the SlickGrid RowDetail plugin (addon) instance via 2 ways
-
-    // option 1
-    // return this.extensions.rowDetailView.instance || {};
-
-    // OR option 2
-    return this.reactGrid?.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView) as SlickRowDetailView;
-  }
-
-  componentDidMount() {
-    this.defineGrid();
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  getColumnDefinitions(): Column[] {
+  function getColumnDefinitions(): Column[] {
     return [
       {
         id: 'companyId',
@@ -111,23 +96,16 @@ export default class Example45 extends React.Component<Props, State> {
     ];
   }
 
-  defineGrid() {
-    const columnDefinitions = this.getColumnDefinitions();
-    const gridOptions = this.getGridOptions();
+  function defineGrid() {
+    const columnDefinitions = getColumnDefinitions();
+    const gridOptions = getGridOptions();
 
-    this.setState((props: Props, state: any) => {
-      return {
-        ...state,
-        columnDefinitions,
-        gridOptions
-      };
-    });
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  /** Just for demo purposes, we will simulate an async server call and return more details on the selected row item */
-  simulateServerAsyncCall(item: Distributor) {
+  function simulateServerAsyncCall(item: Distributor) {
     let orderData: OrderData[] = [];
-    // let's mock some data but make it predictable for easier Cypress E2E testing
     if (item.id % 3) {
       orderData = [
         { orderId: '10261', shipCity: 'Rio de Janeiro', freight: 3.05, shipName: 'Que Delícia' },
@@ -156,20 +134,18 @@ export default class Example45 extends React.Component<Props, State> {
       orderData = [{ orderId: '10255', shipCity: 'Genève', freight: 148.33, shipName: 'Richter Supermarkt' }];
     }
 
-    // fill the template on async delay
     return new Promise((resolve) => {
       window.setTimeout(() => {
         const itemDetail = item;
         itemDetail.orderData = orderData;
-        itemDetail.isUsingInnerGridStatePresets = this.state.isUsingInnerGridStatePresets;
+        itemDetail.isUsingInnerGridStatePresets = isUsingInnerGridStatePresetsRef.current;
 
-        // resolve the data after delay specified
         resolve(itemDetail);
-      }, this.state.serverWaitDelay);
+      }, serverWaitDelay);
     });
   }
 
-  getGridOptions(): GridOption {
+  function getGridOptions(): GridOption {
     return {
       autoResize: {
         container: '#demo-container',
@@ -178,31 +154,23 @@ export default class Example45 extends React.Component<Props, State> {
       enableFiltering: true,
       enableRowDetailView: true,
       rowHeight: 33,
-      darkMode: this._darkMode,
+      darkMode,
       preRegisterExternalExtensions: (pubSubService) => {
-        // Row Detail View is a special case because of its requirement to create extra column definition dynamically
-        // so it must be pre-registered before SlickGrid is instantiated, we can do so via this option
         const rowDetail = new SlickRowDetailView(pubSubService as EventPubSubService);
         return [{ name: ExtensionName.rowDetailView, instance: rowDetail }];
       },
       rowDetailView: {
-        // We can load the "process" asynchronously via Fetch, Promise, ...
-        process: (item) => this.simulateServerAsyncCall(item),
-        loadOnce: false, // you can't use loadOnce with inner grid because only HTML template are re-rendered, not JS events
+        process: (item) => simulateServerAsyncCall(item),
+        loadOnce: false,
         useRowClick: false,
-        panelRows: this.state.detailViewRowCount,
-        // Preload View Template
+        panelRows: detailViewRowCount,
         preloadComponent: Example45Preload,
-        // ViewModel Template to load when row detail data is ready
         viewComponent: Example45DetailView,
-        // Optionally pass your Parent Component reference to your Child Component (row detail component)
-        parent: this,
       },
     };
   }
 
-  getData(count: number): Distributor[] {
-    // mock a dataset
+  function getData(count: number): Distributor[] {
     const mockDataset: Distributor[] = [];
     for (let i = 0; i < count; i++) {
       mockDataset[i] = {
@@ -219,61 +187,50 @@ export default class Example45 extends React.Component<Props, State> {
     }
 
     return mockDataset;
-  }
+  };
 
-  changeDetailViewRowCount() {
-    const options = this.rowDetailInstance.getOptions();
+  function changeDetailViewRowCount() {
+    const options = rowDetailInstance().getOptions();
     if (options && options.panelRows) {
-      options.panelRows = this.state.detailViewRowCount; // change number of rows dynamically
-      this.rowDetailInstance.setOptions(options);
+      options.panelRows = detailViewRowCount;
+      rowDetailInstance().setOptions(options);
     }
-  }
+  };
 
-  changeEditableGrid() {
-    // this.rowDetailInstance.setOptions({ useRowClick: false });
-    this.rowDetailInstance.collapseAll();
-    (this.rowDetailInstance as any).addonOptions.useRowClick = false;
-    this.state.gridOptions!.autoCommitEdit = !this.state.gridOptions!.autoCommitEdit;
-    this.reactGrid?.slickGrid.setOptions({
-      editable: true,
-      autoEdit: true,
-      enableCellNavigation: true,
-    });
+  function changeUsingInnerGridStatePresets() {
+    const newIsUsingInnerGridStatePresets = !isUsingInnerGridStatePresets;
+    closeAllRowDetail();
+    setIsUsingInnerGridStatePresets(newIsUsingInnerGridStatePresets);
     return true;
   }
 
-  changeUsingInnerGridStatePresets() {
-    const isUsingInnerGridStatePresets = !this.state.isUsingInnerGridStatePresets;
-    this.closeAllRowDetail();
-    this.setState((state: State) => ({ ...state, isUsingInnerGridStatePresets }));
-    return true;
+  function closeAllRowDetail() {
+    rowDetailInstance().collapseAll();
   }
 
-  closeAllRowDetail() {
-    this.rowDetailInstance.collapseAll();
+  function redrawAllRowDetail() {
+    rowDetailInstance().redrawAllViewComponents(true);
   }
 
-  redrawAllRowDetail() {
-    this.rowDetailInstance.redrawAllViewComponents(true);
+  function detailViewRowCountChanged(val: number | string) {
+    setDetailViewRowCount(+val);
   }
 
-  detailViewRowCountChanged(val: number | string) {
-    this.setState((state: State) => ({ ...state, detailViewRowCount: +val }));
-  }
-
-  serverDelayChanged(e: React.FormEvent<HTMLInputElement>) {
+  function serverDelayChanged(e: React.FormEvent<HTMLInputElement>) {
     const newDelay = +((e.target as HTMLInputElement)?.value ?? '');
-    this.setState((state: State) => ({ ...state, serverWaitDelay: newDelay }));
+    setServerWaitDelay(newDelay);
   }
 
-  toggleDarkMode() {
-    this._darkMode = !this._darkMode;
-    this.toggleBodyBackground();
-    this.reactGrid.slickGrid?.setOptions({ darkMode: this._darkMode });
+  function toggleDarkMode() {
+    closeAllRowDetail();
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    toggleBodyBackground(newDarkMode);
+    reactGridRef.current?.slickGrid.setOptions({ darkMode: newDarkMode });
   }
 
-  toggleBodyBackground() {
-    if (this._darkMode) {
+  function toggleBodyBackground(darkMode: boolean) {
+    if (darkMode) {
       document.querySelector<HTMLDivElement>('.panel-wm-content')!.classList.add('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'dark';
     } else {
@@ -282,88 +239,60 @@ export default class Example45 extends React.Component<Props, State> {
     }
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div className="demo45">
-        <div id="demo-container" className="container-fluid">
-          <h2>
-            Example 45: Row Detail with inner Grid
-            {/* <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
-              <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
-            </button> */}
-            <button className="btn btn-outline-secondary btn-sm btn-icon ms-3" onClick={() => this.toggleDarkMode()} data-test="toggle-dark-mode">
-              <span className="mdi mdi-theme-light-dark"></span>
-              <span>Toggle Dark Mode</span>
-            </button>
-            <span className="float-end font18">
-              see&nbsp;
-              <a target="_blank"
-                href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example45.tsx">
-                <span className="mdi mdi-link-variant"></span> code
-              </a>
-            </span>
-          </h2>
+  return !gridOptions ? null : (
+    <div className="demo45">
+      <div id="demo-container" className="container-fluid">
+        <h2>
+          Example 45: Row Detail with inner Grid
+          <button className="btn btn-outline-secondary btn-sm btn-icon ms-3" onClick={toggleDarkMode} data-test="toggle-dark-mode">
+            <span className="mdi mdi-theme-light-dark"></span>
+            <span>Toggle Dark Mode</span>
+          </button>
+          <span className="float-end font18">
+            see&nbsp;
+            <a target="_blank" href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example45.tsx">
+              <span className="mdi mdi-link-variant"></span> code
+            </a>
+          </span>
+        </h2>
 
-          <div className="subtitle">
-            Add functionality to show extra information with a Row Detail View, (<a
-              href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/row-detail"
-              target="_blank"
-            >Wiki docs</a>), we'll use an inner grid inside our Row Detail Component. Note that because SlickGrid uses Virtual Scroll, the rows and row details
-            are often be re-rendered (when row is out of viewport range) and this means unmounting Row Detail Component which indirectly mean that
-            all component states (dynamic elements, forms, ...) will be disposed as well, however you can use Grid State/Presets to reapply
-            previous state whenever the row detail gets re-rendered when back to viewport.
-          </div>
-
-          <div className="row">
-            <div className="col-sm-10">
-              <button className="btn btn-outline-secondary btn-sm btn-icon ms-1" data-test="collapse-all-btn" onClick={() => this.closeAllRowDetail()}>
-                Close all Row Details
-              </button>
-              <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="redraw-all-btn" onClick={() => this.redrawAllRowDetail()}>
-                Force redraw all Row Details
-              </button>
-
-              <span className="d-inline-flex gap-4px">
-                <label htmlFor="detailViewRowCount">Detail View Rows Shown: </label>
-                <input id="detailViewRowCount" type="number"
-                  defaultValue={this.state.detailViewRowCount}
-                  data-test="detail-view-row-count"
-                  style={{ height: '26px', width: '40px' }}
-                  onInput={($event) => this.detailViewRowCountChanged(($event.target as HTMLInputElement).value)} />
-                <button className="btn btn-outline-secondary btn-xs btn-icon" style={{ height: '26px' }} onClick={() => this.changeDetailViewRowCount()}
-                  data-test="set-count-btn">
-                  Set
-                </button>
-                <label htmlFor="serverdelay" className="ms-2">Server Delay: </label>
-                <input id="serverdelay" type="number"
-                  defaultValue={this.state.serverWaitDelay}
-                  data-test="server-delay" style={{ width: '55px' }}
-                  onInput={($event) => this.serverDelayChanged($event)}
-                  title="input a fake timer delay to simulate slow server response" />
-                <label className="checkbox-inline control-label ms-2" htmlFor="useInnerGridStatePresets">
-                  <input type="checkbox" id="useInnerGridStatePresets" data-test="use-inner-grid-state-presets" className="me-1"
-                    defaultChecked={this.state.isUsingInnerGridStatePresets}
-                    onClick={() => this.changeUsingInnerGridStatePresets()} />
-                  <span
-                    title="should we use Grid State/Presets to keep the inner grid state whenever Row Details are out and back to viewport and re-rendered"
-                  >
-                    Use Inner Grid State/Presets
-                  </span>
-                </label>
-              </span>
-            </div>
-          </div>
-
-          <hr />
-
-          <SlickgridReact gridId="grid45"
-            columnDefinitions={this.state.columnDefinitions}
-            gridOptions={this.state.gridOptions}
-            dataset={this.state.dataset}
-            onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          />
+        <div className="subtitle">
+          Add functionality to show extra information with a Row Detail View, (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/row-detail" target="_blank">Wiki docs</a>), we'll use an inner grid inside our Row Detail Component. Note that because SlickGrid uses Virtual Scroll, the rows and row details are often be re-rendered (when row is out of viewport range) and this means unmounting Row Detail Component which indirectly mean that all component states (dynamic elements, forms, ...) will be disposed as well, however you can use Grid State/Presets to reapply previous state whenever the row detail gets re-rendered when back to viewport.
         </div>
-      </div >
-    );
-  }
-}
+
+        <div className="row">
+          <div className="col-sm-10">
+            <button className="btn btn-outline-secondary btn-sm btn-icon ms-1" data-test="collapse-all-btn" onClick={closeAllRowDetail}>
+              Close all Row Details
+            </button>
+            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="redraw-all-btn" onClick={redrawAllRowDetail}>
+              Force redraw all Row Details
+            </button>
+
+            <span className="d-inline-flex gap-4px">
+              <label htmlFor="detailViewRowCount">Detail View Rows Shown: </label>
+              <input id="detailViewRowCount" type="number" defaultValue={detailViewRowCount} data-test="detail-view-row-count" style={{ height: '26px', width: '40px' }} onInput={($event) => detailViewRowCountChanged(($event.target as HTMLInputElement).value)} />
+              <button className="btn btn-outline-secondary btn-xs btn-icon" style={{ height: '26px' }} onClick={changeDetailViewRowCount} data-test="set-count-btn">
+                Set
+              </button>
+              <label htmlFor="serverdelay" className="ms-2">Server Delay: </label>
+              <input id="serverdelay" type="number" defaultValue={serverWaitDelay} data-test="server-delay" style={{ width: '55px' }} onInput={serverDelayChanged} title="input a fake timer delay to simulate slow server response" />
+              <label className="checkbox-inline control-label ms-2" htmlFor="useInnerGridStatePresets">
+                <input type="checkbox" id="useInnerGridStatePresets" data-test="use-inner-grid-state-presets" className="me-1" checked={isUsingInnerGridStatePresets} onChange={changeUsingInnerGridStatePresets} />
+                <span title="should we use Grid State/Presets to keep the inner grid state whenever Row Details are out and back to viewport and re-rendered">
+                  Use Inner Grid State/Presets
+                </span>
+              </label>
+            </span>
+          </div>
+        </div>
+
+        <hr />
+
+        <SlickgridReact gridId="grid45" columnDefinitions={columnDefinitions} gridOptions={gridOptions} dataset={dataset} onReactGridCreated={$event => (reactGridRef.current = $event.detail)} />
+      </div>
+    </div>
+  );
+};
+
+export default Example45;

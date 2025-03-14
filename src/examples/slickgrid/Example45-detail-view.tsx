@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { type Column, type GridOption, type GridState, type RowDetailViewProps, SlickgridReact, type SlickgridReactInstance } from '../../slickgrid-react';
 
 import type Example45 from './Example45';
@@ -23,41 +23,26 @@ export interface OrderData {
   shipName: string;
 }
 
-interface State {
-  showGrid: boolean;
-  innerGridOptions?: GridOption;
-  innerColDefs: Column[];
-  innerDataset: any[];
-}
-interface Props { }
+const Example45DetailView: React.FC<RowDetailViewProps<Distributor, typeof Example45>> = forwardRef((props, ref) => {
+  const [showGrid, setShowGrid] = useState(false);
+  const [innerGridOptions, setInnerGridOptions] = useState<GridOption | undefined>(undefined);
+  const [innerColDefs, setInnerColDefs] = useState<Column[]>([]);
+  const [innerDataset] = useState<any[]>([...props.model.orderData]);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+  const innerGridClass = `row-detail-${props.model.id}`;
 
-export class Example45DetailView extends React.Component<RowDetailViewProps<Distributor, typeof Example45>, State> {
-  _isMounted = false;
-  reactGrid!: SlickgridReactInstance;
-  innerGridClass = '';
+  useImperativeHandle(ref, () => ({
+    getReactGridInstance: () => reactGridRef.current,
+  }));
 
-  constructor(public readonly props: RowDetailViewProps<Distributor, typeof Example45>) {
-    super(props);
-    this.state = {
-      innerGridOptions: undefined,
-      innerColDefs: [],
-      innerDataset: [...props.model.orderData],
-      showGrid: false,
+  useEffect(() => {
+    defineGrid();
+    return () => {
+      console.log('inner grid unmounting');
     };
-    this.innerGridClass = `row-detail-${this.props.model.id}`;
-  }
+  }, []);
 
-  componentDidMount() {
-    this._isMounted = true;
-    this.defineGrid();
-  }
-
-  componentWillUnmount(): void {
-    this._isMounted = false;
-    console.log('inner grid unmounting');
-  }
-
-  getColumnDefinitions(): Column[] {
+  const getColumnDefinitions = (): Column[] => {
     return [
       { id: 'orderId', field: 'orderId', name: 'Order ID', filterable: true, sortable: true },
       { id: 'shipCity', field: 'shipCity', name: 'Ship City', filterable: true, sortable: true },
@@ -66,27 +51,20 @@ export class Example45DetailView extends React.Component<RowDetailViewProps<Dist
     ];
   }
 
-  defineGrid() {
-    const innerColDefs = this.getColumnDefinitions();
-    const innerGridOptions = this.getGridOptions();
+  function defineGrid() {
+    const columnDefinitions = getColumnDefinitions();
+    const gridOptions = getGridOptions();
 
-    if (this._isMounted) {
-      this.setState((props: Props, state: any) => {
-        return {
-          ...state,
-          innerColDefs,
-          innerGridOptions,
-          showGrid: true,
-        };
-      });
-    }
+    setInnerColDefs(columnDefinitions);
+    setInnerGridOptions(gridOptions);
+    setShowGrid(true);
   }
 
-  getGridOptions(): GridOption {
+  function getGridOptions(): GridOption {
     // when Grid State found in Session Storage, reapply inner Grid State then reapply it as preset
     let gridState: GridState | undefined;
-    if (this.props.model.isUsingInnerGridStatePresets) {
-      const gridStateStr = sessionStorage.getItem(`gridstate_${this.innerGridClass}`);
+    if (props.model.isUsingInnerGridStatePresets) {
+      const gridStateStr = sessionStorage.getItem(`gridstate_${innerGridClass}`);
       if (gridStateStr) {
         gridState = JSON.parse(gridStateStr);
       }
@@ -94,7 +72,7 @@ export class Example45DetailView extends React.Component<RowDetailViewProps<Dist
 
     return {
       autoResize: {
-        container: `.${this.innerGridClass}`,
+        container: `.${innerGridClass}`,
         rightPadding: 30,
         minHeight: 200,
       },
@@ -107,31 +85,34 @@ export class Example45DetailView extends React.Component<RowDetailViewProps<Dist
     };
   }
 
-  handleBeforeGridDestroy() {
-    if (this.props.model.isUsingInnerGridStatePresets) {
-      const gridState = this.reactGrid.gridStateService.getCurrentGridState();
-      sessionStorage.setItem(`gridstate_${this.innerGridClass}`, JSON.stringify(gridState));
+  function handleBeforeGridDestroy() {
+    if (props.model.isUsingInnerGridStatePresets) {
+      const gridState = reactGridRef.current?.gridStateService.getCurrentGridState();
+      sessionStorage.setItem(`gridstate_${innerGridClass}`, JSON.stringify(gridState));
     }
   }
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  render() {
-    return (
-      <div className={`${this.innerGridClass}`}>
-        <h4>{this.props.model.companyName} - Order Details (id: {this.props.model.id})</h4>
-        <div className="container-fluid">
-          {!this.state.showGrid ? '' : <SlickgridReact gridId={`innergrid-${this.props.model.id}`}
-            columnDefinitions={this.state.innerColDefs}
-            gridOptions={this.state.innerGridOptions}
-            dataset={this.state.innerDataset}
-            onReactGridCreated={$event => this.reactGridReady($event.detail)}
-            onBeforeGridDestroy={() => this.handleBeforeGridDestroy()}
-          />}
-        </div>
+  return (
+    <div className={`container-fluid ${innerGridClass}`} style={{ marginTop: '10px' }}>
+      <h4>{props.model.companyName} - Order Details (id: {props.model.id})</h4>
+      <div className="container-fluid">
+        {showGrid && (
+          <SlickgridReact
+            gridId={`innergrid-${props.model.id}`}
+            columnDefinitions={innerColDefs}
+            gridOptions={innerGridOptions}
+            dataset={innerDataset}
+            onReactGridCreated={$event => reactGridReady($event.detail)}
+            onBeforeGridDestroy={handleBeforeGridDestroy}
+          />
+        )}
       </div>
-    );
-  }
-}
+    </div>
+  );
+});
+
+export default Example45DetailView;
