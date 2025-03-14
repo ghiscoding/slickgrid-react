@@ -28,7 +28,7 @@
     {
       "label": "Start Library Development",
       "type": "shell",
-      "command": "yarn vite:start",
+      "command": "yarn dev",
       "problemMatcher": []
     },
     {

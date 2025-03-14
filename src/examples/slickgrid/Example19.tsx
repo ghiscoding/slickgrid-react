@@ -1,5 +1,5 @@
 import { type EventPubSubService } from '@slickgrid-universal/event-pub-sub';
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   type Column,
   Editors,
@@ -13,60 +13,37 @@ import {
   SlickRowDetailView,
 } from '../../slickgrid-react';
 
-import type BaseSlickGridState from './state-slick-grid-base';
 import { Example19Preload } from './Example19-preload';
-import { Example19DetailView } from './Example19-detail-view';
+import Example19DetailView from './Example19-detail-view';
 
+const FAKE_SERVER_DELAY = 250;
 const NB_ITEMS = 1000;
 
-interface Props { }
+const Example19: React.FC = () => {
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset] = useState<any[]>(loadData());
+  const [detailViewRowCount, setDetailViewRowCount] = useState<number>(9);
+  const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
+  const [flashAlertType, setFlashAlertType] = useState<string>('info');
+  const [message, setMessage] = useState<string>('');
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-interface State extends BaseSlickGridState {
-  detailViewRowCount: number,
-  flashAlertType: string,
-  message: string,
-}
-
-function randomNumber(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-export default class Example19 extends React.Component<Props, State> {
-  private _darkMode = false;
-  reactGrid!: SlickgridReactInstance;
-
-  constructor(public readonly props: Props) {
-    super(props);
-
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: this.loadData(),
-      detailViewRowCount: 9,
-      message: '',
-      flashAlertType: 'info',
+  useEffect(() => {
+    defineGrid();
+    return () => {
+      // make sure it's back to light mode before unmounting
+      document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
+      document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
     };
-  }
+  }, []);
 
-  get rowDetailInstance() {
-    // you can get the SlickGrid RowDetail plugin (addon) instance via 2 ways
+  function rowDetailInstance() {
+    return reactGridRef.current?.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView) as SlickRowDetailView;
+  };
 
-    // option 1
-    // return this.extensions.rowDetailView.instance || {};
-
-    // OR option 2
-    return this.reactGrid?.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView);
-  }
-
-  componentDidMount() {
-    this.defineGrid();
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  getColumnsDefinition(): Column[] {
+  const getColumnsDefinition = (): Column[] => {
     return [
       { id: 'title', name: 'Title', field: 'title', sortable: true, type: FieldType.string, width: 70, filterable: true, editor: { model: Editors.text } },
       { id: 'duration', name: 'Duration (days)', field: 'duration', formatter: Formatters.decimal, params: { minDecimal: 1, maxDecimal: 2 }, sortable: true, type: FieldType.number, minWidth: 90, filterable: true },
@@ -87,48 +64,36 @@ export default class Example19 extends React.Component<Props, State> {
         }
       }
     ];
+  };
+
+  function defineGrid() {
+    const columnDefinitions = getColumnsDefinition();
+    const gridOptions = getGridOptions();
+
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  defineGrid() {
-    const columnDefinitions = this.getColumnsDefinition();
-    const gridOptions = this.getGridOptions();
-
-    this.setState((props: Props, state: any) => {
-      return {
-        ...state,
-        columnDefinitions,
-        gridOptions
-      };
-    });
+  function showFlashMessage(message: string, alertType = 'info') {
+    setMessage(message);
+    setFlashAlertType(alertType);
   }
 
-  showFlashMessage(message: string, alertType = 'info') {
-    this.setState((props, state) => {
-      return { ...state, message, flashAlertType: alertType }
-    });
-  }
-
-  /** Just for demo purposes, we will simulate an async server call and return more details on the selected row item */
-  simulateServerAsyncCall(item: any) {
-    // random set of names to use for more item detail
+  function simulateServerAsyncCall(item: any) {
     const randomNames = ['John Doe', 'Jane Doe', 'Chuck Norris', 'Bumblebee', 'Jackie Chan', 'Elvis Presley', 'Bob Marley', 'Mohammed Ali', 'Bruce Lee', 'Rocky Balboa'];
 
-    // fill the template on async delay
     return new Promise((resolve) => {
       window.setTimeout(() => {
         const itemDetail = item;
-
-        // let's add some extra properties to our item for a better async simulation
         itemDetail.assignee = randomNames[randomNumber(0, 9)] || '';
         itemDetail.reporter = randomNames[randomNumber(0, 9)] || '';
 
-        // resolve the data after delay specified
         resolve(itemDetail);
-      }, 1000);
+      }, serverWaitDelay);
     });
-  }
+  };
 
-  getGridOptions(): GridOption {
+  function getGridOptions(): GridOption {
     return {
       autoResize: {
         container: '#demo-container',
@@ -136,79 +101,36 @@ export default class Example19 extends React.Component<Props, State> {
       },
       enableFiltering: true,
       enableRowDetailView: true,
-      darkMode: this._darkMode,
-      datasetIdPropertyName: 'rowId', // optionally use a different "id"
+      darkMode,
+      datasetIdPropertyName: 'rowId',
       preRegisterExternalExtensions: (pubSubService) => {
-        // Row Detail View is a special case because of its requirement to create extra column definition dynamically
-        // so it must be pre-registered before SlickGrid is instantiated, we can do so via this option
         const rowDetail = new SlickRowDetailView(pubSubService as EventPubSubService);
         return [{ name: ExtensionName.rowDetailView, instance: rowDetail }];
       },
       rowDetailView: {
-        // optionally change the column index position of the icon (defaults to 0)
-        // columnIndexPosition: 1,
-
-        // We can load the "process" asynchronously via Fetch, Promise, ...
-        process: (item) => this.simulateServerAsyncCall(item),
-        // process: (item) => this.http.get(`api/item/${item.id}`),
-
-        // load only once and reuse the same item detail without calling process method
+        process: (item) => simulateServerAsyncCall(item),
         loadOnce: true,
-
-        // limit expanded row to only 1 at a time
         singleRowExpand: false,
-
-        // false by default, clicking anywhere on the row will open the detail view
-        // when set to false, only the "+" icon would open the row detail
-        // if you use editor or cell navigation you would want this flag set to false (default)
         useRowClick: true,
-
-        // how many grid rows do we want to use for the row detail panel (this is only set once and will be used for all row detail)
-        // also note that the detail view adds an extra 1 row for padding purposes
-        // so if you choose 4 panelRows, the display will in fact use 5 rows
-        panelRows: this.state.detailViewRowCount,
-
-        // you can override the logic for showing (or not) the expand icon
-        // for example, display the expand icon only on every 2nd row
-        // expandableOverride: (row: number, dataContext: any) => (dataContext.rowId % 2 === 1),
-
-        // Preload View Template
+        panelRows: detailViewRowCount,
         preloadComponent: Example19Preload,
-
-        // ViewModel Template to load when row detail data is ready
         viewComponent: Example19DetailView,
-
-        // Optionally pass your Parent Component reference to your Child Component (row detail component)
-        parent: this,
-
+        parent: {
+          showFlashMessage
+        },
         onBeforeRowDetailToggle: (e, args) => {
-          // you coud cancel opening certain rows
-          // if (args.item.rowId === 1) {
-          //   e.preventDefault();
-          //   return false;
-          // }
           console.log('before toggling row detail', args.item);
           return true;
         },
       },
       rowSelectionOptions: {
-        // True (Single Selection), False (Multiple Selections)
         selectActiveRow: true
       },
-
-      // You could also enable Row Selection as well, but just make sure to disable `useRowClick: false`
-      // enableCheckboxSelector: true,
-      // enableRowSelection: true,
-      // checkboxSelector: {
-      //   hideInFilterHeaderRow: false,
-      //   hideSelectAllCheckbox: true,
-      // },
     };
-  }
+  };
 
-  loadData() {
+  function loadData() {
     const tmpData: any[] = [];
-    // mock a dataset
     for (let i = 0; i < NB_ITEMS; i++) {
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomMonth = Math.floor(Math.random() * 11);
@@ -231,113 +153,129 @@ export default class Example19 extends React.Component<Props, State> {
     return tmpData;
   }
 
-  changeDetailViewRowCount() {
-    const options = this.rowDetailInstance.getOptions();
+  function changeDetailViewRowCount() {
+    const options = rowDetailInstance().getOptions();
     if (options && options.panelRows) {
-      options.panelRows = this.state.detailViewRowCount; // change number of rows dynamically
-      this.rowDetailInstance.setOptions(options);
+      options.panelRows = detailViewRowCount;
+      rowDetailInstance().setOptions(options);
     }
-  }
+  };
 
-  changeEditableGrid() {
-    // this.rowDetailInstance.setOptions({ useRowClick: false });
-    this.rowDetailInstance.collapseAll();
-    (this.rowDetailInstance as any).addonOptions.useRowClick = false;
-    this.state.gridOptions!.autoCommitEdit = !this.state.gridOptions!.autoCommitEdit;
-    this.reactGrid?.slickGrid.setOptions({
+  function changeEditableGrid() {
+    rowDetailInstance().collapseAll();
+    (rowDetailInstance() as any).addonOptions.useRowClick = false;
+    gridOptions!.autoCommitEdit = !gridOptions!.autoCommitEdit;
+    reactGridRef.current?.slickGrid.setOptions({
       editable: true,
       autoEdit: true,
       enableCellNavigation: true,
     });
     return true;
-  }
+  };
 
-  closeAllRowDetail() {
-    this.rowDetailInstance.collapseAll();
-  }
+  function closeAllRowDetail() {
+    rowDetailInstance().collapseAll();
+  };
 
-  detailViewRowCountChanged(val: number | string) {
-    this.setState((state: State) => ({ ...state, detailViewRowCount: +val }));
-  }
+  const detailViewRowCountChanged = (val: number | string) => {
+    setDetailViewRowCount(+val);
+  };
 
-  toggleDarkMode() {
-    this._darkMode = !this._darkMode;
-    this.toggleBodyBackground();
-    this.reactGrid.slickGrid?.setOptions({ darkMode: this._darkMode });
-  }
+  const serverDelayChanged = (e: React.FormEvent<HTMLInputElement>) => {
+    const newDelay = +((e.target as HTMLInputElement)?.value ?? '');
+    setServerWaitDelay(newDelay);
+  };
 
-  toggleBodyBackground() {
-    if (this._darkMode) {
+  function toggleDarkMode() {
+    closeAllRowDetail();
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    toggleBodyBackground(newDarkMode);
+    reactGridRef.current?.slickGrid.setOptions({ darkMode: newDarkMode });
+  };
+
+  const toggleBodyBackground = (darkMode: boolean) => {
+    if (darkMode) {
       document.querySelector<HTMLDivElement>('.panel-wm-content')!.classList.add('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'dark';
     } else {
       document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
     }
-  }
+  };
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div className="demo19">
-        <div id="demo-container" className="container-fluid">
-          <h2>
-            Example 19: Row Detail View
-            <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => this.toggleDarkMode()} data-test="toggle-dark-mode">
-              <i className="mdi mdi-theme-light-dark"></i>
-              <span>Toggle Dark Mode</span>
-            </button>
-            <span className="float-end font18">
-              see&nbsp;
-              <a target="_blank"
-                href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example19.tsx">
-                <span className="mdi mdi-link-variant"></span> code
-              </a>
-            </span>
-          </h2>
+  return !gridOptions ? null : (
+    <div className="demo19">
+      <div id="demo-container" className="container-fluid">
+        <h2>
+          Example 19: Row Detail View
+          <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={toggleDarkMode} data-test="toggle-dark-mode">
+            <i className="mdi mdi-theme-light-dark"></i>
+            <span>Toggle Dark Mode</span>
+          </button>
+          <span className="float-end font18">
+            see&nbsp;
+            <a target="_blank"
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example19.tsx">
+              <span className="mdi mdi-link-variant"></span> code
+            </a>
+          </span>
+        </h2>
 
-          <div className="col-sm-12">
-            <h6 className="subtitle italic content">
-              Add functionality to show extra information with a Row Detail View, (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/row-detail" target="_blank">Wiki docs</a>)
-              <ul>
-                <li>Click on the row "+" icon or anywhere on the row to open it (the latter can be changed via property "useRowClick: false")</li>
-                <li>Pass a View/Model as a Template to the Row Detail</li>
-                <li>You can use "expandableOverride()" callback to override logic to display expand icon on every row (for example only show it every 2nd row)</li>
-              </ul>
-            </h6>
-          </div>
-
-          <div className="row">
-            <div className="col-sm-6">
-              <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" onClick={() => this.changeEditableGrid()} data-test="editable-grid-btn">
-                Make Grid Editable
-              </button>
-              <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={() => this.closeAllRowDetail()} data-test="collapse-all-btn">
-                Close all Row Details
-              </button>
-              &nbsp;&nbsp;
-
-              <span className="d-inline-flex gap-4px">
-                <label htmlFor="detailViewRowCount">Detail View Rows Shown: </label>
-                <input id="detailViewRowCount" type="number" value={this.state.detailViewRowCount} style={{ height: '26px', width: '40px' }} onInput={($event) => this.detailViewRowCountChanged(($event.target as HTMLInputElement).value)} />
-                <button className="btn btn-outline-secondary btn-xs btn-icon" style={{ height: '26px' }} onClick={() => this.changeDetailViewRowCount()}
-                  data-test="set-count-btn">
-                  Set
-                </button>
-              </span>
-            </div>
-            {this.state.message ? <div className={'alert alert-' + this.state.flashAlertType + ' col-sm-6'} data-test="flash-msg">{this.state.message}</div> : ''}
-          </div>
-
-          <hr />
-
-          <SlickgridReact gridId="grid19"
-            columnDefinitions={this.state.columnDefinitions}
-            gridOptions={this.state.gridOptions}
-            dataset={this.state.dataset}
-            onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          />
+        <div className="col-sm-12">
+          <h6 className="subtitle italic content">
+            Add functionality to show extra information with a Row Detail View, (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/row-detail" target="_blank">Wiki docs</a>)
+            <ul>
+              <li>Click on the row "+" icon or anywhere on the row to open it (the latter can be changed via property "useRowClick: false")</li>
+              <li>Pass a View/Model as a Template to the Row Detail</li>
+              <li>You can use "expandableOverride()" callback to override logic to display expand icon on every row (for example only show it every 2nd row)</li>
+            </ul>
+          </h6>
         </div>
-      </div >
-    );
-  }
+
+        <div className="row">
+          <div className="col-sm-6">
+            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" onClick={changeEditableGrid} data-test="editable-grid-btn">
+              Make Grid Editable
+            </button>
+            <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={closeAllRowDetail} data-test="collapse-all-btn">
+              Close all Row Details
+            </button>
+            &nbsp;&nbsp;
+
+            <span className="d-inline-flex gap-4px">
+              <label htmlFor="detailViewRowCount">Detail View Rows Shown: </label>
+              <input id="detailViewRowCount" type="number" value={detailViewRowCount} style={{ height: '26px', width: '40px' }} onInput={($event) => detailViewRowCountChanged(($event.target as HTMLInputElement).value)} />
+              <button className="btn btn-outline-secondary btn-xs btn-icon" style={{ height: '26px' }} onClick={changeDetailViewRowCount}
+                data-test="set-count-btn">
+                Set
+              </button>
+              <label htmlFor="serverdelay" className="ms-2">Server Delay: </label>
+              <input id="serverdelay" type="number"
+                defaultValue={serverWaitDelay}
+                data-test="server-delay" style={{ width: '55px' }}
+                onInput={serverDelayChanged}
+                title="input a fake timer delay to simulate slow server response" />
+            </span>
+          </div>
+          {message ? <div className={'alert alert-' + flashAlertType + ' col-sm-6'} data-test="flash-msg">{message}</div> : ''}
+        </div>
+
+        <hr />
+
+        <SlickgridReact gridId="grid19"
+          columnDefinitions={columnDefinitions}
+          gridOptions={gridOptions}
+          dataset={dataset}
+          onReactGridCreated={$event => (reactGridRef.current = $event.detail)}
+        />
+      </div>
+    </div>
+  );
+};
+
+function randomNumber(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+export default Example19;
