@@ -22,10 +22,7 @@ import URL_SAMPLE_COLLECTION_DATA from './data/collection_500_numbers.json';
 
 const NB_ITEMS = 10500;
 
-export default function Example4() {
-  const title = 'Example 4: Client Side Sort/Filter';
-  document.title = title;
-
+const Example4: React.FC = () => {
   const [reactGrid, setReactGrid] = useState<SlickgridReactInstance>();
   const [metrics, setMetrics] = useState<Metrics>();
   const [dataset] = useState(getData(NB_ITEMS));
@@ -288,7 +285,7 @@ export default function Example4() {
   return (
     <div id="demo-container" className="container-fluid">
       <h2>
-        {title}
+        Example 4: Client Side Sort/Filter
         <span className="float-end font18">
           see&nbsp;
           <a target="_blank"
@@ -365,3 +362,5 @@ export default function Example4() {
     </div>
   );
 }
+
+export default Example4;
