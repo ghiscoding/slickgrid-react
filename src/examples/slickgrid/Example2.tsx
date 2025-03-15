@@ -37,10 +37,7 @@ const customEnableButtonFormatter: Formatter<DataItem> = (_row: number, _cell: n
     </span>`;
 };
 
-export default function Example2() {
-  const title = 'Example 2: Grid with Formatters';
-  document.title = title;
-
+const Example2: React.FC = () => {
   const [reactGrid, setReactGrid] = useState<SlickgridReactInstance>();
   const [resizerPaused, setResizerPaused] = useState(false);
   const [dataset] = useState(getData());
@@ -161,7 +158,7 @@ export default function Example2() {
   return (
     <div id="demo-container" className="container-fluid">
       <h2>
-        {title}
+        Example 2: Grid with Formatters
         <span className="float-end font18">
           see&nbsp;
           <a target="_blank"
@@ -197,3 +194,5 @@ export default function Example2() {
     </div>
   );
 }
+
+export default Example2;

@@ -9,9 +9,7 @@ import { useState } from 'react';
 
 const NB_ITEMS = 995;
 
-export default function Example1() {
-  const title = 'Example 1: Basic Grids';
-  document.title = title;
+const Example1: React.FC = () => {
   const defaultBrowserDarkMode = isBrowserDarkModeEnabled();
 
   const [darkModeGrid1, setDarkModeGrid1] = useState(defaultBrowserDarkMode);
@@ -100,7 +98,7 @@ export default function Example1() {
   return (
     <div id="demo-container" className="container-fluid">
       <h2>
-        {title}
+        Example 1: Basic Grids
         <span className="float-end font18">
           see&nbsp;
           <a target="_blank"
@@ -141,3 +139,5 @@ export default function Example1() {
     </div>
   );
 }
+
+export default Example1;

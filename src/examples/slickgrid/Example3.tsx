@@ -61,10 +61,7 @@ const taskFormatter = (_row: number, _cell: number, value: any) => {
   return '';
 };
 
-export default function Example3() {
-  const title = 'Example 3: Editors / Delete';
-  document.title = title;
-
+const Example3: React.FC = () => {
   const [duplicateTitleHeaderCount, setDuplicateTitleHeaderCount] = useState(1);
   const [commandQueue] = useState<EditCommand[]>([]);
   const [isAutoEdit, setIsAutoEdit] = useState(true);
@@ -662,7 +659,7 @@ export default function Example3() {
   return (
     <div id='demo-container' className='container-fluid'>
       <h2>
-        {title}
+        Example 3: Editors / Delete
         <span className="float-end font18">
           see&nbsp;
           <a target="_blank"
@@ -808,3 +805,5 @@ export default function Example3() {
     </div>
   );
 }
+
+export default Example3;
