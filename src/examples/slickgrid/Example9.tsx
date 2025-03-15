@@ -15,7 +15,6 @@ import {
 
 import './example9.scss'; // provide custom CSS/SASS styling
 
-
 const Example9: React.FC = () => {
   const defaultLang = 'en';
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
