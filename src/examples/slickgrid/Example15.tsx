@@ -68,7 +68,7 @@ const Example15: React.FC = () => {
       enableCheckboxSelector: true,
       enableFiltering: true,
       enableTranslate: true,
-      // i18n: i18n,
+      i18n: i18next,
       columnPicker: {
         hideForceFitButton: true
       },

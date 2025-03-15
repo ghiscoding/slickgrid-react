@@ -1,6 +1,6 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-import i18next, { type TFunction } from 'i18next';
-import React from 'react';
+import i18next from 'i18next';
+import React, { useEffect, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import {
@@ -17,16 +17,7 @@ import {
   type SlickgridReactInstance,
 } from '../../slickgrid-react';
 
-import type BaseSlickGridState from './state-slick-grid-base';
 import './example24.scss'; // provide custom CSS/SASS styling
-
-interface Props {
-  t: TFunction;
-}
-interface State extends BaseSlickGridState {
-  selectedLanguage: string;
-  showSubTitle: boolean;
-}
 
 const actionFormatter: Formatter = (_row, _cell, _value, _columnDef, dataContext) => {
   if (dataContext.priority === 3) { // option 3 is High
@@ -70,74 +61,41 @@ const taskTranslateFormatter: Formatter = (_row, _cell, value, _columnDef, _data
   return i18n?.t('TASK_X', { x: value }) ?? '';
 };
 
-class Example24 extends React.Component<Props, State> {
-  private _darkModeGrid = false;
-  title = 'Example 24: Cell Menu & Context Menu Plugins';
-  subTitle = `<ul>
-      <li>
-        This example demonstrates 2 SlickGrid plugins (<b>SlickCellMenu</b> for plugin Action Menu
-        (see <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/cell-menu" target="_blank">Docs</a>),
-        <b>SlickContextMenu</b> plugin (see <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/context-menu" target="_blank">Docs</a>)).
-      </li>
-      <li>It will also "autoAdjustDrop" (bottom/top) and "autoAlignSide" (left/right) by default but could be turned off</li>
-      <li>Both plugins have 2 sections, 1st section can have an array of Options (to change value of a field) and 2nd section an array of Commands (execute a command)</li>
-      <li>There are 2 ways to execute a Command/Option</li>
-      <ol>
-        <li>via onCommand/onOptionSelected (use a switch/case to parse command/option and do something with it)</li>
-        <li>via action callback (that can be defined on each command/option)</li>
-      </ol>
-      <li>Use override callback functions to change the properties of show/hide, enable/disable the menu or certain item(s) from the list</li>
-      <ol>
-        <li>These callbacks are: "menuUsabilityOverride", "itemVisibilityOverride", "itemUsabilityOverride"</li>
-        <li>... e.g. in the demo, the "Action" Cell Menu is only available when Priority is set to "High" via "menuUsabilityOverride"</li>
-        <li>... e.g. in the demo, the Context Menu is only available on the first 20 Tasks via "menuUsabilityOverride"</li>
-      </ol>
-    </ul>`;
+const Example24: React.FC = () => {
+  const defaultLang = 'en';
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset] = useState<any[]>(getData(1000));
+  const [darkMode, setDarkMode] = useState(false);
+  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(defaultLang);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  reactGrid!: SlickgridReactInstance;
-
-  constructor(public readonly props: Props) {
-    super(props);
-
-    // always start with English for Cypress E2E tests to be consistent
-    const defaultLang = 'en';
+  useEffect(() => {
     i18next.changeLanguage(defaultLang);
+    defineGrid();
 
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: [],
-      selectedLanguage: 'en',
-      showSubTitle: true,
+    // make sure it's back to light mode before unmounting
+    return () => {
+      document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
+      document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
     };
+  }, []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  get cellMenuInstance(): any {
-    return this.reactGrid && this.reactGrid.extensionService.getExtensionInstanceByName(ExtensionName.cellMenu) || {};
+  function cellMenuInstance() {
+    return reactGridRef.current?.extensionService.getExtensionInstanceByName(ExtensionName.cellMenu);
   }
 
-  get contextMenuInstance(): any {
-    return this.reactGrid && this.reactGrid.extensionService.getExtensionInstanceByName(ExtensionName.contextMenu) || {};
-  }
-
-  componentDidMount() {
-    document.title = this.title;
-
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-  }
-
-  componentWillUnmount(): void {
-    document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
-    document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  function contextMenuInstance() {
+    return reactGridRef.current?.extensionService.getExtensionInstanceByName(ExtensionName.contextMenu);
   }
 
   /* Define grid Options and Columns */
-  defineGrid() {
+  function defineGrid() {
     const columnDefinitions: Column[] = [
       { id: 'id', name: '#', field: 'id', maxWidth: 45, sortable: true, filterable: true },
       {
@@ -295,6 +253,7 @@ class Example24 extends React.Component<Props, State> {
         container: '#demo-container',
         rightPadding: 10
       },
+      darkMode,
       enableCellNavigation: true,
       enableFiltering: true,
       enableSorting: true,
@@ -317,36 +276,32 @@ class Example24 extends React.Component<Props, State> {
       cellMenu: {
         // all the Cell Menu callback methods (except the action callback)
         // are available under the grid options as shown below
-        onCommand: (_e, args) => this.executeCommand(_e, args),
+        onCommand: (_e, args) => executeCommand(_e, args),
         onOptionSelected: (_e, args) => {
           // change "Completed" property with new option selected from the Cell Menu
           const dataContext = args && args.dataContext;
           if (dataContext && dataContext.hasOwnProperty('completed')) {
             dataContext.completed = args.item.option;
-            this.reactGrid.gridService.updateItem(dataContext);
+            reactGridRef.current?.gridService.updateItem(dataContext);
           }
         },
         onBeforeMenuShow: ((_e, args) => {
           // for example, you could select the row that the click originated
-          // this.reactGrid.gridService.setSelectedRows([args.row]);
+          // reactGridRef.current?.gridService.setSelectedRows([args.row]);
           console.log('Before the Cell Menu is shown', args);
         }),
         onBeforeMenuClose: ((_e, args) => console.log('Cell Menu is closing', args)),
       },
 
       // load Context Menu structure
-      contextMenu: this.getContextMenuOptions(),
+      contextMenu: getContextMenuOptions(),
     };
 
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      dataset: this.getData(1000)
-    }));
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  executeCommand(_e: any, args: any) {
+  function executeCommand(_e: any, args: any) {
     const command = args.command;
     const dataContext = args.dataContext;
 
@@ -372,13 +327,13 @@ class Example24 extends React.Component<Props, State> {
         break;
       case 'delete-row':
         if (confirm(`Do you really want to delete row ${args.row + 1} with ${i18next?.t('TASK_X', { x: dataContext.id })}`)) {
-          this.reactGrid.dataView.deleteItem(dataContext.id);
+          reactGridRef.current?.dataView.deleteItem(dataContext.id);
         }
         break;
     }
   }
 
-  getData(count: number): any[] {
+  function getData(count: number): any[] {
     // mock a dataset
     const tmpData: any[] = [];
     for (let i = 0; i < count; i++) {
@@ -399,7 +354,7 @@ class Example24 extends React.Component<Props, State> {
     return tmpData;
   }
 
-  getContextMenuOptions(): ContextMenu {
+  function getContextMenuOptions(): ContextMenu {
     return {
       hideCloseButton: false,
       // optionally and conditionally define when the the menu is usable,
@@ -509,13 +464,13 @@ class Example24 extends React.Component<Props, State> {
       onBeforeMenuShow: ((_e, args) => {
         // for example, you could select the row it was clicked with
         // grid.setSelectedRows([args.row]); // select the entire row
-        this.reactGrid.slickGrid.setActiveCell(args.row, args.cell, false); // select the cell that the click originated
+        reactGridRef.current?.slickGrid.setActiveCell(args.row, args.cell, false); // select the cell that the click originated
         console.log('Before the global Context Menu is shown', args);
       }),
       onBeforeMenuClose: ((_e, args) => console.log('Global Context Menu is closing', args)),
 
       // subscribe to Context Menu onCommand event (or use the action callback on each command)
-      onCommand: ((_e, args) => this.executeCommand(_e, args)),
+      onCommand: ((_e, args) => executeCommand(_e, args)),
 
       // subscribe to Context Menu onOptionSelected event (or use the action callback on each option)
       onOptionSelected: ((_e, args) => {
@@ -523,25 +478,25 @@ class Example24 extends React.Component<Props, State> {
         const dataContext = args && args.dataContext;
         if (dataContext && dataContext.hasOwnProperty('priority')) {
           dataContext.priority = args.item.option;
-          this.reactGrid.gridService.updateItem(dataContext);
+          reactGridRef.current?.gridService.updateItem(dataContext);
         }
       }),
     };
   }
 
-  showContextCommandsAndOptions(showBothList: boolean) {
+  function showContextCommandsAndOptions(showBothList: boolean) {
     // when showing both Commands/Options, we can just pass an empty array to show over all columns
     // else show on all columns except Priority
     const showOverColumnIds = showBothList ? [] : ['id', 'title', 'complete', 'start', 'finish', 'completed', 'action'];
-    this.contextMenuInstance.setOptions({
+    contextMenuInstance()?.setOptions({
       commandShownOverColumnIds: showOverColumnIds,
       // hideCommandSection: !showBothList
     });
   }
 
-  showCellMenuCommandsAndOptions(showBothList: boolean) {
+  function showCellMenuCommandsAndOptions(showBothList: boolean) {
     // change via the plugin setOptions
-    this.cellMenuInstance.setOptions({
+    cellMenuInstance()?.setOptions({
       hideOptionSection: !showBothList
     });
 
@@ -550,103 +505,127 @@ class Example24 extends React.Component<Props, State> {
     // actionColumn.cellMenu.hideOptionSection = !showBothList;
   }
 
-  async switchLanguage() {
-    const nextLanguage = (this.state.selectedLanguage === 'en') ? 'fr' : 'en';
+  async function switchLanguage() {
+    const nextLanguage = (selectedLanguage === 'en') ? 'fr' : 'en';
     await i18next.changeLanguage(nextLanguage);
-    this.setState((state: State) => ({ ...state, selectedLanguage: nextLanguage }));
+    setSelectedLanguage(nextLanguage);
   }
 
-  toggleSubTitle() {
-    const showSubTitle = !this.state.showSubTitle;
+  function toggleSubTitle() {
+    const newShowSubTitle = !showSubTitle;
     const subTitleElm = document.querySelector('.subtitle');
-    const action = showSubTitle ? 'remove' : 'add';
+    const action = newShowSubTitle ? 'remove' : 'add';
     subTitleElm?.classList[action]('hidden');
-    this.setState((state: State) => ({ ...state, showSubTitle }));
-    queueMicrotask(() => this.reactGrid.resizerService.resizeGrid());
+    setShowSubTitle(newShowSubTitle);
+    queueMicrotask(() => reactGridRef.current?.resizerService.resizeGrid());
   }
 
-  toggleDarkMode() {
-    this._darkModeGrid = !this._darkModeGrid;
-    if (this._darkModeGrid) {
+  function toggleDarkMode() {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    toggleBodyBackground(newDarkMode);
+    reactGridRef.current?.slickGrid.setOptions({ darkMode: newDarkMode });
+  }
+
+  function toggleBodyBackground(darkMode: boolean) {
+    if (darkMode) {
       document.querySelector<HTMLDivElement>('.panel-wm-content')!.classList.add('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'dark';
     } else {
       document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
     }
-    this.reactGrid.slickGrid?.setOptions({ darkMode: this._darkModeGrid });
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div id="demo-container" className="container-fluid grid24">
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example24.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => this.toggleSubTitle()}>
-            <span className="mdi mdi-information-outline" title="Toggle sub-title text"></span>
-          </button>
-          <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" data-test="toggle-dark-mode" onClick={() => this.toggleDarkMode()}>
-            <i className="mdi mdi-theme-light-dark"></i>
-            <span>Toggle Dark Mode</span>
-          </button>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
-
-        <div className="row">
-          <span className="context-menu d-flex gap-4px">
-            <strong>Context Menu:</strong>
-            <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.showContextCommandsAndOptions(false)}
-              data-test="context-menu-priority-only-button">
-              Show Priority Options Only
-            </button>
-            <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.showContextCommandsAndOptions(true)}
-              data-test="context-menu-commands-and-priority-button">
-              Show Commands & Priority Options
-            </button>
-          </span>
-
-          <span className="cell-menu d-flex gap-4px">
-            <strong>Cell Menu:</strong>
-            <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.showCellMenuCommandsAndOptions(false)}
-              data-test="cell-menu-commands-and-options-false-button">
-              Show Action Commands Only
-            </button>
-            <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.showCellMenuCommandsAndOptions(true)}
-              data-test="cell-menu-commands-and-options-true-button">
-              Show Actions Commands & Completed Options
-            </button>
-          </span>
-        </div>
-
-        <div className="row locale">
-          <div className="col-12">
-            <button className="btn btn-outline-secondary btn-xs btn-icon me-1" onClick={() => this.switchLanguage()} data-test="language-button">
-              <i className="mdi mdi-translate me-1"></i>
-              Switch Language
-            </button>
-            <label>Locale: </label>
-            <span style={{ fontStyle: 'italic' }} data-test="selected-locale">
-              {this.state.selectedLanguage + '.json'}
-            </span>
-          </div>
-        </div>
-
-        <SlickgridReact gridId="grid24"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        />
+  return !gridOptions ? '' : (
+    <div id="demo-container" className="container-fluid grid24">
+      <h2>
+        Example 24: Cell Menu & Context Menu Plugins
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example24.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+          <span className="mdi mdi-information-outline" title="Toggle sub-title text"></span>
+        </button>
+        <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" data-test="toggle-dark-mode" onClick={() => toggleDarkMode()}>
+          <i className="mdi mdi-theme-light-dark"></i>
+          <span>Toggle Dark Mode</span>
+        </button>
+      </h2>
+      <div className="subtitle" >
+        <ul>
+          <li>
+            This example demonstrates 2 SlickGrid plugins (<b>SlickCellMenu</b> for plugin Action Menu
+            (see <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/cell-menu" target="_blank">Docs</a>),
+            <b>SlickContextMenu</b> plugin (see <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/context-menu" target="_blank">Docs</a>)).
+          </li>
+          <li>It will also "autoAdjustDrop" (bottom/top) and "autoAlignSide" (left/right) by default but could be turned off</li>
+          <li>Both plugins have 2 sections, 1st section can have an array of Options (to change value of a field) and 2nd section an array of Commands (execute a command)</li>
+          <li>There are 2 ways to execute a Command/Option</li>
+          <ol>
+            <li>via onCommand/onOptionSelected (use a switch/case to parse command/option and do something with it)</li>
+            <li>via action callback (that can be defined on each command/option)</li>
+          </ol>
+          <li>Use override callback functions to change the properties of show/hide, enable/disable the menu or certain item(s) from the list</li>
+          <ol>
+            <li>These callbacks are: "menuUsabilityOverride", "itemVisibilityOverride", "itemUsabilityOverride"</li>
+            <li>... e.g. in the demo, the "Action" Cell Menu is only available when Priority is set to "High" via "menuUsabilityOverride"</li>
+            <li>... e.g. in the demo, the Context Menu is only available on the first 20 Tasks via "menuUsabilityOverride"</li>
+          </ol>
+        </ul>
       </div>
-    );
-  }
+
+      <div className="row">
+        <span className="context-menu d-flex gap-4px">
+          <strong>Context Menu:</strong>
+          <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => showContextCommandsAndOptions(false)}
+            data-test="context-menu-priority-only-button">
+            Show Priority Options Only
+          </button>
+          <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => showContextCommandsAndOptions(true)}
+            data-test="context-menu-commands-and-priority-button">
+            Show Commands & Priority Options
+          </button>
+        </span>
+
+        <span className="cell-menu d-flex gap-4px">
+          <strong>Cell Menu:</strong>
+          <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => showCellMenuCommandsAndOptions(false)}
+            data-test="cell-menu-commands-and-options-false-button">
+            Show Action Commands Only
+          </button>
+          <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => showCellMenuCommandsAndOptions(true)}
+            data-test="cell-menu-commands-and-options-true-button">
+            Show Actions Commands & Completed Options
+          </button>
+        </span>
+      </div>
+
+      <div className="row locale">
+        <div className="col-12">
+          <button className="btn btn-outline-secondary btn-xs btn-icon me-1" onClick={() => switchLanguage()} data-test="language-button">
+            <i className="mdi mdi-translate me-1"></i>
+            Switch Language
+          </button>
+          <label>Locale: </label>
+          <span style={{ fontStyle: 'italic' }} data-test="selected-locale">
+            {selectedLanguage + '.json'}
+          </span>
+        </div>
+      </div>
+
+      <SlickgridReact gridId="grid24"
+        columnDefinitions={columnDefinitions}
+        gridOptions={gridOptions}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+      />
+    </div>
+  );
 }
 
 export default withTranslation()(Example24);

@@ -11,81 +11,41 @@ import {
   Formatters,
   type GridOption,
   isNumber,
-  // GroupTotalFormatters,
-  // italicFormatter,
   type SlickDataView,
   SlickgridReact,
   type SlickgridReactInstance,
-  type TreeToggledItem,
 } from '../../slickgrid-react';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import type BaseSlickGridState from './state-slick-grid-base';
 import './example28.scss'; // provide custom CSS/SASS styling
 
-interface Props { }
-interface State extends BaseSlickGridState {
-  datasetHierarchical?: any[];
-  loadingClass: string;
-  isLargeDataset: boolean;
-  hasNoExpandCollapseChanged: boolean;
-  searchString: string;
-  treeToggleItems: TreeToggledItem[];
-  isExcludingChildWhenFiltering: boolean;
-  isAutoApproveParentItemWhenTreeColumnIsValid: boolean;
-  isAutoRecalcTotalsOnFilterChange: boolean;
-  isRemoveLastInsertedPopSongDisabled: boolean;
-  lastInsertedPopSongId: number | undefined;
-}
+const Example28: React.FC = () => {
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>();
+  const [datasetHierarchical, setDatasetHierarchical] = useState(mockDataset());
+  const [lastInsertedPopSongId, setLastInsertedPopSongId] = useState<number | undefined>();
+  const [searchString, setSearchString] = useState('');
 
-export default class Example28 extends React.Component<Props, State> {
-  title = 'Example 28: Tree Data with Aggregators <small>(from a Hierarchical Dataset)</small>';
-  subTitle = `<ul>
-    <li>It is assumed that your dataset will have Parent/Child references AND also Tree Level (indent) property.</li>
-    <ul>
-      <li>If you do not have the Tree Level (indent), you could call "convertParentChildArrayToHierarchicalView()" then call "convertHierarchicalViewToParentChildArray()"</li>
-      <li>You could also pass the result of "convertParentChildArrayToHierarchicalView()" to "dataset-hierarchical.bind" as defined in the next Hierarchical Example</li>
-    </ul>
-  </ul>`;
-  reactGrid!: SlickgridReactInstance;
+  const isExcludingChildWhenFilteringRef = useRef(false);
+  const isAutoApproveParentItemWhenTreeColumnIsValidRef = useRef(true);
+  const isAutoRecalcTotalsOnFilterChangeRef = useRef(false);
+  const isRemoveLastInsertedPopSongDisabledRef = useRef(true);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  constructor(public readonly props: Props) {
-    super(props);
+  useEffect(() => {
+    defineGrid();
+  }, []);
 
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      datasetHierarchical: undefined,
-      isExcludingChildWhenFiltering: false,
-      isAutoApproveParentItemWhenTreeColumnIsValid: true,
-      isAutoRecalcTotalsOnFilterChange: false,
-      isRemoveLastInsertedPopSongDisabled: true,
-      lastInsertedPopSongId: undefined,
-      isLargeDataset: false,
-      hasNoExpandCollapseChanged: true,
-      loadingClass: '',
-      treeToggleItems: [],
-      searchString: '',
-    };
-  }
-
-  componentDidMount() {
-    document.title = this.title;
-
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
   /* Define grid Options and Columns */
-  defineGrid() {
+  function defineGrid() {
     const columnDefinitions: Column[] = [
       {
         id: 'file', name: 'Files', field: 'file',
-        type: FieldType.string, width: 150, formatter: this.treeFormatter.bind(this),
+        type: FieldType.string, width: 150, formatter: treeFormatter,
         filterable: true, sortable: true,
       },
       {
@@ -123,7 +83,7 @@ export default class Example28 extends React.Component<Props, State> {
 
           // Tree Totals, if exists, will be found under `__treeTotals` prop
           if (dataContext?.__treeTotals !== undefined) {
-            const treeLevel = dataContext[this.state.gridOptions!.treeDataOptions?.levelPropName || '__treeLevel'];
+            const treeLevel = dataContext[gridOptions!.treeDataOptions?.levelPropName || '__treeLevel'];
             const sumVal = dataContext?.__treeTotals?.['sum'][fieldId];
             const avgVal = dataContext?.__treeTotals?.['avg'][fieldId];
 
@@ -161,12 +121,12 @@ export default class Example28 extends React.Component<Props, State> {
       treeDataOptions: {
         columnId: 'file',
         childrenPropName: 'files',
-        excludeChildrenWhenFilteringTree: this.state.isExcludingChildWhenFiltering, // defaults to false
+        excludeChildrenWhenFilteringTree: isExcludingChildWhenFilteringRef.current, // defaults to false
 
         // skip any other filter criteria(s) if the column holding the Tree (file) passes its own filter criteria
         // (e.g. filtering with "Files = music AND Size > 7", the row "Music" and children will only show up when this flag is enabled
         // this flag only works with the other flag set to `excludeChildrenWhenFilteringTree: false`
-        autoApproveParentItemWhenTreeColumnIsValid: this.state.isAutoApproveParentItemWhenTreeColumnIsValid,
+        autoApproveParentItemWhenTreeColumnIsValid: isAutoApproveParentItemWhenTreeColumnIsValidRef.current,
 
         // you can also optionally sort by a different column and/or change sort direction
         // initialSort: {
@@ -182,7 +142,7 @@ export default class Example28 extends React.Component<Props, State> {
 
         // should we auto-recalc Tree Totals (when using Aggregators) anytime a filter changes
         // it is disabled by default for perf reason, by default it will only calculate totals on first load
-        autoRecalcTotalsOnFilterChange: this.state.isAutoRecalcTotalsOnFilterChange,
+        autoRecalcTotalsOnFilterChange: isAutoRecalcTotalsOnFilterChangeRef.current,
 
         // add optional debounce time to limit number of execution that recalc is called, mostly useful on large dataset
         // autoRecalcTotalsDebounce: 250
@@ -198,61 +158,57 @@ export default class Example28 extends React.Component<Props, State> {
       },
     };
 
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      datasetHierarchical: this.mockDataset(),
-    }));
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  changeAutoApproveParentItem() {
-    const isAutoApproveParentItemWhenTreeColumnIsValid = !this.state.isAutoApproveParentItemWhenTreeColumnIsValid;
-    this.setState((state: State) => ({ ...state, isAutoApproveParentItemWhenTreeColumnIsValid }));
+  function changeAutoApproveParentItem() {
+    const newIsAutoApproveParentItemWhenTreeColumnIsValid = !isAutoApproveParentItemWhenTreeColumnIsValidRef.current;
+    isAutoApproveParentItemWhenTreeColumnIsValidRef.current = newIsAutoApproveParentItemWhenTreeColumnIsValid;
 
-    this.state.gridOptions!.treeDataOptions!.autoApproveParentItemWhenTreeColumnIsValid = isAutoApproveParentItemWhenTreeColumnIsValid;
-    this.reactGrid.slickGrid.setOptions(this.state.gridOptions!);
-    this.reactGrid.filterService.refreshTreeDataFilters();
+    gridOptions!.treeDataOptions!.autoApproveParentItemWhenTreeColumnIsValid = newIsAutoApproveParentItemWhenTreeColumnIsValid;
+    reactGridRef.current?.slickGrid.setOptions(gridOptions!);
+    reactGridRef.current?.filterService.refreshTreeDataFilters();
     return true;
   }
 
-  changeAutoRecalcTotalsOnFilterChange() {
-    const isAutoRecalcTotalsOnFilterChange = !this.state.isAutoRecalcTotalsOnFilterChange;
-    this.setState((state: State) => ({ ...state, isAutoRecalcTotalsOnFilterChange }));
+  function changeAutoRecalcTotalsOnFilterChange() {
+    const newIsAutoRecalcTotalsOnFilterChange = !isAutoRecalcTotalsOnFilterChangeRef.current;
+    isAutoRecalcTotalsOnFilterChangeRef.current = newIsAutoRecalcTotalsOnFilterChange;
 
-    this.state.gridOptions!.treeDataOptions!.autoRecalcTotalsOnFilterChange = isAutoRecalcTotalsOnFilterChange;
-    this.reactGrid.slickGrid.setOptions(this.state.gridOptions!);
+    gridOptions!.treeDataOptions!.autoRecalcTotalsOnFilterChange = newIsAutoRecalcTotalsOnFilterChange;
+    reactGridRef.current?.slickGrid.setOptions(gridOptions!);
 
     // since it doesn't take current filters in consideration, we better clear them
-    this.reactGrid.filterService.clearFilters();
-    this.reactGrid.treeDataService.enableAutoRecalcTotalsFeature();
+    reactGridRef.current?.filterService.clearFilters();
+    reactGridRef.current?.treeDataService.enableAutoRecalcTotalsFeature();
     return true;
   }
 
-  changeExcludeChildWhenFiltering() {
-    const isExcludingChildWhenFiltering = !this.state.isExcludingChildWhenFiltering;
-    this.setState((state: State) => ({ ...state, isExcludingChildWhenFiltering }));
-    this.state.gridOptions!.treeDataOptions!.excludeChildrenWhenFilteringTree = isExcludingChildWhenFiltering;
-    this.reactGrid.slickGrid.setOptions(this.state.gridOptions!);
-    this.reactGrid.filterService.refreshTreeDataFilters();
+  function changeExcludeChildWhenFiltering() {
+    const newIsExcludingChildWhenFiltering = !isExcludingChildWhenFilteringRef.current;
+    isExcludingChildWhenFilteringRef.current = newIsExcludingChildWhenFiltering;
+    gridOptions!.treeDataOptions!.excludeChildrenWhenFilteringTree = newIsExcludingChildWhenFiltering;
+    reactGridRef.current?.slickGrid.setOptions(gridOptions!);
+    reactGridRef.current?.filterService.refreshTreeDataFilters();
     return true;
   }
 
-  clearSearch() {
-    this.setState((state: State) => ({ ...state, searchString: '' }));
-    this.searchStringChanged('');
+  function clearSearch() {
+    setSearchString('');
+    searchStringChanged('');
   }
 
-  searchStringChanged(val: string) {
-    this.setState((state: State) => ({ ...state, searchString: val }));
-    this.updateFilter(val);
+  function searchStringChanged(val: string) {
+    setSearchString(val);
+    updateFilter(val);
   }
 
-  updateFilter(val: string) {
-    this.reactGrid.filterService.updateFilters([{ columnId: 'file', searchTerms: [val] }], true, false, true);
+  function updateFilter(val: string) {
+    reactGridRef.current?.filterService.updateFilters([{ columnId: 'file', searchTerms: [val] }], true, false, true);
   }
 
-  treeFormatter: Formatter = (_row, _cell, value, _columnDef, dataContext, grid) => {
+  const treeFormatter: Formatter = (_row, _cell, value, _columnDef, dataContext, grid) => {
     const gridOptions = grid.getOptions();
     const treeLevelPropName = gridOptions.treeDataOptions && gridOptions.treeDataOptions.levelPropName || '__treeLevel';
     if (value === null || value === undefined || dataContext === undefined) {
@@ -262,7 +218,7 @@ export default class Example28 extends React.Component<Props, State> {
     const data = dataView.getItems();
     const identifierPropName = dataView.getIdPropertyName() || 'id';
     const idx = dataView.getIdxById(dataContext[identifierPropName]) as number;
-    const prefix = this.getFileIcon(value);
+    const prefix = getFileIcon(value);
     const treeLevel = dataContext[treeLevelPropName];
     const exportIndentationLeadingChar = '.';
 
@@ -282,7 +238,7 @@ export default class Example28 extends React.Component<Props, State> {
     }
   };
 
-  getFileIcon(value: string) {
+  function getFileIcon(value: string) {
     let prefix = '';
     if (value.includes('.pdf')) {
       prefix = '<span class="mdi mdi-file-pdf-outline text-danger"></span>';
@@ -300,12 +256,12 @@ export default class Example28 extends React.Component<Props, State> {
    * A simple method to add a new item inside the first group that we find.
    * After adding the item, it will sort by parent/child recursively
    */
-  addNewFile() {
-    const newId = this.reactGrid.dataView.getLength() + 50;
+  function addNewFile() {
+    const newId = (reactGridRef.current?.dataView.getLength() ?? 0) + 50;
 
     // find first parent object and add the new item as a child
-    const tmpDatasetHierarchical = [...this.state?.datasetHierarchical ?? []];
-    const popFolderItem = findItemInTreeStructure(tmpDatasetHierarchical, x => x.file === 'pop', 'files');
+    const tmpDatasetHierarchical = [...datasetHierarchical ?? []];
+    const popFolderItem: any = findItemInTreeStructure(tmpDatasetHierarchical, x => x.file === 'pop', 'files');
 
     if (popFolderItem && Array.isArray(popFolderItem.files)) {
       popFolderItem.files.push({
@@ -314,65 +270,56 @@ export default class Example28 extends React.Component<Props, State> {
         dateModified: new Date(),
         size: newId + 3,
       });
-      this.setState((state: State) => ({
-        ...state,
-        lastInsertedPopSongId: newId,
-        isRemoveLastInsertedPopSongDisabled: false,
 
-        // overwrite hierarchical dataset which will also trigger a grid sort and rendering
-        datasetHierarchical: tmpDatasetHierarchical,
-      }));
+      setLastInsertedPopSongId(newId);
+      isRemoveLastInsertedPopSongDisabledRef.current = false;
+
+      // overwrite hierarchical dataset which will also trigger a grid sort and rendering
+      setDatasetHierarchical(tmpDatasetHierarchical);
 
       // scroll into the position, after insertion cycle, where the item was added
       window.setTimeout(() => {
-        const rowIndex = this.reactGrid.dataView.getRowById(popFolderItem.id) as number;
-        this.reactGrid.slickGrid.scrollRowIntoView(rowIndex + 3);
+        const rowIndex = reactGridRef.current?.dataView.getRowById(popFolderItem.id) as number;
+        reactGridRef.current?.slickGrid.scrollRowIntoView(rowIndex + 3);
       }, 10);
     }
   }
 
-  deleteFile() {
-    const tmpDatasetHierarchical = [...this.state?.datasetHierarchical ?? []];
-    const popFolderItem = findItemInTreeStructure(tmpDatasetHierarchical, x => x.file === 'pop', 'files');
-    const songItemFound = findItemInTreeStructure(tmpDatasetHierarchical, x => x.id === this.state.lastInsertedPopSongId, 'files');
+  function deleteFile() {
+    const tmpDatasetHierarchical = [...datasetHierarchical || []];
+    const popFolderItem: any = findItemInTreeStructure(tmpDatasetHierarchical, x => x.file === 'pop', 'files');
+    const songItemFound = findItemInTreeStructure(tmpDatasetHierarchical, x => x.id === lastInsertedPopSongId, 'files');
 
     if (popFolderItem && songItemFound) {
       const songIdx = popFolderItem.files.findIndex((f: any) => f.id === songItemFound.id);
       if (songIdx >= 0) {
         popFolderItem.files.splice(songIdx, 1);
-        this.setState((state: State) => ({
-          ...state,
-          lastInsertedPopSongId: undefined,
-          isRemoveLastInsertedPopSongDisabled: true,
+        setLastInsertedPopSongId(undefined);
+        isRemoveLastInsertedPopSongDisabledRef.current = true;
 
-          // overwrite hierarchical dataset which will also trigger a grid sort and rendering
-          datasetHierarchical: tmpDatasetHierarchical,
-        }));
+        // overwrite hierarchical dataset which will also trigger a grid sort and rendering
+        setDatasetHierarchical(tmpDatasetHierarchical);
       }
     }
   }
 
-  clearFilters() {
-    this.reactGrid.filterService.clearFilters();
+  function collapseAll() {
+    reactGridRef.current?.treeDataService.toggleTreeDataCollapse(true);
   }
 
-  collapseAll() {
-    this.reactGrid.treeDataService.toggleTreeDataCollapse(true);
+  function expandAll() {
+    reactGridRef.current?.treeDataService.toggleTreeDataCollapse(false);
   }
 
-  expandAll() {
-    this.reactGrid.treeDataService.toggleTreeDataCollapse(false);
+  function logHierarchicalStructure() {
+    console.log('exploded array', reactGridRef.current?.treeDataService.datasetHierarchical /* , JSON.stringify(explodedArray, null, 2) */);
   }
 
-  logHierarchicalStructure() {
-    console.log('exploded array', this.reactGrid.treeDataService.datasetHierarchical /* , JSON.stringify(explodedArray, null, 2) */);
+  function logFlatStructure() {
+    console.log('flat array', reactGridRef.current?.treeDataService.dataset /* , JSON.stringify(outputFlatArray, null, 2) */);
   }
 
-  logFlatStructure() {
-    console.log('flat array', this.reactGrid.treeDataService.dataset /* , JSON.stringify(outputFlatArray, null, 2) */);
-  }
-
-  mockDataset() {
+  function mockDataset() {
     return [
       { id: 24, file: 'bucket-list.txt', dateModified: '2012-03-05T12:44:00.123Z', size: 0.5 },
       { id: 18, file: 'something.txt', dateModified: '2015-03-03T03:50:00.123Z', size: 90 },
@@ -418,103 +365,111 @@ export default class Example28 extends React.Component<Props, State> {
     ];
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          <span dangerouslySetInnerHTML={{ __html: this.title }}></span>
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example28.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
+  return !gridOptions ? '' : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 28: Tree Data with Aggregators <small>(from a Hierarchical Dataset)</small>
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example28.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+      </h2>
+      <div className="subtitle">
+        <ul>
+          <li>It is assumed that your dataset will have Parent/Child references AND also Tree Level (indent) property.</li>
+          <ul>
+            <li>If you do not have the Tree Level (indent), you could call "convertParentChildArrayToHierarchicalView()" then call "convertHierarchicalViewToParentChildArray()"</li>
+            <li>You could also pass the result of "convertParentChildArrayToHierarchicalView()" to "dataset-hierarchical.bind" as defined in the next Hierarchical Example</li>
+          </ul>
+        </ul>
+      </div>
 
-        <div className="row">
-          <div className="col-md-7">
-            <button onClick={() => this.addNewFile()} data-test="add-item-btn" className="btn btn-xs btn-icon btn-primary mx-1">
-              <span className="mdi mdi-shape-square-plus me-1 text-white"></span>
-              <span className="text-white">Add New Pop Song</span>
-            </button>
-            <button onClick={() => this.deleteFile()} data-test="remove-item-btn" className="btn btn-outline-secondary btn-xs btn-icon" disabled={this.state.isRemoveLastInsertedPopSongDisabled}>
-              <span className="mdi mdi-minus me-1"></span>
-              <span>Remove Last Inserted Pop Song</span>
-            </button>
-            <button onClick={() => this.collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-xs btn-icon mx-1">
-              <span className="mdi mdi-arrow-collapse me-1"></span>
-              <span>Collapse All</span>
-            </button>
-            <button onClick={() => this.expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-xs btn-icon">
-              <span className="mdi mdi-arrow-expand me-1"></span>
-              <span>Expand All</span>
-            </button>
-            <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="clear-filters-btn" onClick={() => this.reactGrid.filterService.clearFilters()}>
-              <span className="mdi mdi-close me-1"></span>
-              <span>Clear Filters</span>
-            </button>
-            <button onClick={() => this.logFlatStructure()} className="btn btn-outline-secondary btn-xs btn-icon mx-1">
-              <span>Log Flat Structure</span>
-            </button>
-            <button onClick={() => this.logHierarchicalStructure()} className="btn btn-outline-secondary btn-xs btn-icon">
-              <span>Log Hierarchical Structure</span>
-            </button>
-          </div>
-
-          <div className="col-md-5">
-            <div className="input-group input-group-sm">
-              <input type="text" className="form-control search-string" data-test="search-string" value={this.state.searchString} onInput={($event) => this.searchStringChanged(($event.target as HTMLInputElement).value)} />
-              <button className="btn btn-outline-secondary d-flex align-items-center" data-test="clear-search-string" onClick={() => this.clearSearch()}>
-                <span className="icon mdi mdi-close"></span>
-              </button>
-            </div>
-          </div>
+      <div className="row">
+        <div className="col-md-7">
+          <button onClick={() => addNewFile()} data-test="add-item-btn" className="btn btn-xs btn-icon btn-primary mx-1">
+            <span className="mdi mdi-shape-square-plus me-1 text-white"></span>
+            <span className="text-white">Add New Pop Song</span>
+          </button>
+          <button onClick={() => deleteFile()} data-test="remove-item-btn" className="btn btn-outline-secondary btn-xs btn-icon" disabled={isRemoveLastInsertedPopSongDisabledRef.current}>
+            <span className="mdi mdi-minus me-1"></span>
+            <span>Remove Last Inserted Pop Song</span>
+          </button>
+          <button onClick={() => collapseAll()} data-test="collapse-all-btn" className="btn btn-outline-secondary btn-xs btn-icon mx-1">
+            <span className="mdi mdi-arrow-collapse me-1"></span>
+            <span>Collapse All</span>
+          </button>
+          <button onClick={() => expandAll()} data-test="expand-all-btn" className="btn btn-outline-secondary btn-xs btn-icon">
+            <span className="mdi mdi-arrow-expand me-1"></span>
+            <span>Expand All</span>
+          </button>
+          <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="clear-filters-btn" onClick={() => reactGridRef.current?.filterService.clearFilters()}>
+            <span className="mdi mdi-close me-1"></span>
+            <span>Clear Filters</span>
+          </button>
+          <button onClick={() => logFlatStructure()} className="btn btn-outline-secondary btn-xs btn-icon mx-1">
+            <span>Log Flat Structure</span>
+          </button>
+          <button onClick={() => logHierarchicalStructure()} className="btn btn-outline-secondary btn-xs btn-icon">
+            <span>Log Hierarchical Structure</span>
+          </button>
         </div>
 
-        <div>
-          <label className="checkbox-inline control-label" htmlFor="excludeChildWhenFiltering" style={{ marginLeft: '20px' }}>
-            <input type="checkbox" id="excludeChildWhenFiltering" data-test="exclude-child-when-filtering" className="me-1"
-              defaultChecked={this.state.isExcludingChildWhenFiltering}
-              onClick={() => this.changeExcludeChildWhenFiltering()} />
-            <span
-              title="for example if we filter the word 'pop' and we exclude children, then only the folder 'pop' will show up without any content unless we uncheck this flag">
-              Exclude Children when Filtering Tree
-            </span>
-          </label>
-          <label className="checkbox-inline control-label" htmlFor="autoApproveParentItem" style={{ marginLeft: '20px' }}>
-            <input type="checkbox" id="autoApproveParentItem" data-test="auto-approve-parent-item" className="me-1"
-              defaultChecked={this.state.isAutoApproveParentItemWhenTreeColumnIsValid}
-              onClick={() => this.changeAutoApproveParentItem()} />
-            <span
-              title="for example in this demo if we filter with 'music' and size '> 70' nothing will show up unless we have this flag enabled
-            because none of the files have both criteria at the same time, however the column with the tree 'file' does pass the filter criteria 'music'
-            and with this flag we tell the lib to skip any other filter(s) as soon as the with the tree (file in this demo) passes its own filter criteria">
-              Skip Other Filter Criteria when Parent with Tree is valid
-            </span>
-          </label>
-          <label className="checkbox-inline control-label" htmlFor="autoRecalcTotalsOnFilterChange" style={{ marginLeft: '20px' }}>
-            <input type="checkbox" id="autoRecalcTotalsOnFilterChange" data-test="auto-recalc-totals" className="me-1"
-              defaultChecked={this.state.isAutoRecalcTotalsOnFilterChange}
-              onClick={() => this.changeAutoRecalcTotalsOnFilterChange()} />
-            <span title="Should we recalculate Tree Data Totals (when Aggregators are defined) while filtering? This feature is disabled by default.">
-              auto-recalc Tree Data totals on filter changed
-            </span>
-          </label>
-        </div>
-
-        <br />
-
-        <div id="grid-container" className="col-sm-12">
-          <SlickgridReact gridId="grid28"
-            columnDefinitions={this.state.columnDefinitions}
-            gridOptions={this.state.gridOptions}
-            datasetHierarchical={this.state.datasetHierarchical}
-            onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          />
+        <div className="col-md-5">
+          <div className="input-group input-group-sm">
+            <input type="text" className="form-control search-string" data-test="search-string" value={searchString} onInput={($event) => searchStringChanged(($event.target as HTMLInputElement).value)} />
+            <button className="btn btn-outline-secondary d-flex align-items-center" data-test="clear-search-string" onClick={() => clearSearch()}>
+              <span className="icon mdi mdi-close"></span>
+            </button>
+          </div>
         </div>
       </div>
-    );
-  }
+
+      <div>
+        <label className="checkbox-inline control-label" htmlFor="excludeChildWhenFiltering" style={{ marginLeft: '20px' }}>
+          <input type="checkbox" id="excludeChildWhenFiltering" data-test="exclude-child-when-filtering" className="me-1"
+            defaultChecked={isExcludingChildWhenFilteringRef.current}
+            onClick={() => changeExcludeChildWhenFiltering()} />
+          <span
+            title="for example if we filter the word 'pop' and we exclude children, then only the folder 'pop' will show up without any content unless we uncheck this flag">
+            Exclude Children when Filtering Tree
+          </span>
+        </label>
+        <label className="checkbox-inline control-label" htmlFor="autoApproveParentItem" style={{ marginLeft: '20px' }}>
+          <input type="checkbox" id="autoApproveParentItem" data-test="auto-approve-parent-item" className="me-1"
+            defaultChecked={isAutoApproveParentItemWhenTreeColumnIsValidRef.current}
+            onClick={() => changeAutoApproveParentItem()} />
+          <span
+            title="for example in this demo if we filter with 'music' and size '> 70' nothing will show up unless we have this flag enabled
+            because none of the files have both criteria at the same time, however the column with the tree 'file' does pass the filter criteria 'music'
+            and with this flag we tell the lib to skip any other filter(s) as soon as the with the tree (file in this demo) passes its own filter criteria">
+            Skip Other Filter Criteria when Parent with Tree is valid
+          </span>
+        </label>
+        <label className="checkbox-inline control-label" htmlFor="autoRecalcTotalsOnFilterChange" style={{ marginLeft: '20px' }}>
+          <input type="checkbox" id="autoRecalcTotalsOnFilterChange" data-test="auto-recalc-totals" className="me-1"
+            defaultChecked={isAutoRecalcTotalsOnFilterChangeRef.current}
+            onClick={() => changeAutoRecalcTotalsOnFilterChange()} />
+          <span title="Should we recalculate Tree Data Totals (when Aggregators are defined) while filtering? This feature is disabled by default.">
+            auto-recalc Tree Data totals on filter changed
+          </span>
+        </label>
+      </div>
+
+      <br />
+
+      <div id="grid-container" className="col-sm-12">
+        <SlickgridReact gridId="grid28"
+          columnDefinitions={columnDefinitions}
+          gridOptions={gridOptions}
+          datasetHierarchical={datasetHierarchical}
+          onReactGridCreated={$event => reactGridReady($event.detail)}
+        />
+      </div>
+    </div>
+  );
 }
+
+export default Example28;

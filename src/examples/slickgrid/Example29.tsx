@@ -1,9 +1,7 @@
 import { type Column, type GridOption, Formatters, SlickgridReact } from '../../slickgrid-react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const NB_ITEMS = 995;
-
-interface Props { }
 
 const Header = () => <h5>Header Slot</h5>;
 const Footer = () => {
@@ -18,30 +16,18 @@ const Footer = () => {
   );
 };
 
-export default class Example29 extends React.Component {
-  title = 'Example 29: Grid with Header and Footer slot';
-  subTitle = `Simple Grids with a custom header and footer via named slots`;
+const Example29: React.FC = () => {
+  const [dataset] = useState<Column[]>(getData(NB_ITEMS));
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
 
-  gridOptions!: GridOption;
-  columnDefinitions: Column[] = [];
-  dataset: any[] = [];
-
-  constructor(public readonly props: Props) {
-    super(props);
-    // define the grid options & columns and then create the grid itself
-    this.defineGrids();
-    this.componentDidMount();
-  }
-
-  componentDidMount() {
-    document.title = this.title;
-    // mock some data (different in each dataset)
-    this.dataset = this.mockData(NB_ITEMS);
-  }
+  useEffect(() => {
+    defineGrids();
+  }, []);
 
   /* Define grid Options and Columns */
-  defineGrids() {
-    this.columnDefinitions = [
+  function defineGrids() {
+    const columnDefinitions = [
       { id: 'title', name: 'Title', field: 'title', sortable: true, minWidth: 100 },
       { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true, minWidth: 100 },
       { id: '%', name: '% Complete', field: 'percentComplete', sortable: true, minWidth: 100 },
@@ -49,15 +35,18 @@ export default class Example29 extends React.Component {
       { id: 'finish', name: 'Finish', field: 'finish', formatter: Formatters.dateIso },
       { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven', sortable: true, minWidth: 100 }
     ];
-    this.gridOptions = {
+    const gridOptions = {
       enableAutoResize: false,
       enableSorting: true,
       gridHeight: 225,
       gridWidth: 800,
     };
+
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  mockData(count: number) {
+  function getData(count: number) {
     // mock a dataset
     const mockDataset: any[] = [];
     for (let i = 0; i < count; i++) {
@@ -80,31 +69,33 @@ export default class Example29 extends React.Component {
     return mockDataset;
   }
 
-  render() {
-    return (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example29.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
-
-        <hr />
-
-        <SlickgridReact gridId="grid"
-          columnDefinitions={this.columnDefinitions}
-          gridOptions={this.gridOptions}
-          dataset={this.dataset}
-          header={<Header />}
-          footer={<Footer />}
-        />
+  return !gridOptions ? null : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 29: Grid with Header and Footer slot
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example29.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+      </h2>
+      <div className="subtitle">
+        Simple Grids with a custom header and footer via named slots
       </div>
-    );
-  }
+
+      <hr />
+
+      <SlickgridReact gridId="grid"
+        columnDefinitions={columnDefinitions}
+        gridOptions={gridOptions}
+        dataset={dataset}
+        header={<Header />}
+        footer={<Footer />}
+      />
+    </div>
+  );
 }
+
+export default Example29;
