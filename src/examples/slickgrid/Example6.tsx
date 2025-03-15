@@ -26,25 +26,23 @@ const GRAPHQL_QUERY_DATASET_NAME = 'users';
 const FAKE_SERVER_DELAY = 250;
 
 const Example6: React.FC = () => {
+  const defaultLang = 'en';
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
   const [dataset] = useState<any[]>([]);
   const [metrics, setMetrics] = useState<Metrics | undefined>(undefined);
   const [processing, setProcessing] = useState<boolean>(false);
   const [graphqlQuery, setGraphqlQuery] = useState<string>('');
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(defaultLang);
   const [status, setStatus] = useState<Status>({ text: '', class: '' });
   const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
-  const isWithCursorRef = useRef(false);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
   const graphqlService = new GraphqlService();
+  const isWithCursorRef = useRef<boolean>(false);
 
   useEffect(() => {
+    i18next.changeLanguage(defaultLang);
     defineGrid();
-    i18next.changeLanguage(selectedLanguage);
-  }, []);
-
-  useEffect(() => {
     return () => {
       // save grid state when unmounting
       saveCurrentGridState();
@@ -337,10 +335,10 @@ const Example6: React.FC = () => {
 
   function resetOptions(options: Partial<GraphqlServiceOption>) {
     displaySpinner(true);
-    const graphqlServiceInstance = gridOptions!.backendServiceApi!.service as GraphqlService;
+    const graphqlService = gridOptions!.backendServiceApi!.service as GraphqlService;
     reactGridRef.current?.paginationService!.setCursorBased(options.useCursor as boolean);
     reactGridRef.current?.paginationService?.goToFirstPage();
-    graphqlServiceInstance.updateOptions(options);
+    graphqlService.updateOptions(options);
     setGridOptions({ ...gridOptions });
   }
 
