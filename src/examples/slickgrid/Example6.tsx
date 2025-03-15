@@ -32,11 +32,10 @@ const Example6: React.FC = () => {
   const [metrics, setMetrics] = useState<Metrics | undefined>(undefined);
   const [processing, setProcessing] = useState<boolean>(false);
   const [graphqlQuery, setGraphqlQuery] = useState<string>('');
-  const [isWithCursor] = useState<boolean>(false);
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
   const [status, setStatus] = useState<Status>({ text: '', class: '' });
   const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
-  const isWithCursorRef = useRef(isWithCursor);
+  const isWithCursorRef = useRef(false);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
   const graphqlService = new GraphqlService();
 
