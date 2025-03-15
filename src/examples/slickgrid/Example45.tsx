@@ -29,8 +29,9 @@ const Example45: React.FC = () => {
 
   useEffect(() => {
     defineGrid();
+
+    // make sure it's back to light mode before unmounting
     return () => {
-      // make sure it's back to light mode before unmounting
       document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
     };

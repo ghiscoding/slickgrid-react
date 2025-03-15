@@ -3,63 +3,38 @@ import {
   FieldType,
   Formatters,
   type GridOption,
-  type GroupingGetterFunction,
   type OperatorString,
   SlickgridReact,
   type SlickgridReactInstance,
 } from '../../slickgrid-react';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import type BaseSlickGridState from './state-slick-grid-base';
 import './example21.scss';
 
-interface Props { }
-interface State extends BaseSlickGridState {
-  selectedColumn?: Column;
-  selectedOperator: string;
-  searchValue: string;
-  reactGrid?: SlickgridReactInstance;
-}
-export default class Example21 extends React.Component<Props, State> {
-  title = 'Example 21: Grid AutoHeight';
-  subTitle = `
-  The SlickGrid option "autoHeight" can be used if you wish to keep the full height of the grid without any scrolling
-  <ul>
-    <li>You define a fixed grid width via "gridWidth" in the View</li>
-    <li>You can still use the "autoResize" for the width to be resized automatically (the height will never change in this case)</li>
-    <li>This dataset has 25 rows, if you scroll down the page you can see the entire set is shown without any grid scrolling (though you might have browser scrolling)</li>
-  </ul>
-  `;
-  selectedGroupingFields: Array<string | GroupingGetterFunction> = ['', '', ''];
-  reactGrid!: SlickgridReactInstance;
-  operatorList: OperatorString[] = ['=', '<', '<=', '>', '>=', '<>', 'StartsWith', 'EndsWith'];
+const Example21: React.FC = () => {
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset] = useState<any[]>(getData());
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+  const [operatorList] = useState<OperatorString[]>(['=', '<', '<=', '>', '>=', '<>', 'StartsWith', 'EndsWith']);
+  const [selectedOperator, setSelectedOperator] = useState('');
+  const [searchValue, setSearchValue] = useState('')
+  const [selectedColumn, setSelectedColumn] = useState<Column>();
 
-  constructor(public readonly props: Props) {
-    super(props);
+  useEffect(() => {
+    defineGrid();
+  }, []);
 
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: [],
-      selectedColumn: undefined,
-      selectedOperator: '',
-      searchValue: '',
-    };
-  }
+  useEffect(() => {
+    updateFilter();
+  }, [searchValue, selectedOperator, selectedColumn]);
 
-  componentDidMount() {
-    document.title = this.title;
-
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
   /* Define grid Options and Columns */
-  defineGrid() {
+  function defineGrid() {
     const columnDefinitions: Column[] = [
       {
         id: 'title', name: 'Title', field: 'title',
@@ -119,15 +94,11 @@ export default class Example21 extends React.Component<Props, State> {
       enableRowSelection: true
     };
 
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      dataset: this.getData(),
-    }));
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  getData() {
+  function getData() {
     // mock a dataset
     const mockedDataset: any[] = [];
     for (let i = 0; i < 25; i++) {
@@ -154,112 +125,105 @@ export default class Example21 extends React.Component<Props, State> {
   // -- if any of the Search form input changes, we'll call the updateFilter() method
   //
 
-  clearGridSearchInput() {
-    this.setState((state: State) => {
-      return {
-        ...state,
-        searchValue: '',
-      };
-    }, () => this.updateFilter());
+  function clearGridSearchInput() {
+    setSearchValue('');
   }
 
-  selectedOperatorChanged(e: React.FormEvent<HTMLSelectElement>) {
-    this.setState((state: State) => {
-      return {
-        ...state,
-        selectedOperator: (e.target as HTMLSelectElement)?.value ?? '',
-      };
-    }, () => this.updateFilter());
+  function selectedOperatorChanged(e: React.FormEvent<HTMLSelectElement>) {
+    setSelectedOperator((e.target as HTMLSelectElement)?.value ?? '');
   }
 
-  selectedColumnChanged(e: React.ChangeEvent<HTMLSelectElement>) {
+  function selectedColumnChanged(e: React.ChangeEvent<HTMLSelectElement>) {
     const selectedVal = (e.target as HTMLSelectElement)?.value ?? '';
-    const selectedColumn = this.state.columnDefinitions.find(c => c.id === selectedVal);
+    const selectedColumn = columnDefinitions.find(c => c.id === selectedVal);
 
-    this.setState((state: State) => {
-      return { ...state, selectedColumn };
-    }, () => this.updateFilter());
+    setSelectedColumn(selectedColumn);
   }
 
-  searchValueChanged(e: React.FormEvent<HTMLInputElement>) {
-    this.setState((state: State) => {
-      return { ...state, searchValue: (e.target as HTMLInputElement)?.value ?? '' };
-    }, () => this.updateFilter());
+  function searchValueChanged(e: React.FormEvent<HTMLInputElement>) {
+    setSearchValue((e.target as HTMLInputElement)?.value ?? '');
   }
 
-  updateFilter() {
-    this.reactGrid?.filterService.updateSingleFilter({
-      columnId: `${this.state.selectedColumn?.id ?? ''}`,
-      operator: this.state.selectedOperator as OperatorString,
-      searchTerms: [this.state.searchValue || '']
+  function updateFilter() {
+    reactGridRef.current?.filterService.updateSingleFilter({
+      columnId: `${selectedColumn?.id ?? ''}`,
+      operator: selectedOperator as OperatorString,
+      searchTerms: [searchValue || '']
     });
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example21.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
+  return !gridOptions ? '' : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 21: Grid AutoHeight
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example21.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+      </h2>
+      <div className="subtitle">
+        The SlickGrid option "autoHeight" can be used if you wish to keep the full height of the grid without any scrolling
+        <ul>
+          <li>You define a fixed grid width via "gridWidth" in the View</li>
+          <li>You can still use the "autoResize" for the width to be resized automatically (the height will never change in this case)</li>
+          <li>This dataset has 25 rows, if you scroll down the page you can see the entire set is shown without any grid scrolling (though you might have browser scrolling)</li>
+        </ul>
+      </div>
 
-        <div className="row row-cols-lg-auto g-1 align-items-center">
-          <div className="col">
-            <label htmlFor="columnSelect">Single Search:</label>
-          </div>
-          <div className="col">
-            <select className="form-select" data-test="search-column-list" name="selectedColumn" onChange={($event) => this.selectedColumnChanged($event)}>
-              <option value="''">...</option>
-              {
-                this.state.columnDefinitions.map((column) =>
-                  <option value={column.id} key={column.id}>{column.name as string}</option>
-                )
-              }
-            </select>
-          </div>
-          <div className="col">
-            <select className="form-select" data-test="search-operator-list" name="selectedOperator" onChange={($event) => this.selectedOperatorChanged($event)}>
-              <option value="''">...</option>
-              {
-                this.operatorList.map((operator) =>
-                  <option value={operator} key={operator}>{operator}</option>
-                )
-              }
-            </select>
-          </div>
+      <div className="row row-cols-lg-auto g-1 align-items-center">
+        <div className="col">
+          <label htmlFor="columnSelect">Single Search:</label>
+        </div>
+        <div className="col">
+          <select className="form-select" data-test="search-column-list" name="selectedColumn" onChange={($event) => selectedColumnChanged($event)}>
+            <option value="''">...</option>
+            {
+              columnDefinitions.map((column) =>
+                <option value={column.id} key={column.id}>{column.name as string}</option>
+              )
+            }
+          </select>
+        </div>
+        <div className="col">
+          <select className="form-select" data-test="search-operator-list" name="selectedOperator" onChange={($event) => selectedOperatorChanged($event)}>
+            <option value="''">...</option>
+            {
+              operatorList.map((operator) =>
+                <option value={operator} key={operator}>{operator}</option>
+              )
+            }
+          </select>
+        </div>
 
-          <div className="col">
-            <div className="input-group">
-              <input type="text"
-                className="form-control"
-                placeholder="search value"
-                data-test="search-value-input"
-                value={this.state.searchValue}
-                onInput={($event) => this.searchValueChanged($event)} />
-              <button className="btn btn-outline-secondary d-flex align-items-center pl-2 pr-2" data-test="clear-search-value"
-                onClick={() => this.clearGridSearchInput()}>
-                <span className="mdi mdi-close m-1"></span>
-              </button>
-            </div>
+        <div className="col">
+          <div className="input-group">
+            <input type="text"
+              className="form-control"
+              placeholder="search value"
+              data-test="search-value-input"
+              value={searchValue}
+              onInput={($event) => searchValueChanged($event)} />
+            <button className="btn btn-outline-secondary d-flex align-items-center pl-2 pr-2" data-test="clear-search-value"
+              onClick={() => clearGridSearchInput()}>
+              <span className="mdi mdi-close m-1"></span>
+            </button>
           </div>
-        </div >
-
-        <hr />
-
-        <SlickgridReact gridId="grid21"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        />
+        </div>
       </div >
-    );
-  }
+
+      <hr />
+
+      <SlickgridReact gridId="grid21"
+        columnDefinitions={columnDefinitions}
+        gridOptions={gridOptions}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+      />
+    </div >
+  );
 }
+
+export default Example21;
