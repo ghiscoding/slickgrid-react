@@ -1,6 +1,6 @@
 import { addDay, format as tempoFormat } from '@formkit/tempo';
-import { GraphqlService, type GraphqlPaginatedResult, type GraphqlServiceApi, type GraphqlServiceOption } from '@slickgrid-universal/graphql';
-import i18next from 'i18next';
+import { GraphqlService, type GraphqlPaginatedResult, type GraphqlServiceApi, type GraphqlServiceOption, } from '@slickgrid-universal/graphql';
+import i18next, { type TFunction } from 'i18next';
 import {
   type Column,
   type CursorPageInfo,
@@ -16,44 +16,85 @@ import {
   SlickgridReact,
   type SlickgridReactInstance,
 } from '../../slickgrid-react';
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
+import type BaseSlickGridState from './state-slick-grid-base';
 import { withTranslation } from 'react-i18next';
 
 interface Status { text: string, class: string }
+interface Props {
+  t: TFunction;
+}
+
+interface State extends BaseSlickGridState {
+  graphqlQuery: string,
+  isWithCursor: boolean,
+  processing: boolean,
+  selectedLanguage: string,
+  metrics?: Metrics,
+  status: Status,
+  serverWaitDelay: number
+}
 
 const defaultPageSize = 20;
 const GRAPHQL_QUERY_DATASET_NAME = 'users';
 const FAKE_SERVER_DELAY = 250;
 
-const Example6: React.FC = () => {
-  const defaultLang = 'en';
-  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
-  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
-  const [dataset] = useState<any[]>([]);
-  const [metrics, setMetrics] = useState<Metrics | undefined>(undefined);
-  const [processing, setProcessing] = useState<boolean>(false);
-  const [graphqlQuery, setGraphqlQuery] = useState<string>('');
-  const [selectedLanguage, setSelectedLanguage] = useState<string>(defaultLang);
-  const [status, setStatus] = useState<Status>({ text: '', class: '' });
-  const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
-  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
-  const graphqlService = new GraphqlService();
-  const isWithCursorRef = useRef<boolean>(false);
+class Example6 extends React.Component<Props, State> {
+  title = 'Example 6: Grid with Backend GraphQL Service';
+  subTitle = `
+  Use it when you need to support Pagination with a GraphQL endpoint (for simple JSON, use a regular grid).
+  <br/>Take a look at the (<a href="https://ghiscoding.gitbook.io/slickgrid-react/backend-services/graphql" target="_blank">Docs</a>)
+    <ul class="small">
+      <li><span class="red bold">(*) NO DATA SHOWN</span> - just change filters &amp; page and look at the "GraphQL Query" changing</li>
+      <li>Only "Name" field is sortable for the demo (because we use JSON files), however "multiColumnSort: true" is also supported</li>
+      <li>String column also support operator (>, >=, <, <=, <>, !=, =, ==, *)</li>
+      <ul>
+        <li>The (*) can be used as startsWith (ex.: "abc*" => startsWith "abc") / endsWith (ex.: "*xyz" => endsWith "xyz")</li>
+        <li>The other operators can be used on column type number for example: ">=100" (greater or equal than 100)</li>
+      </ul>
+      <li>You can also preload a grid with certain "presets" like Filters / Sorters / Pagination <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grid-state-preset" target="_blank">Wiki - Grid Preset</a></li>
+      <li>Also note that the column Name has a filter with a custom %% operator that behaves like an SQL LIKE operator supporting % wildcards.</li>
+      <li>Depending on your configuration, your GraphQL Server might already support regex querying (e.g. Hasura <a href="https://hasura.io/docs/latest/queries/postgres/filters/text-search-operators/#_regex" target="_blank">_regex</a>)
+      or you could add your own implementation (e.g. see this SO <a href="https://stackoverflow.com/a/37981802/1212166">Question</a>).</li>
+    </ul>
+  `;
 
-  useEffect(() => {
-    i18next.changeLanguage(defaultLang);
-    defineGrid();
-    return () => {
-      // save grid state when unmounting
-      saveCurrentGridState();
+  reactGrid!: SlickgridReactInstance;
+  graphqlService = new GraphqlService();
+
+  constructor(public readonly props: Props) {
+    super(props);
+    const defaultLang = 'en';
+
+    this.state = {
+      gridOptions: undefined,
+      columnDefinitions: [],
+      dataset: [],
+      metrics: undefined,
+      processing: false,
+      graphqlQuery: '',
+      isWithCursor: false,
+      selectedLanguage: defaultLang,
+      status: {} as Status,
+      serverWaitDelay: FAKE_SERVER_DELAY, // server simulation with default of 250ms but 50ms for Cypress tests
     };
-  }, []);
 
-  function reactGridReady(reactGrid: SlickgridReactInstance) {
-    reactGridRef.current = reactGrid;
+    i18next.changeLanguage(defaultLang);
   }
 
-  function getColumnsDefinition(): Column[] {
+  componentDidMount() {
+    this.defineGrid();
+  }
+
+  componentWillUnmount() {
+    this.saveCurrentGridState();
+  }
+
+  reactGridReady(reactGrid: SlickgridReactInstance) {
+    this.reactGrid = reactGrid;
+  }
+
+  getColumnsDefinition(): Column[] {
     return [
       {
         id: 'name', field: 'name', nameKey: 'NAME', width: 60, columnGroupKey: 'CUSTOMER_INFORMATION',
@@ -124,15 +165,20 @@ const Example6: React.FC = () => {
     ];
   }
 
-  function defineGrid() {
-    const columnDefinitions = getColumnsDefinition();
-    const gridOptions = getGridOptions();
+  defineGrid() {
+    const columnDefinitions = this.getColumnsDefinition();
+    const gridOptions = this.getGridOptions();
 
-    setColumnDefinitions(columnDefinitions);
-    setGridOptions(gridOptions);
+    this.setState((props: Props, state: any) => {
+      return {
+        ...state,
+        columnDefinitions,
+        gridOptions
+      };
+    });
   }
 
-  function getGridOptions(): GridOption {
+  getGridOptions(): GridOption {
     const currentYear = new Date().getFullYear();
     const presetLowestDay = `${currentYear}-01-01`;
     const presetHighestDay = `${currentYear}-02-15`;
@@ -148,12 +194,13 @@ const Example6: React.FC = () => {
       gridHeight: 200,
       gridWidth: 900,
       compoundOperatorAltTexts: {
+        // where '=' is any of the `OperatorString` type shown above
         text: { 'Custom': { operatorAlt: '%%', descAlt: 'SQL Like' } },
       },
       gridMenu: {
         resizeOnShowHeaderRow: true,
       },
-      enablePagination: true,
+      enablePagination: true, // you could optionally disable the Pagination
       pagination: {
         pageSizes: [10, 15, 20, 25, 30, 40, 50, 75, 100],
         pageSize: defaultPageSize,
@@ -164,68 +211,107 @@ const Example6: React.FC = () => {
           { columnId: 'name', width: 100 },
           { columnId: 'gender', width: 55 },
           { columnId: 'company' },
-          { columnId: 'billingAddressZip' },
+          { columnId: 'billingAddressZip' }, // flip column position of Street/Zip to Zip/Street
           { columnId: 'billingAddressStreet', width: 120 },
           { columnId: 'finish', width: 130 },
         ],
         filters: [
+          // you can use OperatorType or type them as string, e.g.: operator: 'EQ'
           { columnId: 'gender', searchTerms: ['male'], operator: OperatorType.equal },
+          // { columnId: 'name', searchTerms: ['John Doe'], operator: OperatorType.contains },
           { columnId: 'name', searchTerms: ['Joh*oe'], operator: OperatorType.startsWithEndsWith },
           { columnId: 'company', searchTerms: ['xyz'], operator: 'IN' },
+
+          // use a date range with 2 searchTerms values
           { columnId: 'finish', searchTerms: [presetLowestDay, presetHighestDay], operator: OperatorType.rangeInclusive },
         ],
         sorters: [
+          // direction can written as 'asc' (uppercase or lowercase) and/or use the SortDirection type
           { columnId: 'name', direction: 'asc' },
           { columnId: 'company', direction: SortDirection.DESC }
         ],
-        pagination: { pageNumber: isWithCursorRef.current ? 1 : 2, pageSize: 20 }
+        pagination: { pageNumber: this.state.isWithCursor ? 1 : 2, pageSize: 20 } // if cursor based, start at page 1
       },
       backendServiceApi: {
-        service: graphqlService,
+        service: this.graphqlService,
         options: {
-          datasetName: GRAPHQL_QUERY_DATASET_NAME,
-          addLocaleIntoQuery: true,
-          extraQueryArguments: [{ field: 'userId', value: 123 }],
+          datasetName: GRAPHQL_QUERY_DATASET_NAME, // the only REQUIRED property
+          addLocaleIntoQuery: true,   // optionally add current locale into the query
+          extraQueryArguments: [{     // optionally add some extra query arguments as input query arguments
+            field: 'userId',
+            value: 123
+          }],
           filterQueryOverride: ({ fieldName, columnDef, columnFilterOperator, searchValues }) => {
             if (columnFilterOperator === OperatorType.custom && columnDef?.id === 'name') {
+              // technically speaking GraphQL isn't a database query language like SQL, it's an application query language.
+              // What that means is that GraphQL won't let you write arbitrary queries out of the box.
+              // It will only support the types of queries defined in your GraphQL schema.
+              // see this SO: https://stackoverflow.com/a/37981802/1212166
               return { field: fieldName, operator: 'Like', value: searchValues[0] };
             }
             return;
           },
-          useCursor: isWithCursorRef.current,
+          useCursor: this.state.isWithCursor, // sets pagination strategy, if true requires a call to setPageInfo() when graphql call returns
+          // when dealing with complex objects, we want to keep our field name with double quotes
+          // example with gender: query { users (orderBy:[{field:"gender",direction:ASC}]) {}
           keepArgumentFieldDoubleQuotes: true
         },
-        preProcess: () => displaySpinner(true),
-        process: (query) => getCustomerApiCall(query),
+        // you can define the onInit callback OR enable the "executeProcessCommandOnInit" flag in the service init
+        // onInit: (query) => this.getCustomerApiCall(query)
+        preProcess: () => this.displaySpinner(true),
+        process: (query) => this.getCustomerApiCall(query),
         postProcess: (result: GraphqlPaginatedResult) => {
           const metrics = result.metrics as Metrics;
-          setMetrics(metrics);
-          displaySpinner(false);
+
+          this.setState((state: State) => ({
+            ...state,
+            metrics,
+          }));
+
+          this.displaySpinner(false);
         }
       } as GraphqlServiceApi
     };
   }
 
-  function clearAllFiltersAndSorts() {
-    if (reactGridRef.current?.gridService) {
-      reactGridRef.current.gridService.clearAllFiltersAndSorts();
+  clearAllFiltersAndSorts() {
+    if (this.reactGrid?.gridService) {
+      this.reactGrid.gridService.clearAllFiltersAndSorts();
     }
   }
 
-  function displaySpinner(isProcessing: boolean) {
+  displaySpinner(isProcessing: boolean) {
     const newStatus = (isProcessing)
       ? { text: 'processing...', class: 'alert alert-danger' }
       : { text: 'finished', class: 'alert alert-success' };
 
-    setStatus(newStatus);
-    setProcessing(isProcessing);
+    this.setState((state: any) => {
+      return {
+        ...state,
+        status: newStatus,
+        processing: isProcessing,
+      };
+    });
   }
 
-  function getCustomerApiCall(_query: string): Promise<GraphqlPaginatedResult> {
+  /**
+   * Calling your GraphQL backend server should always return a Promise or Observable of type GraphqlPaginatedResult (or GraphqlResult without Pagination)
+   * @param query
+   * @return Promise<GraphqlPaginatedResult>
+   */
+  getCustomerApiCall(_query: string): Promise<GraphqlPaginatedResult> {
     let pageInfo: CursorPageInfo;
-    if (reactGridRef.current?.paginationService) {
-      const { paginationService } = reactGridRef.current;
+    if (this.reactGrid?.paginationService) {
+      const { paginationService } = this.reactGrid;
+      // there seems to a timing issue where when you click "cursor" it requests the data before the pagination-service is initialized...
       const pageNumber = (paginationService as any)._initialized ? paginationService.getCurrentPageNumber() : 1;
+      // In the real world, each node item would be A,B,C...AA,AB,AC, etc and so each page would actually be something like A-T, T-AN
+      // but for this mock data it's easier to represent each page as
+      // Page1: A-B
+      // Page2: B-C
+      // Page3: C-D
+      // Page4: D-E
+      // Page5: E-F
       const startCursor = String.fromCharCode('A'.charCodeAt(0) + pageNumber - 1);
       const endCursor = String.fromCharCode(startCursor.charCodeAt(0) + 1);
       pageInfo = {
@@ -243,7 +329,11 @@ const Example6: React.FC = () => {
       };
     }
 
+    // in your case, you will call your WebAPI function (wich needs to return a Promise)
+    // for the demo purpose, we will call a mock WebAPI function
     const mockedResult = {
+      // the dataset name is the only unknown property
+      // will be the same defined in your GraphQL Service init, in our case GRAPHQL_QUERY_DATASET_NAME
       data: {
         [GRAPHQL_QUERY_DATASET_NAME]: {
           nodes: [],
@@ -255,37 +345,47 @@ const Example6: React.FC = () => {
 
     return new Promise(resolve => {
       window.setTimeout(() => {
-        setGraphqlQuery(graphqlService.buildQuery());
-        if (isWithCursorRef.current) {
-          reactGridRef.current?.paginationService?.setCursorPageInfo((mockedResult.data[GRAPHQL_QUERY_DATASET_NAME].pageInfo));
+        this.setState((state: any) => {
+          return {
+            ...state,
+            graphqlQuery: this.graphqlService.buildQuery()
+          };
+        });
+        if (this.state.isWithCursor) {
+          // When using cursor pagination, the pagination service needs to be updated with the PageInfo data from the latest request
+          // This might be done automatically if using a framework specific slickgrid library
+          // Note because of this timeout, this may cause race conditions with rapid clicks!
+          this.reactGrid?.paginationService?.setCursorPageInfo((mockedResult.data[GRAPHQL_QUERY_DATASET_NAME].pageInfo));
         }
         resolve(mockedResult);
-      }, serverWaitDelay);
+      }, this.state.serverWaitDelay);
     });
   }
 
-  function goToFirstPage() {
-    reactGridRef.current?.paginationService!.goToFirstPage();
+  goToFirstPage() {
+    this.reactGrid?.paginationService!.goToFirstPage();
   }
 
-  function goToLastPage() {
-    reactGridRef.current?.paginationService!.goToLastPage();
+  goToLastPage() {
+    this.reactGrid?.paginationService!.goToLastPage();
   }
 
-  function gridStateChanged(gridStateChanges: GridStateChange) {
+  /** Dispatched event of a Grid State Changed event */
+  gridStateChanged(gridStateChanges: GridStateChange) {
     console.log('GraphQL sample, Grid State changed:: ', gridStateChanges);
   }
 
-  function saveCurrentGridState() {
-    console.log('GraphQL current grid state', reactGridRef.current?.gridStateService.getCurrentGridState());
+  saveCurrentGridState() {
+    console.log('GraphQL current grid state', this.reactGrid?.gridStateService.getCurrentGridState());
   }
 
-  function setFiltersDynamically() {
+  setFiltersDynamically() {
     const currentYear = new Date().getFullYear();
     const presetLowestDay = `${currentYear}-01-01`;
     const presetHighestDay = `${currentYear}-02-15`;
 
-    reactGridRef.current?.filterService.updateFilters([
+    // we can Set Filters Dynamically (or different filters) afterward through the FilterService
+    this.reactGrid?.filterService.updateFilters([
       { columnId: 'gender', searchTerms: ['female'], operator: OperatorType.equal },
       { columnId: 'name', searchTerms: ['Jane'], operator: OperatorType.startsWith },
       { columnId: 'company', searchTerms: ['acme'], operator: 'IN' },
@@ -294,195 +394,190 @@ const Example6: React.FC = () => {
     ]);
   }
 
-  function setSortingDynamically() {
-    reactGridRef.current?.sortService.updateSorting([
+  setSortingDynamically() {
+    this.reactGrid?.sortService.updateSorting([
+      // orders matter, whichever is first in array will be the first sorted column
       { columnId: 'billingAddressZip', direction: 'DESC' },
       { columnId: 'company', direction: 'ASC' },
     ]);
   }
 
-  function resetToOriginalPresets() {
+  resetToOriginalPresets() {
     const currentYear = new Date().getFullYear();
     const presetLowestDay = `${currentYear}-01-01`;
     const presetHighestDay = `${currentYear}-02-15`;
 
-    reactGridRef.current?.filterService.updateFilters([
+    this.reactGrid.filterService.updateFilters([
+      // you can use OperatorType or type them as string, e.g.: operator: 'EQ'
       { columnId: 'gender', searchTerms: ['male'], operator: OperatorType.equal },
+      // { columnId: 'name', searchTerms: ['John Doe'], operator: OperatorType.contains },
       { columnId: 'name', searchTerms: ['Joh*oe'], operator: OperatorType.startsWithEndsWith },
       { columnId: 'company', searchTerms: ['xyz'], operator: 'IN' },
+
+      // use a date range with 2 searchTerms values
       { columnId: 'finish', searchTerms: [presetLowestDay, presetHighestDay], operator: OperatorType.rangeInclusive },
     ]);
-    reactGridRef.current?.sortService.updateSorting([
+    this.reactGrid.sortService.updateSorting([
+      // direction can written as 'asc' (uppercase or lowercase) and/or use the SortDirection type
       { columnId: 'name', direction: 'asc' },
       { columnId: 'company', direction: SortDirection.DESC }
     ]);
     window.setTimeout(() => {
-      reactGridRef.current?.paginationService?.changeItemPerPage(20);
-      reactGridRef.current?.paginationService?.goToPageNumber(2);
+      this.reactGrid.paginationService?.changeItemPerPage(20);
+      this.reactGrid.paginationService?.goToPageNumber(2);
     });
   }
 
-  function serverDelayChanged(e: React.FormEvent<HTMLInputElement>) {
+  serverDelayChanged(e: React.FormEvent<HTMLInputElement>) {
     const newDelay = +((e.target as HTMLInputElement)?.value ?? '');
-    setServerWaitDelay(newDelay);
+    this.setState((state: State) => ({ ...state, serverWaitDelay: newDelay }));
   }
 
-  function changeIsWithCursor(newValue: boolean) {
-    isWithCursorRef.current = newValue;
-    resetOptions({ useCursor: newValue });
+  setIsWithCursor(newValue: boolean) {
+    this.setState((state: State) => ({ ...state, isWithCursor: newValue }));
+    this.resetOptions({ useCursor: newValue });
     return true;
   }
 
-  function resetOptions(options: Partial<GraphqlServiceOption>) {
-    displaySpinner(true);
-    const graphqlService = gridOptions!.backendServiceApi!.service as GraphqlService;
-    reactGridRef.current?.paginationService!.setCursorBased(options.useCursor as boolean);
-    reactGridRef.current?.paginationService?.goToFirstPage();
+  private resetOptions(options: Partial<GraphqlServiceOption>) {
+    this.displaySpinner(true);
+    const graphqlService = this.state.gridOptions!.backendServiceApi!.service as GraphqlService;
+    this.reactGrid.paginationService!.setCursorBased(options.useCursor as boolean);
+    this.reactGrid.paginationService?.goToFirstPage();
     graphqlService.updateOptions(options);
-    setGridOptions({ ...gridOptions });
+    this.setState((state: State) => ({
+      ...state,
+      gridOptions: { ...this.state.gridOptions },
+    }));
   }
 
-  async function switchLanguage() {
-    const nextLanguage = (selectedLanguage === 'en') ? 'fr' : 'en';
+  async switchLanguage() {
+    const nextLanguage = (this.state.selectedLanguage === 'en') ? 'fr' : 'en';
     await i18next.changeLanguage(nextLanguage);
-    setSelectedLanguage(nextLanguage);
+    this.setState((state: State) => ({ ...state, selectedLanguage: nextLanguage }));
   }
 
-  return !gridOptions ? null : (
-    <div id="demo-container" className="container-fluid">
-      <h2>
-        Example 6: Grid with Backend GraphQL Service
-        <span className="float-end font18">
-          see&nbsp;
-          <a target="_blank"
-            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example6.tsx">
-            <span className="mdi mdi-link-variant"></span> code
-          </a>
-        </span>
-      </h2>
-      <div className="subtitle">
-        Use it when you need to support Pagination with a GraphQL endpoint (for simple JSON, use a regular grid).
-        <br />Take a look at the (<a href="https://ghiscoding.gitbook.io/slickgrid-react/backend-services/graphql" target="_blank">Docs</a>)
-        <ul className="small">
-          <li><span className="red bold">(*) NO DATA SHOWN</span> - just change filters &amp; page and look at the "GraphQL Query" changing</li>
-          <li>Only "Name" field is sortable for the demo (because we use JSON files), however "multiColumnSort: true" is also supported</li>
-          <li>String column also support operator (&gt;, &gt;=, &lt;, &lt;=, &lt;&gt;, !=, =, ==, *)</li>
-          <ul>
-            <li>The (*) can be used as startsWith (ex.: "abc*" =&gt; startsWith "abc") / endsWith (ex.: "*xyz" =&gt; endsWith "xyz")</li>
-            <li>The other operators can be used on column type number for example: "&gt;=100" (greater or equal than 100)</li>
-          </ul>
-          <li>You can also preload a grid with certain "presets" like Filters / Sorters / Pagination <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grid-state-preset" target="_blank">Wiki - Grid Preset</a></li>
-          <li>Also note that the column Name has a filter with a custom %% operator that behaves like an SQL LIKE operator supporting % wildcards.</li>
-          <li>Depending on your configuration, your GraphQL Server might already support regex querying (e.g. Hasura <a href="https://hasura.io/docs/latest/queries/postgres/filters/text-search-operators/#_regex" target="_blank">_regex</a>)
-            or you could add your own implementation (e.g. see this SO <a href="https://stackoverflow.com/a/37981802/1212166">Question</a>).</li>
-        </ul>
-      </div>
+  render() {
+    return !this.state.gridOptions ? '' : (
+      <div id="demo-container" className="container-fluid">
+        <h2>
+          {this.title}
+          <span className="float-end font18">
+            see&nbsp;
+            <a target="_blank"
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example6.tsx">
+              <span className="mdi mdi-link-variant"></span> code
+            </a>
+          </span>
+        </h2>
+        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
-      <div className="row">
-        <div className="col-sm-5">
-          <div className={status.class} role="alert" data-test="status">
-            <strong>Status: </strong> {status.text}
-            {processing ? <span>
-              <i className="mdi mdi-sync mdi-spin"></i>
-            </span> : ''}
-          </div>
-
-          <div className="row">
-            <div className="col-md-12">
-              <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="clear-filters-sorting"
-                onClick={() => clearAllFiltersAndSorts()} title="Clear all Filters & Sorts">
-                <i className="mdi mdi-filter-remove-outline"></i>
-                Clear all Filter & Sorts
-              </button>
-              <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="set-dynamic-filter"
-                onClick={() => setFiltersDynamically()}>
-                Set Filters Dynamically
-              </button>
-              <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="set-dynamic-sorting"
-                onClick={() => setSortingDynamically()}>
-                Set Sorting Dynamically
-              </button>
-              <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="reset-presets"
-                onClick={() => resetToOriginalPresets()}>
-                Reset Original Presets
-              </button>
-              <label htmlFor="serverdelay" className="ml-4">Server Delay: </label>
-              <input id="serverdelay" type="number"
-                defaultValue={serverWaitDelay}
-                data-test="server-delay" style={{ width: '55px' }}
-                onInput={($event) => serverDelayChanged($event)}
-                title="input a fake timer delay to simulate slow server response" />
-            </div>
-          </div>
-
-          <hr />
-
-          <div className="row">
-            <div className="col-md-12">
-              <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" onClick={() => switchLanguage()}
-                data-test="language-button">
-                <i className="mdi mdi-translate me-1"></i>
-                Switch Language
-              </button>
-              <b>Locale: </b>
-              <span style={{ fontStyle: 'italic' }} data-test="selected-locale">
-                {selectedLanguage + '.json'}
-              </span>
+        <div className="row">
+          <div className="col-sm-5">
+            <div className={this.state.status.class} role="alert" data-test="status">
+              <strong>Status: </strong> {this.state.status.text}
+              {this.state.processing ? <span>
+                <i className="mdi mdi-sync mdi-spin"></i>
+              </span> : ''}
             </div>
 
-            <span style={{ marginLeft: '10px' }}>
-              <label>Pagination strategy: </label>
-              <span data-test="radioStrategy">
-                <label className="radio-inline control-label" htmlFor="offset">
-                  <input type="radio" name="inlineRadioOptions" data-test="offset" id="radioOffset" defaultChecked={true} value="false"
-                    onChange={() => changeIsWithCursor(false)} /> Offset
-                </label>
-                <label className="radio-inline control-label" htmlFor="radioCursor">
-                  <input type="radio" name="inlineRadioOptions" data-test="cursor" id="radioCursor" value="true"
-                    onChange={() => changeIsWithCursor(true)} /> Cursor
-                </label>
-              </span>
-            </span>
-          </div>
-          <br />
-          {metrics && <span><><b>Metrics: </b>
-            {metrics.endTime ? tempoFormat(metrics.endTime, 'YYYY-MM-DD HH:mm:ss') : ''}
-            | {metrics.executionTime}ms
-            | {metrics.totalItemCount} items </>
-          </span>}
+            <div className="row">
+              <div className="col-md-12">
+                <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="clear-filters-sorting"
+                  onClick={() => this.clearAllFiltersAndSorts()} title="Clear all Filters & Sorts">
+                  <i className="mdi mdi-filter-remove-outline"></i>
+                  Clear all Filter & Sorts
+                </button>
+                <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="set-dynamic-filter"
+                  onClick={() => this.setFiltersDynamically()}>
+                  Set Filters Dynamically
+                </button>
+                <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="set-dynamic-sorting"
+                  onClick={() => this.setSortingDynamically()}>
+                  Set Sorting Dynamically
+                </button>
+                <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="reset-presets"
+                  onClick={() => this.resetToOriginalPresets()}>
+                  Reset Original Presets
+                </button>
+                <label htmlFor="serverdelay" className="ml-4">Server Delay: </label>
+                <input id="serverdelay" type="number"
+                  defaultValue={this.state.serverWaitDelay}
+                  data-test="server-delay" style={{ width: '55px' }}
+                  onInput={($event) => this.serverDelayChanged($event)}
+                  title="input a fake timer delay to simulate slow server response" />
+              </div>
+            </div>
 
-          <div className="row" style={{ marginBottom: '5px' }}>
-            <div className="col-md-12">
-              <label>Programmatically go to first/last page:</label>
-              <div className="btn-group" role="group">
-                <button className="btn btn-outline-secondary btn-xs btn-icon px-2" data-test="goto-first-page" onClick={() => goToFirstPage()}>
-                  <i className="mdi mdi-page-first"></i>
+            <hr />
+
+            <div className="row">
+              <div className="col-md-12">
+                <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" onClick={() => this.switchLanguage()}
+                  data-test="language-button">
+                  <i className="mdi mdi-translate me-1"></i>
+                  Switch Language
                 </button>
-                <button className="btn btn-outline-secondary btn-xs btn-icon px-2" data-test="goto-last-page" onClick={() => goToLastPage()}>
-                  <i className="mdi mdi-page-last"></i>
-                </button>
+                <b>Locale: </b>
+                <span style={{ fontStyle: 'italic' }} data-test="selected-locale">
+                  {this.state.selectedLanguage + '.json'}
+                </span>
+              </div>
+
+              <span style={{ marginLeft: '10px' }}>
+                <label>Pagination strategy: </label>
+                <span data-test="radioStrategy">
+                  <label className="radio-inline control-label" htmlFor="offset">
+                    <input type="radio" name="inlineRadioOptions" data-test="offset" id="radioOffset" defaultChecked={true} value="false"
+                      onChange={() => this.setIsWithCursor(false)} /> Offset
+                  </label>
+                  <label className="radio-inline control-label" htmlFor="radioCursor">
+                    <input type="radio" name="inlineRadioOptions" data-test="cursor" id="radioCursor" value="true"
+                      onChange={() => this.setIsWithCursor(true)} /> Cursor
+                  </label>
+                </span>
+              </span>
+            </div>
+            <br />
+            {this.state.metrics && <span><><b>Metrics: </b>
+              {this.state.metrics.endTime ? tempoFormat(this.state.metrics.endTime, 'YYYY-MM-DD HH:mm:ss') : ''}
+              | {this.state.metrics.executionTime}ms
+              | {this.state.metrics.totalItemCount} items </>
+            </span>}
+
+            <div className="row" style={{ marginBottom: '5px' }}>
+              <div className="col-md-12">
+                <label>Programmatically go to first/last page:</label>
+                <div className="btn-group" role="group">
+                  <button className="btn btn-outline-secondary btn-xs btn-icon px-2" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
+                    <i className="mdi mdi-page-first"></i>
+                  </button>
+                  <button className="btn btn-outline-secondary btn-xs btn-icon px-2" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
+                    <i className="mdi mdi-page-last"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="col-sm-7">
-          <div className="alert alert-info" data-test="alert-graphql-query">
-            <strong>GraphQL Query:</strong> <span data-test="graphql-query-result">{graphqlQuery}</span>
+          <div className="col-sm-7">
+            <div className="alert alert-info" data-test="alert-graphql-query">
+              <strong>GraphQL Query:</strong> <span data-test="graphql-query-result">{this.state.graphqlQuery}</span>
+            </div>
           </div>
         </div>
+
+        <hr />
+
+        <SlickgridReact gridId="grid6"
+          columnDefinitions={this.state.columnDefinitions}
+          gridOptions={this.state.gridOptions}
+          dataset={this.state.dataset}
+          onReactGridCreated={$event => this.reactGridReady($event.detail)}
+          onGridStateChanged={$event => this.gridStateChanged($event.detail)}
+        />
       </div>
-
-      <hr />
-
-      <SlickgridReact gridId="grid6"
-        columnDefinitions={columnDefinitions}
-        gridOptions={gridOptions}
-        dataset={dataset}
-        onReactGridCreated={$event => reactGridReady($event.detail)}
-        onGridStateChanged={$event => gridStateChanged($event.detail)}
-      />
-    </div>
-  );
-};
+    );
+  }
+}
 
 export default withTranslation()(Example6);
