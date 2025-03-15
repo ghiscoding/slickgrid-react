@@ -2,7 +2,7 @@ import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { type Column, type GridOption, SlickgridReact, toCamelCase } from '../../slickgrid-react';
 import { useState } from 'react';
 
-export default function Example17() {
+const Example17: React.FC = () => {
   const [gridCreated, setGridCreated] = useState(false);
   const [gridOptions, setGridOptions] = useState<GridOption>();
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
@@ -156,3 +156,5 @@ export default function Example17() {
     </div >
   )
 }
+
+export default Example17;

@@ -1,6 +1,6 @@
 import { format as tempoFormat } from '@formkit/tempo';
-import i18next, { type TFunction } from 'i18next';
-import React from 'react';
+import i18next from 'i18next';
+import React, { useEffect, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import {
@@ -15,14 +15,6 @@ import {
   SlickgridReact,
   type SlickgridReactInstance,
 } from '../../slickgrid-react';
-import type BaseSlickGridState from './state-slick-grid-base';
-
-interface Props {
-  t: TFunction;
-}
-interface State extends BaseSlickGridState {
-  selectedLanguage: string;
-}
 
 function randomBetween(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -31,65 +23,43 @@ const DEFAULT_PAGE_SIZE = 25;
 const LOCAL_STORAGE_KEY = 'gridState';
 const NB_ITEMS = 500;
 
-class Example15 extends React.Component<Props, State> {
-  title = 'Example 15: Grid State & Presets using Local Storage';
-  subTitle = `
-  Grid State & Preset (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grid-state-preset" target="_blank">Docs</a>)
-  <br/>
-  <ul class="small">
-    <li>Uses Local Storage to persist the Grid State and uses Grid Options "presets" to put the grid back to it's previous state</li>
-    <ul>
-       <li>to demo this, simply change any columns (position reorder, visibility, size, filter, sort), then refresh your browser with (F5)</li>
-    </ul>
-    <li>Local Storage is just one option, you can use whichever is more convenient for you (Local Storage, Session Storage, DB, ...)</li>
-  </ul>
-`;
+const Example15: React.FC = () => {
+  const defaultLang = 'en';
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset] = useState<any[]>(getData(NB_ITEMS));
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(defaultLang);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  reactGrid!: SlickgridReactInstance;
-  // private i18n: i18n;
-
-  constructor(public readonly props: Props) {
-    super(props);
-
-    // always start with English for Cypress E2E tests to be consistent
-    const defaultLang = 'en';
+  useEffect(() => {
     i18next.changeLanguage(defaultLang);
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      selectedLanguage: defaultLang,
-    };
-  }
-
-  componentDidMount() {
-    document.title = this.title;
-
     const presets = JSON.parse(localStorage[LOCAL_STORAGE_KEY] || null);
 
     // use some Grid State preset defaults if you wish or just restore from Locale Storage
-    // presets = presets || this.useDefaultPresets();
-    this.defineGrid(presets);
-  }
+    // presets = presets || useDefaultPresets();
+    defineGrid(presets);
 
-  componentWillUnmount() {
-    this.saveCurrentGridState();
-  }
+    // save grid state before unmounting
+    return () => {
+      saveCurrentGridState();
+    };
+  }, []);
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
   /** Clear the Grid State from Local Storage and reset the grid to it's original state */
-  clearGridStateFromLocalStorage() {
-    // this.reactGrid.slickGrid.setColumns(this.reactGrid.gridService.getAllColumnDefinitions());
-    // this.reactGrid.slickGrid.autosizeColumns();
-    this.reactGrid.gridService.resetGrid(this.getColumnDefinitions());
-    this.reactGrid.paginationService!.changeItemPerPage(DEFAULT_PAGE_SIZE);
+  function clearGridStateFromLocalStorage() {
+    // reactGridRef.current?.slickGrid.setColumns(reactGridRef.current?.gridService.getAllColumnDefinitions());
+    // reactGridRef.current?.slickGrid.autosizeColumns();
+    reactGridRef.current?.gridService.resetGrid(getColumnDefinitions());
+    reactGridRef.current?.paginationService!.changeItemPerPage(DEFAULT_PAGE_SIZE);
     window.setTimeout(() => localStorage[LOCAL_STORAGE_KEY] = null);
   }
 
   /* Define grid Options and Columns */
-  defineGrid(gridStatePresets?: GridState) {
+  function defineGrid(gridStatePresets?: GridState) {
     const gridOptions: GridOption = {
       autoResize: {
         container: '#demo-container',
@@ -98,7 +68,7 @@ class Example15 extends React.Component<Props, State> {
       enableCheckboxSelector: true,
       enableFiltering: true,
       enableTranslate: true,
-      // i18n: this.i18n,
+      // i18n: i18n,
       columnPicker: {
         hideForceFitButton: true
       },
@@ -122,15 +92,12 @@ class Example15 extends React.Component<Props, State> {
       gridOptions.presets = gridStatePresets;
     }
 
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions: this.getColumnDefinitions(),
-      dataset: this.getData(NB_ITEMS),
-    }));
+    const columnDefinitions = getColumnDefinitions();
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  getColumnDefinitions(): Column[] {
+  function getColumnDefinitions(): Column[] {
     // prepare a multiple-select array to filter with
     const multiSelectFilterArray: any[] = [];
     for (let i = 0; i < NB_ITEMS; i++) {
@@ -205,7 +172,7 @@ class Example15 extends React.Component<Props, State> {
     ];
   }
 
-  getData(count: number) {
+  function getData(count: number) {
     // mock a dataset
     const currentYear = new Date().getFullYear();
     const tmpData: any[] = [];
@@ -237,25 +204,26 @@ class Example15 extends React.Component<Props, State> {
   }
 
   /** Dispatched event of a Grid State Changed event (which contain a "change" and the "gridState") */
-  gridStateChanged(gridStateChanges: GridStateChange) {
+  function gridStateChanged(gridStateChanges: GridStateChange) {
     console.log('Client sample, Grid State changed:: ', gridStateChanges);
     localStorage[LOCAL_STORAGE_KEY] = JSON.stringify(gridStateChanges.gridState);
   }
 
   /** Save Grid State in LocaleStorage */
-  saveCurrentGridState() {
-    const gridState: GridState = this.reactGrid.gridStateService.getCurrentGridState();
+  function saveCurrentGridState() {
+    const gridState = reactGridRef.current?.gridStateService.getCurrentGridState() as GridState;
     console.log('Client sample, current Grid State:: ', gridState);
     localStorage[LOCAL_STORAGE_KEY] = JSON.stringify(gridState);
   }
 
-  async switchLanguage() {
-    const nextLanguage = (this.state.selectedLanguage === 'en') ? 'fr' : 'en';
+  async function switchLanguage() {
+    const nextLanguage = (selectedLanguage === 'en') ? 'fr' : 'en';
     await i18next.changeLanguage(nextLanguage);
-    this.setState((state: State) => ({ ...state, selectedLanguage: nextLanguage }));
+    setSelectedLanguage(nextLanguage);
   }
 
-  useDefaultPresets() {
+  /*
+  function useDefaultPresets() {
     // use columnDef searchTerms OR use presets as shown below
     return {
       columns: [
@@ -280,47 +248,56 @@ class Example15 extends React.Component<Props, State> {
       ],
     } as GridState;
   }
+    */
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example15.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
-
-        <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="reset-button"
-          onClick={() => this.clearGridStateFromLocalStorage()}>
-          <i className="mdi mdi-close me-1"></i>
-          Clear Grid State from Local Storage &amp; Reset Grid
-        </button>
-
-        <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="language-button" onClick={() => this.switchLanguage()}>
-          <i className="mdi mdi-translate me-1"></i>
-          Switch Language
-        </button>
-        <strong>Locale: </strong>
-        <span style={{ fontStyle: 'italic' }} data-test="selected-locale">
-          {this.state.selectedLanguage + '.json'}
+  return !gridOptions ? '' : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 15: Grid State & Presets using Local Storage
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example15.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
         </span>
-
-        <SlickgridReact gridId="grid15"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          onGridStateChanged={$event => this.gridStateChanged($event.detail)}
-        />
+      </h2>
+      <div className="subtitle">
+        Grid State & Preset (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grid-state-preset" target="_blank">Docs</a>)
+        <br />
+        <ul className="small">
+          <li>Uses Local Storage to persist the Grid State and uses Grid Options "presets" to put the grid back to it's previous state</li>
+          <ul>
+            <li>to demo this, simply change any columns (position reorder, visibility, size, filter, sort), then refresh your browser with (F5)</li>
+          </ul>
+          <li>Local Storage is just one option, you can use whichever is more convenient for you (Local Storage, Session Storage, DB, ...)</li>
+        </ul>
       </div>
-    );
-  }
+
+      <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="reset-button"
+        onClick={() => clearGridStateFromLocalStorage()}>
+        <i className="mdi mdi-close me-1"></i>
+        Clear Grid State from Local Storage &amp; Reset Grid
+      </button>
+
+      <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="language-button" onClick={() => switchLanguage()}>
+        <i className="mdi mdi-translate me-1"></i>
+        Switch Language
+      </button>
+      <strong>Locale: </strong>
+      <span style={{ fontStyle: 'italic' }} data-test="selected-locale">
+        {selectedLanguage + '.json'}
+      </span>
+
+      <SlickgridReact gridId="grid15"
+        columnDefinitions={columnDefinitions}
+        gridOptions={gridOptions}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+        onGridStateChanged={$event => gridStateChanged($event.detail)}
+      />
+    </div>
+  );
 }
 
 export default withTranslation()(Example15);

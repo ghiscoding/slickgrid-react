@@ -192,9 +192,9 @@ const Example19: React.FC = () => {
     setDarkMode(newDarkMode);
     toggleBodyBackground(newDarkMode);
     reactGridRef.current?.slickGrid.setOptions({ darkMode: newDarkMode });
-  };
+  }
 
-  const toggleBodyBackground = (darkMode: boolean) => {
+  function toggleBodyBackground(darkMode: boolean) {
     if (darkMode) {
       document.querySelector<HTMLDivElement>('.panel-wm-content')!.classList.add('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'dark';
@@ -202,7 +202,7 @@ const Example19: React.FC = () => {
       document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
     }
-  };
+  }
 
   return !gridOptions ? null : (
     <div className="demo19">

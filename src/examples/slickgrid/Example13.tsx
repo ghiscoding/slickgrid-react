@@ -12,75 +12,30 @@ import {
   GroupTotalFormatters,
   SortDirectionNumber,
   SortComparers,
-  type SlickDataView,
-  type SlickGrid,
   SlickgridReact,
   type SlickgridReactInstance,
 } from '../../slickgrid-react';
-import React from 'react';
-import type BaseSlickGridState from './state-slick-grid-base';
+import React, { useEffect, useRef, useState } from 'react';
 
-interface Props { }
-interface State extends BaseSlickGridState {
-  dataset: any[],
-  processing: boolean;
-}
+const Example13: React.FC = () => {
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset, setDataset] = useState<any[]>(loadData(500));
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+  const [processing, setProcessing] = useState(false);
+  const excelExportService = new ExcelExportService();
+  const textExportService = new TextExportService();
 
-export default class Example13 extends React.Component<Props, State> {
-  title = 'Example 13: Grouping & Aggregators';
-  subTitle = `
-    <ul>
-      <li><a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grouping-aggregators" target="_blank">Docs</a></li>
-      <li>Fully dynamic and interactive multi-level grouping with filtering and aggregates over 50'000 items</li>
-      <li>Each grouping level can have its own aggregates (over child rows, child groups, or all descendant rows)..</li>
-      <li>Use "Aggregators" and "GroupTotalFormatters" directly from Slickgrid-React</li>
-    </ul>
-  `;
+  useEffect(() => {
+    defineGrid();
+  }, []);
 
-  reactGrid!: SlickgridReactInstance;
-  dataviewObj!: SlickDataView;
-  gridObj!: SlickGrid;
-  excelExportService = new ExcelExportService();
-  textExportService = new TextExportService();
-
-  constructor(public readonly props: Props) {
-    super(props);
-
-    this.state = {
-      columnDefinitions: [],
-      gridOptions: undefined,
-      processing: false,
-      dataset: this.loadData(500),
-    };
-  }
-
-  componentDidMount() {
-    document.title = this.title;
-
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-
-    // this.initDataLoad();
-  }
-
-  initDataLoad() {
-    // populate the dataset once the grid is ready
-    this.setState((state: State) => {
-      return {
-        ...state,
-        dataset: this.loadData(500)
-      };
-    });
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-    this.dataviewObj = reactGrid.dataView;
-    this.gridObj = reactGrid.slickGrid;
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
   /* Define grid Options and Columns */
-  defineGrid() {
+  function defineGrid() {
     // add a simple button with event listener on 1st column for testing purposes
     // a simple button with click event
     const nameElementColumn1 = document.createElement('div');
@@ -217,7 +172,7 @@ export default class Example13 extends React.Component<Props, State> {
       enableTextExport: true,
       excelExportOptions: { sanitizeDataExport: true },
       textExportOptions: { sanitizeDataExport: true },
-      externalResources: [this.excelExportService, this.textExportService],
+      externalResources: [excelExportService, textExportService],
       showCustomFooter: true,
       customFooterOptions: {
         // optionally display some text on the left footer container
@@ -227,14 +182,11 @@ export default class Example13 extends React.Component<Props, State> {
       },
     };
 
-    this.setState((state: State) => ({
-      ...state,
-      columnDefinitions,
-      gridOptions,
-    }));
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions)
   }
 
-  loadData(rowCount: number) {
+  function loadData(rowCount: number) {
     // mock a dataset
     const dataset: any[] = [];
     for (let i = 0; i < rowCount; i++) {
@@ -261,36 +213,33 @@ export default class Example13 extends React.Component<Props, State> {
     return dataset;
   }
 
-  updateData(rowCount: number) {
-    this.setState((state: State) => ({
-      ...state,
-      dataset: this.loadData(rowCount),
-    }));
+  function updateData(rowCount: number) {
+    setDataset(loadData(rowCount));
   }
 
-  clearGrouping() {
-    this.dataviewObj.setGrouping([]);
+  function clearGrouping() {
+    reactGridRef.current?.dataView.setGrouping([]);
   }
 
-  collapseAllGroups() {
-    this.dataviewObj.collapseAllGroups();
+  function collapseAllGroups() {
+    reactGridRef.current?.dataView.collapseAllGroups();
   }
 
-  expandAllGroups() {
-    this.dataviewObj.expandAllGroups();
+  function expandAllGroups() {
+    reactGridRef.current?.dataView.expandAllGroups();
   }
 
-  exportToExcel() {
-    this.excelExportService.exportToExcel({
+  function exportToExcel() {
+    excelExportService.exportToExcel({
       filename: 'Export',
       format: FileType.xlsx
     });
   }
 
-  groupByDuration() {
+  function groupByDuration() {
     // you need to manually add the sort icon(s) in UI
-    this.reactGrid.filterService.setSortColumnIcons([{ columnId: 'duration', sortAsc: true }]);
-    this.dataviewObj.setGrouping({
+    reactGridRef.current?.filterService.setSortColumnIcons([{ columnId: 'duration', sortAsc: true }]);
+    reactGridRef.current?.dataView.setGrouping({
       getter: 'duration',
       formatter: (g) => `Duration: ${g.value} <span style="color:green">(${g.count} items)</span>`,
       comparer: (a, b) => {
@@ -303,12 +252,12 @@ export default class Example13 extends React.Component<Props, State> {
       aggregateCollapsed: false,
       lazyTotalsCalculation: true
     } as Grouping);
-    this.gridObj.invalidate(); // invalidate all rows and re-render
+    reactGridRef.current?.slickGrid.invalidate(); // invalidate all rows and re-render
   }
 
-  groupByDurationOrderByCount(aggregateCollapsed: boolean) {
-    this.reactGrid.filterService.setSortColumnIcons([]);
-    this.dataviewObj.setGrouping({
+  function groupByDurationOrderByCount(aggregateCollapsed: boolean) {
+    reactGridRef.current?.filterService.setSortColumnIcons([]);
+    reactGridRef.current?.dataView.setGrouping({
       getter: 'duration',
       formatter: (g) => `Duration: ${g.value} <span style="color:green">(${g.count} items)</span>`,
       comparer: (a, b) => {
@@ -321,14 +270,14 @@ export default class Example13 extends React.Component<Props, State> {
       aggregateCollapsed,
       lazyTotalsCalculation: true
     } as Grouping);
-    this.gridObj.invalidate(); // invalidate all rows and re-render
+    reactGridRef.current?.slickGrid.invalidate(); // invalidate all rows and re-render
   }
 
-  groupByDurationEffortDriven() {
+  function groupByDurationEffortDriven() {
     // you need to manually add the sort icon(s) in UI
     const sortColumns = [{ columnId: 'duration', sortAsc: true }, { columnId: 'effortDriven', sortAsc: true }];
-    this.reactGrid.filterService.setSortColumnIcons(sortColumns);
-    this.dataviewObj.setGrouping([
+    reactGridRef.current?.filterService.setSortColumnIcons(sortColumns);
+    reactGridRef.current?.dataView.setGrouping([
       {
         getter: 'duration',
         formatter: (g) => `Duration: ${g.value}  <span style="color:green">(${g.count} items)</span>`,
@@ -350,18 +299,18 @@ export default class Example13 extends React.Component<Props, State> {
         lazyTotalsCalculation: true
       }
     ] as Grouping[]);
-    this.gridObj.invalidate(); // invalidate all rows and re-render
+    reactGridRef.current?.slickGrid.invalidate(); // invalidate all rows and re-render
   }
 
-  groupByDurationEffortDrivenPercent() {
+  function groupByDurationEffortDrivenPercent() {
     // you need to manually add the sort icon(s) in UI
     const sortColumns = [
       { columnId: 'duration', sortAsc: true },
       { columnId: 'effortDriven', sortAsc: true },
       { columnId: 'percentComplete', sortAsc: true }
     ];
-    this.reactGrid.filterService.setSortColumnIcons(sortColumns);
-    this.dataviewObj.setGrouping([
+    reactGridRef.current?.filterService.setSortColumnIcons(sortColumns);
+    reactGridRef.current?.dataView.setGrouping([
       {
         getter: 'duration',
         formatter: (g) => `Duration: ${g.value}  <span style="color:green">(${g.count} items)</span>`,
@@ -392,97 +341,101 @@ export default class Example13 extends React.Component<Props, State> {
         lazyTotalsCalculation: true
       }
     ] as Grouping[]);
-    this.gridObj.invalidate(); // invalidate all rows and re-render
+    reactGridRef.current?.slickGrid.invalidate(); // invalidate all rows and re-render
   }
 
-  changeProcessing(isProcessing: boolean) {
-    this.setState((state: State) => ({
-      ...state,
-      processing: isProcessing
-    }));
+  function changeProcessing(isProcessing: boolean) {
+    setProcessing(isProcessing);
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example13.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
-
-        <div className="row">
-          <div className="col-sm-12">
-            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="add-500-rows-btn" onClick={() => this.updateData(500)}>
-              500 rows
-            </button>
-            <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="add-50k-rows-btn" onClick={() => this.updateData(50000)}>
-              50k rows
-            </button>
-            <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="clear-grouping-btn" onClick={() => this.clearGrouping()}>
-              <i className="mdi mdi-close"></i> Clear grouping
-            </button>
-            <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="collapse-all-btn" onClick={() => this.collapseAllGroups()}>
-              <i className="mdi mdi-arrow-collapse"></i> Collapse all groups
-            </button>
-            <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="expand-all-btn" onClick={() => this.expandAllGroups()}>
-              <i className="mdi mdi-arrow-expand"></i> Expand all groups
-            </button>
-            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="export-excel-btn" onClick={() => this.exportToExcel()}>
-              <i className="mdi mdi-file-excel-outline text-success"></i> Export to Excel
-            </button>
-          </div>
-        </div>
-
-        <hr />
-
-        <div className="row">
-          <div className="col-sm-12">
-            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="group-duration-sort-value-btn"
-              onClick={() => this.groupByDuration()}>
-              Group by Duration &amp; sort groups by value
-            </button>
-            <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="group-duration-sort-count-btn"
-              onClick={() => this.groupByDurationOrderByCount(false)}>
-              Group by Duration &amp; sort groups by count
-            </button>
-          </div>
-          <div className="row">
-            <div className="col-sm-12">
-              <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="group-duration-sort-count-collapse-btn"
-                onClick={() => this.groupByDurationOrderByCount(true)}>
-                Group by Duration &amp; sort groups by count, aggregate collapsed
-              </button>
-              <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="group-duration-effort-btn"
-                onClick={() => this.groupByDurationEffortDriven()}>
-                Group by Duration then Effort-Driven
-              </button>
-              <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="group-duration-effort-percent-btn"
-                onClick={() => this.groupByDurationEffortDrivenPercent()}>
-                Group by Duration then Effort-Driven then Percent.
-              </button>
-              {this.state.processing && <span>
-                <i className="mdi mdi-sync mdi-spin"></i>
-              </span>}
-            </div>
-          </div>
-        </div>
-
-        <SlickgridReact gridId="grid13"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions!}
-          dataset={this.state.dataset}
-          onBeforeExportToExcel={() => this.changeProcessing(true)}
-          onAfterExportToExcel={() => this.changeProcessing(false)}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        />
+  return !gridOptions ? '' : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 13: Grouping & Aggregators
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example13.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+      </h2>
+      <div className="subtitle">
+        <ul>
+          <li><a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grouping-aggregators" target="_blank">Docs</a></li>
+          <li>Fully dynamic and interactive multi-level grouping with filtering and aggregates over 50'000 items</li>
+          <li>Each grouping level can have its own aggregates (over child rows, child groups, or all descendant rows)..</li>
+          <li>Use "Aggregators" and "GroupTotalFormatters" directly from Slickgrid-React</li>
+        </ul>
       </div>
-    );
-  }
+
+      <div className="row">
+        <div className="col-sm-12">
+          <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="add-500-rows-btn" onClick={() => updateData(500)}>
+            500 rows
+          </button>
+          <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="add-50k-rows-btn" onClick={() => updateData(50000)}>
+            50k rows
+          </button>
+          <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="clear-grouping-btn" onClick={() => clearGrouping()}>
+            <i className="mdi mdi-close"></i> Clear grouping
+          </button>
+          <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="collapse-all-btn" onClick={() => collapseAllGroups()}>
+            <i className="mdi mdi-arrow-collapse"></i> Collapse all groups
+          </button>
+          <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="expand-all-btn" onClick={() => expandAllGroups()}>
+            <i className="mdi mdi-arrow-expand"></i> Expand all groups
+          </button>
+          <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="export-excel-btn" onClick={() => exportToExcel()}>
+            <i className="mdi mdi-file-excel-outline text-success"></i> Export to Excel
+          </button>
+        </div>
+      </div>
+
+      <hr />
+
+      <div className="row">
+        <div className="col-sm-12">
+          <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="group-duration-sort-value-btn"
+            onClick={() => groupByDuration()}>
+            Group by Duration &amp; sort groups by value
+          </button>
+          <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="group-duration-sort-count-btn"
+            onClick={() => groupByDurationOrderByCount(false)}>
+            Group by Duration &amp; sort groups by count
+          </button>
+        </div>
+        <div className="row">
+          <div className="col-sm-12">
+            <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="group-duration-sort-count-collapse-btn"
+              onClick={() => groupByDurationOrderByCount(true)}>
+              Group by Duration &amp; sort groups by count, aggregate collapsed
+            </button>
+            <button className="btn btn-outline-secondary btn-xs btn-icon mx-1" data-test="group-duration-effort-btn"
+              onClick={() => groupByDurationEffortDriven()}>
+              Group by Duration then Effort-Driven
+            </button>
+            <button className="btn btn-outline-secondary btn-xs btn-icon" data-test="group-duration-effort-percent-btn"
+              onClick={() => groupByDurationEffortDrivenPercent()}>
+              Group by Duration then Effort-Driven then Percent.
+            </button>
+            {processing && <span>
+              <i className="mdi mdi-sync mdi-spin"></i>
+            </span>}
+          </div>
+        </div>
+      </div>
+
+      <SlickgridReact gridId="grid13"
+        columnDefinitions={columnDefinitions}
+        gridOptions={gridOptions!}
+        dataset={dataset}
+        onBeforeExportToExcel={() => changeProcessing(true)}
+        onAfterExportToExcel={() => changeProcessing(false)}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+      />
+    </div>
+  );
 }
+
+export default Example13;
