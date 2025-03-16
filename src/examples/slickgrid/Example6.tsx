@@ -37,10 +37,9 @@ const Example6: React.FC = () => {
   const [status, setStatus] = useState<Status>({ text: '', class: '' });
   const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
   const [isWithCursor, setIsWithCursor] = useState<boolean>(false);
-  const [graphqlService] = useState(new GraphqlService());
-
   const isWithCursorRef = useRef(isWithCursor);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+  const graphqlService = new GraphqlService();
 
   useEffect(() => {
     i18next.changeLanguage(defaultLang);
@@ -50,6 +49,10 @@ const Example6: React.FC = () => {
       saveCurrentGridState();
     };
   }, []);
+
+  useEffect(() => {
+    isWithCursorRef.current = isWithCursor;
+  }, [isWithCursor]);
 
   function reactGridReady(reactGrid: SlickgridReactInstance) {
     reactGridRef.current = reactGrid;
@@ -331,7 +334,6 @@ const Example6: React.FC = () => {
 
   function changeIsWithCursor(newValue: boolean) {
     setIsWithCursor(newValue);
-    isWithCursorRef.current = newValue;
     resetOptions({ useCursor: newValue });
     return true;
   }
@@ -436,11 +438,11 @@ const Example6: React.FC = () => {
             <span style={{ marginLeft: '10px' }}>
               <label>Pagination strategy: </label>
               <span data-test="radioStrategy">
-                <label className="radio-inline control-label" htmlFor="offset">
+                <label className="radio-inline control-label mx-1" htmlFor="offset">
                   <input type="radio" name="inlineRadioOptions" data-test="offset" id="radioOffset" defaultChecked={true} value="false"
                     onChange={() => changeIsWithCursor(false)} /> Offset
                 </label>
-                <label className="radio-inline control-label" htmlFor="radioCursor">
+                <label className="radio-inline control-label mx-1" htmlFor="radioCursor">
                   <input type="radio" name="inlineRadioOptions" data-test="cursor" id="radioCursor" value="true"
                     onChange={() => changeIsWithCursor(true)} /> Cursor
                 </label>
