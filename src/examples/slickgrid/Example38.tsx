@@ -1,6 +1,6 @@
 import { format as dateFormatter } from '@formkit/tempo';
 import { GridOdataService, type OdataServiceApi } from '@slickgrid-universal/odata';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import {
   Aggregators,
@@ -18,56 +18,57 @@ import {
 import Data from './data/customers_100.json';
 
 import './example38.scss';
-import type BaseSlickGridState from './state-slick-grid-base';
 
 const CARET_HTML_ESCAPED = '%5E';
 const PERCENT_HTML_ESCAPED = '%25';
 
 interface Status { text: string, class: string }
 
-interface State extends BaseSlickGridState {
-  metrics: Metrics;
-  odataQuery: string;
-  processing: boolean;
-  errorStatus: string;
-  isPageErrorTest: boolean;
-  status: Status;
-  tagDataClass: string;
-}
+const Example38: React.FC = () => {
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [processing, setProcessing] = useState(false);
+  const [odataQuery, setOdataQuery] = useState('');
+  const [status, setStatus] = useState({} as Status);
+  const [errorStatus, setErrorStatus] = useState('');
+  const [tagDataClass, setTagDataClass] = useState('');
+  const [isPageErrorTest, setIsPageErrorTest] = useState(false);
 
-interface Props { }
+  const gridOptionsRef = useRef<GridOption>();
+  const metricsRef = useRef({} as Metrics);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-export default class Example38 extends React.Component<Props, State> {
-  reactGrid!: SlickgridReactInstance;
-  backendService: GridOdataService;
+  useEffect(() => {
+    defineGrid();
+  }, []);
 
-  constructor(public readonly props: Props) {
-    super(props);
-    this.backendService = new GridOdataService();
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: [],
-      errorStatus: '',
-      metrics: {} as Metrics,
-      status: { class: '', text: '' },
-      odataQuery: '',
-      processing: false,
-      isPageErrorTest: false,
-      tagDataClass: '',
-    };
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  componentDidMount() {
-    this.defineGrid();
-  }
+  function defineGrid() {
+    const columnDefinitions: Column[] = [
+      {
+        id: 'name', name: 'Name', field: 'name', sortable: true,
+        type: FieldType.string,
+        filterable: true,
+        filter: { model: Filters.compoundInput }
+      },
+      {
+        id: 'gender', name: 'Gender', field: 'gender', filterable: true, sortable: true,
+        filter: {
+          model: Filters.singleSelect,
+          collection: [{ value: '', label: '' }, { value: 'male', label: 'male' }, { value: 'female', label: 'female' }]
+        }
+      },
+      { id: 'company', name: 'Company', field: 'company', filterable: true, sortable: true },
+      {
+        id: 'category_name', name: 'Category', field: 'category/name', filterable: true, sortable: true,
+        formatter: (_row, _cell, _val, _colDef, dataContext) => dataContext['category']?.['name'] || ''
+      }
+    ];
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  getGridDefinition(): GridOption {
-    return {
+    const gridOptions: GridOption = {
       enableAutoResize: true,
       autoResize: {
         container: '#demo-container',
@@ -88,7 +89,7 @@ export default class Example38 extends React.Component<Props, State> {
         // filters: [{ columnId: 'gender', searchTerms: ['female'] }]
       },
       backendServiceApi: {
-        service: this.backendService,
+        service: new GridOdataService(),
         options: {
           // enable infinite via Boolean OR via { fetchSize: number }
           infiniteScroll: { fetchSize: 30 }, // or use true, in that case it would use default size of 25
@@ -96,84 +97,46 @@ export default class Example38 extends React.Component<Props, State> {
           version: 4
         },
         onError: (error: Error) => {
-          this.setState((state: State) => ({ ...state, errorStatus: error.message }));
-          this.displaySpinner(false, true);
+          setErrorStatus(error.message);
+          displaySpinner(false, true);
         },
         preProcess: () => {
-          this.setState((state: State) => ({ ...state, errorStatus: '' }));
-          this.displaySpinner(true);
+          setErrorStatus('');
+          displaySpinner(true);
         },
-        process: (query) => this.getCustomerApiCall(query),
+        process: (query) => getCustomerApiCall(query),
         postProcess: (response) => {
-          this.setState(
-            (state: State) => ({ ...state, metrics: response.metrics }),
-            () => this.getCustomerCallback(response)
-          );
-          this.displaySpinner(false);
+          metricsRef.current = response.metrics;
+          getCustomerCallback(response);
+          displaySpinner(false);
         }
       } as OdataServiceApi
     };
+
+    setColumnDefinitions(columnDefinitions);
+    gridOptionsRef.current = gridOptions;
   }
 
-  getColumnDefinitions(): Column[] {
-    return [
-      {
-        id: 'name', name: 'Name', field: 'name', sortable: true,
-        type: FieldType.string,
-        filterable: true,
-        filter: { model: Filters.compoundInput }
-      },
-      {
-        id: 'gender', name: 'Gender', field: 'gender', filterable: true, sortable: true,
-        filter: {
-          model: Filters.singleSelect,
-          collection: [{ value: '', label: '' }, { value: 'male', label: 'male' }, { value: 'female', label: 'female' }]
-        }
-      },
-      { id: 'company', name: 'Company', field: 'company', filterable: true, sortable: true },
-      {
-        id: 'category_name', name: 'Category', field: 'category/name', filterable: true, sortable: true,
-        formatter: (_row, _cell, _val, _colDef, dataContext) => dataContext['category']?.['name'] || ''
-      }
-    ];
-  }
-
-  defineGrid() {
-    const columnDefinitions = this.getColumnDefinitions();
-    const gridOptions = this.getGridDefinition();
-
-    this.setState((state: State) => ({
-      ...state,
-      columnDefinitions,
-      gridOptions,
-    }));
-  }
-
-  displaySpinner(isProcessing: boolean, isError?: boolean) {
-    this.setState((state: State) => ({ ...state, processing: isProcessing }));
+  function displaySpinner(isProcessing: boolean, isError?: boolean) {
+    setProcessing(isProcessing);
 
     if (isError) {
-      this.setState((state: State) => ({ ...state, status: { text: 'ERROR!!!', class: 'alert alert-danger' } }));
+      setStatus({ text: 'ERROR!!!', class: 'alert alert-danger' });
     } else {
-      this.setState((state: State) => ({
-        ...state,
-        status: (isProcessing)
-          ? { text: 'loading', class: 'alert alert-warning' }
-          : { text: 'finished', class: 'alert alert-success' }
-      }));
+      setStatus(isProcessing
+        ? { text: 'loading', class: 'alert alert-warning' }
+        : { text: 'finished', class: 'alert alert-success' }
+      );
     }
   }
 
-  getCustomerCallback(data: any) {
+  function getCustomerCallback(data: any) {
     // totalItems property needs to be filled for pagination to work correctly
     // however we need to force React to do a dirty check, doing a clone object will do just that
     const totalItemCount: number = data['@odata.count'];
 
-    this.setState((state: State) => ({
-      ...state,
-      odataQuery: data['query'],
-      metrics: { ...state.metrics, totalItemCount }
-    }));
+    setOdataQuery(data['query']);
+    metricsRef.current = { ...metricsRef.current, totalItemCount };
 
     // even if we're not showing pagination, it is still used behind the scene to fetch next set of data (next page basically)
     // once pagination totalItems is filled, we can update the dataset
@@ -182,33 +145,30 @@ export default class Example38 extends React.Component<Props, State> {
     // or if we're on first data fetching (no scroll bottom ever occured yet)
     if (!data.infiniteScrollBottomHit) {
       // initial load not scroll hit yet, full dataset assignment
-      this.reactGrid.slickGrid?.scrollTo(0); // scroll back to top to avoid unwanted onScroll end triggered
-      this.setState((state: State) => ({
-        ...state,
-        dataset: data.value,
-        metrics: { ...state.metrics, itemCount: data.value.length }
-      }));
+      reactGridRef.current?.slickGrid?.scrollTo(0); // scroll back to top to avoid unwanted onScroll end triggered
+      setDataset(data.value);
+      metricsRef.current = { ...metricsRef.current, itemCount: data.value.length };
     } else {
       // scroll hit, for better perf we can simply use the DataView directly for better perf (which is better compare to replacing the entire dataset)
-      this.reactGrid.dataView?.addItems(data.value);
+      reactGridRef.current?.dataView?.addItems(data.value);
     }
 
     // NOTE: you can get currently loaded item count via the `onRowCountChanged`slick event, see `refreshMetrics()` below
-    // OR you could also calculate it yourself or get it via: `this.sgb.dataView.getItemCount() === totalItemCount`
-    // console.log('is data fully loaded: ', this.sgb.dataView?.getItemCount() === totalItemCount);
+    // OR you could also calculate it yourself or get it via: `sgb.dataView.getItemCount() === totalItemCount`
+    // console.log('is data fully loaded: ', sgb.dataView?.getItemCount() === totalItemCount);
   }
 
-  getCustomerApiCall(query: string) {
+  function getCustomerApiCall(query: string) {
     // in your case, you will call your WebAPI function (wich needs to return a Promise)
     // for the demo purpose, we will call a mock WebAPI function
-    return this.getCustomerDataApiMock(query);
+    return getCustomerDataApiMock(query);
   }
 
   /**
    * This function is only here to mock a WebAPI call (since we are using a JSON file for the demo)
    *  in your case the getCustomer() should be a WebAPI function returning a Promise
    */
-  getCustomerDataApiMock(query: string): Promise<any> {
+  function getCustomerDataApiMock(query: string): Promise<any> {
     // the mock is returning a Promise, just like a WebAPI typically does
     return new Promise(resolve => {
       const queryParams = query.toLowerCase().split('&');
@@ -218,8 +178,8 @@ export default class Example38 extends React.Component<Props, State> {
       let countTotalItems = 100;
       const columnFilters = {};
 
-      if (this.state.isPageErrorTest) {
-        this.setState((state: State) => ({ ...state, isPageErrorTest: false }));
+      if (isPageErrorTest) {
+        setIsPageErrorTest(false);
         throw new Error('Server timed out trying to retrieve data for the last page');
       }
 
@@ -383,8 +343,8 @@ export default class Example38 extends React.Component<Props, State> {
     });
   }
 
-  groupByGender() {
-    this.reactGrid?.dataView?.setGrouping({
+  function groupByGender() {
+    reactGridRef.current?.dataView?.setGrouping({
       getter: 'gender',
       formatter: (g) => `Gender: ${g.value} <span class="text-green">(${g.count} items)</span>`,
       comparer: (a, b) => SortComparers.string(a.value, b.value),
@@ -396,38 +356,36 @@ export default class Example38 extends React.Component<Props, State> {
     } as Grouping);
 
     // you need to manually add the sort icon(s) in UI
-    this.reactGrid?.slickGrid.setSortColumns([{ columnId: 'duration', sortAsc: true }]);
-    this.reactGrid?.slickGrid.invalidate(); // invalidate all rows and re-render
+    reactGridRef.current?.slickGrid.setSortColumns([{ columnId: 'duration', sortAsc: true }]);
+    reactGridRef.current?.slickGrid.invalidate(); // invalidate all rows and re-render
   }
 
-  clearAllFiltersAndSorts() {
-    if (this.reactGrid?.gridService) {
-      this.reactGrid.gridService.clearAllFiltersAndSorts();
+  function clearAllFiltersAndSorts() {
+    if (reactGridRef.current?.gridService) {
+      reactGridRef.current?.gridService.clearAllFiltersAndSorts();
     }
   }
 
-  refreshMetrics(args: OnRowCountChangedEventArgs) {
-    const itemCount = this.reactGrid.dataView?.getFilteredItemCount() || 0;
+  function refreshMetrics(args: OnRowCountChangedEventArgs) {
+    const itemCount = reactGridRef.current?.dataView?.getFilteredItemCount() || 0;
     if (args?.current >= 0) {
-      this.setState((state: State) => ({
-        ...state,
-        metrics: { ...state.metrics, itemCount },
-        tagDataClass: itemCount === this.state.metrics.totalItemCount
-          ? 'fully-loaded'
-          : 'partial-load'
-      }));
+      metricsRef.current = { ...metricsRef.current, itemCount };
+      setTagDataClass(itemCount === metricsRef.current.totalItemCount
+        ? 'fully-loaded'
+        : 'partial-load'
+      );
     }
   }
 
-  setFiltersDynamically() {
+  function setFiltersDynamically() {
     // we can Set Filters Dynamically (or different filters) afterward through the FilterService
-    this.reactGrid.filterService.updateFilters([
+    reactGridRef.current?.filterService.updateFilters([
       { columnId: 'gender', searchTerms: ['female'] },
     ]);
   }
 
-  setSortingDynamically() {
-    this.reactGrid.sortService.updateSorting([
+  function setSortingDynamically() {
+    reactGridRef.current?.sortService.updateSorting([
       { columnId: 'name', direction: 'DESC' },
     ]);
   }
@@ -436,109 +394,108 @@ export default class Example38 extends React.Component<Props, State> {
   // THE FOLLOWING METHODS ARE ONLY FOR DEMO PURPOSES DO NOT USE THIS CODE
   // ---
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div className="demo38">
-        <div id="demo-container" className="container-fluid">
-          <h2>
-            Example 38: OData (v4) Backend Service with Infinite Scroll
-            <span className="float-end font18">
-              see&nbsp;
-              <a target="_blank"
-                href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example38.tsx">
-                <span className="mdi mdi-link-variant"></span> code
-              </a>
-            </span>
-          </h2>
-          <div className="row">
-            <div className="col-sm-12">
-              <h6 className="subtitle italic content">
-                <ul>
+  return !gridOptionsRef.current ? '' : (
+    <div className="demo38">
+      <div id="demo-container" className="container-fluid">
+        <h2>
+          Example 38: OData (v4) Backend Service with Infinite Scroll
+          <span className="float-end font18">
+            see&nbsp;
+            <a target="_blank"
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example38.tsx">
+              <span className="mdi mdi-link-variant"></span> code
+            </a>
+          </span>
+        </h2>
+        <div className="row">
+          <div className="col-sm-12">
+            <h6 className="subtitle italic content">
+              <ul>
+                <li>
+                  Infinite scrolling allows the grid to lazy-load rows from the server when reaching the scroll bottom (end) position.
+                  In its simplest form, the more the user scrolls down, the more rows get loaded.
+                  If we reached the end of the dataset and there is no more data to load, then we'll assume to have the entire dataset loaded in memory.
+                  This contrast with the regular Pagination approach which will only hold a single page data at a time.
+                </li>
+                <li>NOTES</li>
+                <ol>
                   <li>
-                    Infinite scrolling allows the grid to lazy-load rows from the server when reaching the scroll bottom (end) position.
-                    In its simplest form, the more the user scrolls down, the more rows get loaded.
-                    If we reached the end of the dataset and there is no more data to load, then we'll assume to have the entire dataset loaded in memory.
-                    This contrast with the regular Pagination approach which will only hold a single page data at a time.
+                    <code>presets.pagination</code> is not supported with Infinite Scroll and will revert to the first page,
+                    simply because since we keep appending data, we always have to start from index zero (no offset).
                   </li>
-                  <li>NOTES</li>
-                  <ol>
-                    <li>
-                      <code>presets.pagination</code> is not supported with Infinite Scroll and will revert to the first page,
-                      simply because since we keep appending data, we always have to start from index zero (no offset).
-                    </li>
-                    <li>
-                      Pagination is not shown BUT in fact, that is what is being used behind the scene whenever reaching the scroll end (fetching next batch).
-                    </li>
-                    <li>
-                      Also note that whenever the user changes the Sort(s)/Filter(s) it will always reset and go back to zero index (first page).
-                    </li>
-                  </ol>
-                </ul>
-              </h6>
-            </div>
-            <div className="col-sm-3">
-              {this.state.errorStatus && <div className="alert alert-danger" data-test="error-status">
-                <em><strong>Backend Error:</strong> <span>{this.state.errorStatus}</span></em>
-              </div>}
-            </div>
+                  <li>
+                    Pagination is not shown BUT in fact, that is what is being used behind the scene whenever reaching the scroll end (fetching next batch).
+                  </li>
+                  <li>
+                    Also note that whenever the user changes the Sort(s)/Filter(s) it will always reset and go back to zero index (first page).
+                  </li>
+                </ol>
+              </ul>
+            </h6>
           </div>
-
-          <div className="row">
-            <div className="col-sm-2">
-              <div className={this.state.status.class} role="alert" data-test="status">
-                <strong>Status: </strong> {this.state.status.text}
-                {this.state.processing && <span>
-                  <i className="mdi mdi-sync mdi-spin"></i>
-                </span>}
-              </div>
-            </div>
-            <div className="col-sm-10">
-              <div className="alert alert-info" data-test="alert-odata-query">
-                <strong>OData Query:</strong> <span data-test="odata-query-result">{this.state.odataQuery}</span>
-              </div>
-            </div>
+          <div className="col-sm-3">
+            {errorStatus && <div className="alert alert-danger" data-test="error-status">
+              <em><strong>Backend Error:</strong> <span>{errorStatus}</span></em>
+            </div>}
           </div>
-
-          <div className="row">
-            <div className="col-sm-12">
-              <button className="btn btn-outline-secondary btn-sm btn-icon me-1" data-test="clear-filters-sorting"
-                onClick={() => this.clearAllFiltersAndSorts()} title="Clear all Filters & Sorts">
-                <i className="mdi mdi-filter-remove-outline"></i>
-                Clear all Filter & Sorts
-              </button>
-              <button className="btn btn-outline-secondary btn-sm mx-1 btn-icon" data-test="set-dynamic-filter" onClick={() => this.setFiltersDynamically()}>
-                Set Filters Dynamically
-              </button>
-              <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="set-dynamic-sorting" onClick={() => this.setSortingDynamically()}>
-                Set Sorting Dynamically
-              </button>
-              <button className="btn btn-outline-secondary btn-sm mx-1" data-test="group-by-gender" onClick={() => this.groupByGender()}>
-                Group by Gender
-              </button>
-
-              {this.state.metrics && <div><><b className="me-1">Metrics:</b>
-                {this.state.metrics?.endTime ? dateFormatter(this.state.metrics.endTime, 'DD MMM, h:mm:ss a') : ''} —
-                <span className="mx-1" data-test="itemCount">{this.state.metrics.itemCount}</span>
-                of
-                <span className="mx-1" data-test="totalItemCount">{this.state.metrics.totalItemCount}</span> items
-                <span className={'badge rounded-pill text-bg-primary mx-1 ' + this.state.tagDataClass} data-test="data-loaded-tag">
-                  All Data Loaded!!!
-                </span>
-              </>
-              </div>}
-            </div>
-          </div >
-
-          <SlickgridReact gridId="grid38"
-            columnDefinitions={this.state.columnDefinitions}
-            gridOptions={this.state.gridOptions}
-            dataset={this.state.dataset}
-            onReactGridCreated={$event => this.reactGridReady($event.detail)}
-            onRowCountChanged={$event => this.refreshMetrics($event.detail.args)}
-          />
         </div>
+
+        <div className="row">
+          <div className="col-sm-2">
+            <div className={status.class} role="alert" data-test="status">
+              <strong>Status: </strong> {status.text}
+              {processing && <span>
+                <i className="mdi mdi-sync mdi-spin"></i>
+              </span>}
+            </div>
+          </div>
+          <div className="col-sm-10">
+            <div className="alert alert-info" data-test="alert-odata-query">
+              <strong>OData Query:</strong> <span data-test="odata-query-result">{odataQuery}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-sm-12">
+            <button className="btn btn-outline-secondary btn-sm btn-icon me-1" data-test="clear-filters-sorting"
+              onClick={() => clearAllFiltersAndSorts()} title="Clear all Filters & Sorts">
+              <i className="mdi mdi-filter-remove-outline"></i>
+              Clear all Filter & Sorts
+            </button>
+            <button className="btn btn-outline-secondary btn-sm mx-1 btn-icon" data-test="set-dynamic-filter" onClick={() => setFiltersDynamically()}>
+              Set Filters Dynamically
+            </button>
+            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="set-dynamic-sorting" onClick={() => setSortingDynamically()}>
+              Set Sorting Dynamically
+            </button>
+            <button className="btn btn-outline-secondary btn-sm mx-1" data-test="group-by-gender" onClick={() => groupByGender()}>
+              Group by Gender
+            </button>
+
+            {metricsRef.current && <div><><b className="me-1">Metrics:</b>
+              {metricsRef.current?.endTime ? dateFormatter(metricsRef.current.endTime, 'DD MMM, h:mm:ss a') : ''} —
+              <span className="mx-1" data-test="itemCount">{metricsRef.current.itemCount}</span>
+              of
+              <span className="mx-1" data-test="totalItemCount">{metricsRef.current.totalItemCount}</span> items
+              <span className={'badge rounded-pill text-bg-primary mx-1 ' + tagDataClass} data-test="data-loaded-tag">
+                All Data Loaded!!!
+              </span>
+            </>
+            </div>}
+          </div>
+        </div >
+
+        <SlickgridReact gridId="grid38"
+          columnDefinitions={columnDefinitions}
+          gridOptions={gridOptionsRef.current}
+          dataset={dataset}
+          onReactGridCreated={$event => reactGridReady($event.detail)}
+          onRowCountChanged={$event => refreshMetrics($event.detail.args)}
+        />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
+export default Example38;
