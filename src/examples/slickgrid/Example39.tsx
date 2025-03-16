@@ -1,7 +1,7 @@
 import { format as dateFormatter } from '@formkit/tempo';
 import { GraphqlService, type GraphqlPaginatedResult, type GraphqlServiceApi } from '@slickgrid-universal/graphql';
-import i18next, { type TFunction } from 'i18next';
-import React from 'react';
+import i18next from 'i18next';
+import React, { useEffect, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import {
   type Column,
@@ -16,23 +16,9 @@ import {
 } from '../../slickgrid-react';
 import SAMPLE_COLLECTION_DATA_URL from './data/customers_100.json?url';
 
-import type BaseSlickGridState from './state-slick-grid-base';
 import './example39.scss';
 
 interface Status { text: string, class: string }
-interface Props {
-  t: TFunction;
-}
-
-interface State extends BaseSlickGridState {
-  graphqlQuery: string,
-  processing: boolean,
-  selectedLanguage: string,
-  metrics: Metrics,
-  status: Status,
-  serverWaitDelay: number,
-  tagDataClass: string,
-}
 
 const GRAPHQL_QUERY_DATASET_NAME = 'users';
 const FAKE_SERVER_DELAY = 250;
@@ -41,40 +27,31 @@ function unescapeAndLowerCase(val: string) {
   return val.replace(/^"/, '').replace(/"$/, '').toLowerCase();
 }
 
-class Example39 extends React.Component<Props, State> {
-  reactGrid!: SlickgridReactInstance;
-  graphqlService = new GraphqlService();
+const Example39: React.FC = () => {
+  const defaultLang = 'en';
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [processing, setProcessing] = useState(false);
+  const [graphqlQuery, setGraphqlQuery] = useState('');
+  const [selectedLanguage, setSelectedLanguage] = useState(defaultLang);
+  const [status, setStatus] = useState({} as Status);
+  const [serverWaitDelay, setServerWaitDelay] = useState(FAKE_SERVER_DELAY); // server simulation with default of 250ms but 50ms for Cypress tests
+  const [tagDataClass, setTagDataClass] = useState('');
 
-  constructor(public readonly props: Props) {
-    super(props);
-    const defaultLang = 'en';
+  const gridOptionsRef = useRef<GridOption>();
+  const metricsRef = useRef({} as Metrics);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: [],
-      metrics: {} as Metrics,
-      processing: false,
-      graphqlQuery: '',
-      selectedLanguage: defaultLang,
-      status: {} as Status,
-      serverWaitDelay: FAKE_SERVER_DELAY, // server simulation with default of 250ms but 50ms for Cypress tests
-      tagDataClass: '',
-    };
+  useEffect(() => {
+    defineGrid();
+  }, []);
 
-    i18next.changeLanguage(defaultLang);
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  componentDidMount() {
-    this.defineGrid();
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  getColumnsDefinition(): Column[] {
-    return [
+  function defineGrid() {
+    const columnDefinitions: Column[] = [
       {
         id: 'name', field: 'name', nameKey: 'NAME', width: 60,
         type: FieldType.string,
@@ -112,23 +89,8 @@ class Example39 extends React.Component<Props, State> {
         }
       },
     ];
-  }
 
-  defineGrid() {
-    const columnDefinitions = this.getColumnsDefinition();
-    const gridOptions = this.getGridOptions();
-
-    this.setState((props: Props, state: any) => {
-      return {
-        ...state,
-        columnDefinitions,
-        gridOptions
-      };
-    });
-  }
-
-  getGridOptions(): GridOption {
-    return {
+    const gridOptions: GridOption = {
       enableAutoResize: true,
       autoResize: {
         container: '#demo-container',
@@ -147,7 +109,7 @@ class Example39 extends React.Component<Props, State> {
       backendServiceApi: {
         // we need to disable default internalPostProcess so that we deal with either replacing full dataset or appending to it
         disableInternalPostProcess: true,
-        service: this.graphqlService,
+        service: new GraphqlService(),
         options: {
           datasetName: GRAPHQL_QUERY_DATASET_NAME, // the only REQUIRED property
           addLocaleIntoQuery: true,   // optionally add current locale into the query
@@ -159,51 +121,40 @@ class Example39 extends React.Component<Props, State> {
           infiniteScroll: { fetchSize: 30 }, // or use true, in that case it would use default size of 25
         },
         // you can define the onInit callback OR enable the "executeProcessCommandOnInit" flag in the service init
-        // onInit: (query) => this.getCustomerApiCall(query)
-        preProcess: () => this.displaySpinner(true),
-        process: (query) => this.getCustomerApiCall(query),
+        // onInit: (query) => getCustomerApiCall(query)
+        preProcess: () => displaySpinner(true),
+        process: (query) => getCustomerApiCall(query),
         postProcess: (result: GraphqlPaginatedResult) => {
-          const metrics = result.metrics as Metrics;
-
-          this.setState((state: State) => ({
-            ...state,
-            metrics,
-          }));
-
-          this.displaySpinner(false);
-          this.getCustomerCallback(result);
+          metricsRef.current = result.metrics as Metrics;
+          displaySpinner(false);
+          getCustomerCallback(result);
         }
       } as GraphqlServiceApi
     };
+
+    setColumnDefinitions(columnDefinitions);
+    gridOptionsRef.current = gridOptions;
   }
 
-  clearAllFiltersAndSorts() {
-    if (this.reactGrid?.gridService) {
-      this.reactGrid.gridService.clearAllFiltersAndSorts();
+  function clearAllFiltersAndSorts() {
+    if (reactGridRef.current?.gridService) {
+      reactGridRef.current.gridService.clearAllFiltersAndSorts();
     }
   }
 
-  displaySpinner(isProcessing: boolean) {
+  function displaySpinner(isProcessing: boolean) {
     const newStatus = (isProcessing)
       ? { text: 'processing...', class: 'alert alert-danger' }
       : { text: 'finished', class: 'alert alert-success' };
 
-    this.setState((state: any) => {
-      return {
-        ...state,
-        status: newStatus,
-        processing: isProcessing,
-      };
-    });
+    setStatus(newStatus);
+    setProcessing(isProcessing);
   }
 
-  getCustomerCallback(result: any) {
+  function getCustomerCallback(result: any) {
     const { nodes, totalCount } = result.data[GRAPHQL_QUERY_DATASET_NAME];
-    if (this.reactGrid) {
-      this.setState((state: State) => ({
-        ...state,
-        metrics: { ...state.metrics, totalItemCount: totalCount }
-      }));
+    if (reactGridRef.current) {
+      metricsRef.current = { ...metricsRef.current, totalItemCount: totalCount };
 
       // even if we're not showing pagination, it is still used behind the scene to fetch next set of data (next page basically)
       // once pagination totalItems is filled, we can update the dataset
@@ -212,20 +163,17 @@ class Example39 extends React.Component<Props, State> {
       // or if we're on first data fetching (no scroll bottom ever occured yet)
       if (!result.infiniteScrollBottomHit) {
         // initial load not scroll hit yet, full dataset assignment
-        this.reactGrid.slickGrid?.scrollTo(0); // scroll back to top to avoid unwanted onScroll end triggered
-        this.setState((state: State) => ({
-          ...state,
-          dataset: nodes,
-          metrics: { ...state.metrics, itemCount: nodes.length }
-        }));
+        reactGridRef.current.slickGrid?.scrollTo(0); // scroll back to top to avoid unwanted onScroll end triggered
+        setDataset(nodes);
+        metricsRef.current = { ...metricsRef.current, itemCount: nodes.length };
       } else {
         // scroll hit, for better perf we can simply use the DataView directly for better perf (which is better compare to replacing the entire dataset)
-        this.reactGrid.dataView?.addItems(nodes);
+        reactGridRef.current.dataView?.addItems(nodes);
       }
 
       // NOTE: you can get currently loaded item count via the `onRowCountChanged`slick event, see `refreshMetrics()` below
-      // OR you could also calculate it yourself or get it via: `this.reactGrid?.dataView.getItemCount() === totalItemCount`
-      // console.log('is data fully loaded: ', this.reactGrid?.dataView?.getItemCount() === totalItemCount);
+      // OR you could also calculate it yourself or get it via: `reactGrid?.dataView.getItemCount() === totalItemCount`
+      // console.log('is data fully loaded: ', reactGrid?.dataView?.getItemCount() === totalItemCount);
     }
   }
 
@@ -235,13 +183,13 @@ class Example39 extends React.Component<Props, State> {
    * @param query
    * @return Promise<GraphqlPaginatedResult>
    */
-  getCustomerApiCall(query: string): Promise<GraphqlPaginatedResult> {
+  function getCustomerApiCall(query: string): Promise<GraphqlPaginatedResult> {
     // in your case, you will call your WebAPI function (wich needs to return a Promise)
     // for the demo purpose, we will call a mock WebAPI function
-    return this.getCustomerDataApiMock(query);
+    return getCustomerDataApiMock(query);
   }
 
-  getCustomerDataApiMock(query: string): Promise<any> {
+  function getCustomerDataApiMock(query: string): Promise<any> {
     return new Promise<GraphqlPaginatedResult>(resolve => {
       let firstCount = 0;
       let offset = 0;
@@ -350,149 +298,142 @@ class Example39 extends React.Component<Props, State> {
           };
 
           window.setTimeout(() => {
-            this.setState((state: State) => ({
-              ...state,
-              graphqlQuery: this.state.gridOptions!.backendServiceApi!.service.buildQuery()
-            }));
+            setGraphqlQuery(gridOptionsRef.current!.backendServiceApi!.service.buildQuery());
             resolve(mockedResult);
-          }, this.state.serverWaitDelay);
+          }, serverWaitDelay);
         });
     });
   }
 
-  refreshMetrics(args: OnRowCountChangedEventArgs) {
-    const itemCount = this.reactGrid.dataView?.getFilteredItemCount() || 0;
+  function refreshMetrics(args: OnRowCountChangedEventArgs) {
+    const itemCount = reactGridRef.current?.dataView?.getFilteredItemCount() || 0;
     if (args?.current >= 0) {
-      this.setState((state: State) => ({
-        ...state,
-        metrics: { ...state.metrics, itemCount },
-        tagDataClass: itemCount === this.state.metrics.totalItemCount
-          ? 'fully-loaded'
-          : 'partial-load'
-      }));
+      metricsRef.current = { ...metricsRef.current, itemCount };
+      setTagDataClass(itemCount === metricsRef.current.totalItemCount
+        ? 'fully-loaded'
+        : 'partial-load'
+      );
     }
   }
 
-  serverDelayChanged(e: React.FormEvent<HTMLInputElement>) {
+  function serverDelayChanged(e: React.FormEvent<HTMLInputElement>) {
     const newDelay = +((e.target as HTMLInputElement)?.value ?? '');
-    this.setState((state: State) => ({ ...state, serverWaitDelay: newDelay }));
+    setServerWaitDelay(newDelay);
   }
 
-  async switchLanguage() {
-    const nextLanguage = (this.state.selectedLanguage === 'en') ? 'fr' : 'en';
+  async function switchLanguage() {
+    const nextLanguage = (selectedLanguage === 'en') ? 'fr' : 'en';
     await i18next.changeLanguage(nextLanguage);
-    this.setState((state: State) => ({ ...state, selectedLanguage: nextLanguage }));
+    setSelectedLanguage(nextLanguage);
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div className="demo39">
-        <div id="demo-container" className="container-fluid">
-          <h2>
-            Example 39: GraphQL Backend Service with Infinite Scroll
-            <span className="float-end font18">
-              see&nbsp;
-              <a target="_blank"
-                href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example39.tsx">
-                <span className="mdi mdi-link-variant"></span> code
-              </a>
-            </span>
-          </h2>
+  return !gridOptionsRef.current ? '' : (
+    <div className="demo39">
+      <div id="demo-container" className="container-fluid">
+        <h2>
+          Example 39: GraphQL Backend Service with Infinite Scroll
+          <span className="float-end font18">
+            see&nbsp;
+            <a target="_blank"
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example39.tsx">
+              <span className="mdi mdi-link-variant"></span> code
+            </a>
+          </span>
+        </h2>
 
-          <div className="col-sm-12">
-            <h6 className="subtitle italic content">
-              <ul>
+        <div className="col-sm-12">
+          <h6 className="subtitle italic content">
+            <ul>
+              <li>
+                Infinite scrolling allows the grid to lazy-load rows from the server when reaching the scroll bottom (end) position.
+                In its simplest form, the more the user scrolls down, the more rows get loaded.
+                If we reached the end of the dataset and there is no more data to load, then we'll assume to have the entire dataset loaded in memory.
+                This contrast with the regular Pagination approach which will only hold a single page data at a time.
+              </li>
+              <li>NOTES</li>
+              <ol>
                 <li>
-                  Infinite scrolling allows the grid to lazy-load rows from the server when reaching the scroll bottom (end) position.
-                  In its simplest form, the more the user scrolls down, the more rows get loaded.
-                  If we reached the end of the dataset and there is no more data to load, then we'll assume to have the entire dataset loaded in memory.
-                  This contrast with the regular Pagination approach which will only hold a single page data at a time.
+                  <code>presets.pagination</code> is not supported with Infinite Scroll and will revert to the first page,
+                  simply because since we keep appending data, we always have to start from index zero (no offset).
                 </li>
-                <li>NOTES</li>
-                <ol>
-                  <li>
-                    <code>presets.pagination</code> is not supported with Infinite Scroll and will revert to the first page,
-                    simply because since we keep appending data, we always have to start from index zero (no offset).
-                  </li>
-                  <li>
-                    Pagination is not shown BUT in fact, that is what is being used behind the scene whenever reaching the scroll end (fetching next batch).
-                  </li>
-                  <li>
-                    Also note that whenever the user changes the Sort(s)/Filter(s) it will always reset and go back to zero index (first page).
-                  </li>
-                </ol>
-              </ul>
-            </h6>
-          </div>
-
-          <div className="row">
-            <div className="col-sm-5">
-              <div className={this.state.status.class} role="alert" data-test="status">
-                <strong>Status: </strong> {this.state.status.text}
-                {this.state.processing ? <span>
-                  <i className="mdi mdi-sync mdi-spin"></i>
-                </span> : ''}
-              </div>
-
-              <div className="row">
-                <div className="col-md-12">
-                  <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="clear-filters-sorting"
-                    onClick={() => this.clearAllFiltersAndSorts()} title="Clear all Filters & Sorts">
-                    <i className="mdi mdi-filter-remove-outline"></i>
-                    Clear all Filter & Sorts
-                  </button>
-                  <label htmlFor="serverdelay" className="mx-1">Server Delay: </label>
-                  <input id="serverdelay" type="number"
-                    defaultValue={this.state.serverWaitDelay}
-                    data-test="server-delay" style={{ width: '55px' }}
-                    onInput={($event) => this.serverDelayChanged($event)}
-                    title="input a fake timer delay to simulate slow server response" />
-                </div>
-              </div>
-
-              <div className="row">
-                <div className="col-md-12">
-                  <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" onClick={() => this.switchLanguage()}
-                    data-test="language-button">
-                    <i className="mdi mdi-translate me-1"></i>
-                    Switch Language
-                  </button>
-                  <b>Locale: </b>
-                  <span style={{ fontStyle: 'italic' }} data-test="selected-locale">
-                    {this.state.selectedLanguage + '.json'}
-                  </span>
-                </div>
-              </div>
-              <br />
-              {this.state.metrics && <div><><b className="me-1">Metrics:</b>
-                {this.state.metrics?.endTime ? dateFormatter(this.state.metrics.endTime, 'DD MMM, h:mm:ss a') : ''} —
-                <span className="mx-1" data-test="itemCount">{this.state.metrics.itemCount}</span>
-                of
-                <span className="mx-1" data-test="totalItemCount">{this.state.metrics.totalItemCount}</span> items
-                <span className={'badge rounded-pill text-bg-primary mx-1 ' + this.state.tagDataClass} data-test="data-loaded-tag">
-                  All Data Loaded!!!
-                </span>
-              </>
-              </div>}
-            </div>
-            <div className="col-sm-7">
-              <div className="alert alert-info" data-test="alert-graphql-query">
-                <strong>GraphQL Query:</strong> <span data-test="graphql-query-result">{this.state.graphqlQuery}</span>
-              </div>
-            </div>
-          </div>
-
-          <SlickgridReact gridId="grid39"
-            columnDefinitions={this.state.columnDefinitions}
-            gridOptions={this.state.gridOptions}
-            dataset={this.state.dataset}
-            onReactGridCreated={$event => this.reactGridReady($event.detail)}
-            onRowCountChanged={$event => this.refreshMetrics($event.detail.args)}
-          />
+                <li>
+                  Pagination is not shown BUT in fact, that is what is being used behind the scene whenever reaching the scroll end (fetching next batch).
+                </li>
+                <li>
+                  Also note that whenever the user changes the Sort(s)/Filter(s) it will always reset and go back to zero index (first page).
+                </li>
+              </ol>
+            </ul>
+          </h6>
         </div>
+
+        <div className="row">
+          <div className="col-sm-5">
+            <div className={status.class} role="alert" data-test="status">
+              <strong>Status: </strong> {status.text}
+              {processing ? <span>
+                <i className="mdi mdi-sync mdi-spin"></i>
+              </span> : ''}
+            </div>
+
+            <div className="row">
+              <div className="col-md-12">
+                <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="clear-filters-sorting"
+                  onClick={() => clearAllFiltersAndSorts()} title="Clear all Filters & Sorts">
+                  <i className="mdi mdi-filter-remove-outline"></i>
+                  Clear all Filter & Sorts
+                </button>
+                <label htmlFor="serverdelay" className="mx-1">Server Delay: </label>
+                <input id="serverdelay" type="number"
+                  defaultValue={serverWaitDelay}
+                  data-test="server-delay" style={{ width: '55px' }}
+                  onInput={($event) => serverDelayChanged($event)}
+                  title="input a fake timer delay to simulate slow server response" />
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-12">
+                <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" onClick={() => switchLanguage()}
+                  data-test="language-button">
+                  <i className="mdi mdi-translate me-1"></i>
+                  Switch Language
+                </button>
+                <b>Locale: </b>
+                <span style={{ fontStyle: 'italic' }} data-test="selected-locale">
+                  {selectedLanguage + '.json'}
+                </span>
+              </div>
+            </div>
+            <br />
+            {metricsRef.current && <div><><b className="me-1">Metrics:</b>
+              {metricsRef.current?.endTime ? dateFormatter(metricsRef.current.endTime, 'DD MMM, h:mm:ss a') : ''} —
+              <span className="mx-1" data-test="itemCount">{metricsRef.current.itemCount}</span>
+              of
+              <span className="mx-1" data-test="totalItemCount">{metricsRef.current.totalItemCount}</span> items
+              <span className={'badge rounded-pill text-bg-primary mx-1 ' + tagDataClass} data-test="data-loaded-tag">
+                All Data Loaded!!!
+              </span>
+            </>
+            </div>}
+          </div>
+          <div className="col-sm-7">
+            <div className="alert alert-info" data-test="alert-graphql-query">
+              <strong>GraphQL Query:</strong> <span data-test="graphql-query-result">{graphqlQuery}</span>
+            </div>
+          </div>
+        </div>
+
+        <SlickgridReact gridId="grid39"
+          columnDefinitions={columnDefinitions}
+          gridOptions={gridOptionsRef.current}
+          dataset={dataset}
+          onReactGridCreated={$event => reactGridReady($event.detail)}
+          onRowCountChanged={$event => refreshMetrics($event.detail.args)}
+        />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default withTranslation()(Example39);

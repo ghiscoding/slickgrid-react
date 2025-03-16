@@ -1,59 +1,41 @@
 import {
   type Column,
+  Editors,
   FieldType,
   type GridOption,
-  SlickgridReact,
-  Editors,
   type OnCellChangeEventArgs,
+  SlickgridReact,
   type SlickgridReactInstance,
 } from '../../slickgrid-react';
-import React from 'react';
-import type BaseSlickGridState from './state-slick-grid-base';
+import React, { useEffect, useRef, useState } from 'react';
 
 const NB_ITEMS = 100;
 
-interface State extends BaseSlickGridState { }
+const Example37: React.FC = () => {
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
 
-interface Props { }
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-export default class Example2 extends React.Component<Props, State> {
-  private _darkMode = false;
+  useEffect(() => {
+    defineGrid();
 
-  title = 'Example 37: Footer Totals Row';
-  subTitle = `Display a totals row at the end of the grid.`;
-
-  reactGrid!: SlickgridReactInstance;
-  resizerPaused = false;
-
-  constructor(public readonly props: Props) {
-    super(props);
-
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: [],
+    // make sure it's back to light mode before unmounting
+    return () => {
+      document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
+      document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
     };
-  }
+  }, []);
 
-  componentDidMount() {
-    document.title = this.title;
-
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-  }
-
-  componentWillUnmount() {
-    document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
-    document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-    this.updateAllTotals();
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+    updateAllTotals();
   }
 
   /* Define grid Options and Columns */
-  defineGrid() {
+  function defineGrid() {
     const columnDefs: Column[] = [];
     for (let i = 0; i < 10; i++) {
       columnDefs.push({
@@ -70,7 +52,7 @@ export default class Example2 extends React.Component<Props, State> {
       autoEdit: true,
       autoCommitEdit: true,
       editable: true,
-      darkMode: this._darkMode,
+      darkMode,
       gridHeight: 450,
       gridWidth: 800,
       enableCellNavigation: true,
@@ -80,15 +62,12 @@ export default class Example2 extends React.Component<Props, State> {
       footerRowHeight: 28,
     };
 
-    this.setState(() => ({
-      ...this.state,
-      columnDefinitions: columnDefs,
-      gridOptions,
-      dataset: this.loadData(NB_ITEMS, columnDefs.length),
-    }));
+    setColumnDefinitions(columnDefs);
+    setGridOptions(gridOptions);
+    setDataset(loadData(NB_ITEMS, columnDefs.length));
   }
 
-  loadData(itemCount: number, colDefLn: number) {
+  function loadData(itemCount: number, colDefLn: number) {
     // mock a dataset
     const datasetTmp: any[] = [];
     for (let i = 0; i < itemCount; i++) {
@@ -101,23 +80,23 @@ export default class Example2 extends React.Component<Props, State> {
     return datasetTmp;
   }
 
-  handleOnCellChange(_e: Event, args: OnCellChangeEventArgs) {
-    this.updateTotal(args.cell);
+  function handleOnCellChange(_e: Event, args: OnCellChangeEventArgs) {
+    updateTotal(args.cell);
   }
 
-  handleOnColumnsReordered() {
-    this.updateAllTotals();
+  function handleOnColumnsReordered() {
+    updateAllTotals();
   }
 
-  toggleDarkMode() {
-    this._darkMode = !this._darkMode;
-    this.toggleBodyBackground();
-    this.reactGrid.slickGrid?.setOptions({ darkMode: this._darkMode });
-    this.updateAllTotals();
+  function toggleDarkMode() {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    toggleBodyBackground(newDarkMode);
+    reactGridRef.current?.slickGrid.setOptions({ darkMode: newDarkMode });
   }
 
-  toggleBodyBackground() {
-    if (this._darkMode) {
+  function toggleBodyBackground(darkMode: boolean) {
+    if (darkMode) {
       document.querySelector<HTMLDivElement>('.panel-wm-content')!.classList.add('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'dark';
     } else {
@@ -126,55 +105,57 @@ export default class Example2 extends React.Component<Props, State> {
     }
   }
 
-  updateAllTotals() {
-    let columnIdx = this.reactGrid.slickGrid?.getColumns().length || 0;
+  function updateAllTotals() {
+    let columnIdx = reactGridRef.current?.slickGrid?.getColumns().length || 0;
     while (columnIdx--) {
-      this.updateTotal(columnIdx);
+      updateTotal(columnIdx);
     }
   }
 
-  updateTotal(cell: number) {
-    const columnId = this.reactGrid.slickGrid?.getColumns()[cell].id as number;
+  function updateTotal(cell: number) {
+    const columnId = reactGridRef.current?.slickGrid?.getColumns()[cell].id as number;
 
     let total = 0;
-    let i = this.state.dataset!.length || 0;
+    let i = dataset!.length || 0;
     while (i--) {
-      total += (parseInt(this.state.dataset![i][columnId], 10) || 0);
+      total += (parseInt(dataset![i][columnId], 10) || 0);
     }
-    const columnElement = this.reactGrid.slickGrid?.getFooterRowColumn(columnId);
+    const columnElement = reactGridRef.current?.slickGrid?.getFooterRowColumn(columnId);
     if (columnElement) {
       columnElement.textContent = `Sum: ${total}`;
     }
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => this.toggleDarkMode()} data-test="toggle-dark-mode">
-            <i className="mdi mdi-theme-light-dark"></i>
-            <span>Toggle Dark Mode</span>
-          </button>
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example37.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
-
-        <SlickgridReact gridId="grid37"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          onCellChange={$event => this.handleOnCellChange($event.detail.eventData, $event.detail.args)}
-          onColumnsReordered={() => this.handleOnColumnsReordered()}
-        />
+  return !gridOptions ? '' : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 37: Footer Totals Row
+        <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => toggleDarkMode()} data-test="toggle-dark-mode">
+          <i className="mdi mdi-theme-light-dark"></i>
+          <span>Toggle Dark Mode</span>
+        </button>
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example37.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+      </h2>
+      <div className="subtitle" >
+        Display a totals row at the end of the grid.
       </div>
-    );
-  }
+
+      <SlickgridReact gridId="grid37"
+        columnDefinitions={columnDefinitions}
+        gridOptions={gridOptions}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+        onCellChange={$event => handleOnCellChange($event.detail.eventData, $event.detail.args)}
+        onColumnsReordered={() => handleOnColumnsReordered()}
+      />
+    </div>
+  );
 }
+
+export default Example37;

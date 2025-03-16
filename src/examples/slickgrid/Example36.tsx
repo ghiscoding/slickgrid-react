@@ -1,32 +1,25 @@
+import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import {
   type Aggregator,
   Aggregators,
   type Column,
+  Editors,
   type ExcelCellValueParserArgs,
   type ExcelGroupValueParserArgs,
   FieldType,
   type Formatter,
   Formatters,
   type GridOption,
-  Editors,
-  GroupTotalFormatters,
   type Grouping,
+  GroupTotalFormatters,
   type SlickGrid,
   type SlickGroupTotals,
   SlickgridReact,
   type SlickgridReactInstance,
 } from '../../slickgrid-react';
-import React from 'react';
-import type BaseSlickGridState from './state-slick-grid-base';
+import React, { useEffect, useRef, useState } from 'react';
 
 import './example36.scss';
-import { ExcelExportService } from '@slickgrid-universal/excel-export';
-
-interface State extends BaseSlickGridState {
-  taxRate: number;
-}
-
-interface Props { }
 
 interface GroceryItem {
   id: number;
@@ -101,35 +94,29 @@ class CustomSumAggregator implements Aggregator {
   }
 }
 
-export default class Example36 extends React.Component<Props, State> {
-  reactGrid!: SlickgridReactInstance;
-  excelExportService = new ExcelExportService();
-  isDataGrouped = false;
+const Example36: React.FC = () => {
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset] = useState<any[]>(getData());
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [taxRate, setTaxRate] = useState(7.5);
+  const [excelExportService] = useState(new ExcelExportService());
 
-  constructor(public readonly props: Props) {
-    super(props);
+  const isDataGroupedRef = useRef(false);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+  const taxRateRef = useRef(taxRate);
 
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: [],
-      taxRate: 7.5,
-    };
-  }
+  useEffect(() => {
+    defineGrid();
+  }, []);
 
-  componentDidMount() {
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
   /* Define grid Options and Columns */
-  defineGrid() {
+  function defineGrid() {
     // the columns field property is type-safe, try to add a different string not representing one of DataItems properties
-    const columns: Column[] = [
+    const columnDefinitions: Column[] = [
       {
         id: 'sel', name: '#', field: 'id',
         headerCssClass: 'header-centered',
@@ -151,7 +138,7 @@ export default class Example36 extends React.Component<Props, State> {
             format: '$0.00', // currency format
             border: { top: { color: 'FF747474', style: 'thick' } },
           },
-          valueParserCallback: this.excelGroupCellParser.bind(this),
+          valueParserCallback: excelGroupCellParser,
         }
       },
       {
@@ -162,7 +149,7 @@ export default class Example36 extends React.Component<Props, State> {
             font: { bold: true, size: 11.5 },
             border: { top: { color: 'FF747474', style: 'thick' } },
           },
-          valueParserCallback: this.excelGroupCellParser.bind(this),
+          valueParserCallback: excelGroupCellParser,
         },
         params: { minDecimal: 0, maxDecimal: 0 },
         editor: { model: Editors.integer }, sortable: true, width: 60, filterable: true
@@ -184,7 +171,7 @@ export default class Example36 extends React.Component<Props, State> {
             format: '$0.00', // currency format
           },
           width: 12,
-          valueParserCallback: this.excelRegularCellParser.bind(this),
+          valueParserCallback: excelRegularCellParser,
         },
         groupTotalsExcelExportOptions: {
           style: {
@@ -192,7 +179,7 @@ export default class Example36 extends React.Component<Props, State> {
             format: '$0.00', // currency format
             border: { top: { color: 'FF747474', style: 'thick' } },
           },
-          valueParserCallback: this.excelGroupCellParser.bind(this),
+          valueParserCallback: excelGroupCellParser,
         }
       },
       {
@@ -213,7 +200,7 @@ export default class Example36 extends React.Component<Props, State> {
           formatters: [
             (_row, _cell, _value, _coldef, dataContext) => {
               if (dataContext.taxable) {
-                return dataContext.price * dataContext.qty * (this.state.taxRate / 100);
+                return dataContext.price * dataContext.qty * (taxRateRef.current / 100);
               }
               return null;
             },
@@ -226,7 +213,7 @@ export default class Example36 extends React.Component<Props, State> {
             format: '$0.00', // currency format
           },
           width: 12,
-          valueParserCallback: this.excelRegularCellParser.bind(this),
+          valueParserCallback: excelRegularCellParser,
         },
         groupTotalsExcelExportOptions: {
           style: {
@@ -234,7 +221,7 @@ export default class Example36 extends React.Component<Props, State> {
             format: '$0.00', // currency format
             border: { top: { color: 'FF747474', style: 'thick' } },
           },
-          valueParserCallback: this.excelGroupCellParser.bind(this),
+          valueParserCallback: excelGroupCellParser,
         }
       },
       {
@@ -245,7 +232,7 @@ export default class Example36 extends React.Component<Props, State> {
             (_row, _cell, _value, _coldef, dataContext) => {
               let subTotal = dataContext.price * dataContext.qty;
               if (dataContext.taxable) {
-                subTotal += subTotal * (this.state.taxRate / 100);
+                subTotal += subTotal * (taxRateRef.current / 100);
               }
               return subTotal;
             },
@@ -258,7 +245,7 @@ export default class Example36 extends React.Component<Props, State> {
             format: '$0.00', // currency format
           },
           width: 12,
-          valueParserCallback: this.excelRegularCellParser.bind(this),
+          valueParserCallback: excelRegularCellParser,
         },
         groupTotalsExcelExportOptions: {
           style: {
@@ -266,7 +253,7 @@ export default class Example36 extends React.Component<Props, State> {
             format: '$0.00',
             border: { top: { color: 'FF747474', style: 'thick' } },
           },
-          valueParserCallback: this.excelGroupCellParser.bind(this),
+          valueParserCallback: excelGroupCellParser,
         }
       },
     ];
@@ -285,7 +272,7 @@ export default class Example36 extends React.Component<Props, State> {
         minDecimal: 2,
       },
       enableGrouping: true,
-      externalResources: [this.excelExportService],
+      externalResources: [excelExportService],
       enableExcelExport: true,
       excelExportOptions: {
         filename: 'grocery-list',
@@ -310,23 +297,19 @@ export default class Example36 extends React.Component<Props, State> {
 
           // excel cells start with A1 which is upper left corner
           const customTitle = 'Grocery Shopping List';
-          const lastCellMerge = this.isDataGrouped ? 'H1' : 'G1';
+          const lastCellMerge = isDataGroupedRef.current ? 'H1' : 'G1';
           sheet.mergeCells('A1', lastCellMerge);
           sheet.data.push([{ value: customTitle, metadata: { style: excelFormat.id } }]);
         },
       },
     };
 
-    this.setState(() => ({
-      ...this.state,
-      columnDefinitions: columns,
-      gridOptions,
-      dataset: this.getData(),
-    }));
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
   // mock a dataset
-  getData() {
+  function getData() {
     let i = 1;
     const datasetTmp = [
       { id: i++, name: 'Oranges', qty: 4, taxable: false, price: 2.22 },
@@ -345,34 +328,34 @@ export default class Example36 extends React.Component<Props, State> {
     return datasetTmp;
   }
 
-  invalidateAll() {
+  function invalidateAll() {
     // make sure to call both refresh/invalid in this order so that whenever a cell changes we recalculate all Groups
-    this.reactGrid.dataView?.refresh();
-    this.reactGrid.slickGrid?.invalidate();
+    reactGridRef.current?.dataView?.refresh();
+    reactGridRef.current?.slickGrid?.invalidate();
   }
 
-  updateTaxRate() {
+  function updateTaxRate() {
     // since Aggregator are cached and we provided the Tax Rate to our custom Aggregator,
     // we need to recompile them by resetting the Group
-    if (this.isDataGrouped) {
-      this.groupByTaxable();
+    if (isDataGroupedRef.current) {
+      groupByTaxable();
     }
 
-    this.invalidateAll();
+    invalidateAll();
   }
 
-  exportToExcel() {
-    this.excelExportService.exportToExcel();
+  function exportToExcel() {
+    excelExportService.exportToExcel();
   }
 
-  excelGroupCellParser(totals: SlickGroupTotals, { columnDef, excelFormatId, dataRowIdx }: ExcelGroupValueParserArgs) {
+  function excelGroupCellParser(totals: SlickGroupTotals, { columnDef, excelFormatId, dataRowIdx }: ExcelGroupValueParserArgs) {
     const colOffset = 0; // col offset of 1x because we skipped 1st column OR 0 offset if we use a Group because the Group column replaces the skip
     const rowOffset = 3; // row offset of 3x because: 1x Title, 1x Headers and Excel row starts at 1 => 3
-    const priceIdx = this.reactGrid.slickGrid?.getColumnIndex('price') || 0;
-    const qtyIdx = this.reactGrid.slickGrid?.getColumnIndex('qty') || 0;
-    const taxesIdx = this.reactGrid.slickGrid?.getColumnIndex('taxes') || 0;
-    const subTotalIdx = this.reactGrid.slickGrid?.getColumnIndex('subTotal') || 0;
-    const totalIdx = this.reactGrid.slickGrid?.getColumnIndex('total') || 0;
+    const priceIdx = reactGridRef.current?.slickGrid?.getColumnIndex('price') || 0;
+    const qtyIdx = reactGridRef.current?.slickGrid?.getColumnIndex('qty') || 0;
+    const taxesIdx = reactGridRef.current?.slickGrid?.getColumnIndex('taxes') || 0;
+    const subTotalIdx = reactGridRef.current?.slickGrid?.getColumnIndex('subTotal') || 0;
+    const totalIdx = reactGridRef.current?.slickGrid?.getColumnIndex('total') || 0;
     const groupItemCount = totals?.group?.count || 0;
 
     // the code below calculates Excel column position dynamically, technically Price is at "B" and Qty is "C"
@@ -404,13 +387,13 @@ export default class Example36 extends React.Component<Props, State> {
   }
 
   /**  We'll use a generic parser to reuse similar logic for all 3 calculable columns (SubTotal, Taxes, Total) */
-  excelRegularCellParser(_data: any, { columnDef, excelFormatId, dataRowIdx, dataContext }: ExcelCellValueParserArgs<GroceryItem>) {
+  function excelRegularCellParser(_data: any, { columnDef, excelFormatId, dataRowIdx, dataContext }: ExcelCellValueParserArgs<GroceryItem>) {
     // assuming that we want to calculate: (Price * Qty) => Sub-Total
-    const colOffset = !this.isDataGrouped ? 1 : 0; // col offset of 1x because we skipped 1st column OR 0 offset if we use a Group because the Group column replaces the skip
+    const colOffset = !isDataGroupedRef.current ? 1 : 0; // col offset of 1x because we skipped 1st column OR 0 offset if we use a Group because the Group column replaces the skip
     const rowOffset = 3; // row offset of 3x because: 1x Title, 1x Headers and Excel row starts at 1 => 3
-    const priceIdx = this.reactGrid.slickGrid?.getColumnIndex('price') || 0;
-    const qtyIdx = this.reactGrid.slickGrid?.getColumnIndex('qty') || 0;
-    const taxesIdx = this.reactGrid.slickGrid?.getColumnIndex('taxes') || 0;
+    const priceIdx = reactGridRef.current?.slickGrid?.getColumnIndex('price') || 0;
+    const qtyIdx = reactGridRef.current?.slickGrid?.getColumnIndex('qty') || 0;
+    const taxesIdx = reactGridRef.current?.slickGrid?.getColumnIndex('taxes') || 0;
 
     // the code below calculates Excel column position dynamically, technically Price is at "B" and Qty is "C"
     const excelPriceCol = `${String.fromCharCode('A'.charCodeAt(0) + priceIdx - colOffset)}${dataRowIdx + rowOffset}`;
@@ -427,7 +410,7 @@ export default class Example36 extends React.Component<Props, State> {
         break;
       case 'taxes':
         excelVal = (dataContext.taxable)
-          ? `${excelPriceCol}*${excelQtyCol}*${this.state.taxRate / 100}`
+          ? `${excelPriceCol}*${excelQtyCol}*${taxRateRef.current / 100}`
           : '';
         break;
       case 'total':
@@ -437,90 +420,92 @@ export default class Example36 extends React.Component<Props, State> {
     return { value: excelVal, metadata: { type: 'formula', style: excelFormatId } };
   }
 
-  clearGrouping() {
-    this.isDataGrouped = false;
-    this.reactGrid?.dataView?.setGrouping([]);
+  function clearGrouping() {
+    isDataGroupedRef.current = false;
+    reactGridRef.current?.dataView?.setGrouping([]);
   }
 
-  groupByTaxable() {
+  function groupByTaxable() {
     const checkIcon = 'mdi-check-box-outline';
     const uncheckIcon = 'mdi-checkbox-blank-outline';
-    this.isDataGrouped = true;
+    isDataGroupedRef.current = true;
 
-    this.reactGrid?.dataView?.setGrouping({
+    reactGridRef.current?.dataView?.setGrouping({
       getter: 'taxable',
       formatter: (g) => `Taxable: <span class="mdi ${g.value ? checkIcon : uncheckIcon} text-info"></span> <span class="text-primary">(${g.count} items)</span>`,
       comparer: (a, b) => b.value - a.value,
       aggregators: [
         new Aggregators.Sum('price'),
         new Aggregators.Sum('qty'),
-        new CustomSumAggregator('subTotal', this.state.taxRate),
-        new CustomSumAggregator('taxes', this.state.taxRate),
-        new CustomSumAggregator('total', this.state.taxRate),
+        new CustomSumAggregator('subTotal', taxRateRef.current),
+        new CustomSumAggregator('taxes', taxRateRef.current),
+        new CustomSumAggregator('total', taxRateRef.current),
       ],
       aggregateCollapsed: false,
       lazyTotalsCalculation: false,
     } as Grouping);
 
-    this.reactGrid?.dataView?.refresh();
+    reactGridRef.current?.dataView?.refresh();
   }
 
-  taxRateChanged(val: string) {
-    this.setState((state: State) => ({ ...state, taxRate: +val }));
+  function taxRateChanged(val: string) {
+    setTaxRate(+val);
+    taxRateRef.current = +val;
+    console.log('tax rate', +val, taxRateRef.current);
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          Example 36: Excel Export Formulas
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example2.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle">
-          Grid with Excel Formulas (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/export-to-excel#cell-value-parser" target="_blank">Wiki docs</a>).
-          Calculate Totals via Formatters in the UI, but use Excel Formula when exporting via <code>excelExportOptions.valueParserCallback</code>
-          When Grouped we will also calculate the Group Totals in the UI via Group Formatter and we again use Excel Formula to calculate the Group Totals (sum) dynamically.
-          For Grouping we need to use <code>groupTotalsExcelExportOptions.valueParserCallback</code> instead.
-        </div>
-
-        <section className="row mb-2">
-          <div className="mb-1">
-            <button className="btn btn-outline-secondary btn-sm btn-icon me-1" onClick={() => this.exportToExcel()} data-test="export-excel-btn">
-              <span className="mdi mdi-file-excel-outline text-success"></span>
-              <span>Export to Excel</span>
-            </button>
-            <span>
-              <button className="btn btn-outline-secondary btn-sm btn-icon me-1" onClick={() => this.groupByTaxable()} data-test="group-by-btn">
-                <span>Group by Taxable</span>
-              </button>
-              <button className="btn btn-outline-secondary btn-sm btn-icon me-1" onClick={() => this.clearGrouping()} data-test="clear-grouping-btn">
-                <span>Clear grouping</span>
-              </button>
-            </span>
-            <span className="ms-4 text-bold d-inline-flex align-items-center gap-4px">
-              Tax Rate (%):
-              <input type="number" value={this.state.taxRate} className="narrow input" step="0.25" data-test="taxrate" onInput={($event) => this.taxRateChanged(($event.target as HTMLInputElement).value)} />
-              <button className="btn btn-outline-secondary btn-sm btn-icon me-1" onClick={() => this.updateTaxRate()} data-test="update-btn">
-                Update
-              </button>
-            </span>
-          </div>
-        </section>
-
-        <SlickgridReact gridId="grid36"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          onCellChange={_ => this.invalidateAll()}
-        />
+  return !gridOptions ? '' : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 36: Excel Export Formulas
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example2.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+      </h2>
+      <div className="subtitle">
+        Grid with Excel Formulas (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/export-to-excel#cell-value-parser" target="_blank">Wiki docs</a>).
+        Calculate Totals via Formatters in the UI, but use Excel Formula when exporting via <code>excelExportOptions.valueParserCallback</code>
+        When Grouped we will also calculate the Group Totals in the UI via Group Formatter and we again use Excel Formula to calculate the Group Totals (sum) dynamically.
+        For Grouping we need to use <code>groupTotalsExcelExportOptions.valueParserCallback</code> instead.
       </div>
-    );
-  }
+
+      <section className="row mb-2">
+        <div className="mb-1">
+          <button className="btn btn-outline-secondary btn-sm btn-icon me-1" onClick={() => exportToExcel()} data-test="export-excel-btn">
+            <span className="mdi mdi-file-excel-outline text-success"></span>
+            <span>Export to Excel</span>
+          </button>
+          <span>
+            <button className="btn btn-outline-secondary btn-sm btn-icon me-1" onClick={() => groupByTaxable()} data-test="group-by-btn">
+              <span>Group by Taxable</span>
+            </button>
+            <button className="btn btn-outline-secondary btn-sm btn-icon me-1" onClick={() => clearGrouping()} data-test="clear-grouping-btn">
+              <span>Clear grouping</span>
+            </button>
+          </span>
+          <span className="ms-4 text-bold d-inline-flex align-items-center gap-4px">
+            Tax Rate (%):
+            <input type="number" className="narrow input" step="0.25" data-test="taxrate" defaultValue={taxRate} onInput={($event) => taxRateChanged(($event.target as HTMLInputElement).value)} />
+            <button className="btn btn-outline-secondary btn-sm btn-icon me-1" onClick={() => updateTaxRate()} data-test="update-btn">
+              Update
+            </button>
+          </span>
+        </div>
+      </section>
+
+      <SlickgridReact gridId="grid36"
+        columnDefinitions={columnDefinitions}
+        gridOptions={gridOptions}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+        onCellChange={_ => invalidateAll()}
+      />
+    </div>
+  );
 }
+
+export default Example36;
