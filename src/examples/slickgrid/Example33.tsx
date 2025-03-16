@@ -30,6 +30,7 @@ const Example33: React.FC = () => {
   const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
   const [editCommandQueue] = useState<EditCommand[]>([]);
 
+  const serverWaitDelayRef = useRef(serverWaitDelay);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
   useEffect(() => {
@@ -63,7 +64,7 @@ const Example33: React.FC = () => {
           // you will need to provide an `asyncPost` function returning a Promise and also `asyncPostFormatter` formatter to display the result once the Promise resolves
           formatter: () => `<div><span class="mdi mdi-load mdi-spin"></span> loading...</div>`,
           asyncProcess: () => new Promise(resolve => {
-            window.setTimeout(() => resolve({ ratio: Math.random() * 10 / 10, lifespan: Math.random() * 100 }), serverWaitDelay);
+            window.setTimeout(() => resolve({ ratio: Math.random() * 10 / 10, lifespan: Math.random() * 100 }), serverWaitDelayRef.current);
           }),
           asyncPostFormatter: tooltipTaskAsyncFormatter as Formatter,
 
@@ -167,7 +168,7 @@ const Example33: React.FC = () => {
 
           // 2- delay the opening by a simple Promise and `setTimeout`
           asyncProcess: () => new Promise(resolve => {
-            window.setTimeout(() => resolve({}), serverWaitDelay); // delayed by half a second
+            window.setTimeout(() => resolve({}), serverWaitDelayRef.current); // delayed by half a second
           }),
           asyncPostFormatter: tooltipFormatter as Formatter,
         },
@@ -367,7 +368,9 @@ const Example33: React.FC = () => {
   }
 
   function handleServerDelayInputChange(e: React.FormEvent<HTMLInputElement>) {
-    setServerWaitDelay(parseInt((e.target as HTMLInputElement)?.value, 10) ?? '');
+    const newDelay = parseInt((e.target as HTMLInputElement)?.value, 10) ?? '';
+    setServerWaitDelay(newDelay);
+    serverWaitDelayRef.current = newDelay;
   }
 
   function loadData(itemCount: number): any[] {

@@ -28,6 +28,8 @@ const Example19: React.FC = () => {
   const [flashAlertType, setFlashAlertType] = useState<string>('info');
   const [message, setMessage] = useState<string>('');
   const [darkMode, setDarkMode] = useState<boolean>(false);
+
+  const serverWaitDelayRef = useRef(serverWaitDelay);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
   useEffect(() => {
@@ -89,7 +91,7 @@ const Example19: React.FC = () => {
         itemDetail.reporter = randomNames[randomNumber(0, 9)] || '';
 
         resolve(itemDetail);
-      }, serverWaitDelay);
+      }, serverWaitDelayRef.current);
     });
   };
 
@@ -184,6 +186,7 @@ const Example19: React.FC = () => {
   const serverDelayChanged = (e: React.FormEvent<HTMLInputElement>) => {
     const newDelay = +((e.target as HTMLInputElement)?.value ?? '');
     setServerWaitDelay(newDelay);
+    serverWaitDelayRef.current = newDelay;
   };
 
   function toggleDarkMode() {

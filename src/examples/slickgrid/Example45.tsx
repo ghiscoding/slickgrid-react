@@ -24,6 +24,8 @@ const Example45: React.FC = () => {
   const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
   const [isUsingInnerGridStatePresets, setIsUsingInnerGridStatePresets] = useState<boolean>(false);
   const [darkMode, setDarkMode] = useState<boolean>(false);
+
+  const serverWaitDelayRef = useRef(serverWaitDelay);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
   const isUsingInnerGridStatePresetsRef = useRef(isUsingInnerGridStatePresets);
 
@@ -142,7 +144,7 @@ const Example45: React.FC = () => {
         itemDetail.isUsingInnerGridStatePresets = isUsingInnerGridStatePresetsRef.current;
 
         resolve(itemDetail);
-      }, serverWaitDelay);
+      }, serverWaitDelayRef.current);
     });
   }
 
@@ -220,6 +222,7 @@ const Example45: React.FC = () => {
   function serverDelayChanged(e: React.FormEvent<HTMLInputElement>) {
     const newDelay = +((e.target as HTMLInputElement)?.value ?? '');
     setServerWaitDelay(newDelay);
+    serverWaitDelayRef.current = newDelay;
   }
 
   function toggleDarkMode() {
