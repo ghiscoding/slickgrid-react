@@ -35,9 +35,11 @@ const Example6: React.FC = () => {
   const [graphqlQuery, setGraphqlQuery] = useState<string>('');
   const [selectedLanguage, setSelectedLanguage] = useState<string>(defaultLang);
   const [status, setStatus] = useState<Status>({ text: '', class: '' });
-  const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
   const [isWithCursor, setIsWithCursor] = useState<boolean>(false);
+  const [serverWaitDelay] = useState(FAKE_SERVER_DELAY);
+
   const isWithCursorRef = useRef(isWithCursor);
+  const serverWaitDelayRef = useRef(serverWaitDelay);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
   const graphqlService = new GraphqlService();
 
@@ -265,7 +267,7 @@ const Example6: React.FC = () => {
           reactGridRef.current?.paginationService?.setCursorPageInfo((mockedResult.data[GRAPHQL_QUERY_DATASET_NAME].pageInfo));
         }
         resolve(mockedResult);
-      }, serverWaitDelay);
+      }, serverWaitDelayRef.current);
     });
   }
 
@@ -329,7 +331,7 @@ const Example6: React.FC = () => {
 
   function serverDelayChanged(e: React.FormEvent<HTMLInputElement>) {
     const newDelay = +((e.target as HTMLInputElement)?.value ?? '');
-    setServerWaitDelay(newDelay);
+    serverWaitDelayRef.current = newDelay;
   }
 
   function changeIsWithCursor(newValue: boolean) {

@@ -41,6 +41,7 @@ const Example39: React.FC = () => {
   const gridOptionsRef = useRef<GridOption>();
   const metricsRef = useRef({} as Metrics);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+  const serverWaitDelayRef = useRef(serverWaitDelay);
 
   useEffect(() => {
     defineGrid();
@@ -300,7 +301,7 @@ const Example39: React.FC = () => {
           window.setTimeout(() => {
             setGraphqlQuery(gridOptionsRef.current!.backendServiceApi!.service.buildQuery());
             resolve(mockedResult);
-          }, serverWaitDelay);
+          }, serverWaitDelayRef.current);
         });
     });
   }
@@ -319,6 +320,7 @@ const Example39: React.FC = () => {
   function serverDelayChanged(e: React.FormEvent<HTMLInputElement>) {
     const newDelay = +((e.target as HTMLInputElement)?.value ?? '');
     setServerWaitDelay(newDelay);
+    serverWaitDelayRef.current = newDelay;
   }
 
   async function switchLanguage() {
