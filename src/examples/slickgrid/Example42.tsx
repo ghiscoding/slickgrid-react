@@ -25,6 +25,7 @@ const Example42: React.FC = () => {
   const [dataset] = useState<any[]>(loadData(NB_ITEMS));
   const [pageSize, setPageSize] = useState(50);
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [showSubTitle, setShowSubTitle] = useState(false);
 
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
@@ -151,6 +152,13 @@ const Example42: React.FC = () => {
     reactGridRef.current?.paginationService?.changeItemPerPage(+pageSize);
   }
 
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
+
   return !gridOptions ? '' : (
     <div className="demo42">
       <div id="demo-container" className="container-fluid">
@@ -163,6 +171,9 @@ const Example42: React.FC = () => {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+            <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+          </button>
         </h2>
 
         <div className="col-sm-12">

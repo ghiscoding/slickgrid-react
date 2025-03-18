@@ -29,6 +29,7 @@ const Example33: React.FC = () => {
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
   const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
   const [editCommandQueue] = useState<EditCommand[]>([]);
+  const [showSubTitle, setShowSubTitle] = useState(false);
 
   const serverWaitDelayRef = useRef(serverWaitDelay);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
@@ -483,6 +484,13 @@ const Example33: React.FC = () => {
     return output;
   }
 
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
+
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -494,6 +502,9 @@ const Example33: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
       </h2>
       <div className="subtitle">
         This demo shows how to create Regular & Custom Tooltips (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/custom-tooltip" target="_blank">Docs</a>)

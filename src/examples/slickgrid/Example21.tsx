@@ -20,6 +20,7 @@ const Example21: React.FC = () => {
   const [selectedOperator, setSelectedOperator] = useState('');
   const [searchValue, setSearchValue] = useState('')
   const [selectedColumn, setSelectedColumn] = useState<Column>();
+  const [showSubTitle, setShowSubTitle] = useState(false);
 
   useEffect(() => {
     defineGrid();
@@ -152,6 +153,13 @@ const Example21: React.FC = () => {
     });
   }
 
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
+
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -163,6 +171,9 @@ const Example21: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
       </h2>
       <div className="subtitle">
         The SlickGrid option "autoHeight" can be used if you wish to keep the full height of the grid without any scrolling

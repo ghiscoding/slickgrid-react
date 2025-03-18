@@ -22,6 +22,7 @@ const FETCH_SIZE = 50;
 const Example40: React.FC = () => {
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
   const [dataset] = useState<any[]>(loadData(0, FETCH_SIZE));
+  const [showSubTitle, setShowSubTitle] = useState(false);
 
   const shouldResetOnSortRef = useRef(false);
   const gridOptionsRef = useRef<GridOption>();
@@ -165,6 +166,13 @@ const Example40: React.FC = () => {
     ]);
   }
 
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
+
   return !gridOptionsRef.current ? '' : (
     <div className="demo40">
       <div id="demo-container" className="container-fluid">
@@ -177,6 +185,9 @@ const Example40: React.FC = () => {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+            <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+          </button>
         </h2>
 
         <div className="col-sm-12">

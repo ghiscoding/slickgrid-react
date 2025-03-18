@@ -15,9 +15,10 @@ const Example7: React.FC = () => {
   const [columnDefinitions2, setColumnDefinitions2] = useState<Column[]>([]);
   const [dataset1, setDataset1] = useState<any[]>([]);
   const [dataset2, setDataset2] = useState<any[]>([]);
+  const [showSubTitle, setShowSubTitle] = useState(false);
+
   const reactGridRef1 = useRef<SlickgridReactInstance | null>(null);
   const reactGridRef2 = useRef<SlickgridReactInstance | null>(null);
-
   const columns1WithHighlightingById: any = {};
   const columns2WithHighlightingById: any = {};
 
@@ -224,6 +225,13 @@ const Example7: React.FC = () => {
     return mockDataset;
   }
 
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
+
   return !gridOptions1 ? null : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -235,7 +243,11 @@ const Example7: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
       </h2>
+
       <div className="subtitle">
         This example demonstrates using the <b>SlickHeaderButtons</b> plugin to easily add buttons to colum headers.
         These buttons can be specified directly in the column definition, and are very easy to configure and use.

@@ -37,6 +37,7 @@ const Example39: React.FC = () => {
   const [status, setStatus] = useState({} as Status);
   const [serverWaitDelay, setServerWaitDelay] = useState(FAKE_SERVER_DELAY); // server simulation with default of 250ms but 50ms for Cypress tests
   const [tagDataClass, setTagDataClass] = useState('');
+  const [showSubTitle, setShowSubTitle] = useState(false);
 
   const gridOptionsRef = useRef<GridOption>();
   const metricsRef = useRef({} as Metrics);
@@ -329,6 +330,13 @@ const Example39: React.FC = () => {
     setSelectedLanguage(nextLanguage);
   }
 
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
+
   return !gridOptionsRef.current ? '' : (
     <div className="demo39">
       <div id="demo-container" className="container-fluid">
@@ -341,6 +349,9 @@ const Example39: React.FC = () => {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+            <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+          </button>
         </h2>
 
         <div className="col-sm-12">

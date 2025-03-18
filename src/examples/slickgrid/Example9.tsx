@@ -21,6 +21,8 @@ const Example9: React.FC = () => {
   const [dataset, setDataset] = useState<any[]>([]);
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
   const [selectedLanguage, setSelectedLanguage] = useState<string>(defaultLang);
+  const [showSubTitle, setShowSubTitle] = useState(false);
+
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
   useEffect(() => {
@@ -253,6 +255,13 @@ const Example9: React.FC = () => {
     return true;
   }
 
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
+
   return !gridOptions ? null : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -264,7 +273,11 @@ const Example9: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
       </h2>
+
       <div className="subtitle" >
         This example demonstrates using the <b>Slick.Controls.GridMenu</b> plugin to easily add a Grid Menu (aka hamburger menu) on the top right corner of the grid.<br />
         (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grid-menu" target="_blank">Docs</a>)

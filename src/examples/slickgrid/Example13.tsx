@@ -23,6 +23,8 @@ const Example13: React.FC = () => {
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [showSubTitle, setShowSubTitle] = useState(false);
+
   const excelExportService = new ExcelExportService();
   const textExportService = new TextExportService();
 
@@ -348,6 +350,13 @@ const Example13: React.FC = () => {
     setProcessing(isProcessing);
   }
 
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
+
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -359,6 +368,9 @@ const Example13: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
       </h2>
       <div className="subtitle">
         <ul>
