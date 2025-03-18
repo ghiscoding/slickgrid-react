@@ -39,11 +39,17 @@ const Example: React.FC = () => {
 By default the grid will **not** automatically enable Dark Mode, neither read the browser's color scheme (the reason are mentioned in the description above). However, you could implement your own code to detect the color scheme (for modern browser only) when loading your browser and set it in your grid options. You can see a demo of that in the first grid of [Example 1](https://ghiscoding.github.io/slickgrid-react/#/example1)
 
 ```ts
-export class MyDemo {
-  gridOptions: GridOption;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {}
 
   // auto-detect browser's color scheme function
-  isBrowserDarkModeEnabled() {
+  function isBrowserDarkModeEnabled() {
     return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
   }
 

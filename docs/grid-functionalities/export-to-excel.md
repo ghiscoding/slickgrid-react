@@ -93,36 +93,45 @@ Inside the column definition there are couple of flags you can set in `excelExpo
 ```tsx
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 
-export class GridBasicComponent extends React.Component<Props, State> {
-  const columnDefinitions = [
-    { id: 'id', name: 'ID', field: 'id',
-      excludeFromExport: true // skip the "id" column from the export
-    },
-    { id: 'title', name: 'Title', field: 'id', headerKey: 'TITLE',
-      formatter: myCustomTitleFormatter,
-      exportWithFormatter: false // this Formatter will not be evaluated
-    },
-    { id: 'start', name: 'Start', field: 'start',
-      headerKey: 'START',
-      formatter: Formatters.dateIso // this formatter will be used for the export
-    },
-    { id: 'finish', name: 'Finish', field: 'start',
-      headerKey: 'FINISH',
-      formatter: Formatters.dateIso // this formatter will be used for the export
-    },
-    { id: 'completed', name: 'Completed', field: 'completed', headerKey: 'COMPLETED',
-      formatter: Formatters.checkmarkMaterial,              // will display a checkmark icon in the UI
-      customFormatter: Formatters.translateBoolean, // will export a translated value, e.g. in French, True would show as 'Vrai'
-    }
-  ];
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  const gridOptions = {
-    // set at the grid option level, meaning all column will evaluate the Formatter (when it has a Formatter defined)
-    excelExportOptions: {
-      exportWithFormatter: true
-    },
-    externalResources: [new ExcelExportService()],
-  };
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setColumns([
+      { id: 'id', name: 'ID', field: 'id',
+        excludeFromExport: true // skip the "id" column from the export
+      },
+      { id: 'title', name: 'Title', field: 'id', headerKey: 'TITLE',
+        formatter: myCustomTitleFormatter,
+        exportWithFormatter: false // this Formatter will not be evaluated
+      },
+      { id: 'start', name: 'Start', field: 'start',
+        headerKey: 'START',
+        formatter: Formatters.dateIso // this formatter will be used for the export
+      },
+      { id: 'finish', name: 'Finish', field: 'start',
+        headerKey: 'FINISH',
+        formatter: Formatters.dateIso // this formatter will be used for the export
+      },
+      { id: 'completed', name: 'Completed', field: 'completed', headerKey: 'COMPLETED',
+        formatter: Formatters.checkmarkMaterial,              // will display a checkmark icon in the UI
+        customFormatter: Formatters.translateBoolean, // will export a translated value, e.g. in French, True would show as 'Vrai'
+      }
+    ]);
+
+    setOptions({
+      // set at the grid option level, meaning all column will evaluate the Formatter (when it has a Formatter defined)
+      excelExportOptions: {
+        exportWithFormatter: true
+      },
+      externalResources: [new ExcelExportService()],
+    });
+  }
+}
 ```
 
 What we can see from the example, is that it will use all Formatters (when exist) on this grid, except for the last column "Completed" since that column has explicitly defined `exportWithFormatter: false`
@@ -188,9 +197,8 @@ const Example: React.FC = () => {
   }
 
   function defineGrid() {
-    const columnDefinitions = [];
-
-    const gridOptions = {
+    setColumns([]);
+    setOptions({
       externalResources: [new ExcelExportService()],
       excelExportOptions: {
         // optionally pass a custom header to the Excel Sheet
@@ -216,8 +224,9 @@ const Example: React.FC = () => {
           sheet.data.push(cols);
         }
       },
-    }
+    });
   }
+}
 ```
 
 ### Export from a Button Click Event
@@ -244,11 +253,11 @@ const Example: React.FC = () => {
   }
   
   function defineGrid() {
-    const columnDefinitions = [];
-    const gridOptions = {
+    setColumns([]);
+    setOptions({
       enableExcelExport: true,
       externalResources: [excelExportService],
-    };
+    });
   }
 
   function exportToFile() {
@@ -265,24 +274,22 @@ If you have lots of data, you might want to show a spinner telling the user that
 
 ##### Component
 ```tsx
-render() {
-  return (
-    {processing && <span>
-      <i className="mdi mdi-sync mdi-spin"></i>
-    </span>}
+return !options ? null : (
+  {processing && <span>
+    <i className="mdi mdi-sync mdi-spin"></i>
+  </span>}
 
-    <SlickgridReact gridId="grid5"
-        columnDefinitions={columns}
-        gridOptions={options}
-        dataset={dataset}
-        paginationOptions={paginationOptions}
-        onReactGridCreated={$event => reactGridReady($event.detail)}
-        onBeforeExportToExcel={() => changeProcessing(true)}
-        onAfterExportToExcel={() => changeProcessing(false)}
-        onGridStateChanged={$event => gridStateChanged($event.detail)}
-    />
-  );
-}
+  <SlickgridReact gridId="grid5"
+      columnDefinitions={columns}
+      gridOptions={options}
+      dataset={dataset}
+      paginationOptions={paginationOptions}
+      onReactGridCreated={$event => reactGridReady($event.detail)}
+      onBeforeExportToExcel={() => changeProcessing(true)}
+      onAfterExportToExcel={() => changeProcessing(false)}
+      onGridStateChanged={$event => gridStateChanged($event.detail)}
+  />
+);
 ```
 
 ### UI Sample

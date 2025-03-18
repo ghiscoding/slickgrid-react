@@ -74,9 +74,15 @@ You could also use external 3rd party Web API (can be JSONP query or regular JSO
 
 ##### Component
 ```tsx
-export class GridBasicComponent  extends React.Component<Props, State> {
-  defineGrid(): void {
-    const columnDefinitions = [
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setColumns([
       {
         id: 'cityOfOrigin', name: 'City of Origin', field: 'cityOfOrigin',
         filterable: true,
@@ -124,9 +130,9 @@ export class GridBasicComponent  extends React.Component<Props, State> {
           },
         }
       }
-    ];
+    ]);
 
-    const gridOptions = {/*...*/};
+    setOptions({/*...*/});
   }
 }
 ```
@@ -135,23 +141,24 @@ export class GridBasicComponent  extends React.Component<Props, State> {
 If you want to add the autocomplete functionality but want the user to be able to input a new option, then follow the example below:
 
 ```ts
-  const columnDefinitions = [{
-        id: 'area',
-        name: 'Area',
-        field: 'area',
-        type: FieldType.string,
-        editor: {
-          model: Editors.autocompleter,
-          editorOptions: {
-            minLength: 0,
-            forceUserInput: true,
-            fetch: (searchText, updateCallback) => {
-              updateCallback(areas); // add here the array
-            },
-          }
-        }
-      },
-  ];
+const columnDefinitions = [
+  {
+    id: 'area',
+    name: 'Area',
+    field: 'area',
+    type: FieldType.string,
+    editor: {
+      model: Editors.autocompleter,
+      editorOptions: {
+        minLength: 0,
+        forceUserInput: true,
+        fetch: (searchText, updateCallback) => {
+          updateCallback(areas); // add here the array
+        },
+      }
+    }
+  },
+];
 ```
 You can also use the `minLength` to limit the autocomplete text to `0` characters or more, the default number is `3`.
 

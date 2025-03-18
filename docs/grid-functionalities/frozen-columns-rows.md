@@ -15,32 +15,31 @@ To set a pinning for the entire duration of the grid, simply use the Grid Option
 
 ##### Component
 ```tsx
-export class GridBasicComponent  extends React.Component<Props, State> {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  defineGrid(): void {
-    const columnDefinitions = [];
+  useEffect(() => defineGrid(), []);
 
-    const gridOptions = {
+  function defineGrid() {
+    setColumns([]);
+    setOptions({
       alwaysShowVerticalScroll: false, // disable scroll since we don't want it to show on the left pinned columns
       frozenColumn: 2, // number of pinned columns starting from the left
       frozenRow: 3,    // number of pinned columns starting from the top
-    }
+    });
   }
 
-  render() {
-    return (
-      <SlickgridReact gridId="grid1"
-        columnDefinitions={columns}
-        gridOptions={options}
-        dataset={dataset}
-        onReactGridCreated={$event => reactGridReady($event.detail)}
-        onGridStateChanged={$event => gridStateChanged($event.detail)}
-      />
-    );
-  }
+  return !options ? null : (
+    <SlickgridReact gridId="grid1"
+      columnDefinitions={columns}
+      gridOptions={options}
+      dataset={dataset}
+      onReactGridCreated={$event => reactGridReady($event.detail)}
+      onGridStateChanged={$event => gridStateChanged($event.detail)}
+    />
+  );
 }
 ```
 
@@ -48,21 +47,22 @@ export class GridBasicComponent  extends React.Component<Props, State> {
 This is basically the same thing as previous code sample, except that you will set the Grid Option property `frozenBottom` to true and that it's.
 ##### Component
 ```tsx
-export class GridBasicComponent  extends React.Component<Props, State> {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  defineGrid(): void {
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
       // your columns definition
-    const columnDefinitions = [];
-
-    const gridOptions = {
+    setColumns([]);
+    setOptions({
       alwaysShowVerticalScroll: false, // disable scroll since we don't want it to show on the left pinned columns
       frozenColumn: 2,    // number of pinned columns starting from the left
       frozenRow: 3,       // number of pinned columns (starting from bottom with next property)
       frozenBottom: true, // this will make rows to be pinned starting from the bottom and the number of rows will be 3
-    }
+    });
   }
 }
 ```
@@ -89,7 +89,6 @@ const Example: React.FC = () => {
 
   function defineGrid() {
     setColumns([ /*...*/ ]);
-
     setOptions({
       alwaysShowVerticalScroll: false, // disable scroll since we don't want it to show on the left pinned columns
       frozenColumn: 2, // number of pinned columns starting from the left

@@ -39,14 +39,16 @@ You can use a regular input filter with the 2 dots (..) notation to represent a 
 ```ts
 import { Filters, Formatters, GridOption, OperatorType } from '@slickgrid-universal/common';
 
-export class GridBasicComponent {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  attached(): void {
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
     // your columns definition
-    const columnDefinitions = [
+    setColumns([
       {
         id: 'duration', field: 'duration', name: 'Duration',
         type: 'number', // you can optionally specify that the data are numbers
@@ -58,11 +60,9 @@ export class GridBasicComponent {
           operator: OperatorType.rangeInclusive // defaults to exclusive
         }
       },
-    ];
+    ]);
 
-    const gridOptions = {
-      // your grid options config
-    }
+    setOptions({ /*... */ });
   }
 }
 ```
@@ -74,14 +74,15 @@ The slider range filter is very useful if you can just want to use the mouse to 
 ```ts
 import { Filters, Formatters, GridOption, SliderRangeOption, OperatorType } from '@slickgrid-universal/commomn';
 
-export class GridBasicComponent {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  attached(): void {
-    // your columns definition
-    const columnDefinitions = [
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setColumns([
       {
         id: 'complete', name: '% Complete', field: 'percentComplete', headerKey: 'PERCENT_COMPLETE', minWidth: 120,
         sortable: true,
@@ -98,11 +99,9 @@ export class GridBasicComponent {
           filterOptions: { sliderStartValue: 5 } as SliderRangeOption
         }
       },
-    ];
+    ]);
 
-    const gridOptions = {
-      // your grid options config
-    }
+    setOptions({ /* ... */ });
   }
 }
 ```
@@ -142,14 +141,15 @@ The date range filter allows you to search data between 2 dates, it uses the [Va
 import { Filters, Formatters, GridOption, OperatorType, VanillaCalendarOption } from '@slickgrid-universal/common';
 
 ```typescript
-export class GridBasicComponent {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  attached(): void {
-    // your columns definition
-    const columnDefinitions = [
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setColumns([
       {
         id: 'finish', name: 'Finish', field: 'finish', headerKey: 'FINISH',
         minWidth: 75, width: 120, exportWithFormatter: true,
@@ -163,11 +163,9 @@ export class GridBasicComponent {
           filterOptions: { range: { min: 'today' } } as VanillaCalendarOption
         }
       },
-    ];
+    ]);
 
-    const gridOptions = {
-      // your grid options config
-    }
+    setOptions({ /* ... */ });
   }
 }
 ```

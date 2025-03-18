@@ -255,9 +255,15 @@ The previous example can also be written using the `renderItem` callback and add
 
 ##### Component
 ```tsx
-export class GridBasicComponent extends React.Component<Props, State> {
-  defineGrid() {
-    const columnDefinitions = [
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setColumns([
       {
         id: 'product', name: 'Product', field: 'product',
         filterable: true,
@@ -326,8 +332,8 @@ export class GridBasicComponent extends React.Component<Props, State> {
           },
         },
       }
-    ];
-    const gridOptions = {/*...*/};
+    ]);
+    setOptions({/*...*/});
 }
 ```
 
@@ -336,9 +342,15 @@ Example from an external remote API (geobytes) returning a JSONP response.
 
 ##### Component
 ```tsx
-export class GridBasicComponent extends React.Component<Props, State> {
-  defineGrid(): void {
-    const columnDefinitions = [
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setColumns([
       {
         id: 'cityOfOrigin', name: 'City of Origin', field: 'cityOfOrigin',
         filterable: true,
@@ -370,8 +382,8 @@ export class GridBasicComponent extends React.Component<Props, State> {
           },
         }
       }
-    ];
-    const gridOptions = {/*...*/};
+    ]);
+    setOptions({/*...*/});
   }
 }
 ```

@@ -28,16 +28,21 @@ You can alternatively provide Custom Locales through any grid declaration throug
 ```tsx
 import { localeFrench } from 'locales/fr';
 
-export class MyGrid {
-  defineGrid() {
-    const columnDefinitions = [ /* ... */ ];
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-    const gridOptions = {
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setColumns([ /* ... */ ]);
+    setOptions({
       enableAutoResize: true,
 
       // provide Custom Locale to this grid only
       locales: localeFrench
-    };
+    });
   }
 }
 ```

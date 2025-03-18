@@ -428,11 +428,18 @@ The example below shows code sample for all 3 supported editors AutoComplete, Da
 
 ##### Component
 ```tsx
-export class GridExample {
-  compositeEditorInstance: SlickCompositeEditorComponent;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const compositeEditorInstance = new SlickCompositeEditorComponent();
+
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {}
 
   /** Composite Editor on change handler */
-  handleOnCompositeEditorChange(event) {
+  function handleOnCompositeEditorChange(event) {
     const args = event.detail.args as OnCompositeEditorChangeEventArgs;
     const columnDef = args.column as Column;
     const formValues = args.formValues;
@@ -446,24 +453,22 @@ export class GridExample {
     }
   }
 
-  render() {
-    return (
-      <SlickgridReact gridId="grid30"
-        columnDefinitions={columns}
-        gridOptions={options}
-        dataset={dataset}
-        onReactGridCreated={$event => reactGridReady($event.detail)}
-        onBeforeEditCell={$event => handleOnBeforeEditCell($event.detail.eventData, $event.detail.args)}
-        onCellChange={$event => handleOnCellChange($event.detail.eventData, $event.detail.args)}
-        onCompositeEditorChange={$event => handleOnCompositeEditorChange($event.detail.eventData, $event.detail.args)}
-        onItemDeleted={$event => handleItemDeleted($event.detail)}
-        onGridStateChanged={$event => handleOnGridStateChanged($event.detail)}
-        onFilterChanged={() => handleReRenderUnsavedStyling()}
-        onPaginationChanged={() => handleReRenderUnsavedStyling()}
-        onValidationError={$event => handleValidationError($event.detail.eventData, $event.detail.args)}
-      />
-    );
-  }
+  return !options ? null : (
+    <SlickgridReact gridId="grid30"
+      columnDefinitions={columns}
+      gridOptions={options}
+      dataset={dataset}
+      onReactGridCreated={$event => reactGridReady($event.detail)}
+      onBeforeEditCell={$event => handleOnBeforeEditCell($event.detail.eventData, $event.detail.args)}
+      onCellChange={$event => handleOnCellChange($event.detail.eventData, $event.detail.args)}
+      onCompositeEditorChange={$event => handleOnCompositeEditorChange($event.detail.eventData, $event.detail.args)}
+      onItemDeleted={$event => handleItemDeleted($event.detail)}
+      onGridStateChanged={$event => handleOnGridStateChanged($event.detail)}
+      onFilterChanged={() => handleReRenderUnsavedStyling()}
+      onPaginationChanged={() => handleReRenderUnsavedStyling()}
+      onValidationError={$event => handleValidationError($event.detail.eventData, $event.detail.args)}
+    />
+  );
 }
 ```
 
@@ -626,9 +631,9 @@ function checkItemIsEditable(dataContext: any, columnDef: Column, grid: SlickGri
 What if you want to disable certain form inputs but only in the Composite Editor, or use different logic in the grid. For that we added an extra `target` (`target` will return either "grid" or "composite") in the returned `args`, so you could apply different logic based on the target being the grid or the composite editor. For example:
 
 ```ts
-handleOnBeforeEditCell(event) {
+function handleOnBeforeEditCell(event) {
   const eventData = event.detail.eventData;
-  const args = event && event.detail && event.detail.args;
+  const args = event.detail.args;
   const { column, item, grid, target } = args;
 
   if (column && item) {
@@ -640,7 +645,7 @@ handleOnBeforeEditCell(event) {
   return false;
 }
 
-checkItemIsEditable(dataContext: any, columnDef: Column, grid: SlickGrid, target: 'grid' | 'composite') {
+function checkItemIsEditable(dataContext: any, columnDef: Column, grid: SlickGrid, target: 'grid' | 'composite') {
   const gridOptions = grid?.getOptions();
   const hasEditor = columnDef.editor;
   const isGridEditable = gridOptions.editable;
