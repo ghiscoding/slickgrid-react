@@ -69,6 +69,7 @@ const Example3: React.FC = () => {
   const [alertWarning, setAlertWarning] = useState('');
   const [dataset] = useState(getData(NB_ITEMS));
   const [reactGrid, setReactGrid] = useState<SlickgridReactInstance>();
+  const [showSubTitle, setShowSubTitle] = useState(false);
 
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([
     {
@@ -656,6 +657,13 @@ const Example3: React.FC = () => {
     }
   }
 
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
+
   return (
     <div id='demo-container' className='container-fluid'>
       <h2>
@@ -667,7 +675,11 @@ const Example3: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
       </h2>
+
       <div className="subtitle">
         Grid with Inline Editors and onCellClick actions (<a href='https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/editors' target='_blank'>Docs</a>).
         <ul>

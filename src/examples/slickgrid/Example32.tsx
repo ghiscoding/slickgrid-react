@@ -51,6 +51,7 @@ const Example32: React.FC = () => {
   const [editedItems, setEditedItems] = useState<any>({});
   const [isUsingDefaultResize, setIsUsingDefaultResize] = useState(false);
   const [isGridEditable, setIsGridEditable] = useState(true);
+  const [showSubTitle, setShowSubTitle] = useState(false);
 
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
@@ -754,6 +755,13 @@ const Example32: React.FC = () => {
         </div>`;
   }
 
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
+
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -765,6 +773,9 @@ const Example32: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
       </h2>
       <div className="subtitle" >
         The grid below uses the optional resize by cell content (with a fixed 950px for demo purposes), you can click on the 2 buttons to see the difference.

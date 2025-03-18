@@ -14,6 +14,7 @@ const Example41: React.FC = () => {
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
   const [dataset, setDataset] = useState<any[]>(getData());
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [showSubTitle, setShowSubTitle] = useState(false);
 
   const dragHelperRef = useRef<HTMLElement>();
   const dragRowsRef = useRef<number[]>([]);
@@ -216,6 +217,13 @@ const Example41: React.FC = () => {
     setDataset([...tmpDataset]);
   }
 
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
+
   return !gridOptions ? '' : (
     <div className="demo41">
       <div id="demo-container" className="container-fluid">
@@ -228,6 +236,9 @@ const Example41: React.FC = () => {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+            <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+          </button>
         </h2>
 
         <div className="col-sm-12">

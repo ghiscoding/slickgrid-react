@@ -33,6 +33,7 @@ const Example38: React.FC = () => {
   const [errorStatus, setErrorStatus] = useState('');
   const [tagDataClass, setTagDataClass] = useState('');
   const [isPageErrorTest, setIsPageErrorTest] = useState(false);
+  const [showSubTitle, setShowSubTitle] = useState(false);
 
   const gridOptionsRef = useRef<GridOption>();
   const metricsRef = useRef({} as Metrics);
@@ -390,9 +391,12 @@ const Example38: React.FC = () => {
     ]);
   }
 
-
-  // THE FOLLOWING METHODS ARE ONLY FOR DEMO PURPOSES DO NOT USE THIS CODE
-  // ---
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
 
   return !gridOptionsRef.current ? '' : (
     <div className="demo38">
@@ -406,6 +410,9 @@ const Example38: React.FC = () => {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+            <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+          </button>
         </h2>
         <div className="row">
           <div className="col-sm-12">

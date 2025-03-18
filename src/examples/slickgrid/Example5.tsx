@@ -37,6 +37,8 @@ const Example5: React.FC = () => {
   const [odataQuery, setOdataQuery] = useState<string>('');
   const [processing, setProcessing] = useState<boolean>(false);
   const [isPageErrorTest] = useState<boolean>(false);
+  const [showSubTitle, setShowSubTitle] = useState(false);
+
   const isPageErrorTestRef = useRef(isPageErrorTest);
   const gridOptionsRef = useRef<GridOption | null>(null);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
@@ -481,6 +483,13 @@ const Example5: React.FC = () => {
     reactGridRef.current?.filterService.clearFilters();
   }
 
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
+
   return !gridOptions ? null : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -492,6 +501,9 @@ const Example5: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
       </h2>
 
       <div className="row">

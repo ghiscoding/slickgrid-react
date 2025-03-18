@@ -13,6 +13,8 @@ const Example16: React.FC = () => {
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
   const [dataset, setDataset] = useState<any[]>(getData());
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [showSubTitle, setShowSubTitle] = useState(false);
+
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
   useEffect(() => {
@@ -265,6 +267,13 @@ const Example16: React.FC = () => {
     reactGridRef.current?.sortService.toggleSortFunctionality();
   }
 
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
+
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -276,6 +285,9 @@ const Example16: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
       </h2>
       <div className="subtitle" >
         This example demonstrates using the <b>SlickRowMoveManager</b> plugin to easily move a row in the grid.<br />

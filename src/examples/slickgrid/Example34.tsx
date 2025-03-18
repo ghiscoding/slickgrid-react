@@ -87,6 +87,7 @@ const Example34: React.FC = () => {
   const [minChangePerCycle, setMinChangePerCycle] = useState(0);
   const [maxChangePerCycle, setMaxChangePerCycle] = useState(10);
   const [refreshRate, setRefreshRate] = useState(75);
+  const [showSubTitle, setShowSubTitle] = useState(false);
 
   const columnDefinitionsRef = useRef<Column[]>([]);
   const minChangePerCycleRef = useRef(minChangePerCycle);
@@ -395,6 +396,13 @@ const Example34: React.FC = () => {
     return floor ? Math.floor(number) : number;
   }
 
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
+
   return !gridOptions ? '' : (
     <div>
       <h2>
@@ -410,6 +418,9 @@ const Example34: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
       </h2>
 
       <div className="subtitle">

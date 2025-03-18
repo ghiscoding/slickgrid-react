@@ -14,6 +14,7 @@ const Example1: React.FC = () => {
 
   const [darkModeGrid1, setDarkModeGrid1] = useState(defaultBrowserDarkMode);
   const [reactGrid1, setReactGrid1] = useState<SlickgridReactInstance>();
+  const [showSubTitle, setShowSubTitle] = useState(false);
 
   // mock some data (different in each dataset)
   const [dataset1] = useState<any[]>(mockData(NB_ITEMS));
@@ -95,6 +96,13 @@ const Example1: React.FC = () => {
     reactGrid1?.slickGrid?.setOptions({ darkMode: isDarkMode });
   }
 
+  function toggleSubTitle() {
+    const isShowing = !showSubTitle;
+    setShowSubTitle(isShowing);
+    const action = showSubTitle ? 'remove' : 'add';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+  }
+
   return (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -106,7 +114,11 @@ const Example1: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
       </h2>
+
       <div className="subtitle">
         Simple Grids with Fixed Sizes (800 x 225)
       </div>
