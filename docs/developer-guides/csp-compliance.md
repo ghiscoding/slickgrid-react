@@ -7,7 +7,7 @@ As mentioned above, the project is mostly CSP compliant, however there are some 
 
 ```ts
 // prefer the global grid options if possible
-this.gridOptions = {
+const gridOptions = {
   sanitizer: (dirtyHtml) => DOMPurify.sanitize(dirtyHtml, { ADD_ATTR: ['level'], RETURN_TRUSTED_TYPE: true })
 };
 ```
@@ -21,12 +21,11 @@ import DOMPurify from 'dompurify';
 import { Slicker, SlickVanillaGridBundle } from '@slickgrid-universal/vanilla-bundle';
 
 // DOM Purify is already configured in Slickgrid-Universal with the configuration shown below
-this.gridOptions = {
+const gridOptions = {
   sanitizer: (html) => DOMPurify.sanitize(html, { RETURN_TRUSTED_TYPE: true }),
   // you could also optionally use the sanitizerOptions instead
   // sanitizerOptions: { RETURN_TRUSTED_TYPE: true }
 }
-this.sgb = new Slicker.GridBundle(gridContainerElm, this.columnDefinitions, this.gridOptions, this.dataset);
 ```
 
 with this code in place, we can use the following CSP meta tag (which is what we use in the lib demo, ref: [index.html](https://github.com/ghiscoding/slickgrid-universal/blob/master/examples/vite-demo-vanilla-bundle/index.html#L8-L14))
@@ -41,19 +40,28 @@ Since we use the DataView, you will also need to enable a new `useCSPSafeFilter`
 import DOMPurify from 'dompurify';
 import { GridOption } from 'slickgrid-react';
 
-export class Example1 {
-  gridOptions: GridOption;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  prepareGrid() {
+useEffect(() => defineGrid(), []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+  }
+
+  function defineGrid() {
     // ...
 
-    this.gridOptions = {
+    setOptions({
       // you could also optionally use the sanitizerOptions instead
       // sanitizerOptions: { RETURN_TRUSTED_TYPE: true }
       dataView: {
         useCSPSafeFilter: true
       },
-    }
+    });
   }
 }
 ```

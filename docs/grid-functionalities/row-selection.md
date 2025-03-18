@@ -25,44 +25,48 @@ You can also do it through a `delegate` since all SlickGrid events are exposed a
 
 #### Component
 ```tsx
-export class Example1 {
-  defineGrid() {
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption>();
+
+  function defineGrid() {
     // define columns
     ...
 
     // grid options
-    const gridOptions = {
+    setOptions({
       enableAutoResize: true,
       enableCellNavigation: true,
       enableCheckboxSelector: true,
       enableRowSelection: true,
       multiSelect: false,
-    }
+    });
   }
 
-  handleRowSelection(event, args) {
+  function handleRowSelection(event, args) {
     console.log(event, args);
   }
 
-  render() {
-    return (
-       <SlickgridReact gridId="grid1"
-          columnDefinitions={this.state.columnDefinitions1}
-          gridOptions={this.state.gridOptions1!}
-          dataset={this.state.dataset1}
-          onReactGridCreated={$event => this.reactGrid1Ready($event.detail)}
-          onSelectedRowsChanged={$event => this.onGrid1SelectedRowsChanged($event.detail.eventData, $event.detail.args)}
-        />
-    );
-  }
-}
+  return !options ? '' : (
+    <SlickgridReact gridId="grid1"
+      columnDefinitions={columnDefinitions1}
+      gridOptions={gridOptions1!}
+      dataset={dataset1}
+      onReactGridCreated={$event => reactGrid1Ready($event.detail)}
+      onSelectedRowsChanged={$event => onGrid1SelectedRowsChanged($event.detail.eventData, $event.detail.args)}
+    />
+  );
+};
+
+export default Example;
 ```
 
 ### 2. with SlickGrid object & onEvent
 It's preferable to use the `with delegate`, but if you really wish, you can also use directly the SlickGrid event that you can subscribe to. However, don't forget to unsubscribe to a SlickGrid event.
 #### Component
 ```tsx
-const gridOptions = {
+const options = {
   enableAutoResize: true,
   enableCellNavigation: true,
   enableRowSelection: true
@@ -71,7 +75,7 @@ const gridOptions = {
 gridObjChanged(grid) {
   grid.onSelectedRowsChanged.subscribe((e, args) => {
     if (Array.isArray(args.rows)) {
-      this.selectedObjects = args.rows.map(idx => {
+      selectedObjects = args.rows.map(idx => {
         const item = grid.getDataItem(idx);
         return item.title || '';
       });
@@ -88,8 +92,8 @@ You can also do it through an event since all SlickGrid events are exposed. For 
 
 #### Component
 ```tsx
-export class Example1 {
-  defineGrid() {
+const Example: React.FC = () => {
+  function defineGrid() {
     // define columns
     ...
 
@@ -106,21 +110,19 @@ export class Example1 {
     }
   }
 
-  handleRowSelection(event, args) {
+  function handleRowSelection(event, args) {
     console.log(event, args);
   }
 
-  render() {
-    return (
-       <SlickgridReact gridId="grid1"
-          columnDefinitions={this.state.columnDefinitions1}
-          gridOptions={this.state.gridOptions1!}
-          dataset={this.state.dataset1}
-          onReactGridCreated={$event => this.reactGrid1Ready($event.detail)}
-          onSelectedRowsChanged={$event => this.onGrid1SelectedRowsChanged($event.detail.eventData, $event.detail.args)}
-        />
-    );
-  }
+  return !options ? '' : (
+    <SlickgridReact gridId="grid1"
+      columnDefinitions={columnDefinitions1}
+      gridOptions={gridOptions1!}
+      dataset={dataset1}
+      onReactGridCreated={$event => reactGrid1Ready($event.detail)}
+      onSelectedRowsChanged={$event => onGrid1SelectedRowsChanged($event.detail.eventData, $event.detail.args)}
+    />
+  );
 }
 ```
 
@@ -128,9 +130,9 @@ export class Example1 {
 It's preferable to use the `with delegate`, but if you really wish, you can also use directly the SlickGrid event that you can subscribe to. However, don't forget to unsubscribe to a SlickGrid event.
 #### Component
 ```tsx
-export class Example1 {
-  defineGrid() {
-    const gridOptions = {
+const Example: React.FC = () => {
+  function defineGrid() {
+    setOptions({
       enableAutoResize: true,
       enableCellNavigation: true,
       enableCheckboxSelector: true,
@@ -139,13 +141,13 @@ export class Example1 {
         // True (Single Selection), False (Multiple Selections)
         selectActiveRow: false
       },
-    }
+    });
   }
 
-  gridObjChanged(grid) {
+  function gridObjChanged(grid: SlickGrid) {
     grid.onSelectedRowsChanged.subscribe((e, args) => {
       if (Array.isArray(args.rows)) {
-        this.selectedObjects = args.rows.map(idx => {
+        selectedObjects = args.rows.map(idx => {
           const item = grid.getDataItem(idx);
           return item.title || '';
         });
@@ -163,18 +165,12 @@ SlickGrid is so powerful and customizable, you could if you wish mix the multipl
 
 #### Component
 ```tsx
-interface Props {}
-interface State {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-}
-export class Example extends React.Component<Props, State> {
-  handleMultipleRowSelections(event, args) {
+const Example: React.FC = () => {
+  function handleMultipleRowSelections(event, args) {
     console.log('multiple row checkbox selected', event, args);
   }
 
-  handleSingleRowClick(event, args) {
+  function handleSingleRowClick(event, args) {
     console.log('multiple row checkbox selected', event, args);
 
     // when clicking on any cell, we will make it the new selected row
@@ -184,19 +180,19 @@ export class Example extends React.Component<Props, State> {
     }
   }
 
-  render() {
-    return (
-       <SlickgridReact gridId="grid1"
-          columnDefinitions={this.state.columnDefinitions1}
-          gridOptions={this.state.gridOptions1!}
-          dataset={this.state.dataset1}
-          onReactGridCreated={$event => this.reactGrid1Ready($event.detail)}
-          onClick={$event => { this.onCellClicked($event.detail.eventData, $event.detail.args); }}
-          onSelectedRowsChanged={$event => this.onGrid1SelectedRowsChanged($event.detail.eventData, $event.detail.args)}
-        />
-    );
-  }
+  return !options ? '' : (
+    <SlickgridReact gridId="grid1"
+      columnDefinitions={columnDefinitions1}
+      gridOptions={gridOptions1!}
+      dataset={dataset1}
+      onReactGridCreated={$event => reactGrid1Ready($event.detail)}
+      onClick={$event => { onCellClicked($event.detail.eventData, $event.detail.args); }}
+      onSelectedRowsChanged={$event => onGrid1SelectedRowsChanged($event.detail.eventData, $event.detail.args)}
+    />
+  );
 }
+
+export default Example;
 ```
 
 ## Disable Custom Rows Selections via `selectableOverride`
@@ -204,15 +200,9 @@ You can use `selectableOverride` to provide custom logic to disable certain rows
 
 #### Component
 ```tsx
-interface Props {}
-interface State {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-}
-export class Example extends React.Component<Props, State> {
-  defineGrid() {
-    const gridOptions = {
+const Example: React.FC = () => {
+  function defineGrid() {
+    setOptions({
       enableRowSelection: true,
       enableCheckboxSelector: true,
       checkboxSelector: {
@@ -225,96 +215,91 @@ export class Example extends React.Component<Props, State> {
         // True (Single Selection), False (Multiple Selections)
         selectActiveRow: true,
       },
-    };
+    });
   }
 }
 ```
 
 ### Disable External Button when having Empty Selection
-When having an external button that you want to work only when there's row selection, there are 2 ways of doing this.
+When having an external button that you want to work only when there's row selection, there are 2 ways of doing 
 1. use the `onSelectedRowsChanged` event (via your View in HTML or via ViewModel)
 ```tsx
-isMyButtonDisabled = false;
+const [isMyButtonDisabled, setIsMyButtonDisabled] = useState(false);
 
-handleOnSelectedRowsChanged(args) {
-  this.isMyButtonDisabled = args?.rows?.length === 0;
+function handleOnSelectedRowsChanged(args) {
+  isMyButtonDisabled = args?.rows?.length === 0;
 }
 
-render() {
-  return (
-      <SlickgridReact gridId="grid1"
-        columnDefinitions={this.state.columnDefinitions1}
-        gridOptions={this.state.gridOptions1!}
-        dataset={this.state.dataset1}
-        onReactGridCreated={$event => this.reactGrid1Ready($event.detail)}
-        onClick={$event => { this.onCellClicked($event.detail.eventData, $event.detail.args); }}
-        onSelectedRowsChanged={$event => this.handleOnSelectedRowsChanged($event.detail.eventData, $event.detail.args)}
-      />
-  );
-}
+return !options ? '' : (
+  <SlickgridReact gridId="grid1"
+    columnDefinitions={columnDefinitions1}
+    gridOptions={gridOptions1!}
+    dataset={dataset1}
+    onReactGridCreated={$event => reactGrid1Ready($event.detail)}
+    onClick={$event => { onCellClicked($event.detail.eventData, $event.detail.args); }}
+    onSelectedRowsChanged={$event => handleOnSelectedRowsChanged($event.detail.eventData, $event.detail.args)}
+  />
+);
 ```
-2. use the `onGridStateChanged` event (see [Grid State & Presets](../grid-functionalities/grid-state-preset.md) Docs)
-```tsx
-isMyButtonDisabled = false;
 
-handleOngridStateChanged(gridState) {
+2. use the `onGridStateChanged` event (see [Grid State & Presets](../grid-functionalities/grid-state-preset.md) Docs)
+
+```tsx
+const [isMyButtonDisabled, setIsMyButtonDisabled] = useState(false);
+
+function handleOngridStateChanged(gridState) {
   if (Array.isArray(gridState?.rowSelection.dataContextIds)) {
-    this.isMassSelectionDisabled = gridState.rowSelection.dataContextIds.length === 0;
+    isMassSelectionDisabled = gridState.rowSelection.dataContextIds.length === 0;
   }
 }
 
-render() {
-  return (
-      <SlickgridReact gridId="grid1"
-        columnDefinitions={this.state.columnDefinitions1}
-        gridOptions={this.state.gridOptions1!}
-        dataset={this.state.dataset1}
-        onReactGridCreated={$event => this.reactGrid1Ready($event.detail)}
-        onClick={$event => { this.onCellClicked($event.detail.eventData, $event.detail.args); }}
-        onGridStateChanged={$event => this.gridStateChanged($event.detail)}
-        onSelectedRowsChanged={$event => this.handleOngridStateChanged($event.detail.eventData, $event.detail.args)}
-      />
-  );
-}
+return !options ? '' : (
+  <SlickgridReact gridId="grid1"
+    columnDefinitions={columnDefinitions1}
+    gridOptions={gridOptions1!}
+    dataset={dataset1}
+    onReactGridCreated={$event => reactGrid1Ready($event.detail)}
+    onClick={$event => { onCellClicked($event.detail.eventData, $event.detail.args); }}
+    onGridStateChanged={$event => gridStateChanged($event.detail)}
+    onSelectedRowsChanged={$event => handleOngridStateChanged($event.detail.eventData, $event.detail.args)}
+  />
+);
 ```
 
 ### Change Row Selections
 You can change which row(s) are selected by using the built-in SlickGrid method `setSelectedRows(rowIndexes)` (passing an empty array will clear all selection), however please note that it requires an array of row indexes as you see them in the UI and it won't work that great with Pagination (if that is what you are looking for then take a look at this Stack Overflow [Q&A](https://stackoverflow.com/questions/59629565/want-to-change-gridoption-preselectedrows-row-in-angular-slickgrid-dynamically-o))
 
 ```tsx
-interface Props {}
-interface State {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-}
-export class Example extends React.Component<Props, State> {
-  reactGrid: SlickgridReactInstance;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  changeRowSelections() {
-    this.reactGrid.slickGrid.setSelectedRows(rowIndexes);
+  function changeRowSelections() {
+    reactGridRef.current?.slickGrid.setSelectedRows(rowIndexes);
 
     // OR providing an empty array will clear the row selection
-    // this.reactGrid.slickGrid.setSelectedRows([]);
+    // reactGridRef.current?.slickGrid.setSelectedRows([]);
   }
 
-  render() {
-    return (
-        <SlickgridReact gridId="grid1"
-          columnDefinitions={this.state.columnDefinitions1}
-          gridOptions={this.state.gridOptions1!}
-          dataset={this.state.dataset1}
-          onReactGridCreated={$event => this.reactGrid1Ready($event.detail)}
-          onClick={$event => { this.onCellClicked($event.detail.eventData, $event.detail.args); }}
-          onSelectedRowsChanged={$event => this.changeRowSelections()}
-        />
-    );
-  }
+  return !options ? null : (
+    <SlickgridReact gridId="grid1"
+      columnDefinitions={columnDefinitions1}
+      gridOptions={gridOptions1!}
+      dataset={dataset1}
+      onReactGridCreated={$event => reactGrid1Ready($event.detail)}
+      onClick={$event => { onCellClicked($event.detail.eventData, $event.detail.args); }}
+      onSelectedRowsChanged={$event => changeRowSelections()}
+    />
+  );
 }
+
+export default Example;
 ```
 
 ## Troubleshooting
@@ -322,18 +307,18 @@ export class Example extends React.Component<Props, State> {
 The reason is because the Row Selection (checkbox) plugin is a special column and slickgrid-react is adding an extra column dynamically for the Row Selection checkbox and that is **not** reflected in your local copy of `columnDefinitions`. To address this issue, you need to get the slickgrid-react internal copy of all columns (including the extra columns), you can get it via `getAllColumnDefinitions()` from the Grid Service and then you can use to that array and that will work.
 
 ```tsx
-reactGridReady(reactGrid: SlickgridReactInstance) {
-  this.reactGrid = reactGrid;
+function reactGridReady(reactGrid: SlickgridReactInstance) {
+  reactGridRef.current = reactGrid;
 }
 
 addNewColumn() {
   const newColumn = { /*...*/ };
 
-  const allColumns = this.reactGrid.gridService.getAllColumnDefinitions();
+  const allColumns = reactGridRef.current?.gridService.getAllColumnDefinitions();
   allColumns.push(newColumn);
-  this.columnDefinitions = allColumns.slice(); // or use spread operator [...cols]
+  setColumns(allColumns.slice()); // or use spread operator [...cols]
 
   // you could also use SlickGrid setColumns() method
-  // this.reactGrid.slickGrid.setColumns(cols);
+  // reactGridRef.current?.slickGrid.setColumns(cols);
 }
 ```

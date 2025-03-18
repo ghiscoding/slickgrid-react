@@ -22,28 +22,28 @@ The Header Menu also comes, by default, with a list of built-in custom commands 
 
 This section is called Custom Commands because you can also customize this section with your own commands. To do that, you need to fill in 2 properties (an array of `headerMenuItems` that will go under each column definition and define `onCommand` callbacks) in your Grid Options. For example, `Slickgrid-Universal` is configured by default with these settings (you can overwrite any one of them):
 ```ts
-this.gridOptions = {
+const gridOptions = {
    enableAutoResize: true,
    enableHeaderMenu: true,   // <<-- this will automatically add extra custom commands
    enableFiltering: true,
    headerMenu: {
      onCommand: (e, args) => {
        if (args.command === 'hide') {
-         this.controlService.hideColumn(args.column);
-         this.controlService.autoResizeColumns();
+         controlService.hideColumn(args.column);
+         controlService.autoResizeColumns();
        } else if (args.command === 'sort-asc' || args.command === 'sort-desc') {
          // get previously sorted columns
-         const cols: ColumnSort[] = this.sortService.getPreviousColumnSorts(args.column.id + '');
+         const cols: ColumnSort[] = sortService.getPreviousColumnSorts(args.column.id + '');
 
          // add to the column array, the column sorted by the header menu
          cols.push({ sortCol: args.column, sortAsc: (args.command === 'sort-asc') });
-         this.sortService.onLocalSortChanged(this.gridObj, this.gridOptions, this.dataviewObj, cols);
+         sortService.onLocalSortChanged(gridObj, gridOptions, dataviewObj, cols);
 
-         // update the this.gridObj sortColumns array which will at the same add the visual sort icon(s) on the UI
+         // update the gridObj sortColumns array which will at the same add the visual sort icon(s) on the UI
          const newSortColumns: ColumnSort[] = cols.map((col) => {
            return { columnId: col.sortCol.id, sortAsc: col.sortAsc };
          });
-         this.gridObj.setSortColumns(newSortColumns); // add sort icon in UI
+         gridObj.setSortColumns(newSortColumns); // add sort icon in UI
        } else {
          alert('Command: ' + args.command);
        }
@@ -61,7 +61,7 @@ For more info on all the available properties of the custom commands, you can re
 ### How to change icon(s) of the default commands?
 You can change any of the default command icon(s) by changing the `icon[X-command]`, for example, see below for the defaults.
 ```ts
-this.gridOptions = {
+const gridOptions = {
   enableHeaderMenu: true,
   headerMenu: {
     iconColumnHideCommand: 'mdi mdi-close'
@@ -74,7 +74,7 @@ this.gridOptions = {
 ### How to Disable the Header Menu?
 You can disable the Header Menu, by calling `enableHeaderMenu: false` from the Grid Options.
 ```ts
-this.gridOptions = {
+const gridOptions = {
    enableHeaderMenu: false
 };
 ```
@@ -83,7 +83,7 @@ this.gridOptions = {
 You can exclude a column from getting a Header Menu by calling `excludeFromHeaderMenu` in your Column Definition. For example, we don't need it on a column that has an edit icon:
 
 ```ts
-this.columnDefinitions = [
+const columnDefinitions = [
   { id: 'edit', formatter: Formatters.editIcon, excludeFromHeaderMenu: true, excludeFromExport: true },
   { id: 'title', name: 'Title', field: 'title', sortable: true },
   { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true },
@@ -95,7 +95,7 @@ You can add Header Menu to 1 column or all columns like shown below. You can als
 
 ```ts
 // add custom Header Menu to all columns except "Action"
-this.columnDefinitions.forEach(col => {
+columnDefinitions.forEach(col => {
   col.header = {
     menu: {
       commandItems: [

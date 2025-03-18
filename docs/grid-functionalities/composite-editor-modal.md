@@ -45,39 +45,36 @@ Note: the new item will be added to the top of the grid by default, if you wish 
 import { Column, CompositeEditorModalType } from 'slickgrid-react';
 import { SlickCompositeEditorComponent } from '@slickgrid-universal/composite-editor-component';
 
-interface Props {}
-interface State {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-}
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef();
+  const compositeEditorInstance = new SlickCompositeEditorComponent();
 
-export class GridBasicComponent  extends React.Component<Props, State> {
-  compositeEditorInstance: SlickCompositeEditorComponent;
+  useEffect(() => defineGrid(), []);
 
-  constructor(public readonly props: Props) {
-    super(props);
-    this.compositeEditorInstance = new SlickCompositeEditorComponent();
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  defineGrid() {
-    const columnDefinitions = [ /*...*/ ];
-
-    const gridOptions = {
+  function defineGrid() {
+    setColumns([ /*...*/ ]);
+    setOptions({
       enableAddRow: true,           // required for Create/Clone
       enableCellNavigation: true,
       autoEdit: true,
       autoCommitEdit: true,
       enableCompositeEditor: true,
-      externalResources: [new ExcelExportService(), this.compositeEditorInstance],
-    };
+      externalResources: [new ExcelExportService(), compositeEditorInstance],
+    });
   }
 
   openCompositeModal(modalType: CompositeEditorModalType = 'create') {
     // you can use a switch/case when using the Composite Modal for more than 1 modal type
     const modalTitle = 'Create Item';
 
-    this.compositeEditorInstance?.openDetails({
+    compositeEditorInstance?.openDetails({
       headerTitle: modalTitle,
       modalType,
       // insertNewId: 1234, // you can provide a custom Id (defaults to last Id+1)
@@ -122,26 +119,20 @@ Note however that there is a subtle difference compare to the Create Item action
 import { Column, CompositeEditorModalType } from 'slickgrid-react';
 import { SlickCompositeEditorComponent } from '@slickgrid-universal/composite-editor-component';
 
-interface Props {}
-interface State {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-}
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef();
+  const compositeEditorInstance = new SlickCompositeEditorComponent();
 
-export class GridBasicComponent  extends React.Component<Props, State> {
-  compositeEditorInstance: SlickCompositeEditorComponent;
+  useEffect(() => defineGrid(), []);
 
-  constructor(public readonly props: Props) {
-    super(props);
-    this.compositeEditorInstance = new SlickCompositeEditorComponent();
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  componentDidMount() {
-    this.defineGrid();
-  }
-
-  defineGrid() {
+  function defineGrid() {
     const columnDefinitions = [
       {
         id: 'percentComplete', name: '% Complete', field: 'percentComplete',
@@ -160,7 +151,7 @@ export class GridBasicComponent  extends React.Component<Props, State> {
        autoEdit: true,
        autoCommitEdit: true,
        enableCompositeEditor: true,
-       externalResources: [new ExcelExportService(), this.compositeEditorInstance],
+       externalResources: [new ExcelExportService(), compositeEditorInstance],
     };
   }
 
@@ -168,7 +159,7 @@ export class GridBasicComponent  extends React.Component<Props, State> {
     // you can use a switch/case when using the Composite Modal for more than 1 modal type
     const modalTitle = 'Mass Update';
 
-    this.compositeEditorInstance?.openDetails({
+    compositeEditorInstance?.openDetails({
       headerTitle: modalTitle,
       modalType,
       onError: (error) => alert(error.message), // you should define how to deal with error coming from the modal
@@ -195,10 +186,10 @@ Refer to the [Mass Update](#mass-update) section for code sample.
 The `onBeforeOpen` callback function allows the user to optionally execute something before opening the modal. This is synchronous call and it won't wait until proceeding to opening the modal, it just allows you to possibly do something before opening the modal (for example cancel any batch edits, or change/reset some validations in column definitions).
 
 ```ts
-this.compositeEditorInstance?.openDetails({
+compositeEditorInstance?.openDetails({
   headerTitle: 'Create Item',
   modalType: 'create',
-  onBeforeOpen: () => this.rollbackAllUnsavedEdits(), // for example if we have any unsaved editors in the grids, we can roll them back before doing a Mass Update
+  onBeforeOpen: () => rollbackAllUnsavedEdits(), // for example if we have any unsaved editors in the grids, we can roll them back before doing a Mass Update
 });
 ```
 
@@ -207,7 +198,7 @@ The `onClose` callback function allows you to show a warning or confirm dialog t
 
 You can return a synchronous or asynchronous function (typically the latter), for example we could display an alert when leaving with unsaved data.
 ```ts
-this.compositeEditorInstance?.openDetails({
+compositeEditorInstance?.openDetails({
   headerTitle: 'Create Item',
   modalType: 'create',
   onClose: () => Promise.resolve(confirm('You have unsaved changes, are you sure you want to close this window?')),
@@ -219,7 +210,7 @@ The `onError` callback function will execute anytime an error is thrown by the m
 You can return a synchronous or asynchronous function (typically the latter), for example we could display an alert when leaving with unsaved data.
 
 ```ts
-this.compositeEditorInstance?.openDetails({
+compositeEditorInstance?.openDetails({
   headerTitle: 'Create Item',
   modalType: 'create',
   onError: (error) => alert(error.message),
@@ -258,13 +249,13 @@ You can return a synchronous or asynchronous function (typically the latter), we
 
 ##### Create Item demo
 ```ts
-this.compositeEditorInstance.openDetails({
+compositeEditorInstance.openDetails({
   headerTitle: 'Create Item',
   modalType: 'create',
   onSave: (formValues, selection, dataContext) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const success = await this.createUser(dataContext);
+        const success = await createUser(dataContext);
         resolve(success);
       } catch (backendError) {
         // when your backend API throws an error, we can reject the promise and that will show as a validation summary on top of the modal
@@ -281,13 +272,13 @@ Note that the `formValues` is an object with a very simple structure, the object
 `const formValues = { percentCompleted: 100, isCompleted: true };`
 
 ```ts
-this.compositeEditorInstance.openDetails({
+compositeEditorInstance.openDetails({
   headerTitle: 'Update Selected Items',
   modalType: 'mass-selection',
   onSave: (formValues, selection, dataContext) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const success = await this.updateUsers(selection.dataContextIds, formValues);
+        const success = await updateUsers(selection.dataContextIds, formValues);
         resolve(success);
       } catch (backendError) {
         // when your backend API throws an error, we can reject the promise and that will show as a validation summary on top of the modal
@@ -308,14 +299,14 @@ When adding a backend API to the `onSave` you can (and should) wrap your code in
 The use case would be to skip a change, in silent without any errors shown, if another column or property has value(s) that do not match our condition expectaation. A possible use case could be found under [Example 12](https://github.com/ghiscoding/slickgrid-universal/blob/eb1d5069e10b8b2cb2f14ac964f2c6e2b8f006a9/examples/webpack-demo-vanilla-bundle/src/examples/example12.ts#L949-L956), the use case that we could do is the following: "Do not apply a mass change on the 'Duration' column that is below 5 days if its 'Complexity' column is set to 'Complex' or 'Very Complex'", the code do this use case is shown below. Also note that the 3rd argument of `onSave` (in our case `dataContextOrUpdatedDatasetPreview`) will have the updated dataset but without the change(s) that got skipped
 
 ```ts
-this.compositeEditorInstance.openDetails({
+compositeEditorInstance.openDetails({
   headerTitle: 'My Modal',
   modalType,
 
   // you can validate each row item dataContext before applying a Mass Update/Selection changes
   // via this validation callback (returning false would skip the change)
   validateMassUpdateChange: (fieldName, dataContext, formValues) => {
-    const levelComplex = this.complexityLevelList.find(level => level.label === 'Complex');
+    const levelComplex = complexityLevelList.find(level => level.label === 'Complex');
     if (fieldName === 'duration' && (dataContext.complexity === levelComplex?.value || formValues.complexity === levelComplex?.value) && formValues.duration < 5) {
       // below expectation (it's "Complex" and it doesn't have at least 5 days of work (duration))
       return false;
@@ -358,7 +349,7 @@ As all other features using translation in this library, you can provide a trans
 
 For example
 ```ts
-this.compositeEditorInstance?.openDetails({
+compositeEditorInstance?.openDetails({
   headerTitle: 'Create New Item',
   modalType: 'create',
   labels: {
@@ -389,30 +380,42 @@ There are multiple options that you can change to change the UI design a bit, he
 
 ##### Component
 ```tsx
-export class GridExample {
-  compositeEditorInstance: SlickCompositeEditorComponent;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef();
+  const compositeEditorInstance = new SlickCompositeEditorComponent();
+
+  useEffect(() => defineGrid(), []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+  }
+
+  function defineGrid() {}
 
   /** Composite Editor on change handler */
-  handleOnCompositeEditorChange(event) {
+  function handleOnCompositeEditorChange(event) {
     const args = event.detail.args as OnCompositeEditorChangeEventArgs;
     const columnDef = args.column as Column;
     const formValues = args.formValues;
 
     // you can change any other form input values when certain conditions are met
     if (columnDef.id === 'percentComplete' && formValues.percentComplete === 100) {
-      this.compositeEditorInstance.changeFormInputValue('completed', true);
-      this.compositeEditorInstance.changeFormInputValue('finish', new Date());
-      // this.compositeEditorInstance.changeFormInputValue('product', { id: 0, itemName: 'Sleek Metal Computer' });
+      compositeEditorInstance.changeFormInputValue('completed', true);
+      compositeEditorInstance.changeFormInputValue('finish', new Date());
+      // compositeEditorInstance.changeFormInputValue('product', { id: 0, itemName: 'Sleek Metal Computer' });
 
       // you can even change a value that is not part of the form values (but is part of the grid)
       // BUT you will have to bypass the error that will be thrown, you can provide `true` as the 3rd argument to bypass any error
-      // this.compositeEditorInstance.changeFormInputValue('cost', 9999.99, true);
+      // compositeEditorInstance.changeFormInputValue('cost', 9999.99, true);
     }
 
     // you can also change some editor options (not all Editors supports this functionality, so far only these Editors AutoComplete, Date MultipleSelect & SingleSelect)
     if (columnDef.id === 'completed') {
-      this.compositeEditorInstance.changeFormEditorOption('percentComplete', 'filter', formValues.completed);
-      this.compositeEditorInstance.changeFormEditorOption('product', 'minLength', 3);
+      compositeEditorInstance.changeFormEditorOption('percentComplete', 'filter', formValues.completed);
+      compositeEditorInstance.changeFormEditorOption('product', 'minLength', 3);
     }
   }
 }
@@ -437,27 +440,27 @@ export class GridExample {
     // you can also change some editor options
     // not all Editors supports this functionality, so far only these Editors are supported: AutoComplete, Date, Single/Multiple Select
     if (columnDef.id === 'completed') {
-      this.compositeEditorInstance.changeFormEditorOption('percentComplete', 'filter', true); // multiple-select.js, show filter in dropdown
-      this.compositeEditorInstance.changeFormEditorOption('product', 'minLength', 3);         // autocomplete, change minLength char to type
-      this.compositeEditorInstance.changeFormEditorOption('finish', 'range', { min: 'today' });
+      compositeEditorInstance.changeFormEditorOption('percentComplete', 'filter', true); // multiple-select.js, show filter in dropdown
+      compositeEditorInstance.changeFormEditorOption('product', 'minLength', 3);         // autocomplete, change minLength char to type
+      compositeEditorInstance.changeFormEditorOption('finish', 'range', { min: 'today' });
     }
   }
 
   render() {
     return (
       <SlickgridReact gridId="grid30"
-        columnDefinitions={this.state.columnDefinitions}
-        gridOptions={this.state.gridOptions}
-        dataset={this.state.dataset}
-        onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        onBeforeEditCell={$event => this.handleOnBeforeEditCell($event.detail.eventData, $event.detail.args)}
-        onCellChange={$event => this.handleOnCellChange($event.detail.eventData, $event.detail.args)}
-        onCompositeEditorChange={$event => this.handleOnCompositeEditorChange($event.detail.eventData, $event.detail.args)}
-        onItemDeleted={$event => this.handleItemDeleted($event.detail)}
-        onGridStateChanged={$event => this.handleOnGridStateChanged($event.detail)}
-        onFilterChanged={() => this.handleReRenderUnsavedStyling()}
-        onPaginationChanged={() => this.handleReRenderUnsavedStyling()}
-        onValidationError={$event => this.handleValidationError($event.detail.eventData, $event.detail.args)}
+        columnDefinitions={columns}
+        gridOptions={options}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+        onBeforeEditCell={$event => handleOnBeforeEditCell($event.detail.eventData, $event.detail.args)}
+        onCellChange={$event => handleOnCellChange($event.detail.eventData, $event.detail.args)}
+        onCompositeEditorChange={$event => handleOnCompositeEditorChange($event.detail.eventData, $event.detail.args)}
+        onItemDeleted={$event => handleItemDeleted($event.detail)}
+        onGridStateChanged={$event => handleOnGridStateChanged($event.detail)}
+        onFilterChanged={() => handleReRenderUnsavedStyling()}
+        onPaginationChanged={() => handleReRenderUnsavedStyling()}
+        onValidationError={$event => handleValidationError($event.detail.eventData, $event.detail.args)}
       />
     );
   }
@@ -474,10 +477,20 @@ There are 2 ways to do it
 
 ##### Component
 ```tsx
-export class GridExample {
-  compositeEditorInstance: SlickCompositeEditorComponent;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef();
+  const compositeEditorInstance = new SlickCompositeEditorComponent();
 
-  defineGrid() {
+  useEffect(() => defineGrid(), []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+  }
+
+  function defineGrid() {
     const columnDefinitions = [
       {
         id: 'duration', name: 'Duration', field: 'duration', sortable: true, filterable: true, type: FieldType.number,
@@ -504,7 +517,7 @@ export class GridExample {
   }
 
   /** Composite Editor on change handler */
-  handleOnCompositeEditorChange(event) {
+  function handleOnCompositeEditorChange(event) {
     const args = event.detail.args as OnCompositeEditorChangeEventArgs;
     const columnDef = args.column as Column;
     const formValues = args.formValues;
@@ -513,7 +526,7 @@ export class GridExample {
     // if the collection already got changed but you just need to re-render the editor
     // you can just call the `renderDomElement()` method to refresh the dropdown list
     if (columnDef.id === 'duration') {
-      const editor = this.compositeEditorInstance.editors['percentComplete'] as SelectEditor;
+      const editor = compositeEditorInstance.editors['percentComplete'] as SelectEditor;
       const newCollection = editor.finalCollection; // the finalCollection is what is return by the collectionOverride
       editor.renderDomElement(newCollection);
     }
@@ -525,10 +538,20 @@ export class GridExample {
    - this is not recommended unless you only care about what happens in the modal window and not in the grid (editing), so option (1) with `collectionOverride` is preferable
 
 ```tsx
-export class GridExample {
-  compositeEditorInstance: SlickCompositeEditorComponent;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef();
+  const compositeEditorInstance = new SlickCompositeEditorComponent();
 
-  defineGrid() {
+  useEffect(() => defineGrid(), []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+  }
+
+  function defineGrid() {
     const columnDefinitions = [
       {
         id: 'duration', name: 'Duration', field: 'duration', sortable: true, filterable: true, type: FieldType.number,
@@ -546,7 +569,7 @@ export class GridExample {
   }
 
   /** Composite Editor on change handler */
-  handleOnCompositeEditorChange(event) {
+  function handleOnCompositeEditorChange(event) {
     const args = event.detail.args as OnCompositeEditorChangeEventArgs;
     const columnDef = args.column as Column;
     const formValues = args.formValues;
@@ -554,7 +577,7 @@ export class GridExample {
     // you can dynamically change a select dropdown collection with a completely new collection
     // you still need to call the `renderDomElement()` method to refresh the dropdown list
     if (columnDef.id === 'duration') {
-      const editor = this.compositeEditorInstance.editors['percentComplete'] as SelectEditor;
+      const editor = compositeEditorInstance.editors['percentComplete'] as SelectEditor;
       const newCollection = [ /*... */ ];
       editor.renderDomElement(newCollection);
     }
@@ -566,7 +589,7 @@ export class GridExample {
 Disabling field(s) is done through the exact same way that you would do it in the grid, which is through the `onBeforeEditCell` SlickGrid event and you can find more in depth info at this other [Wiki - Disabling specific cell edit](../column-functionalities/editors.md#disabling-specific-cell-edit)
 
 ```tsx
-handleOnBeforeEditCell(event) {
+function handleOnBeforeEditCell(event) {
   const eventData = event.detail.eventData;
   const args = event && event.detail && event.detail.args;
   const { column, item, grid } = args;
@@ -580,7 +603,7 @@ handleOnBeforeEditCell(event) {
   return false;
 }
 
-checkItemIsEditable(dataContext: any, columnDef: Column, grid: SlickGrid) {
+function checkItemIsEditable(dataContext: any, columnDef: Column, grid: SlickGrid) {
   const gridOptions = grid?.getOptions();
   const hasEditor = columnDef.editor;
   const isGridEditable = gridOptions.editable;

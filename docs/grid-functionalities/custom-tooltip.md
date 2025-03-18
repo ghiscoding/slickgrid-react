@@ -28,40 +28,59 @@ To specify a tooltip when hovering a cell
 
 ### via Column Definition
 You can set or change option of an individual column definition custom tooltip.
+
 ```ts
 import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
 
-defineGrid() {
-  this.columnDefinitions = [{
-      id: "title", name: "Title", field: "title", formatter: titleFormatter,
-      customTooltip: {
-        formatter: tooltipTaskFormatter,
-        // ...
-      }
-  }];
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  // make sure to register the plugin in your grid options
-  this.gridOptions = {
-    externalResources: [new SlickCustomTooltip()],
-  };
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    const columnDefinitions = [{
+        id: "title", name: "Title", field: "title", formatter: titleFormatter,
+        customTooltip: {
+          formatter: tooltipTaskFormatter,
+          // ...
+        }
+    }];
+
+    // make sure to register the plugin in your grid options
+    const gridOptions = {
+      externalResources: [new SlickCustomTooltip()],
+    };
+  }
 }
 ```
 
 ### via Grid Options
+
 You can set certain options for the entire grid, for example if you set `exportWithFormatter` it will evaluate the Formatter (when exist) output to export each cell. The Grid Menu also has the "Export to Excel" enabled by default.
+
 ```ts
 import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
 
-defineGrid() {
-  this.gridOptions = {
-    externalResources: [new SlickCustomTooltip()],
-    customTooltip: {
-      formatter: tooltipTaskFormatter,
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-      // optionally skip tooltip on some of the column(s) (like 1st column when using row selection)
-      usabilityOverride: (args) => (args.cell !== 0 && args?.column?.id !== 'action'), // disable on 1st and also "action" column
-    },
-  };
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    const gridOptions = {
+      externalResources: [new SlickCustomTooltip()],
+      customTooltip: {
+        formatter: tooltipTaskFormatter,
+
+        // optionally skip tooltip on some of the column(s) (like 1st column when using row selection)
+        usabilityOverride: (args) => (args.cell !== 0 && args?.column?.id !== 'action'), // disable on 1st and also "action" column
+      },
+    };
+  }
 }
 ```
 
@@ -80,28 +99,33 @@ customTooltip: {
 ## Tooltip Types
 ### Cell Custom Tooltip with `formatter`
 You can create a Custom Tooltip which will show up when hovering a cell by simply providing a `formatter` [via a Column Definition](#via-column-definition) (per column) OR [via Grid Options](#via-grid-options) (all columns of the grid), the formatter is the same structure as a regular formatter and accepts html string.
+
 ```ts
 // define your custom tooltip in a Column Definition OR Grid Options
 customTooltip: {
-  formatter: this.tooltipFormatter,
+  formatter: tooltipFormatter,
 },
 ```
-here's a simple formatter (you can see the result in the [UI Sample](#ui-sample) gif below)
-```ts
-tooltipFormatter(row, cell, value, column, dataContext, grid) {
-    const tooltipTitle = 'Custom Tooltip';
-    const effortDrivenHtml = Formatters.checkmarkMaterial(row, cell, dataContext.effortDriven, column, dataContext, grid);
 
-    return `<div class="header-tooltip-title">${tooltipTitle}</div>
-    <div class="tooltip-2cols-row"><div>Id:</div> <div>${dataContext.id}</div></div>
-    <div class="tooltip-2cols-row"><div>Title:</div> <div>${dataContext.title}</div></div>
-    <div class="tooltip-2cols-row"><div>Effort Driven:</div> <div>${effortDrivenHtml}</div></div>
-    <div class="tooltip-2cols-row"><div>Completion:</div> <div>${dataContext.percentComplete}</div></div>`;
+here's a simple formatter (you can see the result in the [UI Sample](#ui-sample) gif below)
+
+```ts
+const tooltipFormatter: Formatter = (row, cell, value, column, dataContext, grid) => {
+  const tooltipTitle = 'Custom Tooltip';
+  const effortDrivenHtml = Formatters.checkmarkMaterial(row, cell, dataContext.effortDriven, column, dataContext, grid);
+
+  return `<div class="header-tooltip-title">${tooltipTitle}</div>
+  <div class="tooltip-2cols-row"><div>Id:</div> <div>${dataContext.id}</div></div>
+  <div class="tooltip-2cols-row"><div>Title:</div> <div>${dataContext.title}</div></div>
+  <div class="tooltip-2cols-row"><div>Effort Driven:</div> <div>${effortDrivenHtml}</div></div>
+  <div class="tooltip-2cols-row"><div>Completion:</div> <div>${dataContext.percentComplete}</div></div>`;
 }
 ```
 
 ### Cell Async Custom Tooltip with `formatter` and `asyncPostFormatter` (Async API call)
+
 You can create an Async Custom Tooltip which is a delayed tooltip (for example when you call an API to fetch some info), will show up when hovering a cell it will require a bit more setup. The `formatter` will be use to show any form of "loading..." and your final tooltip will be shown via the `asyncPostFormatter` both formatters use the same structure as a regular formatter and accepts html string. It will also require you to provide an `asyncProcess` of your API call (it could be a Promise or Observable), it also provides the same arguments as a regular formatter.
+
 ```ts
 // define your custom tooltip in a Column Definition OR Grid Options
 customTooltip: {
@@ -110,56 +134,65 @@ customTooltip: {
 
   // 2- post process formatter
   asyncProcess: (row, cell, val, column, dataContext) => fetch(`/user/${dataContext.id}`), // could be a Promise/Observable
-  asyncPostFormatter: this.userFullDetailAsyncFormatter,
+  asyncPostFormatter: userFullDetailAsyncFormatter,
 },
 ```
+
 here's the final post process async formatter
+
 ```ts
-userFullDetailAsyncFormatter(row, cell, value, column, dataContext, grid) {
-    const tooltipTitle = 'User Detail - Async Tooltip';
-    return `<div class="header-tooltip-title">${tooltipTitle}</div>
-    <div class="tooltip-2cols-row"><div>Id:</div> <div>${dataContext.id}</div></div>
-    <div class="tooltip-2cols-row"><div>First Name:</div> <div>${dataContext.firstName}</div></div>
-    <div class="tooltip-2cols-row"><div>Last Name:</div> <div>${dataContext.lastName}</div></div>
-    <div class="tooltip-2cols-row"><div>Age:</div> <div>${dataContext.age}</div></div>
-    <div class="tooltip-2cols-row"><div>Gender:</div> <div>${dataContext.gender}</div></div>
-    <div class="tooltip-2cols-row"><div>Title:</div> <div>${dataContext.title}</div></div>
-    <div class="tooltip-2cols-row"><div>Seniority:</div> <div>${dataContext.seniority}</div></div>`;
+const userFullDetailAsyncFormatter: Formatter = (row, cell, value, column, dataContext, grid) => {
+  const tooltipTitle = 'User Detail - Async Tooltip';
+  return `<div class="header-tooltip-title">${tooltipTitle}</div>
+  <div class="tooltip-2cols-row"><div>Id:</div> <div>${dataContext.id}</div></div>
+  <div class="tooltip-2cols-row"><div>First Name:</div> <div>${dataContext.firstName}</div></div>
+  <div class="tooltip-2cols-row"><div>Last Name:</div> <div>${dataContext.lastName}</div></div>
+  <div class="tooltip-2cols-row"><div>Age:</div> <div>${dataContext.age}</div></div>
+  <div class="tooltip-2cols-row"><div>Gender:</div> <div>${dataContext.gender}</div></div>
+  <div class="tooltip-2cols-row"><div>Title:</div> <div>${dataContext.title}</div></div>
+  <div class="tooltip-2cols-row"><div>Seniority:</div> <div>${dataContext.seniority}</div></div>`;
 }
 ```
 
 ### Column Header Custom Tooltip with `headerFormatter`
 You can create a Custom Tooltip which will show up when hovering a column header (title) by simply providing a `headerFormatter` [via a Column Definition](#via-column-definition) (per column) OR [via Grid Options](#via-grid-options) (all columns of the grid), the formatter is the same structure as a regular formatter and accepts html string.
+
 ```ts
 // define your custom tooltip in a Column Definition OR Grid Options
 customTooltip: {
-  headerFormatter: this.headerFormatter,
+  headerFormatter,
 },
 ```
+
 here's a simple formatter
+
 ```ts
-headerFormatter(row, cell, value, column) {
-    const tooltipTitle = 'Custom Tooltip - Header';
-    return `<div class="header-tooltip-title">${tooltipTitle}</div>
-    <div class="tooltip-2cols-row"><div>Column:</div> <div>${column.name}</div></div>`;
+const headerFormatter: Formatter = (row, cell, value, column) => {
+  const tooltipTitle = 'Custom Tooltip - Header';
+  return `<div class="header-tooltip-title">${tooltipTitle}</div>
+  <div class="tooltip-2cols-row"><div>Column:</div> <div>${column.name}</div></div>`;
 }
 ```
 
 ### Column Header Custom Tooltip with `headerRowFormatter`
+
 You can create a Custom Tooltip which will show up when hovering a column header (title) by simply providing a `headerRowFormatter` [via a Column Definition](#via-column-definition) (per column) OR [via Grid Options](#via-grid-options) (all columns of the grid), the formatter is the same structure as a regular formatter and accepts html string.
+
 ```ts
 // define your custom tooltip in a Column Definition OR Grid Options
 customTooltip: {
-  headerRowFormatter: this.headerRowFormatter,
+  headerRowFormatter,
 },
 ```
+
 here's a simple formatter
+
 ```ts
-headerRowFormatter(row, cell, value, column) {
-    const tooltipTitle = 'Custom Tooltip - Header Row (filter)';
-    return `<div class="headerrow-tooltip-title">${tooltipTitle}</div>
-    <div class="tooltip-2cols-row"><div>Column:</div> <div>${column.field}</div></div>`;
-  }
+const headerRowFormatter: Formatter = (row, cell, value, column) => {
+  const tooltipTitle = 'Custom Tooltip - Header Row (filter)';
+  return `<div class="headerrow-tooltip-title">${tooltipTitle}</div>
+  <div class="tooltip-2cols-row"><div>Column:</div> <div>${column.field}</div></div>`;
+}
 ```
 
 ### Regular Tooltip with a `[title]` attribute
@@ -183,7 +216,7 @@ customTooltip: {
 By default the custom tooltip text will be limited, and potentially truncated, to 650 characters in order to keep the tooltip with a size that is not too large. You could change the grid option setting with this
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   customTooltip: {
     tooltipTextMaxLength: 650,
   },
@@ -193,6 +226,7 @@ this.gridOptions = {
 ### How to delay the opening of a tooltip?
 #### delay a Tooltip with Formatter
 There are no built-in option to delay a custom tooltip because it would add too much code complexity to the codebase, however you can simply do that by taking advantage of the Async Custom Tooltip. The only thing you might want to do though is to have the first custom tooltip `formatter` to return an empty string (so it won't show a loading tooltip) and then use the `asyncPostFormatter` for the tooltip (note that it will **not** read the cell formatter, if you have requirement for that then simply combined formatter into an external formatter function, see 2nd examples below).
+
 ```ts
 // define your custom tooltip in a Column Definition OR Grid Options
 customTooltip: {
@@ -203,16 +237,19 @@ customTooltip: {
   asyncProcess: () => new Promise(resolve => {
     setTimeout(() => resolve({}), 500); // delayed by half a second
   }),
-  asyncPostFormatter: this.userFullDetailAsyncFormatter,
+  asyncPostFormatter: userFullDetailAsyncFormatter,
 },
 ```
+
 #### delay a Regular Tooltip
+
 It is possible to also delay a regular tooltip (when using `useRegularTooltip`) even when using the optional `useRegularTooltipFromFormatterOnly` but it requires a bit of code change. For example, let say you want to parse the `title` from a formatter but delay it, you could do it as shown below but please note that it will read the `asyncPostFormatter`, not the cell `formatter`, and so you should probably create an external formatter function to make simpler code.
 
 ##### tooltip text output will be: "show this tooltip title text"
+
 ```ts
 // define your custom tooltip in a Column Definition OR Grid Options
-this.columnDefinitions = [{
+const columnDefinitions = [{
   id: 'firstName', field: 'firstName', name: 'First Name',
   customTooltip: {
     // 1- loading formatter
@@ -226,12 +263,14 @@ this.columnDefinitions = [{
 }];
 ```
 the previous code could be refactored to have only 1 common formatter that is referenced in both cell `formatter` and tooltip `asyncPostFormatter`
+
 ##### tooltip text output will be: "show this tooltip title text"
+
 ```ts
 const myFormatter = () => `<span title="show this tooltip title text">cell value</span>`;
 
 // define your custom tooltip in a Column Definition OR Grid Options
-this.columnDefinitions = [{
+const columnDefinitions = [{
   id: 'firstName', field: 'firstName', name: 'First Name',
   customTooltip: {
     // 1- loading formatter
@@ -244,6 +283,7 @@ this.columnDefinitions = [{
   formatter: myFormatter
 }];
 ```
+
 ### UI Sample
 The Export to Excel handles all characters quite well, from Latin, to Unicode and even Unicorn emoji, it all works on all browsers (`Chrome`, `Firefox`, even `IE11`, I don't have access to older versions). Here's a demo
 

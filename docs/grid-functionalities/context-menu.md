@@ -26,7 +26,7 @@ Technically, the Context Menu is enabled by default (copy, export) and so you do
 #### with Commands
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   enableFiltering: true,
   enableContextMenu: true, // enabled by default
   contextMenu: {
@@ -67,7 +67,7 @@ this.gridOptions = {
 That is when you want to define a list of Options (only 1 list) that the user can choose from and once is selected we would do something (for example change the value of a cell in the grid).
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   contextMenu: {
     hideCloseButton: false,
     optionTitle: 'Change Effort Driven Flag', // optional, add title
@@ -82,7 +82,7 @@ this.gridOptions = {
       const dataContext = args && args.dataContext;
       if (dataContext && dataContext.hasOwnProperty('priority')) {
         dataContext.priority = args.item.option;
-        this.sgb.gridService.updateItem(dataContext);
+        reactGridRef.current?.gridService.updateItem(dataContext);
       }
     },
   }
@@ -217,7 +217,7 @@ contextMenu: {
 ### How to Disable the Context Menu?
 You can disable the Context Menu, by calling `enableContextMenu: false` from the Grid Options.
 ```typescript
-this.gridOptions = {
+const gridOptions = {
    enableContextMenu: false
 };
 ```

@@ -17,7 +17,7 @@ By default all the range filters are with exclusive range, which mean between va
 For example
 ```ts
 // your columns definition
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'duration', field: 'duration', name: 'Duration',
     filterable: true,
@@ -46,7 +46,7 @@ export class GridBasicComponent {
 
   attached(): void {
     // your columns definition
-    this.columnDefinitions = [
+    const columnDefinitions = [
       {
         id: 'duration', field: 'duration', name: 'Duration',
         type: 'number', // you can optionally specify that the data are numbers
@@ -60,7 +60,7 @@ export class GridBasicComponent {
       },
     ];
 
-    this.gridOptions = {
+    const gridOptions = {
       // your grid options config
     }
   }
@@ -81,7 +81,7 @@ export class GridBasicComponent {
 
   attached(): void {
     // your columns definition
-    this.columnDefinitions = [
+    const columnDefinitions = [
       {
         id: 'complete', name: '% Complete', field: 'percentComplete', headerKey: 'PERCENT_COMPLETE', minWidth: 120,
         sortable: true,
@@ -100,7 +100,7 @@ export class GridBasicComponent {
       },
     ];
 
-    this.gridOptions = {
+    const gridOptions = {
       // your grid options config
     }
   }
@@ -123,7 +123,7 @@ filter: {
 You could also define certain options as a global level (for the entire grid or even all grids) by taking advantage of the `defaultFilterOptions` Grid Option. Note that they are set via the filter type as a key name (`autocompleter`, `date`, ...) and then the content is the same as `filterOptions` (also note that each key is already typed with the correct filter option interface), for example
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   defaultFilterOptions: {
     // Note: that `date`, `select` and `slider` are combining both compound & range filters together
     date: { range: { min: 'today' } },
@@ -149,7 +149,7 @@ export class GridBasicComponent {
 
   attached(): void {
     // your columns definition
-    this.columnDefinitions = [
+    const columnDefinitions = [
       {
         id: 'finish', name: 'Finish', field: 'finish', headerKey: 'FINISH',
         minWidth: 75, width: 120, exportWithFormatter: true,
@@ -165,7 +165,7 @@ export class GridBasicComponent {
       },
     ];
 
-    this.gridOptions = {
+    const gridOptions = {
       // your grid options config
     }
   }

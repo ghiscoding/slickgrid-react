@@ -13,7 +13,7 @@ You can change button texts, textarea size (cols, rows) and also change position
 
 ```ts
 defineGrid() {
-  this.columnDefinitions = [
+  const columnDefinitions = [
     {
       id: 'title', name: 'Title', field: 'title',
       editor: {
@@ -43,7 +43,7 @@ defineGrid() {
 You could also define certain options as a global level (for the entire grid or even all grids) by taking advantage of the `defaultEditorOptions` Grid Option. Note that they are set via the editor type as a key name (`autocompleter`, `date`, ...) and then the content is the same as `editorOptions` (also note that each key is already typed with the correct editor option interface), for example
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   defaultEditorOptions: {
     longText: { cols: 50, rows: 5 }, // typed as LongTextEditorOption 
   }
@@ -65,7 +65,7 @@ const myCustomTitleValidator = (value, args) => {
 };
 
 defineGrid() {
-  this.columnDefinitions = [
+  const columnDefinitions = [
     {
       id: 'title', name: 'Title', field: 'title',
       editor: {

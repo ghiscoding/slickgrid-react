@@ -32,8 +32,15 @@ Dealing with complex objects are a little bit more involving. Because of some li
 ```tsx
 import { GraphqlService, GraphqlPaginatedResult, GraphqlServiceApi, } from '@slickgrid-universal/graphql';
 
-export class Sample extends React.Component<Props, State> {
-  defineGrid() {
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const graphqlService = new GraphqlService();
+
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
     const columnDefinitions = [
       { id: 'name', name: 'Name', field: 'name', filterable: true, sortable: true },
       { id: 'company', name: 'Company', field: 'company', filterable: true },
@@ -44,9 +51,9 @@ export class Sample extends React.Component<Props, State> {
     const gridOptions = {
       backendServiceApi: {
         service: new GraphqlService(),
-        process: (query) => this.userService.getAll<Customer[]>(query),
+        process: (query) => userService.getAll<Customer[]>(query),
         options: {
-          columnDefinitions: this.columnDefinitions,
+          columnDefinitions: columns,
           datasetName: 'customers'
         }
       }

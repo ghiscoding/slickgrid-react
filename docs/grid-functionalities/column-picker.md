@@ -5,7 +5,7 @@ Enable by default and provides the list of available fields by simply doing a `r
 To enable/disable the Column Picker, simply call the `enableColumnPicker` flag in the Grid Options (enabled by default).
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   enableColumnPicker: true,
 
   // you can also enable/disable options and also use event for it

@@ -24,19 +24,16 @@ If you want to pass the entire list to the AutoComplete (like a JSON file or a W
 
 ##### Component
 ```tsx
-interface Props {}
-interface State {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-}
-export class GridBasicComponent extends React.Component<Props, State> {
-  componentDidMount() {
-    this.defineGrid();
-  }
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const graphqlService = new GraphqlService();
 
-  defineGrid(): void {
-    const columnDefinitions = [
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setColumns([
       {
         id: 'countryOfOrigin', name: 'Country of Origin', field: 'countryOfOrigin',
         formatter: Formatters.complexObject,
@@ -58,16 +55,9 @@ export class GridBasicComponent extends React.Component<Props, State> {
           collectionAsync: fetch('assets/data/countries.json'),
         }
       }
-    ];
+    ]);
 
-    const gridOptions = {/*...*/};
-
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      dataset: this.getData(),
-    }));
+    setOptions({/*...*/});
   }
 }
 ```
@@ -78,7 +68,7 @@ By default HTML is not rendered and the `label` will simply show HTML as text. B
 **NOTE:** this is currently only used by the Editors that have a `collection` which are the `MultipleSelect` & `SingleSelect` Editors.
 
 ```typescript
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
     formatter: Formatters.checkmarkMaterial,
@@ -93,7 +83,7 @@ this.columnDefinitions = [
         showOnFocus: true, // display the list on focus of the autocomplete (without the need to type anything)
       } as AutocompleterOption,
       enableRenderHtml: true, // this flag only works with a fixed Collection
-      // collectionAsync: this.http.get(URL_COUNTRIES_COLLECTION),
+      // collectionAsync: http.get(URL_COUNTRIES_COLLECTION),
       collection: [
         { value: '', label: '' },
         { value: true, label: 'True', labelPrefix: `<i class="mdi mdi-plus"></i> ` },
@@ -120,7 +110,7 @@ editor: {
 You could also define certain options as a global level (for the entire grid or even all grids) by taking advantage of the `defaultEditorOptions` Grid Option. Note that they are set via the editor type as a key name (`autocompleter`, `date`, ...) and then the content is the same as `editorOptions` (also note that each key is already typed with the correct editor option interface), for example
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   defaultEditorOptions: {
     autocompleter: { debounceWaitMs: 150 }, // typed as AutocompleterOption
   }
@@ -135,13 +125,16 @@ The basic functionality will use built-in 3rd party lib styling that is to displ
 
 ##### Component
 ```tsx
-export class GridBasicComponent extends React.Component<Props, State> {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const graphqlService = new GraphqlService();
 
-  defineGrid() {
-    const columnDefinitions = [
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setColumns([
       {
         id: 'product', name: 'Product', field: 'product',
         filterable: true,
@@ -161,15 +154,8 @@ export class GridBasicComponent extends React.Component<Props, State> {
           } as AutocompleterOption,
         },
       }
-    ];
-    const gridOptions = {/*...*/};
-
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      dataset: this.getData(),
-    }));
+    ]);
+    setOptions({/*...*/});
   }
 }
 ```
@@ -177,7 +163,7 @@ export class GridBasicComponent extends React.Component<Props, State> {
 ### Remote API (basic with object result)
 This is the preferred way of dealing with the AutoComplete, the main reason is because the AutoComplete uses an `<input/>` and that means we can only keep 1 value and if we do then we lose the text label and so using an Object Result makes more sense. Note however that you'll need a bit more code that is because we'll use the `FieldType.Object` and so we need to provide a custom `SortComparer` and also a custom `Formatters` and for them to work we also need to provide a `dataKey` (the value) and a `labelKey` (text label) as shown below.
 ```ts
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'product', name: 'Product', field: 'product',
     dataKey: 'id',
@@ -207,10 +193,17 @@ The lib comes with 2 built-in custom layouts, these 2 layouts also have SASS var
 
 ##### Component
 ```tsx
-export class GridBasicComponent extends React.Component<Props, State> {
-  defineGrid() {
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const graphqlService = new GraphqlService();
+
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
       // your columns definition
-    const columnDefinitions = [
+    setColumns([
       {
         id: 'product', name: 'Product', field: 'product',
         filterable: true,
@@ -250,15 +243,8 @@ export class GridBasicComponent extends React.Component<Props, State> {
           } as AutocompleteOption,
         },
       }
-    ];
-    const gridOptions = {/*...*/};
-
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      dataset: this.getData(),
-    }));
+    ]);
+    setOptions({/*...*/});
   }
 }
 ```
@@ -394,7 +380,7 @@ export class GridBasicComponent extends React.Component<Props, State> {
 If you want to add the autocomplete functionality but want the user to be able to input a new option, then follow the example below:
 
 ```ts
-this.columnDefinitions = [{
+const columnDefinitions = [{
   id: 'area',
   name: 'Area',
   field: 'area',
@@ -405,7 +391,7 @@ this.columnDefinitions = [{
       minLength: 0,
       forceUserInput: true,
       fetch: (searchText, updateCallback) => {
-        updateCallback(this.areas); // add here the array
+        updateCallback(areas); // add here the array
       },
     }
   }
@@ -417,7 +403,7 @@ You can also use the `minLength` to limit the autocomplete text to `0` character
 You might want to change the dimensions of the drop container, this 3rd party library has a `customize` method to deal with such a thing. Slickgrid-Universal itself is removing the width using this method, you can however override this method to change the drop container dimensions
 
 ```ts
-this.columnDefinitions = [{
+const columnDefinitions = [{
     id: 'product', name: 'Product', field: 'product', filterable: true,
     editor: {
       model: Editors.autocompleter,

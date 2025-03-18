@@ -23,57 +23,42 @@ Please note that you need to provide the `id` by yourself and remember that it h
 ```tsx
 import { SlickgridReactInstance} from 'slickgrid-react';
 
-interface Props {}
-interface State {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-}
-export class GridBasicComponent extends React.Component<Props, State> {
-  constructor(public readonly props: Props) {
-    super(props);
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef();
+
+  useEffect(() => defineGrid(), []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  componentDidMount() {
-    this.defineGrid();
+  function defineGrid() {
+    setColumns([/*...*/]);
+    setOptions({/*...*/});
   }
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  addNewItem() {
+  function addNewItem() {
     const newItem = {
-      id: this.state.dataset.length + 1, // it's up to you to decide on what the ID will be, as long as it's unique
+      id: dataset.length + 1, // it's up to you to decide on what the ID will be, as long as it's unique
       // ... your item properties
     };
 
     // add the item to the grid
-    this.reactGrid.gridService.addItem(newItem);
-  }
+    reactGridRef.current?.gridService.addItem(newItem);
+  }    
 
-  defineGrid() {
-    const columnDefinitions = [/*...*/];
-    const gridOptions = {/*...*/};
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      dataset: this.getData(),
-    }));
-  }
-
-  render() {
-    return (
-      <SlickgridReact gridId="grid1"
-        columnDefinitions={this.state.columnDefinitions}
-        gridOptions={this.state.gridOptions}
-        dataset={this.state.dataset}
-        onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        onGridStateChanged={$event => this.gridStateChanged($event.detail)}
-      />
-    );
-  }
+  return !options ? null : (
+    <SlickgridReact gridId="grid1"
+      columnDefinitions={columns}
+      gridOptions={options}
+      dataset={dataset}
+      onReactGridCreated={$event => reactGridReady($event.detail)}
+      onGridStateChanged={$event => gridStateChanged($event.detail)}
+    />
+  );
 }
 ```
 
@@ -81,14 +66,14 @@ export class GridBasicComponent extends React.Component<Props, State> {
 When adding an item, you can add it on top (default) of the grid or at the bottom of the grid. In order to change that, you can use the `position` property.
 ```ts
 // add the item to the end of grid
-this.reactGrid.gridService.addItem(newItem, { position: 'bottom' });
+reactGridRef.current?.gridService.addItem(newItem, { position: 'bottom' });
 ```
 
 #### Change default flags
 When adding an item, you have access to change any of the default flags through the second argument of `addItem` method.
 ```tsx
 // add the item to the end of grid
-this.reactGrid.gridService.addItem(newItem, {
+reactGridRef.current?.gridService.addItem(newItem, {
   // the defaults are shown below
   highlightRow: true, // do we want to highlight the row after the insert
   position: 'top',    // which position of the grid to add the item
@@ -105,17 +90,26 @@ To delete a row, you can use `deleteItem(s)` and the pass the entire object(s) o
 ```tsx
 import { SlickgridReactInstance} from 'slickgrid-react';
 
-export class GridBasicComponent  extends React.Component<Props, State> {
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef();
+
+  useEffect(() => defineGrid(), []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  removeItem(itemId: number | string) {
+  function defineGrid() {}
+
+  function removeItem(itemId: number | string) {
     // remove the item from the grid
-    this.reactGrid.gridService.deleteItemById(itemId);
+    reactGridRef.current?.gridService.deleteItemById(itemId);
 
     // or multiple Ids passed as an array (number or string)
-    // this.reactGrid.gridService.deleteItemByIds([1, 2]); // e.g. remove user id 1 and 2
+    // reactGridRef.current?.gridService.deleteItemByIds([1, 2]); // e.g. remove user id 1 and 2
   }
 }
 ```
@@ -124,7 +118,7 @@ export class GridBasicComponent  extends React.Component<Props, State> {
 When adding an item, you have access to change any of the default flags through the second argument of `addItem` method.
 ```tsx
 // add the item to the end of grid
-this.reactGrid.gridService.deleteItemById(123, {
+reactGridRef.current?.gridService.deleteItemById(123, {
   // the defaults are shown below
   triggerEvent: true  // do we want to trigger an event after the insert
 });
@@ -137,13 +131,20 @@ To update an item, you can use `updateItem(s)` and the pass the entire object(s)
 ```tsx
 import { SlickgridReactInstance } from 'slickgrid-react';
 
-export class GridBasicComponent  extends React.Component<Props, State> {
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef();
+
+  useEffect(() => defineGrid(), []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  updateItem(upItem) {
-    this.reactGrid.gridService.updateItem(newItem);
+  function updateItem(upItem) {
+    reactGridRef.current?.gridService.updateItem(newItem);
   }
 }
 ```
@@ -152,7 +153,7 @@ export class GridBasicComponent  extends React.Component<Props, State> {
 When adding an item, you have access to change any of the default flags through the second argument of `addItem` method.
 ```tsx
 // add the item to the end of grid
-this.reactGrid.gridService.updateItem(newItem, {
+reactGridRef.current?.gridService.updateItem(newItem, {
   // the defaults are shown below
   highlightRow: true,       // do we want to highlight the row after the update
   selectRow: false,         // do we want to select the row after the update
@@ -168,13 +169,20 @@ Upsert will do an Insert when not found or update if it found the item already e
 ```tsx
 import { SlickgridReactInstance } from 'slickgrid-react';
 
-export class GridBasicComponent  extends React.Component<Props, State> {
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef();
+
+  useEffect(() => defineGrid(), []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  updateItem(upItem) {
-    this.reactGrid.gridService.upsertItem(upItem);
+  function updateItem(upItem) {
+    reactGridRef.current?.gridService.upsertItem(upItem);
   }
 }
 ```
@@ -210,16 +218,23 @@ Take a look at all the available [SASS variables](https://github.com/ghiscoding/
 ```tsx
 import { SlickgridReactInstance } from 'slickgrid-react';
 
-export class GridBasicComponent  extends React.Component<Props, State> {
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef();
+
+  useEffect(() => defineGrid(), []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  updateItem(rowNumber) {
+  function updateItem(rowNumber) {
     const fadingDelay = 2000; // in milliseconds
 
     // you can pass an optional fading delay (1500ms by default)
-    this.reactGrid.gridService.highlightRow(rowNumber, fadingDelay);
+    reactGridRef.current?.gridService.highlightRow(rowNumber, fadingDelay);
   }
 }
 ```

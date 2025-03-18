@@ -10,9 +10,9 @@ You can use and show the Custom Footer with 2 left/right containers and will by 
 
 ```ts
 defineGrid() {
-  this.columnDefinitions = [ /*...*/ ];
+  const columnDefinitions = [ /*...*/ ];
 
-  this.gridOptions = {
+  const gridOptions = {
     // ...
     showCustomFooter: true, // display some metrics in the bottom custom footer
     customFooterOptions: {

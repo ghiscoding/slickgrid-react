@@ -19,13 +19,13 @@ Filtering is a big part of a data grid, Slickgrid-Universal provides a few built
 You simply need to set the flag `filterable` for each column that you want filtering and then also enable the filters in the Grid Options. Here is an example with a full column definitions:
 ```ts
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
+const columnDefinitions = [
   { id: 'title', name: 'Title', field: 'title' }, // without filter
   { id: 'description', name: 'Description', field: 'description', filterable: true } // with filter
 ];
 
 // you also need to enable the filters in the Grid Options
-this.gridOptions = {
+const gridOptions = {
   enableFiltering: true
 };
 ```
@@ -35,17 +35,17 @@ There are 2 ways to hide Filters from the user, you could disable it completely 
 
 ##### You could disable the Filters completely, 
 ```ts
-reactGridReady(reactGrid: SlickgridReactInstance) {
-  this.reactGrid = reactGrid;
+function reactGridReady(reactGrid: SlickgridReactInstance) {
+  reactGridRef.current = reactGrid;
 }
 
-disableFilters() {
-  this.gridOptions = {
+function disableFilters() {
+  const gridOptions = {
      enableFiltering: false
   };
   
   // you could re-enable it later
-  this.reactGrid.setOptions({ enableFiltering: true });
+  reactGridRef.current?.setOptions({ enableFiltering: true });
 }
 ```
 
@@ -53,7 +53,7 @@ disableFilters() {
 This can be useful for features that require Filtering but you wish to hide the filters for example Tree Data.
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   enableFiltering: true,
   showHeaderRow: false,
 };
@@ -62,12 +62,12 @@ this.gridOptions = {
 Also, if you don't want to see the Grid Menu toggle filter row command, you should also hide it from the menu via 
 
 ```ts
-reactGridReady(reactGrid: SlickgridReactInstance) {
-  this.reactGrid = reactGrid;
+function reactGridReady(reactGrid: SlickgridReactInstance) {
+  reactGridRef.current = reactGrid;
 }
 
 showFilterRow() {
-  this.gridOptions = {
+  const gridOptions = {
     enableFiltering: true,
     showHeaderRow: false,
     gridMenu: { 
@@ -76,6 +76,6 @@ showFilterRow() {
   };
   
   // you can show toggle the filter header row dynamically
-  this.reactGrid.setHeaderRowVisibility(true);
+  reactGridRef.current?.setHeaderRowVisibility(true);
 }
 ```

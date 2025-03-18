@@ -72,63 +72,43 @@ import {
 } from 'slickgrid-react';
 import React from 'react';
 
-interface Props { }
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-interface State {
-  gridOptions?: GridOption;
-  columnDefinitions: Column[];
-  dataset: any[];
-}
-
-export default class Example1 extends React.Component<Props, State> {
-  gridOptions;
-  columnDefinitions;
-  dataset = [];
-
-  constructor(public readonly props: Props) {
-    super(props);
-
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: [],
-    };
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
   /* Define grid Options and Columns */
-  defineGrid() {
-    const columnDefinitions = [
+  function defineGrid() {
+    setColumns([
       { id: 'title', name: 'Title', field: 'title', sortable: true, minWidth: 100 },
       { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true, minWidth: 100 },
       { id: '%', name: '% Complete', field: 'percentComplete', sortable: true, minWidth: 100 },
       { id: 'start', name: 'Start', field: 'start', minWidth: 100 },
       { id: 'finish', name: 'Finish', field: 'finish', minWidth: 100 },
       { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven', sortable: true, minWidth: 100 }
-    ];
-    const gridOptions = {
+    ]);
+    setOptions({
       enableAutoResize: false,
       gridHeight: 600,
       gridWidth: 800,
-    };
-
-    this.setState((state: State) => ({
-      ...state,
-      columnDefinitions,
-      gridOptions,
-      dataset: this.getData(),
-    }));
+    });
   }
 
-  getData() {
+  function getData() {
     // mock some data, an array of objects
-    this.dataset = [];
+    const dataset = [];
     for (let i = 0; i < 1000; i++) {
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomMonth = Math.floor(Math.random() * 11);
       const randomDay = Math.floor((Math.random() * 29));
       const randomPercent = Math.round(Math.random() * 100);
 
-      this.dataset[i] = {
+      dataset[i] = {
         id: i,
         title: 'Task ' + i,
         duration: Math.round(Math.random() * 100) + '',
@@ -138,17 +118,16 @@ export default class Example1 extends React.Component<Props, State> {
         effortDriven: (i % 5 === 0)
       };
     }
+    setDataset(dataset);
   }
 
-  render() {
-      return !this.state.gridOptions ? '' : (
-        <SlickgridReact gridId="grid1"
-            columnDefinitions={this.state.columnDefinitions1}
-            gridOptions={this.state.gridOptions1!}
-            dataset={this.state.dataset1}
-        />
-      );
-  }
+  return !options ? '' : (
+    <SlickgridReact gridId="grid1"
+        columnDefinitions={columns}
+        gridOptions={options}
+        dataset={dataset}
+    />
+  );
 }
 ```
 

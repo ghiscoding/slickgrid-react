@@ -38,14 +38,14 @@ You can set certain options for the entire grid, for example if you set `exportW
 ```tsx
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 
-interface Props {}
-interface State {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-}
-export class GridBasicComponent extends React.Component<Props, State> {
-  defineGrid() {
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption>();
+
+  useEffect(() => defineGrid());
+
+  function defineGrid() {
     const gridOptions = {
       enableExcelExport: true,
       // set at the grid option level, meaning all column will evaluate the Formatter (when it has a Formatter defined)
@@ -94,7 +94,7 @@ Inside the column definition there are couple of flags you can set in `excelExpo
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 
 export class GridBasicComponent extends React.Component<Props, State> {
-  this.columnDefinitions = [
+  const columnDefinitions = [
     { id: 'id', name: 'ID', field: 'id',
       excludeFromExport: true // skip the "id" column from the export
     },
@@ -116,7 +116,7 @@ export class GridBasicComponent extends React.Component<Props, State> {
     }
   ];
 
-  this.gridOptions = {
+  const gridOptions = {
     // set at the grid option level, meaning all column will evaluate the Formatter (when it has a Formatter defined)
     excelExportOptions: {
       exportWithFormatter: true
@@ -136,7 +136,7 @@ You can define a custom Excel column width (the width Excel's own width which is
 #### Per Column
 You could set a custom width per column
 ```ts
-this.columnDefinitions = [
+const columnDefinitions = [
   { id: 'firstName', name: 'FirstName', exportColumnWidth: 10, },
   // ...
 ];
@@ -145,7 +145,7 @@ this.columnDefinitions = [
 #### For the entire Grid
 You could also set a custom width for the entire grid export via the `excelExportOptions`
 ```ts
-this.gridOptions = {
+const gridOptions = {
   // set at the grid option level, meaning all column will evaluate the Formatter (when it has a Formatter defined)
   excelExportOptions: {
     customColumnWidth: 15,
@@ -158,7 +158,7 @@ this.gridOptions = {
 By default the header titles (first row) will be styled as Bold text, however you can choose to style them differently with custom styles as shown below. To find out what styling you can use, you can take a look at Excel Builder-Vanilla [Documentation](https://ghiscoding.gitbook.io/excel-builder-vanilla/cookbook/fonts-and-colors) website. The code shown below is used in [Example 24](https://ghiscoding.github.io/slickgrid-react/#/Example24) if you wish to see the result.
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   // set at the grid option level, meaning all column will evaluate the Formatter (when it has a Formatter defined)
   excelExportOptions: {
     // you can customize how the header titles will be styled (defaults to Bold)
@@ -175,18 +175,29 @@ The example below shows a title which uses a merged cell from "B1" to "D1" with 
 
 #### Component
 ```tsx
-export class MyExample extends React.Component<Props, State> {
-  defineGrid() {
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+
+  useEffect(() => defineGrid());
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+  }
+
+  function defineGrid() {
     const columnDefinitions = [];
 
-    this.gridOptions = {
+    const gridOptions = {
       externalResources: [new ExcelExportService()],
       excelExportOptions: {
         // optionally pass a custom header to the Excel Sheet
         // a lot of the info can be found on Excel-Builder-Vanilla
         // https://ghiscoding.gitbook.io/excel-builder-vanilla/cookbook/fonts-and-colors
         customExcelHeader: (workbook, sheet) => {
-          const customTitle = this.translate.currentLang === 'fr' ? 'Titre qui est suffisament long pour être coupé' : 'My header that is long enough to wrap';
+          const customTitle = translate.currentLang === 'fr' ? 'Titre qui est suffisament long pour être coupé' : 'My header that is long enough to wrap';
           const stylesheet = workbook.getStyleSheet();
           const aFormatDefn = {
             'font': { 'size': 12, 'fontName': 'Calibri', 'bold': true, color: 'FF0000FF' }, // every color starts with FF, then regular HTML color
@@ -213,7 +224,7 @@ export class MyExample extends React.Component<Props, State> {
 You can use the export from the Grid Menu and/or you can simply create your own buttons to export.
 #### View
 ```tsx
-<button class="btn btn-default btn-sm" onClick={() => this.exportToExcel()}>
+<button class="btn btn-default btn-sm" onClick={() => exportToExcel()}>
    Download to Excel
 </button>
 ```
@@ -221,20 +232,27 @@ You can use the export from the Grid Menu and/or you can simply create your own 
 #### Component
 The code below is just an example and it can be configured in many ways, see the `excelExportOptions`.
 ```tsx
-export class MyExample extends React.Component<Props, State> {
-  defineGrid() {
-    const columnDefinitions = [];
-  excelExportService = new ExcelExportService();
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+  const excelExportService = new ExcelExportService();
 
-  defineGrid() {
-    this.gridOptions = {
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+  }
+  
+  function defineGrid() {
+    const columnDefinitions = [];
+    const gridOptions = {
       enableExcelExport: true,
-      externalResources: [this.excelExportService],
+      externalResources: [excelExportService],
     };
   }
 
-  exportToFile() {
-    this.excelExportService.exportToExcel({
+  function exportToFile() {
+    excelExportService.exportToExcel({
       filename: 'myExport',
       format: FileType.xlsx
     });
@@ -249,19 +267,19 @@ If you have lots of data, you might want to show a spinner telling the user that
 ```tsx
 render() {
   return (
-    {this.state.processing && <span>
+    {processing && <span>
       <i className="mdi mdi-sync mdi-spin"></i>
     </span>}
 
     <SlickgridReact gridId="grid5"
-        columnDefinitions={this.state.columnDefinitions}
-        gridOptions={this.state.gridOptions}
-        dataset={this.state.dataset}
-        paginationOptions={this.state.paginationOptions}
-        onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        onBeforeExportToExcel={() => this.changeProcessing(true)}
-        onAfterExportToExcel={() => this.changeProcessing(false)}
-        onGridStateChanged={$event => this.gridStateChanged($event.detail)}
+        columnDefinitions={columns}
+        gridOptions={options}
+        dataset={dataset}
+        paginationOptions={paginationOptions}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+        onBeforeExportToExcel={() => changeProcessing(true)}
+        onAfterExportToExcel={() => changeProcessing(false)}
+        onGridStateChanged={$event => gridStateChanged($event.detail)}
     />
   );
 }
@@ -290,7 +308,7 @@ Internally, the lib will detect the correct Excel cell format for each column, i
 
 ##### ViewModel
 ```ts
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'cost', name: 'Cost', field: 'cost', width: 80,
     type: FieldType.number,
@@ -321,7 +339,7 @@ this.columnDefinitions = [
   }
 ];
 
-this.gridOptions = {
+const gridOptions = {
   enableGrouping: true,
   enableExcelExport: true,
   excelExportOptions: {
@@ -348,7 +366,7 @@ The system will auto-detect the Excel format to use for Date and Number field ty
 
 ```ts
 // via column
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'cost', name: 'Cost', field: 'cost', type: FieldType.number
     excelExportOptions: { autoDetectCellFormat: false }
@@ -356,7 +374,7 @@ this.columnDefinitions = [
 ];
 
 // OR via grid options (column option always win)
-this.gridOptions = {
+const gridOptions = {
   // ...
   excelExportOptions: { autoDetectCellFormat: false }
 };
@@ -368,7 +386,7 @@ This is not recommended but if you have no other ways, you can also provide a `v
 > **Note** the original implementation of both `valueParserCallback` had separate arguments but that expanded into way too many arguments than original planned and so I decided to merge them into a single `args` which includes base arguments (`columnDef`, `gridOptions`, `excelFormatId`, `stylesheet`, `dataRowIdx`, and depending on the type you will also have `dataContext` for regular cell OR `groupType` for grouping cell)
 
 ```ts
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'cost', name: 'Cost', field: 'cost', width: 80,
     type: FieldType.number,
@@ -408,7 +426,7 @@ this.columnDefinitions = [
 By using `valueParserCallback`, there a lot of extra customizations that you can do with it. You could even use Excel Formula to do calculation even based on other fields on your item data context, the code below is calculating Sub-Total and Total. It's a lot of code but it shows the real power customization that exist. If you want to go with even more customization, the new [Example 36](https://ghiscoding.github.io/slickgrid-react/#/example36) even shows you how to summarize Groups with Excel Formulas (but be warned, it does take a fair amount of code and logic to implement by yourself)
 
 ```ts
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'cost', name: 'Cost', field: 'cost', width: 80,
     type: FieldType.number,
@@ -427,11 +445,11 @@ this.columnDefinitions = [
       width: 12,
       valueParserCallback: (_data, { columnDef, excelFormatId, dataRowIdx, dataContext }) => {
         // assuming that we want to calculate: (Price * Qty) => Sub-Total
-        const colOffset = !this.isDataGrouped ? 1 : 0; // col offset of 1x because we skipped 1st column OR 0 offset if we use a Group because the Group column replaces the skip
+        const colOffset = !isDataGrouped ? 1 : 0; // col offset of 1x because we skipped 1st column OR 0 offset if we use a Group because the Group column replaces the skip
         const rowOffset = 3; // row offset of 3x because: 1x Title, 1x Headers and Excel row starts at 1 => 3
-        const priceIdx = this.sgb.slickGrid?.getColumnIndex('price') || 0;
-        const qtyIdx = this.sgb.slickGrid?.getColumnIndex('qty') || 0;
-        const taxesIdx = this.sgb.slickGrid?.getColumnIndex('taxes') || 0;
+        const priceIdx = reactGridRef.current?.slickGrid?.getColumnIndex('price') || 0;
+        const qtyIdx = reactGridRef.current?.slickGrid?.getColumnIndex('qty') || 0;
+        const taxesIdx = reactGridRef.current?.slickGrid?.getColumnIndex('taxes') || 0;
 
         // the code below calculates Excel column position dynamically, technically Price is at "B" and Qty is "C"
         // Note: if you know the Excel column (A, B, C, ...) then portion of the code below could be skipped (the code below is fully dynamic)
@@ -449,7 +467,7 @@ this.columnDefinitions = [
             break;
           case 'taxes':
             excelVal = (dataContext.taxable)
-              ? `${excelPriceCol}*${excelQtyCol}*${this.taxRate / 100}`
+              ? `${excelPriceCol}*${excelQtyCol}*${taxRate / 100}`
               : '';
             break;
           case 'total':

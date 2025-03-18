@@ -13,12 +13,12 @@ All you need to do is enable the Grid Option `enableExcelCopyBuffer: true` and g
 
 ##### Component
 ```typescript
-this.columnDefinitions = [
+const columnDefinitions = [
   { id: 'title', name: 'Title', field: 'id' },
   { id: 'description', name: 'Description', field: 'description' },
   { id: 'duration', name: 'Duration (days)', field: 'duration', type: FieldType.number },
 ];
-this.gridOptions = {
+const gridOptions = {
   enableExcelCopyBuffer: true,
 };
 ```
@@ -29,7 +29,7 @@ What if you have a date in UTC format in your dataset but your grid shows it as 
 The `exportWithFormatter` can be used in 2 ways, on each column definition independently or for the entire grid through it's grid option.
 ##### `exportWithFormatter` through each Column Definition
 ```typescript
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'start', name: 'Start', field: 'start',
     formatter: Formatters.dateIso,
@@ -42,19 +42,19 @@ this.columnDefinitions = [
   },
 ];
 
-this.gridOptions = {
+const gridOptions = {
   enableExcelCopyBuffer: true,
 };
 ```
 
 ##### `exportWithFormatter` through Grid Options
 ```typescript
-this.columnDefinitions = [
+const columnDefinitions = [
   { id: 'start', name: 'Start', field: 'start', formatter: Formatters.dateIso },
   { id: 'finish', name: 'Finish', field: 'finish', formatter: Formatters.dateIso },
 ];
 
-this.gridOptions = {
+const gridOptions = {
   enableExcelCopyBuffer: true,
   exportOptions: {
     // set at the grid option level, meaning all column will evaluate the Formatter (when it has a Formatter defined)
@@ -67,7 +67,7 @@ In some cases a Formatter can be formed of HTML and that will end up showing in 
 
 ##### `exportWithFormatter` through each Column Definition
 ```typescript
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'title', name: 'Title', field: 'id',
     formatter: Formatters.bold,
@@ -76,18 +76,18 @@ this.columnDefinitions = [
   }
 ];
 
-this.gridOptions = {
+const gridOptions = {
   enableExcelCopyBuffer: true
 };
 ```
 
 ##### `exportWithFormatter` through Grid Options
 ```typescript
-this.columnDefinitions = [
+const columnDefinitions = [
   { id: 'title', name: 'Title', field: 'id', formatter: Formatters.bold }
 ];
 
-this.gridOptions = {
+const gridOptions = {
   enableExcelCopyBuffer: true,
   exportOptions: {
     exportWithFormatter: true,
@@ -100,7 +100,7 @@ this.gridOptions = {
 If you want to disable pasting values for specific columns you can deactivate it using the denyPaste property on the Column config.
 
 ```typescript
-this.columnDefinitions = [
+const columnDefinitions = [
   { 
     id: 'colA', name: 'Col A', field: 'col_a', 
     formatter: Formatters.bold,
@@ -122,7 +122,7 @@ NEW | &nbsp;&nbsp;&nbsp; x &nbsp;&nbsp; | &nbsp;NEW
 If you need even more fine grained control, you can make use of the gridOption `onBeforePasteCell`:
 
 ```typescript
-this.gridOptions = {
+const gridOptions = {
   enableExcelCopyBuffer: true,
   excelCopyBufferOptions: {
     onBeforePasteCell: (e, args) => {

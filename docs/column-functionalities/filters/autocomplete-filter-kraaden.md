@@ -19,20 +19,16 @@ If you want to pass the entire list to the AutoComplete (like a JSON file or a W
 
 ##### Component
 ```tsx
-interface Props {}
-interface State {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-}
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const graphqlService = new GraphqlService();
 
-export class GridBasicComponent  extends React.Component<Props, State> {
-  componentDidMount() {
-    this.defineGrid();
-  }
+  useEffect(() => defineGrid(), []);
 
-  defineGrid(): void {
-    const columnDefinitions = [
+  function defineGrid() {
+    setColumns([
       {
         id: 'countryOfOrigin', name: 'Country of Origin', field: 'countryOfOrigin',
         formatter: Formatters.complexObject,
@@ -54,16 +50,9 @@ export class GridBasicComponent  extends React.Component<Props, State> {
           collectionAsync: fetch('assets/data/countries.json'),
         }
       }
-    ];
+    ]);
 
-    const gridOptions = {/*...*/};
-
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      dataset: this.getData(),
-    }));
+    setOptions({/*...*/});
   }
 }
 ```
@@ -146,7 +135,7 @@ export class GridBasicComponent  extends React.Component<Props, State> {
 If you want to add the autocomplete functionality but want the user to be able to input a new option, then follow the example below:
 
 ```ts
-  this.columnDefinitions = [{
+  const columnDefinitions = [{
         id: 'area',
         name: 'Area',
         field: 'area',
@@ -157,7 +146,7 @@ If you want to add the autocomplete functionality but want the user to be able t
             minLength: 0,
             forceUserInput: true,
             fetch: (searchText, updateCallback) => {
-              updateCallback(this.areas); // add here the array
+              updateCallback(areas); // add here the array
             },
           }
         }

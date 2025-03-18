@@ -35,33 +35,31 @@ One of the very first thing that you need to do is to provide the `SlickGrid Dat
 ##### Component
 
 ```tsx
-export class Example extends React.Component<Props, State> {
-  reactGrid: SlickgridReactInstance;
-  gridObj: any;
-  dataViewObj: any;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  useEffect(() => defineGrid(), []);
 
-    // the React Grid Instance exposes both Slick Grid & DataView objects
-    this.gridObj = reactGrid.slickGrid;
-    this.dataViewObj = reactGrid.dataView;
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  defineGrid() {
+  function defineGrid() {
     // populate the grid
   }
 
-  render() {
-    return (
-      <SlickgridReact gridId="grid1"
-        columnDefinitions={this.state.columnDefinitions}
-        gridOptions={this.state.gridOptions}
-        dataset={this.state.dataset}
-        onReactGridCreated={$event => this.reactGridReady($event.detail)}
-      />
-    );
-  }
+  return !options ? null : (
+    <SlickgridReact gridId="grid1"
+      columnDefinitions={columns}
+      gridOptions={options}
+      dataset={dataset}
+      onReactGridCreated={$event => reactGridReady($event.detail)}
+    />
+  );
+}
 ```
 
 ### Draggable Dropzone Location
@@ -72,7 +70,7 @@ The Draggable Grouping can be located in either the Top-Header or the Pre-Header
 Draggable Grouping can be located in either the Pre-Header of the Top-Header, however when it is located in the Pre-Header then the Header Grouping will not be available (because both of them would conflict with each other). Note that prior to the version 5.1 of Slickgrid-React, the Pre-Header was the default and only available option.
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   createPreHeaderPanel: true,
   showPreHeaderPanel: true,
   preHeaderPanelHeight: 26,
@@ -88,7 +86,7 @@ This is the preferred section since the Top-Header is on top of all headers (inc
 
 When using Draggable Grouping and Header Grouping together, you need to enable both top-header and pre-header.
 ```ts
-this.gridOptions = {
+const gridOptions = {
     // we'll use top-header for the Draggable Grouping
   createTopHeaderPanel: true,
   showTopHeaderPanel: true,
@@ -98,7 +96,7 @@ this.gridOptions = {
   createPreHeaderPanel: true,
   showPreHeaderPanel: true,
   preHeaderPanelHeight: 26,
-}
+};
 ```
 
 ### Aggregators
@@ -139,17 +137,19 @@ Note: the Group Total Formatters named as currency will have these extra `params
 
 ##### Component
 ```tsx
-interface Props {}
-interface State {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-}
-export class Example extends React.Component<Props, State> {
-  const columnDefinitions = [
-      {
-        id: 'title', name: 'Title', field: 'title'
-      },
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+  }
+
+  function defineGrid() {
+    setColumns([
+      { id: 'title', name: 'Title', field: 'title' },
       {
         id: 'duration', name: 'Duration', field: 'duration',
         type: FieldType.number,
@@ -163,21 +163,14 @@ export class Example extends React.Component<Props, State> {
         groupTotalsFormatter: GroupTotalFormatters.sumTotalsDollar,
         params: { groupFormatterPrefix: '<b>Total</b>: ' /*, groupFormatterSuffix: ' USD'*/ }
       }
-  ];
-
-  const gridOptions = {
-    enableGrouping: true,        // don't forget to enable the grouping
-    exportOptions: {
-      sanitizeDataExport: true   // you can also sanitize the exported data (it will remove any HTML tags)
-    }
-  };
-
-  this.setState((state: State) => ({
-    ...state,
-    gridOptions,
-    columnDefinitions,
-    dataset: this.getData(),
-  }));
+    ]);
+    setOptions({
+      enableGrouping: true,        // don't forget to enable the grouping
+      exportOptions: {
+        sanitizeDataExport: true   // you can also sanitize the exported data (it will remove any HTML tags)
+      }
+    });
+  }
 }
 ```
 
@@ -200,16 +193,16 @@ You can also create a custom `groupTotalsFormatter` similarly to a Formatter, ju
 
 ##### Component
 ```tsx
-defineGrid() {
+function defineGrid() {
   const columnDefinitions = [
-      {
-        id: 'cost', name: 'Cost', field: 'cost',
-        groupTotalsFormatter: this.sumTotalsFormatter
-      }
+    {
+      id: 'cost', name: 'Cost', field: 'cost',
+      groupTotalsFormatter: sumTotalsFormatter
+    }
   ];
 }
 
-sumTotalsFormatter(totals, columnDef) {
+const sumTotalsFormatter: GroupTotalsFormatter = (totals, columnDef) => {
   const val = totals.sum && totals.sum[columnDef.field];
   if (val != null) {
     return 'total: ' + ((Math.round(parseFloat(val) * 100) / 100));
@@ -223,8 +216,8 @@ Once you have added a `groupTotalsFormatter` and defined which aggregate you wan
 
 ##### ViewModel
 ```ts
-groupByDuration() {
-    this.dataviewObj.setGrouping({
+function groupByDuration() {
+    dataviewObj.setGrouping({
       getter: 'duration',  // the column `field` to group by
       formatter: (g) => {
         // (required) what will be displayed on top of each group
@@ -251,16 +244,16 @@ To "Clear all Grouping", "Collapse all Groups" and "Expand all Groups", we can s
 
 ##### Component
 ```tsx
-  clearGrouping() {
-    this.dataviewObj.setGrouping([]);
+  function clearGrouping() {
+    dataviewObj.setGrouping([]);
   }
 
-  collapseAllGroups() {
-    this.dataviewObj.collapseAllGroups();
+  function collapseAllGroups() {
+    dataviewObj.collapseAllGroups();
   }
 
-  expandAllGroups() {
-    this.dataviewObj.expandAllGroups();
+  function expandAllGroups() {
+    dataviewObj.expandAllGroups();
   }
 ```
 

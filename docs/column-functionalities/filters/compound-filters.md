@@ -29,7 +29,7 @@ There are multiple types of compound filters available
 Simply set the flag `filterable` to True and use the filter type `Filters.compoundInput`. Here is an example with a full column definition:
 ```ts
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
+const columnDefinitions = [
   { id: 'title', name: 'Title', field: 'title' },
   { id: 'description', name: 'Description', field: 'description', filterable: true },
   { id: 'complete', name: '% Complete', field: 'percentComplete',
@@ -41,7 +41,7 @@ this.columnDefinitions = [
 ];
 
 // you also need to enable the filters in the Grid Options
-this.gridOptions = {
+const gridOptions = {
    enableFiltering: true
 };
 ```
@@ -54,7 +54,7 @@ As any other columns, set the column definition flag `filterable: true` and use 
 
 ```ts
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
+const columnDefinitions = [
   { id: 'title', name: 'Title', field: 'title' },
   { id: 'description', name: 'Description', field: 'description', filterable: true },
   { id: 'usDateShort', name: 'US Date Short', field: 'usDateShort',
@@ -70,7 +70,7 @@ this.columnDefinitions = [
 ];
 
 // you also need to enable the filters in the Grid Options
-this.gridOptions = {
+const gridOptions = {
    enableFiltering: true
 };
 ```
@@ -85,7 +85,7 @@ For example, if we have an input date in UTC format and we want to display a Dat
 
 ```ts
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
+const columnDefinitions = [
   { id: 'title', name: 'Title', field: 'title' },
   { id: 'description', name: 'Description', field: 'description', filterable: true },
   { id: 'utcDate', name: 'UTC Date', field: 'utcDate',
@@ -97,7 +97,7 @@ this.columnDefinitions = [
 ];
 
 // you also need to enable the filters in the Grid Options
-this.gridOptions = {
+const gridOptions = {
    enableFiltering: true
 };
 ```
@@ -109,7 +109,7 @@ For example, if we have an input date in UTC format and we want to display a Dat
 
 ```ts
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
+const columnDefinitions = [
   { id: 'title', name: 'Title', field: 'title' },
   { id: 'description', name: 'Description', field: 'description', filterable: true },
   { id: 'utcDate', name: 'UTC Date', field: 'utcDate', // if your type has hours/minutes, then the date picker will include date+time
@@ -121,7 +121,7 @@ this.columnDefinitions = [
 ];
 
 // you also need to enable the filters in the Grid Options
-this.gridOptions = {
+const gridOptions = {
    enableFiltering: true
 };
 ```
@@ -142,7 +142,7 @@ filter: {
 You could also define certain options as a global level (for the entire grid or even all grids) by taking advantage of the `defaultFilterOptions` Grid Option. Note that they are set via the filter type as a key name (`autocompleter`, `date`, ...) and then the content is the same as `filterOptions` (also note that each key is already typed with the correct filter option interface), for example
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   defaultFilterOptions: {
     // Note: that `date`, `select` and `slider` are combining both compound & range filters together
     date: { range: { min: 'today' } },  // typed as VanillaCalendarOption
@@ -156,7 +156,7 @@ this.gridOptions = {
 Each Compound Filter will try to define the best possible Operator List depending on what Field Type you may have (for example we can have StartsWith Operator on a string but not on a number). If you want to provide your own custom Operator List to a Compound Filter, you can do that via the `compoundOperatorList` property (also note that your Operator must be a valid OperatorType/OperatorString).
 
 ```ts
-this.columnDefinitions = [
+const columnDefinitions = [
   { id: 'title', name: 'Title', field: 'title' },
   { id: 'description', name: 'Description', field: 'description', filterable: true },
   { id: 'utcDate', name: 'UTC Date', field: 'utcDate',
@@ -193,7 +193,7 @@ The texts are separated into 2 groups (`numeric` or `text`) so that the alternat
 > **Note** avoid using text with more than 2 or 3 characters for the operator text (which is roughly the width of the compound operator select dropdown), exceeding this limit will require CSS style changes.
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   compoundOperatorAltTexts: {
     // where '=' is any of the `OperatorString` type shown above
     numeric: { '=': { operatorAlt: 'eq', descAlt: 'alternate numeric equal description' } },
@@ -218,7 +218,7 @@ What will this option do really?
 
 ###### Code
 ```ts
-this.columnDefinitions = [{
+const columnDefinitions = [{
   id: 'name', field: 'name',
   filter: {
     model: Filters.compoundInput,
@@ -227,7 +227,7 @@ this.columnDefinitions = [{
 }];
 
 // or change for all compound filters of the same grid
-this.gridOptions = {
+const gridOptions = {
   skipCompoundOperatorFilterWithNullInput: true,
 };
 ```

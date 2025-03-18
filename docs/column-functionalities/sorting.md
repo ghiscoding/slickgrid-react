@@ -18,26 +18,20 @@ To use any of them, you can use the `FieldType` interface or enter a type via a 
 ```tsx
 import { FieldType } from 'slickgrid-react';
 
-export class Example extends React.Component<Props, State> {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-
-  constructor(public readonly props: Props) {
-    super(props);
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-  }
-
-  defineGrid() {
-    const columnDefinitions = [
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  
+  function defineGrid() {
+    setColumns([
       { id: 'title', name: 'Title', field: 'title', sortable: true },
       { id: 'duration', name: 'Duration (days)', field: 'duration', sortable: true, type: FieldType.number },
       { id: '%', name: '% Complete', field: 'percentComplete', sortable: true, type: FieldType.float},
       { id: 'start', name: 'Start', field: 'start', sortable: true, type: FieldType.dateIso },
       { id: 'finish', name: 'Finish', field: 'finish', sortable: true, type: FieldType.dateIso },
       { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven', sortable: true }
-    ];
+    ]);
   }
 }
 ```
@@ -55,7 +49,7 @@ const dataset = [
 
 We can now filter the zip code from the buyer's address using this filter:
 ```typescript
-this.columnDefinitions = [
+const columns = [
   {
     // the zip is a property of a complex object which is under the "buyer" property
     // it will use the "field" property to explode (from "." notation) and find the child value
@@ -69,7 +63,7 @@ this.columnDefinitions = [
 If the builtin sort comparer methods are not sufficient for your use case, you could add your own custom Sort Comparer in your Column Definitions as shown below. Note that we are only showing a simple numeric sort, just adjust it to your needs.
 
 ```ts
-this.columnDefinitions = [{
+const columns = [{
   id: 'myField', name: 'My Field',
   sorter: (a, b) => a > b ? 1 : -1,
 }];
@@ -80,7 +74,7 @@ similarly with a complex object
 ```ts
 // data = { user: { firstName: 'John', lastName: 'Doe', fullName: 'John Doe' }, address: { zip: 123456 } }};
 
-this.columnDefinitions = [{
+const columns = [{
   id: 'firstName', name: 'First Name', field: 'user.firstName',
   sorter: (a, b) => a.fullName > b.fullName ? 1 : -1,
 }];
@@ -91,15 +85,18 @@ You can update/change the Sorting dynamically (on the fly) via the `updateSortin
 
 ##### Component
 ```tsx
-export class Example extends React.Component<Props, State> {
-  reactGrid: SlickgridReactInstance;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  setSortingDynamically() {
-    this.reactGrid.sortService.updateSorting([
+  function setSortingDynamically() {
+    reactGridRef.current?.sortService.updateSorting([
       // orders matter, whichever is first in array will be the first sorted column
       { columnId: 'duration', direction: 'ASC' },
       { columnId: 'start', direction: 'DESC' },
@@ -108,17 +105,17 @@ export class Example extends React.Component<Props, State> {
 
   render() {
     <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="set-dynamic-sorting"
-      onClick={() => this.setSortingDynamically()}>
+      onClick={() => setSortingDynamically()}>
       Set Sorting Dynamically
     </button>
 
     <SlickgridReact gridId="grid4"
-      columnDefinitions={this.state.columnDefinitions}
-      gridOptions={this.state.gridOptions}
-      dataset={this.state.dataset}
-      onGridStateChanged={$event => this.gridStateChanged($event.detail)}
-      onReactGridCreated={$event => this.reactGridReady($event.detail)}
-      onRowCountChanged={$event => this.refreshMetrics($event.detail.eventData, $event.detail.args)}
+      columnDefinitions={columns}
+      gridOptions={options}
+      dataset={dataset}
+      onGridStateChanged={$event => gridStateChanged($event.detail)}
+      onReactGridCreated={$event => reactGridReady($event.detail)}
+      onRowCountChanged={$event => refreshMetrics($event.detail.eventData, $event.detail.args)}
     />
   }
 }
@@ -194,6 +191,6 @@ What happens when we do any cell changes (for our use case, it would be Create/U
 #### Can I call the pre-parse myself?
 
 Yes, if for example you want to pre-parse right after the grid is loaded, you could call the pre-parse yourself for either all items or a single item
-- all item pre-parsing: `this.sgb.sortService.preParseAllDateItems();`
+- all item pre-parsing: `reactGridRef.current?.sortService.preParseAllDateItems();`
   - the items will be read directly from the DataView
-- a single item parsing: `this.sgb.sortService.preParseSingleDateItem(item);`
+- a single item parsing: `reactGridRef.current?.sortService.preParseSingleDateItem(item);`

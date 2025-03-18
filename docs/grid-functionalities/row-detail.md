@@ -33,36 +33,22 @@ There is currently a known problem with Row Detail when loading the Row Detail C
 
 ##### Component
 ```tsx
-export class GridExample {
-  reactGrid: SlickgridReactInstance;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [detailViewRowCount, setDetailViewRowCount] = useState(8);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  useEffect(() => defineGrid());
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  componentDidMount() {
-    this.defineGrid();
-  }
-
-  defineGrid() {
-    const columnDefinitions = this.getColumnsDefinition();
-    const gridOptions = this.getGridOptions();
-
-    this.setState((props: Props, state: any) => {
-      return {
-        ...state,
-        columnDefinitions,
-        gridOptions
-      };
-    });
-  }
-
-  getColumnsDefinition(): Column[] {
-    return [ /*...*/ ];
-  }
-
-  getGridOptions(): GridOption {
-    return {
+  function defineGrid() {
+    setColumns([ /*...*/ ]); 
+    setOptions({
       enableRowDetailView: true,
       rowSelectionOptions: {
         selectActiveRow: true
@@ -75,7 +61,7 @@ export class GridExample {
       },
       rowDetailView: {
         // We can load the "process" asynchronously via Fetch, Promise, ...
-        process: (item) => this.http.get(`api/item/${item.id}`),
+        process: (item) => http.get(`api/item/${item.id}`),
 
         // load only once and reuse the same item detail without calling process method
         loadOnce: true,
@@ -91,7 +77,7 @@ export class GridExample {
         // how many grid rows do we want to use for the row detail panel (this is only set once and will be used for all row detail)
         // also note that the detail view adds an extra 1 row for padding purposes
         // so if you choose 4 panelRows, the display will in fact use 5 rows
-        panelRows: this.detailViewRowCount,
+        panelRows: detailViewRowCount,
 
         // you can override the logic for showing (or not) the expand icon
         // for example, display the expand icon only on every 2nd row
@@ -106,16 +92,16 @@ export class GridExample {
         // Optionally pass your Parent Component reference to your Child Component (row detail component)
         parent: this
       }
-    };
+    });
   }
 
-  render() {
-    return <SlickgridReact gridId="grid40"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)} />
-  }
+  return !options ? null : (
+    <SlickgridReact gridId="grid40"
+        columnDefinitions={columns}
+        gridOptions={options}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)} />
+  );
 }
 ```
 
@@ -125,11 +111,11 @@ Row Detail is an addon (commonly known as a plugin and are opt-in addon), becaus
 #### Examples
 - Dynamically change the Detail View Row Count (how many grid rows do we want to use for the row detail panel)
 ```ts
-changeDetailViewRowCount() {
-  if (this.reactGrid?.extensionService) {
-    const rowDetailInstance = this.reactGrid.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView);
+function changeDetailViewRowCount() {
+  if (reactGridRef.current?.extensionService) {
+    const rowDetailInstance = reactGridRef.current?.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView);
     const options = rowDetailInstance.getOptions();
-    options.panelRows = this.detailViewRowCount; // change number of rows dynamically
+    options.panelRows = detailViewRowCount; // change number of rows dynamically
     rowDetailInstance.setOptions(options);
   }
 }
@@ -141,9 +127,9 @@ Same as previous paragraph, after we get the SlickGrid addon instance, we can ca
 #### Examples
 - Dynamically close all Row Detail Panels
 ```ts
-closeAllRowDetail() {
-  if (this.reactGrid && this.reactGrid.extensionService) {
-    const rowDetailInstance = this.reactGrid.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView);
+function closeAllRowDetail() {
+  if (reactGridRef.current?.extensionService) {
+    const rowDetailInstance = reactGridRef.current?.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView);
     rowDetailInstance.collapseAll();
   }
 }
@@ -152,9 +138,9 @@ closeAllRowDetail() {
 This requires a bit more work, you can call the method `collapseDetailView(item)` but it requires to pass the row item object (data context) and it feasible but it's just more work as can be seen below.
 ```ts
 closeRowDetail(gridRowIndex: number) {
-  if (this.reactGrid && this.reactGrid.extensionService) {
-    const rowDetailInstance = this.reactGrid.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView);
-    const item = this.reactGrid.gridService.getDataItemByRowIndex(gridRowIndex);
+  if (reactGridRef.current?.extensionService) {
+    const rowDetailInstance = reactGridRef.current.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView);
+    const item = reactGridRef.current.gridService.getDataItemByRowIndex(gridRowIndex);
     rowDetailInstance.collapseDetailView(item);
   }
 }
@@ -202,69 +188,83 @@ interface Props {
 }
 interface State { assignee: string; }
 
-export class Example19DetailView extends React.Component<Props, State> {
-  constructor(public readonly props: Props) {
-    super(props);
-    this.state = {
-      assignee: props.model?.assignee || ''
-    }
+const ExampleDetail: React.FC = (props: Props) => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const [assignee, setAssignee] = useState(props.model?.assignee || '');
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+
+  useEffect(() => defineGrid());
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
   // ...
   // 
 
-  render() {
-    return (
-      <div className="container-fluid" style={{ marginTop: '10px' }}>
-        <h3>{this.props.model.title}</h3>
-        <div className="row">
-          <div className="col-3 detail-label"><label>Assignee:</label> <input className="form-control" value={this.state.assignee} onInput={($event) => this.assigneeChanged(($event.target as HTMLInputElement).value)} /></div>
-          <div className="col-3 detail-label"><label>Reporter:</label> <span>{this.props.model.reporter}</span></div>
-          <div className="col-3 detail-label"><label>Duration:</label> <span>{this.props.model.duration?.toISOString?.()}</span></div>
-          <div className="col-3 detail-label"><label>% Complete:</label> <span>{this.props.model.percentComplete}</span></div>
-        </div>
+  return !options ? null : (
+    <div className="container-fluid" style={{ marginTop: '10px' }}>
+      <h3>{props.model.title}</h3>
+      <div className="row">
+        <div className="col-3 detail-label"><label>Assignee:</label> <input className="form-control" value={assignee} onInput={($event) => assigneeChanged(($event.target as HTMLInputElement).value)} /></div>
+        <div className="col-3 detail-label"><label>Reporter:</label> <span>{props.model.reporter}</span></div>
+        <div className="col-3 detail-label"><label>Duration:</label> <span>{props.model.duration?.toISOString?.()}</span></div>
+        <div className="col-3 detail-label"><label>% Complete:</label> <span>{props.model.percentComplete}</span></div>
+      </div>
 
-        <div className="row">
-          <div className="col-3 detail-label"><label>Start:</label> <span>{this.props.model.start?.toISOString()}</span></div>
-          <div className="col-3 detail-label"><label>Finish:</label> <span>{this.props.model.finish?.toISOString()}</span></div>
-          <div className="col-3 detail-label"><label>Effort Driven:</label> <i className={this.props.model.effortDriven ? 'mdi mdi-check' : ''}></i>
-          </div>
-        </div>
-
-        <hr />
-
-        <div className="col-sm-8">
-          <h4>
-            Find out who is the Assignee
-            <small>
-              <button className="btn btn-primary btn-sm" onClick={() => this.alertAssignee(this.props.model.assignee)} data-test="assignee-btn">
-                Click Me
-              </button>
-            </small>
-          </h4>
-        </div>
-
-        <div className="col-sm-4">
-          <button className="btn btn-primary btn-danger btn-sm" onClick={() => this.deleteRow(this.props.model)} data-test="delete-btn">
-            Delete Row
-          </button>
-          <button className="btn btn-outline-secondary btn-sm" onClick={() => this.callParentMethod(this.props.model)} data-test="parent-btn">
-            Call Parent Method
-          </button>
+      <div className="row">
+        <div className="col-3 detail-label"><label>Start:</label> <span>{props.model.start?.toISOString()}</span></div>
+        <div className="col-3 detail-label"><label>Finish:</label> <span>{props.model.finish?.toISOString()}</span></div>
+        <div className="col-3 detail-label"><label>Effort Driven:</label> <i className={props.model.effortDriven ? 'mdi mdi-check' : ''}></i>
         </div>
       </div>
-    );
-  }
+
+      <hr />
+
+      <div className="col-sm-8">
+        <h4>
+          Find out who is the Assignee
+          <small>
+            <button className="btn btn-primary btn-sm" onClick={() => alertAssignee(props.model.assignee)} data-test="assignee-btn">
+              Click Me
+            </button>
+          </small>
+        </h4>
+      </div>
+
+      <div className="col-sm-4">
+        <button className="btn btn-primary btn-danger btn-sm" onClick={() => deleteRow(props.model)} data-test="delete-btn">
+          Delete Row
+        </button>
+        <button className="btn btn-outline-secondary btn-sm" onClick={() => callParentMethod(props.model)} data-test="parent-btn">
+          Call Parent Method
+        </button>
+      </div>
+    </div>
+  );
 }
 ```
 
 ###### Grid Definition
 ```tsx
-export class GridExample {
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+
+  useEffect(() => defineGrid());
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+  }
+
   // ...
 
-  getGridOptions(): GridOption {
-    return {
+  function defineGrid() {
+    setOptions({
       enableRowDetailView: true,
       preRegisterExternalExtensions: (pubSubService) => {
         // Row Detail View is a special case because of its requirement to create extra column definition dynamically
@@ -274,7 +274,7 @@ export class GridExample {
       },
       rowDetailView: {
         // We can load the "process" asynchronously via Fetch, Promise, ...
-        process: (item) => this.http.get(`api/item/${item.id}`),
+        process: (item) => http.get(`api/item/${item.id}`),
 
         // ...
         
@@ -287,16 +287,16 @@ export class GridExample {
         // Optionally pass your Parent Component reference to your Child Component (row detail component)
         parent: this
       }
-    };
+    });
   }
 
-  render() {
-    return <SlickgridReact gridId="grid40"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)} />
-  }
+  return !options ? null : (
+    <SlickgridReact gridId="grid40"
+        columnDefinitions={columns}
+        gridOptions={options}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)} />
+  );
 }
 ```
 
@@ -304,10 +304,22 @@ export class GridExample {
 The Row Detail provides you access to the following references (SlickGrid, DataView, Parent Component and the Addon (3rd party plugin)), however please note that all of these references are available from the start **except** the Parent Component instance, for that one you need to reference it inside your Row Detail Grid Options like so:
 
 ```ts
-export class GridExample {
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const [flashAlertType, setFlashAlertType] = useState<'warning' | 'success' | 'info'>('info');
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+
+  useEffect(() => defineGrid());
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+  }
+
   // Parent Component (grid)
-  getGridOptions(): GridOption {
-    return {
+  function defineGrid() {
+    setOptions({
       enableRowDetailView: true,
       preRegisterExternalExtensions: (pubSubService) => {
         // Row Detail View is a special case because of its requirement to create extra column definition dynamically
@@ -323,14 +335,12 @@ export class GridExample {
         // Optionally pass your Parent Component reference to your Child Component (row detail component)
         parent: this  // <-- THIS REFERENCE
       }
-    }
+    });
   }
 
   // a Parent Method that we want to access
-  showFlashMessage(message: string, alertType = 'info') {
-    this.setState((props, state) => {
-      return { ...state, message, flashAlertType: alertType }
-    });
+  function showFlashMessage(message: string, alertType = 'info') {
+    setFlashAlertType(alertType);
   }
 }
 ```
@@ -340,15 +350,15 @@ Then in our Child Component, we can do some action on the Grid, the DataView or 
 ##### View
 ```tsx
 <div class="container-fluid">
-  <h3>{this.props.model.title}</h3>
+  <h3>{props.model.title}</h3>
 
     <-- delete a row using the DataView & SlickGrid objects -->
-    <button class="btn btn-primary btn-danger btn-sm" onClick={this.deleteRow(this.props.model)} data-test="delete-btn">
+    <button class="btn btn-primary btn-danger btn-sm" onClick={deleteRow(props.model)} data-test="delete-btn">
       Delete Row
     </button>
 
     <!-- calling a Parent Component method -->
-    <button class="btn btn-default btn-sm" onClick={this.callParentMethod(this.props.model)} data-test="parent-btn">
+    <button class="btn btn-default btn-sm" onClick={callParentMethod(props.model)} data-test="parent-btn">
       Call Parent Method
     </button>
 </div>
@@ -361,34 +371,30 @@ import type { SlickDataView, SlickGrid, SlickRowDetailView } from 'slickgrid-rea
 
 import './example19-detail-view.scss';
 
-interface Props {
+interface Props { 
   model: {
-    duration: Date;
-    percentComplete: number;
-    // ...
-  };
-  addon: SlickRowDetailView;
-  grid: SlickGrid;
-  dataView: SlickDataView;
-  parent: any;
+    assignee: string; 
+  }
 }
-interface State { assignee: string; }
 
-export class Example19DetailView extends React.Component<Props, State> {
-  constructor(public readonly props: Props) {
-    super(props);
-    this.state = {
-      assignee: props.model?.assignee || ''
-    }
+const Example: React.FC = (props: Props) => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const [assignee, setAssignee] = useState(props.model?.assignee || '');
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+
+  useEffect(() => defineGrid());
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  assigneeChanged(newAssignee: string) {
-    this.setState((props: Props, state: State) => {
-      return { ...state, assignee: newAssignee }
-    });
+  function assigneeChanged(newAssignee: string) {
+    setAssignee(newAssignee);
   }
 
-  alertAssignee(name: string) {
+  function alertAssignee(name: string) {
     if (typeof name === 'string') {
       alert(`Assignee on this task is: ${name.toUpperCase()}`);
     } else {
@@ -396,20 +402,20 @@ export class Example19DetailView extends React.Component<Props, State> {
     }
   }
 
-  deleteRow(model: any) {
+  function deleteRow(model: any) {
     if (confirm(`Are you sure that you want to delete ${model.title}?`)) {
       // you first need to collapse all rows (via the 3rd party addon instance)
-      this.props.addon.collapseAll();
+      props.addon.collapseAll();
 
       // then you can delete the item from the dataView
-      this.props.dataView.deleteItem(model.rowId);
+      props.dataView.deleteItem(model.rowId);
 
-      this.props.parent!.showFlashMessage(`Deleted row with ${model.title}`, 'danger');
+      props.parent!.showFlashMessage(`Deleted row with ${model.title}`, 'danger');
     }
   }
 
-  callParentMethod(model: any) {
-    this.props.parent!.showFlashMessage(`We just called Parent Method from the Row Detail Child Component on ${model.title}`);
+  function callParentMethod(model: any) {
+    props.parent!.showFlashMessage(`We just called Parent Method from the Row Detail Child Component on ${model.title}`);
   }
 
   render() {
@@ -423,20 +429,25 @@ export class Example19DetailView extends React.Component<Props, State> {
 The reason is because the Row Selection (checkbox) plugin is a special column and Slickgrid-React is adding an extra column dynamically for the Row Selection checkbox and that is **not** reflected in your local copy of `columnDefinitions`. To address this issue, you need to get the Slickgrid-React internal copy of all columns (including the extra columns), you can get it via `getAllColumnDefinitions()` from the Grid Service and then you can use to that array and that will work.
 
 ```ts
-reactGridReady(reactGrid: SlickgridReactInstance) {
-  this.reactGrid = reactGrid;
-}
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-addNewColumn() {
-  const newColumn = { /*...*/ };
+  useEffect(() => defineGrid());
 
-  const allColumns = this.reactGrid.gridService.getAllColumnDefinitions();
-  allColumns.push(newColumn);
-  this.setState((props, state) => {
-    return {
-      ...state,
-      columnDefinitions: allColumns.slice(); // or use spread operator [...cols]
-    };
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+  }
+
+  function addNewColumn() {
+    const newColumn = { /*...*/ };
+
+    const allColumns = reactGridRef.current?.gridService.getAllColumnDefinitions();
+    allColumns.push(newColumn);
+
+    setColumns(allColumns.slice()); // or use spread operator [...cols]
   }
 }
 ```
@@ -456,47 +467,25 @@ import { type Column, ExtensionName, type GridOption, SlickgridReact, type Slick
 import { Preload } from './preload';
 import { type Distributor, InnerGridComponent, type OrderData } from './inner-grid';
 
-interface State extends BaseSlickGridState { }
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-export default class Example45 extends React.Component<Props, State> {
-  reactGrid!: SlickgridReactInstance;
-  constructor(public readonly props: Props) {
-    super(props);
+  useEffect(() => defineGrid());
 
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: this.getData(),
-    };
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  get rowDetailInstance() {
-    return this.reactGrid?.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView);
+  function getRowDetailInstance() {
+    return reactGridRef.current?.extensionService.getExtensionInstanceByName(ExtensionName.rowDetailView);
   }
 
-  componentDidMount() {
-    this.defineGrid();
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  getColumnDefinitions(): Column[] {
-    return [/* ... */];
-  }
-
-  defineGrid() {
-    const columnDefinitions = this.getColumnDefinitions();
-    const gridOptions = this.getGridOptions();
-
-    this.setState((props: Props, state: any) => {
-      return { ...state, columnDefinitions, gridOptions };
-    });
-  }
-
-  getGridOptions(): GridOption {
-    return {
+  function defineGrid() {
+    setColumns([ /*...*/]);
+    setOptions({
       enableRowDetailView: true,
       rowSelectionOptions: {
         selectActiveRow: true
@@ -514,21 +503,19 @@ export default class Example45 extends React.Component<Props, State> {
         preloadComponent: PreloadComponent,
         viewComponent:  InnerGridComponent,
       },
-    };
+    });
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <SlickgridReact gridId="grid45"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        />
-      </div >
-    );
-  }
+  return !options ? '' : (
+    <div id="demo-container" className="container-fluid">
+      <SlickgridReact gridId="grid45"
+        columnDefinitions={columns}
+        gridOptions={options}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+      />
+    </div >
+  );
 }
 ```
 
@@ -543,54 +530,27 @@ import type MainGrid from './MainGrid';
 export interface Distributor { /* ... */ }
 export interface OrderData { /* ... */ }
 
-interface State {
-  innerGridOptions?: GridOption;
-  innerColDefs: Column[];
-  innerDataset: any[];
-}
-interface Props { }
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [innerGridClass, setInnerGridClass] = useState('innergrid');
+  const [options, setOptions] = useState<GridOption>();
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-export class MainGridDetailView extends React.Component<RowDetailViewProps<Distributor, typeof MainGrid>, State> {
-  reactGrid!: SlickgridReactInstance;
-  innerGridClass = '';
+  useEffect(() => defineGrid());
 
-  constructor(public readonly props: RowDetailViewProps<Distributor, typeof MainGrid>) {
-    super(props);
-    this.state = {
-      innerGridOptions: undefined,
-      innerColDefs: [],
-      innerDataset: [...props.model.orderData],
-    };
-    this.innerGridClass = `row-detail-${this.props.model.id}`;
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  componentDidMount() {
-    this.defineGrid();
-  }
-
-  getColumnDefinitions(): Column[] {
-    return [
+  function defineGrid() {
+    setColumns([
       { id: 'orderId', field: 'orderId', name: 'Order ID', filterable: true, sortable: true },
       { id: 'shipCity', field: 'shipCity', name: 'Ship City', filterable: true, sortable: true },
       { id: 'freight', field: 'freight', name: 'Freight', filterable: true, sortable: true, type: 'number' },
       { id: 'shipName', field: 'shipName', name: 'Ship Name', filterable: true, sortable: true },
-    ];
-  }
-
-  defineGrid() {
-    const innerColDefs = this.getColumnDefinitions();
-    const innerGridOptions = this.getGridOptions();
-
-    this.setState((props: Props, state: any) => {
-      return {
-        ...state,
-        innerColDefs,
-        innerGridOptions,
-      };
-    });
-  }
-
-  getGridOptions(): GridOption {
+    ]);
+  
     // OPTIONALLY reapply Grid State as Presets before unmounting the compoment
     const gridStateStr = sessionStorage.getItem(`gridstate_${innerGridClass.value}`);
     let gridState: GridState | undefined;
@@ -598,45 +558,39 @@ export class MainGridDetailView extends React.Component<RowDetailViewProps<Distr
       gridState = JSON.parse(gridStateStr);
     }
 
-    return {
+    setOptions({
       autoResize: {
-        container: `.${this.innerGridClass}`,
+        container: `.${innerGridClass}`,
       },
       enableFiltering: true,
       enableSorting: true,
       enableCellNavigation: true,
       datasetIdPropertyName: 'orderId', // reapply grid state presets
       presets: gridState,
-    };
+    });
   }
 
   // OPTIONALLY save Grid State before unmounting the compoment
-  handleBeforeGridDestroy() {
-    if (this.props.model.isUsingInnerGridStatePresets) {
-      const gridState = this.reactGrid.gridStateService.getCurrentGridState();
-      sessionStorage.setItem(`gridstate_${this.innerGridClass}`, JSON.stringify(gridState));
+  function handleBeforeGridDestroy() {
+    if (props.model.isUsingInnerGridStatePresets) {
+      const gridState = reactGridRef.current?.gridStateService.getCurrentGridState();
+      sessionStorage.setItem(`gridstate_${innerGridClass}`, JSON.stringify(gridState));
     }
   }
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  render() {
-    return (
-      <div className={`${this.innerGridClass}`}>
-        <h4>Order Details (id: {this.props.model.id})</h4>
-        <div className="container-fluid">
-          {!this.state.showGrid ? '' : <SlickgridReact gridId={`innergrid-${this.props.model.id}`}
-            columnDefinitions={this.state.innerColDefs}
-            gridOptions={this.state.innerGridOptions}
-            dataset={this.state.innerDataset}
-            onReactGridCreated={$event => this.reactGridReady($event.detail)}
-            onBeforeGridDestroy={() => this.handleBeforeGridDestroy()}
-          />}
-        </div>
+  return !options ? null : (
+    <div className={`${innerGridClass}`}>
+      <h4>Order Details (id: {props.model.id})</h4>
+      <div className="container-fluid">
+        {!showGrid ? '' : <SlickgridReact gridId={`innergrid-${props.model.id}`}
+          columnDefinitions={innerColDefs}
+          gridOptions={innerGridOptions}
+          dataset={innerDataset}
+          onReactGridCreated={$event => reactGridReady($event.detail)}
+          onBeforeGridDestroy={() => handleBeforeGridDestroy()}
+        />}
       </div>
-    );
-  }
+    </div>
+  );
 }
 ```

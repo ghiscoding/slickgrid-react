@@ -8,23 +8,28 @@ When enabled (defaults to false), it will show the grid in Dark Mode by adding `
 You can easily toggle light/dark mode by using `grid.setOptions()`
 
 ```ts
-export class MyDemo {
-  isDarkModeEnabled = false;
-  gridOptions: GridOption;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(false);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  prepareGrid() {
-    this.gridOptions = {
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setOptions({
       // ...
-      darkMode: this.isDarkModeEnabled;
-    }
+      darkMode: isDarkModeEnabled;
+    });
   }
 
-  toggleDarkMode() {
-    this.isDarkModeEnabled = !this.isDarkModeEnabled;
-    this.sgb.slickGrid?.setOptions({ darkMode: this.isDarkModeEnabled });
+  function toggleDarkMode() {
+    const newIsDarkModeEnabled = !isDarkModeEnabled;
+    setIsDarkModeEnabled(newIsDarkModeEnabled);
+    reactGridRef.current?.slickGrid?.setOptions({ darkMode: newIsDarkModeEnabled });
 
     // optionally update your local grid options as well
-    this.gridOptions = { ...this.gridOptions, darkMode: this.isDarkModeEnabled };
+    setOptions({ ...gridOptions, darkMode: newIsDarkModeEnabled });
   }
 }
 ```
@@ -42,11 +47,11 @@ export class MyDemo {
     return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
   }
 
-  prepareGrid() {
-    this.gridOptions = {
+  defineGrid() {
+    setOptions({
       // ...
-      darkMode: this.isBrowserDarkModeEnabled();
-    }
+      darkMode: isBrowserDarkModeEnabled();
+    });
   }
 }
 ```
@@ -58,7 +63,7 @@ For `Bootstrap` users, it will also require the developer to add a `data-bs-them
 > **Note** the `onRendered` is a new lifecycle callback of Composite Editor Modal that was added specifically for this Bootstrap use case
 
 ```ts
-this.compositeEditorInstance?.openDetails({
+compositeEditorInstance?.openDetails({
   // ...
   onRendered: (modalElm) => modalElm.dataset.bsTheme = 'dark',
 });
@@ -68,12 +73,17 @@ this.compositeEditorInstance?.openDetails({
 By default there is no command for toggling the Dark Mode from the Grid Menu, however you can show the command at any time via the following settings:
 
 ```ts
-export class MyDemo {
-  isDarkModeEnabled = false;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(false);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  defineGrid() {
-    this.gridOptions = {
-      darkMode: this.isDarkModeEnabled,
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setOptions({
+      darkMode: isDarkModeEnabled,
       gridMenu: {
         hideToggleDarkModeCommand: false, // hidden by default
 
@@ -88,7 +98,7 @@ export class MyDemo {
           toggleDarkModeCommand: 'Toggle Dark Mode',
         },
       }
-    };
+    });
   }
 }
 ```

@@ -20,22 +20,30 @@ You can use any of the Vanilla-Calendar [settings](https://vanilla-calendar.pro/
 ```ts
 import { type VanillaCalendarOption } from '@slickgrid-universal/common';
 
-prepareGrid() {
-  this.columnDefinitions = [
-    {
-      id: 'title', name: 'Title', field: 'title',
-      type: 'dateIso', // if your type has hours/minutes, then the date picker will include date+time
-      editor: {
-        model: Editors.date,
-        editorOptions: {
-          range: {
-            max: 'today',
-            disabled: ['2022-08-15', '2022-08-20'],
-          }
-        } as VanillaCalendarOption,
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    const columnDefinitions = [
+      {
+        id: 'title', name: 'Title', field: 'title',
+        type: 'dateIso', // if your type has hours/minutes, then the date picker will include date+time
+        editor: {
+          model: Editors.date,
+          editorOptions: {
+            range: {
+              max: 'today',
+              disabled: ['2022-08-15', '2022-08-20'],
+            }
+          } as VanillaCalendarOption,
+        },
       },
-    },
-  ];
+    ];
+  }
 }
 ```
 
@@ -43,7 +51,7 @@ prepareGrid() {
 You could also define certain options as a global level (for the entire grid or even all grids) by taking advantage of the `defaultEditorOptions` Grid Option. Note that they are set via the editor type as a key name (`autocompleter`, `date`, ...) and then the content is the same as `editorOptions` (also note that each key is already typed with the correct editor option interface), for example
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   defaultEditorOptions: {
     date: { range: { min: 'today' } }, // typed as VanillaCalendarOption
   }
@@ -53,23 +61,31 @@ this.gridOptions = {
 ### Custom Validator
 You can add a Custom Validator from an external function or inline (inline is shown below and comes from [Example 12](https://ghiscoding.github.io/slickgrid-universal/#/example12))
 ```ts
-initializeGrid() {
-  this.columnDefinitions = [
-    {
-      id: 'title', name: 'Title', field: 'title',
-      editor: {
-        model: Editors.date,
-        required: true,
-        validator: (value, args) => {
-          const dataContext = args && args.item;
-          if (dataContext && (dataContext.completed && !value)) {
-            return { valid: false, msg: 'You must provide a "Finish" date when "Completed" is checked.' };
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    const columnDefinitions = [
+      {
+        id: 'title', name: 'Title', field: 'title',
+        editor: {
+          model: Editors.date,
+          required: true,
+          validator: (value, args) => {
+            const dataContext = args && args.item;
+            if (dataContext && (dataContext.completed && !value)) {
+              return { valid: false, msg: 'You must provide a "Finish" date when "Completed" is checked.' };
+            }
+            return { valid: true, msg: '' };
           }
-          return { valid: true, msg: '' };
-        }
+        },
       },
-    },
-  ];
+    ];
+  }
 }
 ```
 

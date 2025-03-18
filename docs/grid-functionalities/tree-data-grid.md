@@ -52,8 +52,8 @@ _For the full list of options, refer to the [treeDataOptions](https://github.com
 
 ###### define your grid
 ```ts
-defineGrid() {
-  this.columnDefinitions = [
+function defineGrid() {
+  const columnDefinitions: Column[] = [
     {
       id: 'title', name: 'Title', field: 'title', width: 220, cssClass: 'cell-title',
       filterable: true, sortable: true,
@@ -62,7 +62,7 @@ defineGrid() {
     // ...
   ];
 
-  this.gridOptions = {
+  const gridOptions: GridOption = {
     enableFiltering: true,  // <<-- REQUIRED, it won't work without filtering enabled
     multiColumnSort: false, // <<-- REQUIRED to be Disabled since multi-column sorting is not currently supported with Tree Data
 
@@ -93,48 +93,26 @@ _For the full list of options, refer to the [treeDataOptions](https://github.com
 
 ###### Component
 ```tsx
-interface Props { }
-interface State extends BaseSlickGridState {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  datasetHierarchical?: any[];
-}
+import { type Column, Formatters, type GridOption, SlickgridReact } from 'slickgrid-react';
 
-export default class Example extends React.Component<Props, State> {
-  constructor(public readonly props: Props) {
-    super(props);
+const Example: React.FC = () => {
+  const [datasetHierarchical, setDatasetHierarchical] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption>();
 
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      datasetHierarchical: undefined,
-    };
-  }
+  useEffect(() => defineGrid(), []);
 
-  this.datasetHierarchical = [
-    { id: 0, file: 'documents', files: [
-        { id: 1, file: 'vacation.txt', size: 12 },
-        { id: 2, file: 'bills.txt', size: 0.5 }
-      ]
-    },
-    { id: 55: file: 'music', files: [
-        { id: 60, file: 'favorite-song.mp3': size: 2.3 },
-        { id: 61, file: 'blues.mp3', size: 5.5 }
-      ]
-    },
-  ];
-
-  defineGrid() {
-    const columnDefinitions = [
+  function defineGrid() {
+    const columns: Column[] = [
       {
         id: 'file', name: 'Files', field: 'file',
-        type: FieldType.string, width: 150, formatter: this.treeFormatter,
+        type: FieldType.string, width: 150, formatter: treeFormatter,
         filterable: true, sortable: true,
       },
       // ...
-    };
+    ];
 
-    const gridOptions = {
+    const gridOptions: GridOption = {
       enableFiltering: true,  // <<-- REQUIRED, it won't work without filtering enabled
       multiColumnSort: false, // <<-- REQUIRED to be Disabled since multi-column sorting is not currently supported with Tree Data
 
@@ -152,35 +130,43 @@ export default class Example extends React.Component<Props, State> {
       },
     };
 
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      datasetHierarchical: this.getData(),
-    }));
+    setColumns(columns);
+    setGridOptions(options);
   }
 
-  render() {
-    return (
-      <div id="grid-container" className="col-sm-12">
-        <SlickgridReact gridId="grid28"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          datasetHierarchical={this.state.datasetHierarchical}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        />
-      </div>
-    );
+  function getData() {
+    setDatasetHierarchical([
+      { id: 0, file: 'documents', files: [
+          { id: 1, file: 'vacation.txt', size: 12 },
+          { id: 2, file: 'bills.txt', size: 0.5 }
+        ]
+      },
+      { id: 55: file: 'music', files: [
+          { id: 60, file: 'favorite-song.mp3': size: 2.3 },
+          { id: 61, file: 'blues.mp3', size: 5.5 }
+        ]
+      },
+    ]);
   }
+
+  return !options ? '' : (
+    <SlickgridReact gridId="grid28"
+      columnDefinitions={columns}
+      gridOptions={options}
+      datasetHierarchical={datasetHierarchical}
+    />
+  );
 }
+
+export default Example;
 ```
 
 ### Tree Custom Title Formatter
 The column with the Tree already has a Formatter, so how can we add our own Formatter without impacting the Tree collapse/expand icons? You can use the `titleFormatter` in your `treeDataOptions`, it will style the text title but won't impact the collapsing icons.
 
 ###### grid options configurations
-```ts
-this.gridOptions = {
+```tsx
+const gridOptions: GridOption = {
   enableFiltering: true,  // <<-- REQUIRED, it won't work without filtering enabled
   multiColumnSort: false, // <<-- REQUIRED to be Disabled since multi-column sorting is not currently supported with Tree Data
 
@@ -206,31 +192,31 @@ this.gridOptions = {
 
 You would typically use the built-in `Formatters.tree` to show the tree but in some cases you might want to use your own Formatter and that is fine, it's like any other Custom Formatter. Here's a demo of the [Example 28](https://ghiscoding.github.io/slickgrid-react/#/slickgrid/Example28) Custom Formatter which is specific for showing the collapsing icon and folder and files icons.
 ```tsx
-treeFormatter: Formatter = (row, cell, value, columnDef, dataContext, grid) => {
-    const gridOptions = grid.getOptions() as GridOption;
-    const treeLevelPropName = gridOptions?.treeDataOptions?.levelPropName || '__treeLevel';
-    if (value === null || value === undefined || dataContext === undefined) {
-      return '';
-    }
-    const dataView = grid.getData() as SlickDataView;
-    const data = dataView.getItems();
-    const identifierPropName = dataView.getIdPropertyName() || 'id';
-    const idx = dataView.getIdxById(dataContext[identifierPropName]);
-    const prefix = this.getFileIcon(value);
+const treeFormatter: Formatter = (row, cell, value, columnDef, dataContext, grid) => {
+  const gridOptions = grid.getOptions() as GridOption;
+  const treeLevelPropName = gridOptions?.treeDataOptions?.levelPropName || '__treeLevel';
+  if (value === null || value === undefined || dataContext === undefined) {
+    return '';
+  }
+  const dataView = grid.getData() as SlickDataView;
+  const data = dataView.getItems();
+  const identifierPropName = dataView.getIdPropertyName() || 'id';
+  const idx = dataView.getIdxById(dataContext[identifierPropName]);
+  const prefix = getFileIcon(value);
 
-    value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    const spacer = `<span style="display:inline-block; width:${(15 * dataContext[treeLevelPropName])}px;"></span>`;
+  value = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const spacer = `<span style="display:inline-block; width:${(15 * dataContext[treeLevelPropName])}px;"></span>`;
 
-    if (data[idx + 1] && data[idx + 1][treeLevelPropName] > data[idx][treeLevelPropName]) {
-      const folderPrefix = `<i class="mdi icon ${dataContext.__collapsed ? 'mdi-folder' : 'mdi-folder-open'}"></i>`;
-      if (dataContext.__collapsed) {
-        return `${spacer} <span class="slick-group-toggle collapsed" level="${dataContext[treeLevelPropName]}"></span>${folderPrefix} ${prefix}&nbsp;${value}`;
-      } else {
-        return `${spacer} <span class="slick-group-toggle expanded" level="${dataContext[treeLevelPropName]}"></span>${folderPrefix} ${prefix}&nbsp;${value}`;
-      }
+  if (data[idx + 1] && data[idx + 1][treeLevelPropName] > data[idx][treeLevelPropName]) {
+    const folderPrefix = `<i class="mdi icon ${dataContext.__collapsed ? 'mdi-folder' : 'mdi-folder-open'}"></i>`;
+    if (dataContext.__collapsed) {
+      return `${spacer} <span class="slick-group-toggle collapsed" level="${dataContext[treeLevelPropName]}"></span>${folderPrefix} ${prefix}&nbsp;${value}`;
     } else {
-      return `${spacer} <span class="slick-group-toggle" level="${dataContext[treeLevelPropName]}"></span>${prefix}&nbsp;${value}`;
+      return `${spacer} <span class="slick-group-toggle expanded" level="${dataContext[treeLevelPropName]}"></span>${folderPrefix} ${prefix}&nbsp;${value}`;
     }
+  } else {
+    return `${spacer} <span class="slick-group-toggle" level="${dataContext[treeLevelPropName]}"></span>${prefix}&nbsp;${value}`;
+  }
 }
 ```
 
@@ -306,16 +292,19 @@ There are a few methods available from the `TreeDataService` (only listing the i
 
 For example
 ```tsx
-export default class Example extends React.Component<Props, State> {
-  reactGrid?: SlickgridReactInstance;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  getTreeDataState() {
+  function getTreeDataState() {
     // for example get current Tree Data toggled state
-    console.log(this.reactGrid.getCurrentToggleState());
+    console.log(reactGridRef.current?.getCurrentToggleState());
   }
 }
 ```
@@ -340,7 +329,7 @@ The available Aggregators that were modified to support Tree Totals aggregations
 
 For example, let say that we want to have Sum and Average in our tree, we can use the code below
 ```ts
-this.gridOptions = {
+const gridOptions: GridOption = {
   treeDataOptions: {
     columnId: 'file',
     // ...
@@ -364,7 +353,7 @@ There is also a new and optional Formatter, `Formatters.treeParseTotals`, that w
 
 #### with `Formatters.treeParseTotals`
 ```ts
-this.columnDefinitions = [
+const columnDefinitions: Column[] = [
   {
     id: 'size', name: 'Size', field: 'size', minWidth: 90,
 
@@ -378,7 +367,6 @@ this.columnDefinitions = [
 
     // you can add extra settings to your regular GroupTotalFormatters via the `params`
     params: {
-      formatters: [
       groupFormatterSuffix: ' MB',
       minDecimal: 0,
       maxDecimal: 2,
@@ -389,7 +377,7 @@ this.columnDefinitions = [
 
 #### with Custom Formatter
 ```ts
-this.columnDefinitions = [
+const columnDefinitions: Column[] = [
   {
     id: 'size', name: 'Size', field: 'size', minWidth: 90,
 
@@ -400,7 +388,7 @@ this.columnDefinitions = [
 
       // Tree Totals, if exists, will be found under `__treeTotals` prop
       if (dataContext?.__treeTotals !== undefined) {
-        const treeLevel = dataContext[this.gridOptions?.treeDataOptions?.levelPropName || '__treeLevel'];
+        const treeLevel = dataContext[gridOptions?.treeDataOptions?.levelPropName || '__treeLevel'];
         const sumVal = dataContext?.__treeTotals?.['sum'][fieldId];
         const avgVal = dataContext?.__treeTotals?.['avg'][fieldId];
 
