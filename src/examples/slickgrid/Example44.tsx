@@ -267,6 +267,7 @@ export default function Example44() {
   const gridOptions: GridOption = {
     enableCellNavigation: true,
     enableColumnReorder: true,
+    enableHeaderMenu: false,
     enableCellRowSpan: true,
     gridHeight: 600,
     gridWidth: 900,

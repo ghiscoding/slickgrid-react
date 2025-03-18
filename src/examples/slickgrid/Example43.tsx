@@ -7,7 +7,7 @@ import {
   SlickgridReact,
   type SlickgridReactInstance,
 } from '../../slickgrid-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import './example43.scss';
 
@@ -17,7 +17,8 @@ export default function Example43() {
   const [showSubTitle, setShowSubTitle] = useState(false);
   const [dataset] = useState(loadData());
   const [excelExportService] = useState<ExcelExportService>(new ExcelExportService());
-  const metadata: Record<number, ItemMetadata> = {
+  let showEmployeeId = true;
+  const metadataRef = useRef<Record<number, ItemMetadata>>({
     // 10001: Davolio
     0: {
       columns: {
@@ -109,10 +110,10 @@ export default function Example43() {
         16: { colspan: 3 },
       },
     },
-  };
+  });
 
   // the columns field property is type-safe, try to add a different string not representing one of DataItems properties
-  const columnDefinitions: Column[] = [
+  const [columnDefinitions] = useState<Column[]>([
     { id: 'employeeID', name: 'Employee ID', field: 'employeeID', minWidth: 100 },
     { id: 'employeeName', name: 'Employee Name', field: 'employeeName', editor: { model: Editors.text }, minWidth: 120 },
     { id: '9:00', name: '9:00 AM', field: '9:00', editor: { model: Editors.text }, minWidth: 120 },
@@ -132,7 +133,7 @@ export default function Example43() {
     { id: '4:00', name: '4:00 PM', field: '4:00', editor: { model: Editors.text }, minWidth: 120 },
     { id: '4:30', name: '4:30 PM', field: '4:30', editor: { model: Editors.text }, minWidth: 120 },
     { id: '5:00', name: '5:00 PM', field: '5:00', editor: { model: Editors.text }, minWidth: 120 },
-  ];
+  ]);
   const gridOptions: GridOption = {
     autoResize: {
       bottomPadding: 30,
@@ -140,6 +141,7 @@ export default function Example43() {
     },
     enableCellNavigation: true,
     enableColumnReorder: true,
+    enableHeaderMenu: false,
     enableCellRowSpan: true,
     enableExcelExport: true,
     externalResources: [excelExportService],
@@ -153,7 +155,7 @@ export default function Example43() {
     dataView: {
       globalItemMetadataProvider: {
         getRowMetadata: (_item, row) => {
-          return (metadata as Record<number, ItemMetadata>)[row];
+          return (metadataRef.current as Record<number, ItemMetadata>)[row];
         },
       },
     },
@@ -405,6 +407,40 @@ export default function Example43() {
     setReactGrid(instance);
   }
 
+  // when a side effect happens (e.g. show/hide EmployeeID),
+  // you have to recalculate the metadata by yourself
+  // if column index(es) aren't changing then "invalidateRows()" or "invalidate()" might be sufficient
+  // however, when column index(es) changed then you will have to call "remapAllColumnsRowSpan()" to clear & reevaluate the rowspan cache
+  function toggleEmployeeIdVisibility() {
+    const newMetadata: any = {};
+    const newShowEmployeeId = !showEmployeeId;
+    showEmployeeId = newShowEmployeeId;
+
+    // direction to calculate new column indexes (-1 or +1 on the column index)
+    // e.g. metadata = `{0:{columns:{1:{rowspan: 2}}}}` if we hide then new result is `{0:{columns:{0:{rowspan: 2}}}}`
+    const dir = newShowEmployeeId ? 1 : -1;
+    for (const row of Object.keys(metadataRef.current)) {
+      newMetadata[row] = { columns: {} };
+      for (const col of Object.keys((metadataRef.current as any)[row].columns)) {
+        newMetadata[row].columns[Number(col) + dir] = (metadataRef.current as any)[row].columns[col];
+      }
+    }
+
+    // update column definitions
+    const cols = reactGrid?.slickGrid.getColumns() || [];
+    if (newShowEmployeeId) {
+      cols.unshift({ id: 'employeeID', name: 'Employee ID', field: 'employeeID', width: 100 });
+    } else {
+      cols.splice(0, 1);
+    }
+    reactGrid?.slickGrid.setColumns(cols) || [];
+
+    // update & remap rowspans
+    metadataRef.current = newMetadata;
+    reactGrid?.slickGrid.remapAllColumnsRowSpan();
+    reactGrid?.slickGrid.invalidate();
+  }
+
   function toggleSubTitle() {
     const isShowing = !showSubTitle;
     setShowSubTitle(isShowing);
@@ -479,6 +515,10 @@ export default function Example43() {
       >
         <span className="mdi mdi-chevron-down mdi-rotate-270"></span>
         Navigate to Right Cell
+      </button>
+      <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon mx-1"
+        data-test="toggle-employee-id" onClick={() => toggleEmployeeIdVisibility()}>
+        Show/Hide EmployeeID
       </button>
       <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon mx-1" onClick={() => toggleEditing()} data-test="toggle-editing">
         <span className="mdi mdi-pencil-outline"></span>
