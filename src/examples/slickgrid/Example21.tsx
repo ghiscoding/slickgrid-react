@@ -20,7 +20,7 @@ const Example21: React.FC = () => {
   const [selectedOperator, setSelectedOperator] = useState('');
   const [searchValue, setSearchValue] = useState('')
   const [selectedColumn, setSelectedColumn] = useState<Column>();
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   useEffect(() => {
     defineGrid();
@@ -153,12 +153,6 @@ const Example21: React.FC = () => {
     });
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -171,18 +165,18 @@ const Example21: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         The SlickGrid option "autoHeight" can be used if you wish to keep the full height of the grid without any scrolling
         <ul>
           <li>You define a fixed grid width via "gridWidth" in the View</li>
           <li>You can still use the "autoResize" for the width to be resized automatically (the height will never change in this case)</li>
           <li>This dataset has 25 rows, if you scroll down the page you can see the entire set is shown without any grid scrolling (though you might have browser scrolling)</li>
         </ul>
-      </div>
+      </div>}
 
       <div className="row row-cols-lg-auto g-1 align-items-center">
         <div className="col">

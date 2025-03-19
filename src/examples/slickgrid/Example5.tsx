@@ -37,7 +37,7 @@ const Example5: React.FC = () => {
   const [odataQuery, setOdataQuery] = useState<string>('');
   const [processing, setProcessing] = useState<boolean>(false);
   const [isPageErrorTest] = useState<boolean>(false);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const isPageErrorTestRef = useRef(isPageErrorTest);
   const gridOptionsRef = useRef<GridOption | null>(null);
@@ -483,13 +483,6 @@ const Example5: React.FC = () => {
     reactGridRef.current?.filterService.clearFilters();
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
-
   return !gridOptions ? null : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -501,14 +494,14 @@ const Example5: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
       <div className="row">
         <div className="col-sm-9">
-          <div className="subtitle">
+          {hideSubTitle ? null : <div className="subtitle">
             Use it when you need to support Pagination with a OData endpoint (for simple JSON, use a regular grid)<br />
             Take a look at the (<a href="https://ghiscoding.gitbook.io/slickgrid-react/backend-services/odata" target="_blank">Wiki documentation</a>)
             <br />
@@ -528,7 +521,7 @@ const Example5: React.FC = () => {
                 Also changing Page Size to 50,000 will also throw which again is for demo purposes.
               </li>
             </ul>
-          </div>
+          </div>}
         </div>
         <div className="col-sm-3">
           {errorStatus && <div className="alert alert-danger" data-test="error-status">

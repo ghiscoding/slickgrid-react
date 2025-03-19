@@ -51,7 +51,7 @@ const Example32: React.FC = () => {
   const [editedItems, setEditedItems] = useState<any>({});
   const [isUsingDefaultResize, setIsUsingDefaultResize] = useState(false);
   const [isGridEditable, setIsGridEditable] = useState(true);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
@@ -755,12 +755,6 @@ const Example32: React.FC = () => {
         </div>`;
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -773,15 +767,15 @@ const Example32: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      <div className="subtitle" >
+      {hideSubTitle ? null : <div className="subtitle">
         The grid below uses the optional resize by cell content (with a fixed 950px for demo purposes), you can click on the 2 buttons to see the difference.
         The "autosizeColumns" is really the default option used by SlickGrid-Universal, the resize by cell content is optional
         because it requires to read the first thousand rows and do extra width calculation.
-      </div>
+      </div>}
 
       <h4 className="ml-3">Container Width (950px)</h4>
 

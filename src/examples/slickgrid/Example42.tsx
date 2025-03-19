@@ -25,7 +25,7 @@ const Example42: React.FC = () => {
   const [dataset] = useState<any[]>(loadData(NB_ITEMS));
   const [pageSize, setPageSize] = useState(50);
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
@@ -152,12 +152,6 @@ const Example42: React.FC = () => {
     reactGridRef.current?.paginationService?.changeItemPerPage(+pageSize);
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptions ? '' : (
     <div className="demo42">
@@ -171,17 +165,15 @@ const Example42: React.FC = () => {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
-          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
             <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
           </button>
         </h2>
 
-        <div className="col-sm-12">
-          <h6 className="subtitle italic">
-            You can create a Custom Pagination by passing a React Custom Component and it must <code>implements BasePaginationComponent</code>.
-            Any of the pagination controls could be moved anywhere on the page (for example we purposely moved the page size away from the rest of the pagination elements).
-          </h6>
-        </div>
+        {hideSubTitle ? null : <div className="subtitle">
+          You can create a Custom Pagination by passing a React Custom Component and it must <code>implements BasePaginationComponent</code>.
+          Any of the pagination controls could be moved anywhere on the page (for example we purposely moved the page size away from the rest of the pagination elements).
+        </div>}
 
         <div>
           <span className="margin-15px">

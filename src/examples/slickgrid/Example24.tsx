@@ -66,7 +66,7 @@ const Example24: React.FC = () => {
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
   const [dataset] = useState<any[]>(getData(1000));
   const [darkMode, setDarkMode] = useState(false);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
   const [selectedLanguage, setSelectedLanguage] = useState<string>(defaultLang);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
@@ -511,15 +511,6 @@ const Example24: React.FC = () => {
     setSelectedLanguage(nextLanguage);
   }
 
-  function toggleSubTitle() {
-    const newShowSubTitle = !showSubTitle;
-    const subTitleElm = document.querySelector('.subtitle');
-    const action = newShowSubTitle ? 'remove' : 'add';
-    subTitleElm?.classList[action]('hidden');
-    setShowSubTitle(newShowSubTitle);
-    queueMicrotask(() => reactGridRef.current?.resizerService.resizeGrid());
-  }
-
   function toggleDarkMode() {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
@@ -548,7 +539,7 @@ const Example24: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle sub-title text"></span>
         </button>
         <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" data-test="toggle-dark-mode" onClick={() => toggleDarkMode()}>
@@ -556,7 +547,7 @@ const Example24: React.FC = () => {
           <span>Toggle Dark Mode</span>
         </button>
       </h2>
-      <div className="subtitle" >
+      {hideSubTitle ? null : <div className="subtitle">
         <ul>
           <li>
             This example demonstrates 2 SlickGrid plugins (<b>SlickCellMenu</b> for plugin Action Menu
@@ -577,7 +568,7 @@ const Example24: React.FC = () => {
             <li>... e.g. in the demo, the Context Menu is only available on the first 20 Tasks via "menuUsabilityOverride"</li>
           </ol>
         </ul>
-      </div>
+      </div>}
 
       <div className="row">
         <span className="context-menu d-flex gap-4px">

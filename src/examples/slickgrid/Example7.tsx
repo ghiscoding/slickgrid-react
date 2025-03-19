@@ -15,7 +15,7 @@ const Example7: React.FC = () => {
   const [columnDefinitions2, setColumnDefinitions2] = useState<Column[]>([]);
   const [dataset1, setDataset1] = useState<any[]>([]);
   const [dataset2, setDataset2] = useState<any[]>([]);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const reactGridRef1 = useRef<SlickgridReactInstance | null>(null);
   const reactGridRef2 = useRef<SlickgridReactInstance | null>(null);
@@ -225,13 +225,6 @@ const Example7: React.FC = () => {
     return mockDataset;
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
-
   return !gridOptions1 ? null : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -243,12 +236,12 @@ const Example7: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         This example demonstrates using the <b>SlickHeaderButtons</b> plugin to easily add buttons to colum headers.
         These buttons can be specified directly in the column definition, and are very easy to configure and use.
         (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/header-menu-header-buttons" target="_blank">Docs</a>)
@@ -264,7 +257,7 @@ const Example7: React.FC = () => {
             <li>for example the "Column J" header button is displayed but it not usable via "itemUsabilityOverride"</li>
           </ol>
         </ul>
-      </div>
+      </div>}
 
       <h5>Grid 1</h5>
       <SlickgridReact gridId="grid7-1"

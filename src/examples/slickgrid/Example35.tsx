@@ -32,7 +32,7 @@ const Example35: React.FC = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<string>(defaultLang);
   const [statusClass, setStatusClass] = useState('alert alert-light');
   const [fetchResult, setFetchResult] = useState('');
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const gridOptionsRef = useRef<GridOption>();
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
@@ -251,12 +251,6 @@ const Example35: React.FC = () => {
     setSelectedLanguage(nextLanguage);
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptionsRef.current ? '' : (
     <div>
@@ -269,11 +263,11 @@ const Example35: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         <ul>
           <li>
             The Row Based Edit plugin allows you to edit either a single or multiple
@@ -307,7 +301,7 @@ const Example35: React.FC = () => {
             that only the edited rows are allowed to be pasted into, while still respecting the original rule.
           </li>
         </ul>
-      </div>
+      </div>}
 
       <section>
         <div className="row mb-4">

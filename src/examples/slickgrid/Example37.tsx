@@ -16,7 +16,7 @@ const Example37: React.FC = () => {
   const [dataset, setDataset] = useState<any[]>([]);
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
@@ -127,12 +127,6 @@ const Example37: React.FC = () => {
     }
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -149,13 +143,13 @@ const Example37: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      <div className="subtitle" >
+      {hideSubTitle ? null : <div className="subtitle">
         Display a totals row at the end of the grid.
-      </div>
+      </div>}
 
       <SlickgridReact gridId="grid37"
         columnDefinitions={columnDefinitions}

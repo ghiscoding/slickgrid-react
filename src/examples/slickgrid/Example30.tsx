@@ -89,7 +89,7 @@ const Example30: React.FC = () => {
   const [isGridEditable, setIsGridEditable] = useState(true);
   const [editedItems, setEditedItems] = useState<any>({});
   const [editQueue, setEditQueue] = useState<{ item: any, columns: Column[], editCommand: EditCommand }[]>([]);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
   const compositeEditorInstanceRef = useRef<SlickCompositeEditorComponent>(new SlickCompositeEditorComponent());
@@ -972,21 +972,11 @@ const Example30: React.FC = () => {
         </div>`;
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
       <h2>
         Example 30: Composite Editor Modal
-        <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => toggleDarkMode()} data-test="toggle-dark-mode">
-          <i className="mdi mdi-theme-light-dark"></i>
-          <span>Toggle Dark Mode</span>
-        </button>
         <span className="float-end font18">
           see&nbsp;
           <a target="_blank"
@@ -994,15 +984,20 @@ const Example30: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
+        <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => toggleDarkMode()} data-test="toggle-dark-mode">
+          <i className="mdi mdi-theme-light-dark"></i>
+          <span>Toggle Dark Mode</span>
+        </button>
       </h2>
-      <div className="subtitle">
+
+      {hideSubTitle ? null : <div className="subtitle">
         Composite Editor allows you to Create, Clone, Edit, Mass Update & Mass Selection Changes inside a nice Modal Window.<br />
         The modal is simply populated by looping through your column definition list and also uses a lot of the same logic as inline editing
         (see <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/composite-editor-modal" target="_blank">Composite Editor - Wiki</a>.)
-      </div>
+      </div>}
 
       <div className="mb-2">
         <div className="btn-group btn-group-sm" role="group" aria-label="Basic Editing Commands">

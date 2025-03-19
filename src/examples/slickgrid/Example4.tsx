@@ -26,7 +26,7 @@ const Example4: React.FC = () => {
   const [reactGrid, setReactGrid] = useState<SlickgridReactInstance>();
   const [metrics, setMetrics] = useState<Metrics>();
   const [dataset] = useState(getData(NB_ITEMS));
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   useEffect(() => {
     saveCurrentGridState();
@@ -283,13 +283,6 @@ const Example4: React.FC = () => {
     ]);
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
-
   return (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -301,12 +294,12 @@ const Example4: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         Sort/Filter on client side only using SlickGrid DataView (<a href="https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/sorting" target="_blank">Docs</a>)
         <br />
         <ul className="small">
@@ -326,7 +319,7 @@ const Example4: React.FC = () => {
           <li>On String filters, (*) can be used as startsWith (Hello* =&gt; matches "Hello Word") ... endsWith (*Doe =&gt; matches: "John Doe")</li>
           <li>Custom Filter are now possible, "Description" column below, is a customized InputFilter with different placeholder. See <a href="https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/filters/custom-filter" target="_blank">Wiki - Custom Filter</a></li>
         </ul>
-      </div>
+      </div>}
 
       <br />
       {metrics && <span><><b>Metrics:</b>

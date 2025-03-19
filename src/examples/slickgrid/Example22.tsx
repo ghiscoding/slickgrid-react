@@ -21,7 +21,7 @@ const Example22: React.FC = () => {
   const reactGridRef2 = useRef<SlickgridReactInstance | null>(null);
   const [isGrid2DataLoaded, setIsGrid2DataLoaded] = useState(false);
   const [isGrid2Resize, setIsGrid2Resize] = useState(false);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   useEffect(() => {
     defineGrids();
@@ -128,12 +128,6 @@ const Example22: React.FC = () => {
     }
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptions1 ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -146,17 +140,17 @@ const Example22: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      <div className="subtitle" >
+      {hideSubTitle ? null : <div className="subtitle">
         This example demonstrate the creation of multiple grids in Bootstrap Tabs
         <ol>
           <li>Regular mocked data with javascript</li>
           <li>Load dataset through Fetch. Also note we need to call a "resizeGrid()" after focusing on this tab</li>
         </ol>
-      </div>
+      </div>}
 
       <div>
         <ul className="nav nav-tabs"

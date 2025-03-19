@@ -13,7 +13,7 @@ const Example16: React.FC = () => {
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
   const [dataset, setDataset] = useState<any[]>(getData());
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
@@ -267,13 +267,6 @@ const Example16: React.FC = () => {
     reactGridRef.current?.sortService.toggleSortFunctionality();
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
-
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -285,11 +278,11 @@ const Example16: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      <div className="subtitle" >
+      {hideSubTitle ? null : <div className="subtitle">
         This example demonstrates using the <b>SlickRowMoveManager</b> plugin to easily move a row in the grid.<br />
         <ul>
           <li>Click to select, Ctrl+Click to toggle selection, Shift+Click to select a range.</li>
@@ -304,7 +297,7 @@ const Example16: React.FC = () => {
             <li>SingleRowMove has the name suggest will only move 1 row at a time, by default it will move any row(s) that are selected unless you disable the flag</li>
           </ul>
         </ul>
-      </div>
+      </div>}
 
       <div className="row">
         <div className="col-sm-12">

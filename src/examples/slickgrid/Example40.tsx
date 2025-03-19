@@ -22,7 +22,7 @@ const FETCH_SIZE = 50;
 const Example40: React.FC = () => {
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
   const [dataset] = useState<any[]>(loadData(0, FETCH_SIZE));
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const shouldResetOnSortRef = useRef(false);
   const gridOptionsRef = useRef<GridOption>();
@@ -166,12 +166,6 @@ const Example40: React.FC = () => {
     ]);
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptionsRef.current ? '' : (
     <div className="demo40">
@@ -185,24 +179,22 @@ const Example40: React.FC = () => {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
-          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
             <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
           </button>
         </h2>
 
-        <div className="col-sm-12">
-          <h6 className="subtitle italic content">
-            <ul>
-              <li>
-                Infinite scrolling allows the grid to lazy-load rows from the server when reaching the scroll bottom (end) position.
-                In its simplest form, the more the user scrolls down, the more rows get loaded.
-              </li>
-              <li>NOTES: <code>presets.pagination</code> is not supported with Infinite Scroll and will revert to the first page,
-                simply because since we keep appending data, we always have to start from index zero (no offset).
-              </li>
-            </ul>
-          </h6>
-        </div>
+        {hideSubTitle ? null : <div className="subtitle">
+          <ul>
+            <li>
+              Infinite scrolling allows the grid to lazy-load rows from the server when reaching the scroll bottom (end) position.
+              In its simplest form, the more the user scrolls down, the more rows get loaded.
+            </li>
+            <li>NOTES: <code>presets.pagination</code> is not supported with Infinite Scroll and will revert to the first page,
+              simply because since we keep appending data, we always have to start from index zero (no offset).
+            </li>
+          </ul>
+        </div>}
 
         <div className="row">
           <div className="col-sm-12">

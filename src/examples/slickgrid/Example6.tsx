@@ -37,7 +37,7 @@ const Example6: React.FC = () => {
   const [status, setStatus] = useState<Status>({ text: '', class: '' });
   const [isWithCursor, setIsWithCursor] = useState<boolean>(false);
   const [serverWaitDelay] = useState(FAKE_SERVER_DELAY);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const isWithCursorRef = useRef(isWithCursor);
   const serverWaitDelayRef = useRef(serverWaitDelay);
@@ -356,13 +356,6 @@ const Example6: React.FC = () => {
     setSelectedLanguage(nextLanguage);
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
-
   return !gridOptions ? null : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -374,12 +367,12 @@ const Example6: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         Use it when you need to support Pagination with a GraphQL endpoint (for simple JSON, use a regular grid).
         <br />Take a look at the (<a href="https://ghiscoding.gitbook.io/slickgrid-react/backend-services/graphql" target="_blank">Docs</a>)
         <ul className="small">
@@ -395,7 +388,7 @@ const Example6: React.FC = () => {
           <li>Depending on your configuration, your GraphQL Server might already support regex querying (e.g. Hasura <a href="https://hasura.io/docs/latest/queries/postgres/filters/text-search-operators/#_regex" target="_blank">_regex</a>)
             or you could add your own implementation (e.g. see this SO <a href="https://stackoverflow.com/a/37981802/1212166">Question</a>).</li>
         </ul>
-      </div>
+      </div>}
 
       <div className="row">
         <div className="col-sm-5">

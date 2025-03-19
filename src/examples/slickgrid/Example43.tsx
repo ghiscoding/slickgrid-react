@@ -14,7 +14,7 @@ import './example43.scss';
 export default function Example43() {
   const [reactGrid, setReactGrid] = useState<SlickgridReactInstance>();
   const [isEditable, setIsEditable] = useState<boolean>(false);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
   const [dataset] = useState(loadData());
   const [excelExportService] = useState<ExcelExportService>(new ExcelExportService());
   let showEmployeeId = true;
@@ -441,12 +441,6 @@ export default function Example43() {
     reactGrid?.slickGrid.invalidate();
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return (
     <div id="demo-container" className="container-fluid">
@@ -461,12 +455,12 @@ export default function Example43() {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         <p className="italic example-details">
           <b>NOTES</b>: <code>rowspan</code> is an opt-in feature, because of its small perf hit (it needs to loop through all row metadatas to
           map all rowspan), and requires the <code>enableCellRowSpan</code> grid option to be enabled to work properly. The
@@ -478,7 +472,7 @@ export default function Example43() {
           pinning doesn't intersect)! Any freezing column/row that could intersect with a <code>colspan</code>/<code>rowspan</code>
           &nbsp;<b>will cause problems</b>.
         </p>
-      </div>
+      </div>}
 
       <button
         className="ms-2 btn btn-outline-secondary btn-sm btn-icon"

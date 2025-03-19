@@ -87,7 +87,7 @@ const Example34: React.FC = () => {
   const [minChangePerCycle, setMinChangePerCycle] = useState(0);
   const [maxChangePerCycle, setMaxChangePerCycle] = useState(10);
   const [refreshRate, setRefreshRate] = useState(75);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const columnDefinitionsRef = useRef<Column[]>([]);
   const minChangePerCycleRef = useRef(minChangePerCycle);
@@ -396,21 +396,11 @@ const Example34: React.FC = () => {
     return floor ? Math.floor(number) : number;
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptions ? '' : (
     <div>
       <h2>
         Example 34: Real-Time Trading Platform
-        <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => toggleDarkMode()} data-test="toggle-dark-mode">
-          <i className="mdi mdi-theme-light-dark"></i>
-          <span>Toggle Dark Mode</span>
-        </button>
         <span className="float-end font18">
           see&nbsp;
           <a target="_blank"
@@ -418,12 +408,16 @@ const Example34: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
+        <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => toggleDarkMode()} data-test="toggle-dark-mode">
+          <i className="mdi mdi-theme-light-dark"></i>
+          <span>Toggle Dark Mode</span>
         </button>
       </h2>
 
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         Simulate a stock trading platform with lot of price changes, it is strongly suggested to disable the <code>autoResize.autoHeight</code> grid option for this type of grid.
         <ul>
           <li>you can start/stop the simulation, you can see SlickGrid huge perf by setting: (1) lower Changes Rate, (2) increase both Changes per Cycle, and (3) lower Highlight Duration</li>
@@ -431,7 +425,7 @@ const Example34: React.FC = () => {
           <li>optionally change the simulation changes refresh rate in ms (lower number means more changes).</li>
           <li>you can Group by 1 of these columns: Currency, Market or Type</li>
         </ul>
-      </div>
+      </div>}
 
       <div className="trading-platform">
         <div className="row mb-4 simulation-form">

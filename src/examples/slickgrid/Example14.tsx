@@ -20,7 +20,7 @@ const Example14: React.FC = () => {
   const [dataset2, setDataset2] = useState<any[]>([]);
   // const reactGridRef1 = useRef<SlickgridReactInstance | null>(null);
   const reactGridRef2 = useRef<SlickgridReactInstance | null>(null);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   useEffect(() => {
     defineGrid1();
@@ -159,13 +159,6 @@ const Example14: React.FC = () => {
     };
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
-
   return !gridOptions1 ? '' : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -177,16 +170,16 @@ const Example14: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      <div className="subtitle" >
+      {hideSubTitle ? null : <div className="subtitle">
         This example demonstrates how to easily span a row over multiple columns & how to group header titles.
         <ul>
           <li>Note that you can add Sort but remember that it will sort by the data which the row contains, even if the data is visually hidden by colspan it will still sort it</li>
         </ul>
-      </div>
+      </div>}
 
       <h3>Grid 1 <small>(with Header Grouping &amp; Colspan)</small></h3>
       <SlickgridReact gridId="grid1"

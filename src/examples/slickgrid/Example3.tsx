@@ -69,7 +69,7 @@ const Example3: React.FC = () => {
   const [alertWarning, setAlertWarning] = useState('');
   const [dataset] = useState(getData(NB_ITEMS));
   const [reactGrid, setReactGrid] = useState<SlickgridReactInstance>();
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([
     {
@@ -657,13 +657,6 @@ const Example3: React.FC = () => {
     }
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
-
   return (
     <div id='demo-container' className='container-fluid'>
       <h2>
@@ -675,12 +668,12 @@ const Example3: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         Grid with Inline Editors and onCellClick actions (<a href='https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/editors' target='_blank'>Docs</a>).
         <ul>
           <li>Multiple Editors & Filters are available: AutoComplete, Checkbox, Date, Slider, SingleSelect, MultipleSelect, Float, Text, LongText... even Custom Editor</li>
@@ -697,7 +690,7 @@ const Example3: React.FC = () => {
             <li>Any Editor/Filter with a 'collection' can be changed dynamically later in the future</li>
           </ul>
         </ul>
-      </div>
+      </div>}
 
       <div className="row">
         <div className='col-sm-6'>

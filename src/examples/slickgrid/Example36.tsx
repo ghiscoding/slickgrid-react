@@ -100,7 +100,7 @@ const Example36: React.FC = () => {
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
   const [taxRate, setTaxRate] = useState(7.5);
   const [excelExportService] = useState(new ExcelExportService());
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const isDataGroupedRef = useRef(false);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
@@ -455,12 +455,6 @@ const Example36: React.FC = () => {
     console.log('tax rate', +val, taxRateRef.current);
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -473,16 +467,16 @@ const Example36: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         Grid with Excel Formulas (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/export-to-excel#cell-value-parser" target="_blank">Wiki docs</a>).
         Calculate Totals via Formatters in the UI, but use Excel Formula when exporting via <code>excelExportOptions.valueParserCallback</code>
         When Grouped we will also calculate the Group Totals in the UI via Group Formatter and we again use Excel Formula to calculate the Group Totals (sum) dynamically.
         For Grouping we need to use <code>groupTotalsExcelExportOptions.valueParserCallback</code> instead.
-      </div>
+      </div>}
 
       <section className="row mb-2">
         <div className="mb-1">

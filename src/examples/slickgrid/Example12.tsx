@@ -30,7 +30,7 @@ const Example12: React.FC = () => {
   const [dataset] = useState<any[]>(getData(NB_ITEMS));
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
   const [selectedLanguage, setSelectedLanguage] = useState<string>(defaultLang);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
   const excelExportService = new ExcelExportService();
@@ -216,13 +216,6 @@ const Example12: React.FC = () => {
     setSelectedLanguage(nextLanguage)
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
-
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -234,12 +227,12 @@ const Example12: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         Support multiple locales with the i18next plugin, following these steps.
         Take a look at the (<a href="https://ghiscoding.gitbook.io/slickgrid-react/localization/localization" target="_blank">Wiki documentation</a>)
         <ol className="small">
@@ -265,7 +258,7 @@ const Example12: React.FC = () => {
           </ul>
           <li>For more info about "Download to File", read the <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/export-to-text-file" target="_blank">Wiki page</a></li>
         </ol>
-      </div>
+      </div>}
 
       <hr />
 

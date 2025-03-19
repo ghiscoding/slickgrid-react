@@ -20,7 +20,7 @@ const Example29: React.FC = () => {
   const [dataset] = useState<Column[]>(getData(NB_ITEMS));
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   useEffect(() => {
     defineGrids();
@@ -70,12 +70,6 @@ const Example29: React.FC = () => {
     return mockDataset;
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptions ? null : (
     <div id="demo-container" className="container-fluid">
@@ -88,13 +82,13 @@ const Example29: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         Simple Grids with a custom header and footer via named slots
-      </div>
+      </div>}
 
       <hr />
 

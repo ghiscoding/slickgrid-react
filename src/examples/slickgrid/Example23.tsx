@@ -50,7 +50,7 @@ const Example23: React.FC = () => {
     { value: 'nextYearTasks', label: 'Next Year Active Tasks' }
   ]);
   const [metrics, setMetrics] = useState<Metrics>();
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   useEffect(() => {
     i18next.changeLanguage(defaultLang);
@@ -279,12 +279,6 @@ const Example23: React.FC = () => {
     reactGridRef.current?.filterService.updateFilters(filters);
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -297,11 +291,11 @@ const Example23: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         This demo shows how to use Filters with Range of Search Values (<a href="https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/filters/range-filters" target="_blank">Docs</a>)
         <br />
         <ul className="small">
@@ -312,7 +306,7 @@ const Example23: React.FC = () => {
             <li>example: typing "10..90" will filter values between 10 and 90 (but excluding the number 10 and 90)</li>
           </ul>
         </ul>
-      </div>
+      </div>}
 
       <br />
 

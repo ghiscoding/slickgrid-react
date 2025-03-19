@@ -15,7 +15,7 @@ export default function Example44() {
   const [reactGrid, setReactGrid] = useState<SlickgridReactInstance>();
   const [scrollToRow, setScrollToRow] = useState(100);
   const [dataLn, setDataLn] = useState<number | string>('loading...');
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
   const [dataset, setDataset] = useState<any[]>([]);
   const [metadata, setMetadata] = useState<Record<number, ItemMetadata>>({
     0: {
@@ -374,12 +374,6 @@ export default function Example44() {
     setReactGrid(instance);
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return (
     <div id="demo-container" className="container-fluid">
@@ -394,12 +388,12 @@ export default function Example44() {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         <p className="italic example-details">
           This page demonstrates <code>colspan</code> & <code>rowspan</code> using DataView with item metadata. <b>Note</b>:
           <code>colspan</code> & <code>rowspan</code> are rendered via row/cell indexes, any operations that could change these indexes (i.e.
@@ -407,7 +401,7 @@ export default function Example44() {
           responsability). This demo does not show this because it is up to you to decide what to do when the span changes shape (i.e. you
           default to 3 rowspan but you filter a row in the middle, how do you want to proceed?).
         </p>
-      </div>
+      </div>}
 
       <section className="row mb-2">
         <div className="d-flex">

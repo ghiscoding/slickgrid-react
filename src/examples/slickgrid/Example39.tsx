@@ -37,7 +37,7 @@ const Example39: React.FC = () => {
   const [status, setStatus] = useState({} as Status);
   const [serverWaitDelay, setServerWaitDelay] = useState(FAKE_SERVER_DELAY); // server simulation with default of 250ms but 50ms for Cypress tests
   const [tagDataClass, setTagDataClass] = useState('');
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const gridOptionsRef = useRef<GridOption>();
   const metricsRef = useRef({} as Metrics);
@@ -330,12 +330,6 @@ const Example39: React.FC = () => {
     setSelectedLanguage(nextLanguage);
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptionsRef.current ? '' : (
     <div className="demo39">
@@ -349,36 +343,34 @@ const Example39: React.FC = () => {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
-          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
             <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
           </button>
         </h2>
 
-        <div className="col-sm-12">
-          <h6 className="subtitle italic content">
-            <ul>
+        {hideSubTitle ? null : <div className="subtitle">
+          <ul>
+            <li>
+              Infinite scrolling allows the grid to lazy-load rows from the server when reaching the scroll bottom (end) position.
+              In its simplest form, the more the user scrolls down, the more rows get loaded.
+              If we reached the end of the dataset and there is no more data to load, then we'll assume to have the entire dataset loaded in memory.
+              This contrast with the regular Pagination approach which will only hold a single page data at a time.
+            </li>
+            <li>NOTES</li>
+            <ol>
               <li>
-                Infinite scrolling allows the grid to lazy-load rows from the server when reaching the scroll bottom (end) position.
-                In its simplest form, the more the user scrolls down, the more rows get loaded.
-                If we reached the end of the dataset and there is no more data to load, then we'll assume to have the entire dataset loaded in memory.
-                This contrast with the regular Pagination approach which will only hold a single page data at a time.
+                <code>presets.pagination</code> is not supported with Infinite Scroll and will revert to the first page,
+                simply because since we keep appending data, we always have to start from index zero (no offset).
               </li>
-              <li>NOTES</li>
-              <ol>
-                <li>
-                  <code>presets.pagination</code> is not supported with Infinite Scroll and will revert to the first page,
-                  simply because since we keep appending data, we always have to start from index zero (no offset).
-                </li>
-                <li>
-                  Pagination is not shown BUT in fact, that is what is being used behind the scene whenever reaching the scroll end (fetching next batch).
-                </li>
-                <li>
-                  Also note that whenever the user changes the Sort(s)/Filter(s) it will always reset and go back to zero index (first page).
-                </li>
-              </ol>
-            </ul>
-          </h6>
-        </div>
+              <li>
+                Pagination is not shown BUT in fact, that is what is being used behind the scene whenever reaching the scroll end (fetching next batch).
+              </li>
+              <li>
+                Also note that whenever the user changes the Sort(s)/Filter(s) it will always reset and go back to zero index (first page).
+              </li>
+            </ol>
+          </ul>
+        </div>}
 
         <div className="row">
           <div className="col-sm-5">

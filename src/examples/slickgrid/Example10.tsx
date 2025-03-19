@@ -23,7 +23,7 @@ const Example10: React.FC = () => {
   const reactGrid2Ref = useRef<SlickgridReactInstance | null>(null);
   const [isGrid2WithPagination, setIsGrid2WithPagination] = useState(true);
   const [selectedTitles, setSelectedTitles] = useState('');
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   let selectedGrid2IDs: number[] = [];
 
@@ -265,13 +265,6 @@ const Example10: React.FC = () => {
     showGrid2Pagination(newIsGrid2WithPagination);
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
-
   return !gridOptions1 ? null : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -283,19 +276,19 @@ const Example10: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         Row selection, single or multi-select (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/row-selection" target="_blank">Docs</a>).
         <ul>
           <li>Single Select, you can click on any cell to make the row active</li>
           <li>Multiple Selections, you need to specifically click on the checkbox to make 1 or more selections</li>
           <li>NOTE: Any Row Selection(s) will be reset when using Pagination and changing Page (you will need to set it back manually if you want it back)</li>
         </ul>
-      </div>
+      </div>}
 
       <div className="row">
         <div className="col-sm-4" style={{ maxWidth: '205px' }}>

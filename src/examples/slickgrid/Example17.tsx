@@ -9,7 +9,7 @@ const Example17: React.FC = () => {
   const [dataset, setDataset] = useState<any[]>([]);
   const templateUrl = new URL('./data/users.csv', import.meta.url).href;
   const [uploadFileRef, setUploadFileRef] = useState('');
-  const [showSubTitle, setShowSubTitle] = useState(true);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   function destroyGrid() {
     setGridCreated(false);
@@ -91,12 +91,6 @@ const Example17: React.FC = () => {
     setGridCreated(true);
   }
 
-  function toggleSubTitle() {
-    setShowSubTitle(!showSubTitle);
-    const action = !showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
-
   return (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -108,21 +102,21 @@ const Example17: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
-      {showSubTitle && <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         Allow creating a grid dynamically by importing an external CSV or Excel file. This script demo will read the CSV file and will
         consider the first row as the column header and create the column definitions accordingly, while the next few rows will be
         considered the dataset. Note that this example is demoing a CSV file import but in your application you could easily implemnt
         an Excel file uploading.
       </div>}
 
-      <div>A default CSV file can be download <a id="template-dl" href={templateUrl}>here</a>.</div>
+      <div className="my-3">A default CSV file can be download <a id="template-dl" href={templateUrl}>here</a></div>
 
-      <div className="d-flex mt-5 align-items-end">
+      <div className="d-flex mt-4 align-items-end">
         <div className="file-upload" style={{ maxWidth: '300px' }}>
           <label htmlFor="formFile" className="form-label">Choose a CSV file…</label>
           <input className="form-control" type="file" data-test="file-upload-input" value={uploadFileRef} onChange={($event) => handleFileImport($event)} />

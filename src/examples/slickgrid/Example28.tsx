@@ -25,7 +25,7 @@ const Example28: React.FC = () => {
   const [datasetHierarchical, setDatasetHierarchical] = useState(mockDataset());
   const [lastInsertedPopSongId, setLastInsertedPopSongId] = useState<number | undefined>();
   const [searchString, setSearchString] = useState('');
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const isExcludingChildWhenFilteringRef = useRef(false);
   const isAutoApproveParentItemWhenTreeColumnIsValidRef = useRef(true);
@@ -366,12 +366,6 @@ const Example28: React.FC = () => {
     ];
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -384,11 +378,11 @@ const Example28: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         <ul>
           <li>It is assumed that your dataset will have Parent/Child references AND also Tree Level (indent) property.</li>
           <ul>
@@ -396,7 +390,7 @@ const Example28: React.FC = () => {
             <li>You could also pass the result of "convertParentChildArrayToHierarchicalView()" to "dataset-hierarchical.bind" as defined in the next Hierarchical Example</li>
           </ul>
         </ul>
-      </div>
+      </div>}
 
       <div className="row">
         <div className="col-md-7">

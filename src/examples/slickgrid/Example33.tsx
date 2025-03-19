@@ -29,7 +29,7 @@ const Example33: React.FC = () => {
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
   const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
   const [editCommandQueue] = useState<EditCommand[]>([]);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const serverWaitDelayRef = useRef(serverWaitDelay);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
@@ -484,12 +484,6 @@ const Example33: React.FC = () => {
     return output;
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -502,11 +496,11 @@ const Example33: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         This demo shows how to create Regular & Custom Tooltips (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/custom-tooltip" target="_blank">Docs</a>)
         <br />
         <ul className="small">
@@ -515,7 +509,7 @@ const Example33: React.FC = () => {
           <li>create an Async Custom Tooltip (Promise/Observable) to allowing fetching data from an API</li>
           <li>optionally add Custom Tooltip on Column Header & Column Header-Row (filters)</li>
         </ul>
-      </div>
+      </div>}
 
 
       <div style={{ marginBottom: '20px' }}>

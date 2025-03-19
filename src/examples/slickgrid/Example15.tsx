@@ -29,7 +29,7 @@ const Example15: React.FC = () => {
   const [dataset] = useState<any[]>(getData(NB_ITEMS));
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
   const [selectedLanguage, setSelectedLanguage] = useState<string>(defaultLang);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
@@ -250,14 +250,7 @@ const Example15: React.FC = () => {
       ],
     } as GridState;
   }
-    */
-
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
+  */
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -270,11 +263,11 @@ const Example15: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         Grid State & Preset (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grid-state-preset" target="_blank">Docs</a>)
         <br />
         <ul className="small">
@@ -284,7 +277,7 @@ const Example15: React.FC = () => {
           </ul>
           <li>Local Storage is just one option, you can use whichever is more convenient for you (Local Storage, Session Storage, DB, ...)</li>
         </ul>
-      </div>
+      </div>}
 
       <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="reset-button"
         onClick={() => clearGridStateFromLocalStorage()}>

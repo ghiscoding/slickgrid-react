@@ -26,7 +26,7 @@ const Example18: React.FC = () => {
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
   const [draggableGroupingPlugin, setDraggableGroupingPlugin] = useState<any>(null);
   const [selectedGroupingFields, setSelectedGroupingFields] = useState(['', '', '']);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const excelExportService = new ExcelExportService();
   const textExportService = new TextExportService();
@@ -428,21 +428,11 @@ const Example18: React.FC = () => {
     }
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
       <h2>
         Example 18: Draggable Grouping & Aggregators
-        <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => toggleDarkMode()} data-test="toggle-dark-mode">
-          <i className="mdi mdi-theme-light-dark"></i>
-          <span>Toggle Dark Mode</span>
-        </button>
         <span className="float-end font18">
           see&nbsp;
           <a target="_blank"
@@ -450,11 +440,16 @@ const Example18: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
+        <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => toggleDarkMode()} data-test="toggle-dark-mode">
+          <i className="mdi mdi-theme-light-dark"></i>
+          <span>Toggle Dark Mode</span>
+        </button>
       </h2>
-      <div className="subtitle">
+
+      {hideSubTitle ? null : <div className="subtitle">
         <ul>
           <li>This example shows 3 ways of grouping <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grouping-aggregators" target="_blank">Docs</a></li>
           <ol>
@@ -466,7 +461,7 @@ const Example18: React.FC = () => {
           <li>Each grouping level can have its own aggregates (over child rows, child groups, or all descendant rows)..</li>
           <li>Use "Aggregators" and "GroupTotalFormatters" directly from Slickgrid-React</li>
         </ul>
-      </div>
+      </div>}
 
       <form className="form-inline" onSubmit={(e) => e.preventDefault()}>
         <div className="row">

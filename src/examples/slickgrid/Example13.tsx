@@ -23,7 +23,7 @@ const Example13: React.FC = () => {
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
   const [processing, setProcessing] = useState(false);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const excelExportService = new ExcelExportService();
   const textExportService = new TextExportService();
@@ -350,13 +350,6 @@ const Example13: React.FC = () => {
     setProcessing(isProcessing);
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
-
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -368,18 +361,18 @@ const Example13: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         <ul>
           <li><a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grouping-aggregators" target="_blank">Docs</a></li>
           <li>Fully dynamic and interactive multi-level grouping with filtering and aggregates over 50'000 items</li>
           <li>Each grouping level can have its own aggregates (over child rows, child groups, or all descendant rows)..</li>
           <li>Use "Aggregators" and "GroupTotalFormatters" directly from Slickgrid-React</li>
         </ul>
-      </div>
+      </div>}
 
       <div className="row">
         <div className="col-sm-12">

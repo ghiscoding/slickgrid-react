@@ -12,7 +12,7 @@ const Example8: React.FC = () => {
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
   const [selectedLanguage, setSelectedLanguage] = useState<string>(defaultLang);
   // const [visibleColumns, setVisibleColumns] = useState<Column[]>([]);
-  const [showSubTitle, setShowSubTitle] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
 
   useEffect(() => {
@@ -155,13 +155,6 @@ const Example8: React.FC = () => {
     setSelectedLanguage(nextLanguage);
   }
 
-  function toggleSubTitle() {
-    const isShowing = !showSubTitle;
-    setShowSubTitle(isShowing);
-    const action = showSubTitle ? 'remove' : 'add';
-    document.querySelector('.subtitle')?.classList[action]('hidden');
-  }
-
   return !gridOptions ? null : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -173,12 +166,12 @@ const Example8: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
-      <div className="subtitle">
+      {hideSubTitle ? null : <div className="subtitle">
         This example demonstrates using the <b>SlickHeaderMenu</b> plugin to easily add menus to colum headers.<br />
         These menus can be specified directly in the column definition, and are very easy to configure and use.
         (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/header-menu-header-buttons" target="_blank">Docs</a>)
@@ -196,7 +189,7 @@ const Example8: React.FC = () => {
             <li>for example don't show Help on column "% Complete"</li>
           </ol>
         </ul>
-      </div>
+      </div>}
 
       <button className="btn btn-outline-secondary btn-sm btn-icon me-1" onClick={() => switchLanguage()}>
         <i className="mdi mdi-translate me-1"></i>
