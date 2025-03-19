@@ -99,7 +99,7 @@ const Example45DetailView: React.FC<RowDetailViewProps<Distributor, typeof Examp
   return (
     <div className={`container-fluid ${innerGridClass}`} style={{ marginTop: '10px' }}>
       <h4>{props.model.companyName} - Order Details (id: {props.model.id})</h4>
-      <div className="container-fluid">
+      <div className="container-fluid innergrid">
         {showGrid && (
           <SlickgridReact
             gridId={`innergrid-${props.model.id}`}

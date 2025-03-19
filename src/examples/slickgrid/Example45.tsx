@@ -22,11 +22,13 @@ const Example45: React.FC = () => {
   const [dataset] = useState<Distributor[]>(getData(NB_ITEMS));
   const [detailViewRowCount, setDetailViewRowCount] = useState<number>(9);
   const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
+  const [isUsingAutoHeight, setIsUsingAutoHeight] = useState<boolean>(false);
   const [isUsingInnerGridStatePresets, setIsUsingInnerGridStatePresets] = useState<boolean>(false);
   const [darkMode, setDarkMode] = useState<boolean>(false);
 
   const serverWaitDelayRef = useRef(serverWaitDelay);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+  const isUsingAutoHeightRef = useRef(isUsingAutoHeight);
   const isUsingInnerGridStatePresetsRef = useRef(isUsingInnerGridStatePresets);
 
   useEffect(() => {
@@ -40,6 +42,7 @@ const Example45: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    isUsingAutoHeightRef.current = isUsingAutoHeight;
     isUsingInnerGridStatePresetsRef.current = isUsingInnerGridStatePresets;
   }, [isUsingInnerGridStatePresets]);
 
@@ -152,6 +155,7 @@ const Example45: React.FC = () => {
     return {
       autoResize: {
         container: '#demo-container',
+        autoHeight: isUsingAutoHeightRef.current, // works with/without autoHeight
         rightPadding: 10
       },
       enableFiltering: true,
@@ -204,6 +208,15 @@ const Example45: React.FC = () => {
     const newIsUsingInnerGridStatePresets = !isUsingInnerGridStatePresets;
     closeAllRowDetail();
     setIsUsingInnerGridStatePresets(newIsUsingInnerGridStatePresets);
+    return true;
+  }
+
+  function changeUsingResizerAutoHeight() {
+    const newIsUsingAutoHeight = !isUsingAutoHeight;
+    setIsUsingAutoHeight(newIsUsingAutoHeight);
+    reactGridRef.current?.slickGrid?.setOptions({ autoResize: { ...gridOptions?.autoResize, autoHeight: newIsUsingAutoHeight } });
+    reactGridRef.current?.resizerService.resizeGrid();
+    console.log('auto-height', reactGridRef.current?.slickGrid.getOptions())
     return true;
   }
 
@@ -285,6 +298,20 @@ const Example45: React.FC = () => {
                 <input type="checkbox" id="useInnerGridStatePresets" data-test="use-inner-grid-state-presets" className="me-1" checked={isUsingInnerGridStatePresets} onChange={changeUsingInnerGridStatePresets} />
                 <span title="should we use Grid State/Presets to keep the inner grid state whenever Row Details are out and back to viewport and re-rendered">
                   Use Inner Grid State/Presets
+                </span>
+              </label>
+              <label className="checkbox-inline control-label ms-2" htmlFor="useResizeAutoHeight">
+                <input
+                  type="checkbox"
+                  id="useResizeAutoHeight"
+                  data-test="use-auto-height"
+                  className="me-1"
+                  checked={isUsingAutoHeight}
+                  onChange={() => changeUsingResizerAutoHeight()} />
+                <span
+                  title="should we use Grid State/Presets to keep the inner grid state whenever Row Details are out and back to viewport and re-rendered"
+                >
+                  Use <code>autoResize.autoHeight</code>
                 </span>
               </label>
             </span>
