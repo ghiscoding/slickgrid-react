@@ -21,10 +21,11 @@ const Example45: React.FC = () => {
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
   const [dataset] = useState<Distributor[]>(getData(NB_ITEMS));
   const [detailViewRowCount, setDetailViewRowCount] = useState<number>(9);
-  const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
   const [isUsingAutoHeight, setIsUsingAutoHeight] = useState<boolean>(false);
   const [isUsingInnerGridStatePresets, setIsUsingInnerGridStatePresets] = useState<boolean>(false);
   const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
 
   const serverWaitDelayRef = useRef(serverWaitDelay);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
@@ -261,21 +262,24 @@ const Example45: React.FC = () => {
       <div id="demo-container" className="container-fluid">
         <h2>
           Example 45: Row Detail with inner Grid
-          <button className="btn btn-outline-secondary btn-sm btn-icon ms-3" onClick={toggleDarkMode} data-test="toggle-dark-mode">
-            <span className="mdi mdi-theme-light-dark"></span>
-            <span>Toggle Dark Mode</span>
-          </button>
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank" href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example45.tsx">
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+            <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+          </button>
+          <button className="btn btn-outline-secondary btn-sm btn-icon ms-3" onClick={toggleDarkMode} data-test="toggle-dark-mode">
+            <span className="mdi mdi-theme-light-dark"></span>
+            <span>Toggle Dark Mode</span>
+          </button>
         </h2>
 
-        <div className="subtitle">
+        {hideSubTitle ? null : <div className="subtitle">
           Add functionality to show extra information with a Row Detail View, (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/row-detail" target="_blank">Wiki docs</a>), we'll use an inner grid inside our Row Detail Component. Note that because SlickGrid uses Virtual Scroll, the rows and row details are often be re-rendered (when row is out of viewport range) and this means unmounting Row Detail Component which indirectly mean that all component states (dynamic elements, forms, ...) will be disposed as well, however you can use Grid State/Presets to reapply previous state whenever the row detail gets re-rendered when back to viewport.
-        </div>
+        </div>}
 
         <div className="row">
           <div className="col-sm-10">
