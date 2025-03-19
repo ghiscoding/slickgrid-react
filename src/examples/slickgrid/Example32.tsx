@@ -13,50 +13,17 @@ import {
   SlickGlobalEditorLock,
   type SlickgridReactInstance,
   SlickgridReact,
-  type SlickGrid,
   SortComparers,
   type VanillaCalendarOption,
   type SearchTerm,
 } from '../../slickgrid-react';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import type BaseSlickGridState from './state-slick-grid-base';
 import './example32.scss'; // provide custom CSS/SASS styling
 import URL_COUNTRIES_COLLECTION_URL from './data/countries.json?url';
 
 const NB_ITEMS = 400;
-
-/**
- * Check if the current item (cell) is editable or not
- * @param {*} dataContext - item data context object
- * @param {*} columnDef - column definition
- * @param {*} grid - slickgrid grid object
- * @returns {boolean} isEditable
- */
-function checkItemIsEditable(dataContext: any, columnDef: Column, grid: SlickGrid) {
-  const gridOptions = grid.getOptions() as GridOption;
-  const hasEditor = columnDef.editor;
-  const isGridEditable = gridOptions.editable;
-  let isEditable = !!(isGridEditable && hasEditor);
-
-  if (dataContext && columnDef && gridOptions && gridOptions.editable) {
-    switch (columnDef.id) {
-      case 'finish':
-        // case 'percentComplete':
-        isEditable = !!dataContext?.completed;
-        break;
-      // case 'completed':
-      // case 'duration':
-      // case 'title':
-      // case 'product':
-      // case 'origin':
-      // isEditable = dataContext.percentComplete < 50;
-      // break;
-    }
-  }
-  return isEditable;
-}
 
 const customEditableInputFormatter: Formatter = (_row, _cell, value, columnDef, _dataContext, grid) => {
   const gridOptions = grid.getOptions() as GridOption;
@@ -76,48 +43,35 @@ const myCustomTitleValidator = (value: any) => {
   return { valid: true, msg: '' };
 };
 
-interface Props { }
-interface State extends BaseSlickGridState {
-  isUsingDefaultResize: boolean;
-  isGridEditable: boolean;
-  complexityLevelList: Array<{ value: number; label: string; }>;
-}
+const Example32: React.FC = () => {
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset] = useState<any[]>(loadData(NB_ITEMS));
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [editQueue, setEditQueue] = useState<any[]>([]);
+  const [editedItems, setEditedItems] = useState<any>({});
+  const [isUsingDefaultResize, setIsUsingDefaultResize] = useState(false);
+  const [isGridEditable, setIsGridEditable] = useState(true);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
-export default class Example32 extends React.Component<Props, State> {
-  title = 'Example 32: Columns Resize by Content';
-  subTitle = `The grid below uses the optional resize by cell content (with a fixed 950px for demo purposes), you can click on the 2 buttons to see the difference. The "autosizeColumns" is really the default option used by SlickGrid-Universal, the resize by cell content is optional because it requires to read the first thousand rows and do extra width calculation.`;
-  editQueue: any[] = [];
-  editedItems: any = {};
-  reactGrid!: SlickgridReactInstance;
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  constructor(public readonly props: Props) {
-    super(props);
+  const complexityLevelList = [
+    { value: 0, label: 'Very Simple' },
+    { value: 1, label: 'Simple' },
+    { value: 2, label: 'Straightforward' },
+    { value: 3, label: 'Complex' },
+    { value: 4, label: 'Very Complex' },
+  ];
 
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      isUsingDefaultResize: false,
-      isGridEditable: true,
-      complexityLevelList: [
-        { value: 0, label: 'Very Simple' },
-        { value: 1, label: 'Simple' },
-        { value: 2, label: 'Straightforward' },
-        { value: 3, label: 'Complex' },
-        { value: 4, label: 'Very Complex' },
-      ],
-    };
+  useEffect(() => {
+    defineGrid();
+  }, []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  componentDidMount() {
-    document.title = this.title;
-    this.defineGrid();
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  defineGrid() {
+  function defineGrid() {
     const columnDefinitions: Column[] = [
       {
         id: 'title', name: 'Title', field: 'title', sortable: true, type: FieldType.string, minWidth: 65,
@@ -216,15 +170,15 @@ export default class Example32 extends React.Component<Props, State> {
         id: 'complexity', name: 'Complexity', field: 'complexity',
         resizeCalcWidthRatio: 0.9, // default calc ratio is 1 or ~0.9 for field type of string
         sortable: true, filterable: true, columnGroup: 'Analysis',
-        formatter: (_row, _cell, value) => this.state.complexityLevelList[value]?.label,
-        exportCustomFormatter: (_row, _cell, value) => this.state.complexityLevelList[value]?.label,
+        formatter: (_row, _cell, value) => complexityLevelList[value]?.label,
+        exportCustomFormatter: (_row, _cell, value) => complexityLevelList[value]?.label,
         filter: {
           model: Filters.multipleSelect,
-          collection: this.state.complexityLevelList
+          collection: complexityLevelList
         },
         editor: {
           model: Editors.singleSelect,
-          collection: this.state.complexityLevelList,
+          collection: complexityLevelList,
         },
       },
       {
@@ -288,15 +242,15 @@ export default class Example32 extends React.Component<Props, State> {
             minLength: 1,
             fetch: (searchTerm: string, callback: (items: false | any[]) => void) => {
               // const items = require('c://TEMP/items.json');
-              const products = this.mockProducts();
+              const products = mockProducts();
               callback(products.filter(product => product.itemName.toLowerCase().includes(searchTerm.toLowerCase())));
             },
             renderItem: {
               // layout: 'twoRows',
-              // templateCallback: (item: any) => this.renderItemCallbackWith2Rows(item),
+              // templateCallback: (item: any) => renderItemCallbackWith2Rows(item),
 
               layout: 'fourCorners',
-              templateCallback: (item: any) => this.renderItemCallbackWith4Corners(item),
+              templateCallback: (item: any) => renderItemCallbackWith4Corners(item),
             },
           } as AutocompleterOption,
         },
@@ -358,7 +312,7 @@ export default class Example32 extends React.Component<Props, State> {
                 const dataContext = args.dataContext;
                 const row = args?.row ?? 0;
                 if (confirm(`Do you really want to delete row (${row + 1}) with "${dataContext.title}"`)) {
-                  this.reactGrid.gridService.deleteItemById(dataContext.id);
+                  reactGridRef.current?.gridService.deleteItemById(dataContext.id);
                 }
               }
             },
@@ -423,7 +377,7 @@ export default class Example32 extends React.Component<Props, State> {
       editCommandHandler: (item, column, editCommand) => {
         const prevSerializedValues = Array.isArray(editCommand.prevSerializedValue) ? editCommand.prevSerializedValue : [editCommand.prevSerializedValue];
         const serializedValues = Array.isArray(editCommand.serializedValue) ? editCommand.serializedValue : [editCommand.serializedValue];
-        const editorColumns = this.state.columnDefinitions.filter((col) => col.editor !== undefined);
+        const editorColumns = columnDefinitions.filter((col) => col.editor !== undefined);
 
         const modifiedColumns: Column[] = [];
         prevSerializedValues.forEach((_val, index) => {
@@ -432,36 +386,32 @@ export default class Example32 extends React.Component<Props, State> {
 
           if (prevSerializedValue !== serializedValue) {
             const finalColumn = Array.isArray(editCommand.prevSerializedValue) ? editorColumns[index] : column;
-            this.editedItems[this.state.gridOptions?.datasetIdPropertyName ?? 'id'] = item; // keep items by their row indexes, if the row got edited twice then we'll keep only the last change
-            this.reactGrid.slickGrid.invalidate();
+            editedItems[gridOptions?.datasetIdPropertyName ?? 'id'] = item; // keep items by their row indexes, if the row got edited twice then we'll keep only the last change
+            reactGridRef.current?.slickGrid.invalidate();
             editCommand.execute();
 
-            this.renderUnsavedCellStyling(item, finalColumn, editCommand);
+            renderUnsavedCellStyling(item, finalColumn, editCommand);
             modifiedColumns.push(finalColumn);
           }
         });
 
         // queued editor, so we'll push only 1 change at the end but with all columns modified
         // this way we can undo the entire row change (for example if user changes 3 field in the editor modal, then doing a undo last change will undo all 3 in 1 shot)
-        this.editQueue.push({ item, columns: modifiedColumns, editCommand });
+        editQueue.push({ item, columns: modifiedColumns, editCommand });
       },
       // when using the cellMenu, you can change some of the default options and all use some of the callback methods
       enableCellMenu: true,
     };
 
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      dataset: this.loadData(NB_ITEMS)
-    }));
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  loadData(count: number) {
+  function loadData(count: number) {
     // mock data
     const tmpArray: any[] = [];
     for (let i = 0; i < count; i++) {
-      const randomItemId = Math.floor(Math.random() * this.mockProducts().length);
+      const randomItemId = Math.floor(Math.random() * mockProducts().length);
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomFinishYear = (new Date().getFullYear()) + Math.floor(Math.random() * 10); // use only years not lower than 3 years ago
       const randomMonth = Math.floor(Math.random() * 11);
@@ -485,7 +435,7 @@ export default class Example32 extends React.Component<Props, State> {
         finish: (isCompleted || (i % 3 === 0 && (randomFinish > new Date() && i > 3)) ? (isCompleted ? new Date() : randomFinish) : ''), // make sure the random date is earlier than today and it's index is bigger than 3
         cost: (i % 33 === 0) ? null : Math.round(Math.random() * 10000) / 100,
         completed: (isCompleted || (i % 3 === 0 && (randomFinish > new Date() && i > 3))),
-        product: { id: this.mockProducts()[randomItemId]?.id, itemName: this.mockProducts()[randomItemId]?.itemName, },
+        product: { id: mockProducts()[randomItemId]?.id, itemName: mockProducts()[randomItemId]?.itemName, },
         origin: (i % 2) ? { code: 'CA', name: 'Canada' } : { code: 'US', name: 'United States' },
       };
 
@@ -497,191 +447,130 @@ export default class Example32 extends React.Component<Props, State> {
     return tmpArray;
   }
 
-  handleValidationError(_e: Event, args: any) {
-    if (args.validationResults) {
-      let errorMsg = args.validationResults.msg || '';
-      if (args.editor && args.validationResults.errors) {
-        errorMsg += '\n';
-        for (const error of args.validationResults.errors) {
-          const columnName = error.editor.args.column.name;
-          errorMsg += `${columnName.toUpperCase()}: ${error.msg}`;
-        }
-      }
-      console.log(errorMsg);
-    } else {
-      alert(args.validationResults.msg);
-    }
-    return false;
-  }
-
-  handleItemDeleted(_e: Event, args: any) {
-    console.log('item deleted with id:', args.itemId);
-  }
-
-  handleOnBeforeEditCell(e: Event, args: any) {
-    const { column, item, grid } = args;
-
-    if (column && item) {
-      if (!checkItemIsEditable(item, column, grid)) {
-        e.preventDefault(); // OR eventData.preventDefault();
-        return false;
-      }
-    }
-    return false;
-  }
-
-  handleOnCellChange(_e: Event, args: any) {
-    const dataContext = args?.item;
-
-    // when the field "completed" changes to false, we also need to blank out the "finish" date
-    if (dataContext && !dataContext.completed) {
-      dataContext.finish = null;
-      this.reactGrid.gridService.updateItem(dataContext);
-    }
-  }
-
-  handlePaginationChanged() {
-    this.removeAllUnsavedStylingFromCell();
-    this.renderUnsavedStylingOnAllVisibleCells();
-  }
-
-  handleDefaultResizeColumns() {
+  function handleDefaultResizeColumns() {
     // just for demo purposes, set it back to its original width
-    const columns = this.reactGrid.slickGrid.getColumns() as Column[];
+    const columns = reactGridRef.current?.slickGrid.getColumns() as Column[];
     columns.forEach(col => col.width = col.originalWidth);
-    this.reactGrid.slickGrid.setColumns(columns);
-    this.reactGrid.slickGrid.autosizeColumns();
-    this.setState((state: State) => ({ ...state, isUsingDefaultResize: true }));
+    reactGridRef.current?.slickGrid.setColumns(columns);
+    reactGridRef.current?.slickGrid.autosizeColumns();
+    setIsUsingDefaultResize(true);
   }
 
-  handleNewResizeColumns() {
-    this.reactGrid.resizerService.resizeColumnsByCellContent(true);
-    this.setState((state: State) => ({ ...state, isUsingDefaultResize: false }));
+  function handleNewResizeColumns() {
+    reactGridRef.current?.resizerService.resizeColumnsByCellContent(true);
+    setIsUsingDefaultResize(false);
   }
 
-  handleOnSelectedRowIdsChanged(args: any) {
+  function handleOnSelectedRowIdsChanged(args: any) {
     console.log('Selected Ids:', args.selectedRowIds);
   }
 
-  toggleGridEditReadonly() {
+  function toggleGridEditReadonly() {
     // first need undo all edits
-    this.undoAllEdits();
+    undoAllEdits();
 
     // then change a single grid options to make the grid non-editable (readonly)
-    const isGridEditable = !this.state.isGridEditable;
-    this.setState((state: State) => ({ ...state, isGridEditable }));
+    const newIsGridEditable = !isGridEditable;
+    setIsGridEditable(newIsGridEditable);
 
     // dynamically change SlickGrid editable grid option
-    this.reactGrid.slickGrid.setOptions({ editable: isGridEditable });
+    reactGridRef.current?.slickGrid.setOptions({ editable: isGridEditable });
   }
 
-  removeUnsavedStylingFromCell(_item: any, column: Column, row: number) {
+  function removeUnsavedStylingFromCell(_item: any, column: Column, row: number) {
     // remove unsaved css class from that cell
-    this.reactGrid.slickGrid.removeCellCssStyles(`unsaved_highlight_${[column.id]}${row}`);
+    reactGridRef.current?.slickGrid.removeCellCssStyles(`unsaved_highlight_${[column.id]}${row}`);
   }
 
-  removeAllUnsavedStylingFromCell() {
-    for (const lastEdit of this.editQueue) {
+  function removeAllUnsavedStylingFromCell() {
+    for (const lastEdit of editQueue) {
       const lastEditCommand = lastEdit?.editCommand;
       if (lastEditCommand) {
         // remove unsaved css class from that cell
         for (const lastEditColumn of lastEdit.columns) {
-          this.removeUnsavedStylingFromCell(lastEdit.item, lastEditColumn, lastEditCommand.row);
+          removeUnsavedStylingFromCell(lastEdit.item, lastEditColumn, lastEditCommand.row);
         }
       }
     }
   }
 
-  renderUnsavedStylingOnAllVisibleCells() {
-    for (const lastEdit of this.editQueue) {
-      if (lastEdit) {
-        const { item, columns, editCommand } = lastEdit;
-        if (Array.isArray(columns)) {
-          columns.forEach((col) => {
-            this.renderUnsavedCellStyling(item, col, editCommand);
-          });
-        }
-      }
-    }
-  }
-
-  renderUnsavedCellStyling(item: any, column: Column, editCommand: EditCommand) {
+  function renderUnsavedCellStyling(item: any, column: Column, editCommand: EditCommand) {
     if (editCommand && item && column) {
-      const row = this.reactGrid.dataView.getRowByItem(item) as number;
+      const row = reactGridRef.current?.dataView.getRowByItem(item) as number;
       if (row >= 0) {
         const hash = { [row]: { [column.id]: 'unsaved-editable-field' } };
-        this.reactGrid.slickGrid.setCellCssStyles(`unsaved_highlight_${[column.id]}${row}`, hash);
+        reactGridRef.current?.slickGrid.setCellCssStyles(`unsaved_highlight_${[column.id]}${row}`, hash);
       }
     }
   }
 
   // change row selection dynamically and apply it to the DataView and the Grid UI
-  setSelectedRowIds() {
+  function setSelectedRowIds() {
     // change row selection even across multiple pages via DataView
-    this.reactGrid.dataView?.setSelectedIds([3, 4, 11]);
+    reactGridRef.current?.dataView?.setSelectedIds([3, 4, 11]);
 
     // you can also provide optional options (all defaults to true)
-    // this.sgb.dataView?.setSelectedIds([4, 5, 8, 10], {
+    // sgb.dataView?.setSelectedIds([4, 5, 8, 10], {
     //   isRowBeingAdded: true,
     //   shouldTriggerEvent: true,
     //   applyGridRowSelection: true
     // });
   }
 
-  saveAll() {
+  function saveAll() {
     // Edit Queue (array increases every time a cell is changed, regardless of item object)
-    console.log(this.editQueue);
+    console.log(editQueue);
 
     // Edit Items only keeps the merged data (an object with row index as the row properties)
     // if you change 2 different cells on 2 different cells then this editedItems will only contain 1 property
     // example: editedItems = { 0: { title: task 0, duration: 50, ... }}
     // ...means that row index 0 got changed and the final merged object is { title: task 0, duration: 50, ... }
-    console.log(this.editedItems);
-    // console.log(`We changed ${Object.keys(this.editedItems).length} rows`);
+    console.log(editedItems);
+    // console.log(`We changed ${Object.keys(editedItems).length} rows`);
 
     // since we saved, we can now remove all the unsaved color styling and reset our array/object
-    this.removeAllUnsavedStylingFromCell();
-    this.editQueue = [];
-    this.editedItems = {};
+    removeAllUnsavedStylingFromCell();
+    setEditQueue([]);
+    setEditedItems({});
   }
 
-  undoLastEdit(showLastEditor = false) {
-    const lastEdit = this.editQueue.pop();
+  function undoLastEdit(showLastEditor = false) {
+    const lastEdit = editQueue.pop();
     const lastEditCommand = lastEdit?.editCommand;
     if (lastEdit && lastEditCommand && SlickGlobalEditorLock.cancelCurrentEdit()) {
       lastEditCommand.undo();
 
       // remove unsaved css class from that cell
       for (const lastEditColumn of lastEdit.columns) {
-        this.removeUnsavedStylingFromCell(lastEdit.item, lastEditColumn, lastEditCommand.row);
+        removeUnsavedStylingFromCell(lastEdit.item, lastEditColumn, lastEditCommand.row);
       }
-      this.reactGrid.slickGrid.invalidate();
+      reactGridRef.current?.slickGrid.invalidate();
 
 
       // optionally open the last cell editor associated
       if (showLastEditor) {
-        this.reactGrid?.slickGrid.gotoCell(lastEditCommand.row, lastEditCommand.cell, false);
+        reactGridRef.current?.slickGrid.gotoCell(lastEditCommand.row, lastEditCommand.cell, false);
       }
     }
   }
 
-  undoAllEdits() {
-    for (const lastEdit of this.editQueue) {
+  function undoAllEdits() {
+    for (const lastEdit of editQueue) {
       const lastEditCommand = lastEdit?.editCommand;
       if (lastEditCommand && SlickGlobalEditorLock.cancelCurrentEdit()) {
         lastEditCommand.undo();
 
         // remove unsaved css class from that cell
         for (const lastEditColumn of lastEdit.columns) {
-          this.removeUnsavedStylingFromCell(lastEdit.item, lastEditColumn, lastEditCommand.row);
+          removeUnsavedStylingFromCell(lastEdit.item, lastEditColumn, lastEditCommand.row);
         }
       }
     }
-    this.reactGrid.slickGrid.invalidate(); // re-render the grid only after every cells got rolled back
-    this.editQueue = [];
+    reactGridRef.current?.slickGrid.invalidate(); // re-render the grid only after every cells got rolled back
+    setEditQueue([]);
   }
 
-  mockProducts() {
+  function mockProducts() {
     return [
       {
         id: 0,
@@ -690,7 +579,7 @@ export default class Example32 extends React.Component<Props, State> {
         listPrice: 2100.23,
         itemTypeName: 'I',
         image: 'http://i.stack.imgur.com/pC1Tv.jpg',
-        icon: `mdi ${this.getRandomIcon(0)}`,
+        icon: `mdi ${getRandomIcon(0)}`,
       },
       {
         id: 1,
@@ -699,7 +588,7 @@ export default class Example32 extends React.Component<Props, State> {
         listPrice: 3200.12,
         itemTypeName: 'I',
         image: 'https://i.imgur.com/Fnm7j6h.jpg',
-        icon: `mdi ${this.getRandomIcon(1)}`,
+        icon: `mdi ${getRandomIcon(1)}`,
       },
       {
         id: 2,
@@ -708,7 +597,7 @@ export default class Example32 extends React.Component<Props, State> {
         listPrice: 15.00,
         itemTypeName: 'I',
         image: 'https://i.imgur.com/RaVJuLr.jpg',
-        icon: `mdi ${this.getRandomIcon(2)}`,
+        icon: `mdi ${getRandomIcon(2)}`,
       },
       {
         id: 3,
@@ -717,7 +606,7 @@ export default class Example32 extends React.Component<Props, State> {
         listPrice: 25.76,
         itemTypeName: 'I',
         image: 'http://i.stack.imgur.com/pC1Tv.jpg',
-        icon: `mdi ${this.getRandomIcon(3)}`,
+        icon: `mdi ${getRandomIcon(3)}`,
       },
       {
         id: 4,
@@ -726,7 +615,7 @@ export default class Example32 extends React.Component<Props, State> {
         listPrice: 13.35,
         itemTypeName: 'I',
         image: 'https://i.imgur.com/Fnm7j6h.jpg',
-        icon: `mdi ${this.getRandomIcon(4)}`,
+        icon: `mdi ${getRandomIcon(4)}`,
       },
       {
         id: 5,
@@ -735,7 +624,7 @@ export default class Example32 extends React.Component<Props, State> {
         listPrice: 23.33,
         itemTypeName: 'I',
         image: 'https://i.imgur.com/RaVJuLr.jpg',
-        icon: `mdi ${this.getRandomIcon(5)}`,
+        icon: `mdi ${getRandomIcon(5)}`,
       },
       {
         id: 6,
@@ -744,7 +633,7 @@ export default class Example32 extends React.Component<Props, State> {
         listPrice: 71.21,
         itemTypeName: 'I',
         image: 'http://i.stack.imgur.com/pC1Tv.jpg',
-        icon: `mdi ${this.getRandomIcon(6)}`,
+        icon: `mdi ${getRandomIcon(6)}`,
       },
       {
         id: 7,
@@ -753,7 +642,7 @@ export default class Example32 extends React.Component<Props, State> {
         listPrice: 2.43,
         itemTypeName: 'I',
         image: 'https://i.imgur.com/Fnm7j6h.jpg',
-        icon: `mdi ${this.getRandomIcon(7)}`,
+        icon: `mdi ${getRandomIcon(7)}`,
       },
       {
         id: 8,
@@ -762,13 +651,13 @@ export default class Example32 extends React.Component<Props, State> {
         listPrice: 31288.39,
         itemTypeName: 'I',
         image: 'https://i.imgur.com/RaVJuLr.jpg',
-        icon: `mdi ${this.getRandomIcon(8)}`,
+        icon: `mdi ${getRandomIcon(8)}`,
       },
     ];
   }
 
   /** List of icons that are supported in this lib Material Design Icons */
-  getRandomIcon(iconIndex?: number) {
+  function getRandomIcon(iconIndex?: number) {
     const icons = [
       'mdi-arrow-collapse',
       'mdi-arrow-expand',
@@ -826,7 +715,8 @@ export default class Example32 extends React.Component<Props, State> {
     return icons[iconIndex ?? randomNumber];
   }
 
-  renderItemCallbackWith2Rows(item: any): string {
+  /*
+  function renderItemCallbackWith2Rows(item: any): string {
     return `<div class="autocomplete-container-list">
       <div class="autocomplete-left">
         <!--<img src="http://i.stack.imgur.com/pC1Tv.jpg" width="50" />-->
@@ -843,8 +733,9 @@ export default class Example32 extends React.Component<Props, State> {
       <div class="autocomplete-bottom-left">${item.itemNameTranslated}</div>
     </div>`;
   }
+    */
 
-  renderItemCallbackWith4Corners(item: any): string {
+  function renderItemCallbackWith4Corners(item: any): string {
     return `<div class="autocomplete-container-list">
           <div class="autocomplete-left">
             <!--<img src="http://i.stack.imgur.com/pC1Tv.jpg" width="50" />-->
@@ -864,77 +755,85 @@ export default class Example32 extends React.Component<Props, State> {
         </div>`;
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example32.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
-        <h4 className="ml-3">Container Width (950px)</h4>
+  return !gridOptions ? '' : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 32: Columns Resize by Content
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example32.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
+      </h2>
+      {hideSubTitle ? null : <div className="subtitle">
+        The grid below uses the optional resize by cell content (with a fixed 950px for demo purposes), you can click on the 2 buttons to see the difference.
+        The "autosizeColumns" is really the default option used by SlickGrid-Universal, the resize by cell content is optional
+        because it requires to read the first thousand rows and do extra width calculation.
+      </div>}
 
-        <div className="row">
-          <div className="ml-2 mb-2 mr-2">
-            <div className="btn-group btn-group-toggle" data-bs-toggle="buttons">
-              <label className={'btn btn-sm btn-outline-secondary btn-icon ' + (this.state.isUsingDefaultResize ? 'active' : '')} data-test="autosize-columns-btn">
-                <input type="radio" className="btn-check" name="options"
-                  defaultChecked={this.state.isUsingDefaultResize}
-                  onClick={() => this.handleDefaultResizeColumns()}
-                />
-                <i className="mdi mdi-arrow-expand"></i> (default resize) by "autosizeColumns"
-              </label>
-              <label className={'btn btn-sm btn-outline-secondary btn-icon ' + (this.state.isUsingDefaultResize ? '' : 'active')}
-                data-test="resize-by-content-btn">
-                <input type="radio" className="btn-check" name="options"
-                  defaultChecked={!this.state.isUsingDefaultResize}
-                  onClick={() => this.handleNewResizeColumns()} />
-                <i className="mdi mdi-arrow-expand"></i> Resize by Cell Content
-              </label>
-            </div>
-          </div>
+      <h4 className="ml-3">Container Width (950px)</h4>
 
-          <div className="mb-2">
-            <div className="btn-group btn-group-sm" role="group" aria-label="Basic Editing Commands">
-              <button type="button" className="btn btn-outline-secondary btn-icon" onClick={() => this.setSelectedRowIds()}
-                data-test="set-dynamic-rows-btn"
-                title="Change Row Selection across multiple pages">
-                <span>Change Row Selection</span>
-              </button>
-              <button type="button" className="btn btn-outline-secondary btn-icon" data-test="toggle-readonly-btn"
-                onClick={() => this.toggleGridEditReadonly()}>
-                <i className="mdi mdi-table-edit"></i> Toggle Readonly
-              </button>
-              <button type="button" className="btn btn-outline-secondary btn-icon" data-test="undo-last-edit-btn"
-                onClick={() => this.undoLastEdit()}>
-                <i className="mdi mdi-undo"></i> Undo Last Edit
-              </button>
-              <button type="button" className="btn btn-outline-secondary btn-icon" data-test="save-all-btn"
-                onClick={() => this.saveAll()}>
-                Save All
-              </button>
-            </div>
+      <div className="row">
+        <div className="ml-2 mb-2 mr-2">
+          <div className="btn-group btn-group-toggle" data-bs-toggle="buttons">
+            <label className={'btn btn-sm btn-outline-secondary btn-icon ' + (isUsingDefaultResize ? 'active' : '')} data-test="autosize-columns-btn">
+              <input type="radio" className="btn-check" name="options"
+                defaultChecked={isUsingDefaultResize}
+                onClick={() => handleDefaultResizeColumns()}
+              />
+              <i className="mdi mdi-arrow-expand"></i> (default resize) by "autosizeColumns"
+            </label>
+            <label className={'btn btn-sm btn-outline-secondary btn-icon ' + (isUsingDefaultResize ? '' : 'active')}
+              data-test="resize-by-content-btn">
+              <input type="radio" className="btn-check" name="options"
+                defaultChecked={!isUsingDefaultResize}
+                onClick={() => handleNewResizeColumns()} />
+              <i className="mdi mdi-arrow-expand"></i> Resize by Cell Content
+            </label>
           </div>
         </div>
 
-        <div id="smaller-container" style={{ width: '950px' }}>
-          <SlickgridReact gridId="grid32"
-            columnDefinitions={this.state.columnDefinitions}
-            gridOptions={this.state.gridOptions}
-            dataset={this.state.dataset}
-            onReactGridCreated={$event => this.reactGridReady($event.detail)}
-            onSelectedRowIdsChanged={$event => this.handleOnSelectedRowIdsChanged($event.detail.args)}
-          />
+        <div className="mb-2">
+          <div className="btn-group btn-group-sm" role="group" aria-label="Basic Editing Commands">
+            <button type="button" className="btn btn-outline-secondary btn-icon" onClick={() => setSelectedRowIds()}
+              data-test="set-dynamic-rows-btn"
+              title="Change Row Selection across multiple pages">
+              <span>Change Row Selection</span>
+            </button>
+            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="toggle-readonly-btn"
+              onClick={() => toggleGridEditReadonly()}>
+              <i className="mdi mdi-table-edit"></i> Toggle Readonly
+            </button>
+            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="undo-last-edit-btn"
+              onClick={() => undoLastEdit()}>
+              <i className="mdi mdi-undo"></i> Undo Last Edit
+            </button>
+            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="save-all-btn"
+              onClick={() => saveAll()}>
+              Save All
+            </button>
+          </div>
         </div>
       </div>
-    );
-  }
+
+      <div id="smaller-container" style={{ width: '950px' }}>
+        <SlickgridReact gridId="grid32"
+          columnDefinitions={columnDefinitions}
+          gridOptions={gridOptions}
+          dataset={dataset}
+          onReactGridCreated={$event => reactGridReady($event.detail)}
+          onSelectedRowIdsChanged={$event => handleOnSelectedRowIdsChanged($event.detail.args)}
+        />
+      </div>
+    </div>
+  );
 }
+
+export default Example32;
 

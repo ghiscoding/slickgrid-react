@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import type { RowDetailViewProps } from 'slickgrid-react';
 
 import './example19-detail-view.scss';
@@ -15,7 +15,7 @@ interface Item {
   rowId: number;
 }
 
-function Example19DetailView(props: RowDetailViewProps<Item>) {
+const Example19DetailView: React.FC<RowDetailViewProps<Item, any>> = forwardRef((props, _ref) => {
   const [assignee, setAssignee] = useState<string>(props.model?.assignee || '');
 
   function assigneeChanged(newAssignee: string) {
@@ -86,6 +86,6 @@ function Example19DetailView(props: RowDetailViewProps<Item>) {
       </div>
     </div>
   );
-}
+});
 
 export default Example19DetailView;

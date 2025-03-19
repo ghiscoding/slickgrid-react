@@ -5,59 +5,35 @@ import {
   SlickgridReact,
   type SlickgridReactInstance,
 } from '../../slickgrid-react';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import './example22.scss';
 
 import URL_CUSTOMERS_URL from './data/customers_100.json?url';
 
-interface Props { }
-interface State {
-  gridOptions1?: GridOption;
-  gridOptions2?: GridOption;
-  columnDefinitions1: Column[];
-  columnDefinitions2: Column[];
-  dataset1: any[];
-  dataset2: any[];
-}
+const Example22: React.FC = () => {
+  const [gridOptions1, setGridOptions1] = useState<GridOption | undefined>(undefined);
+  const [gridOptions2, setGridOptions2] = useState<GridOption | undefined>(undefined);
+  const [columnDefinitions1, setColumnDefinitions1] = useState<Column[]>([]);
+  const [columnDefinitions2, setColumnDefinitions2] = useState<Column[]>([]);
+  const [dataset1, setDataset1] = useState<any[]>([]);
+  const [dataset2, setDataset2] = useState<any[]>([]);
+  const reactGridRef2 = useRef<SlickgridReactInstance | null>(null);
+  const [isGrid2DataLoaded, setIsGrid2DataLoaded] = useState(false);
+  const [isGrid2Resize, setIsGrid2Resize] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
-export default class Example22 extends React.Component<Props, State> {
-  title = 'Example 22: Grids in Bootstrap Tabs';
-  subTitle = `This example demonstrate the creation of multiple grids in Bootstrap Tabs
-   <ol>
-    <li>Regular mocked data with javascript</li>
-    <li>Load dataset through Fetch. Also note we need to call a "resizeGrid()" after focusing on this tab</li>
-  </ol>`;
+  useEffect(() => {
+    defineGrids();
+    setDataset1(getData());
+  }, []);
 
-  reactGrid2!: SlickgridReactInstance;
-  isGrid2DataLoaded = false;
-  isGrid2Resize = false;
-
-  constructor(public readonly props: Props) {
-    super(props);
-
-    this.state = {
-      gridOptions1: undefined,
-      gridOptions2: undefined,
-      columnDefinitions1: [],
-      columnDefinitions2: [],
-      dataset1: [],
-      dataset2: [],
-    };
-  }
-
-  reactGrid2Ready(reactGrid: SlickgridReactInstance) {
-    this.reactGrid2 = reactGrid;
-  }
-
-  async componentDidMount() {
-    document.title = this.title;
-
-    this.defineGrids();
+  function reactGrid2Ready(reactGrid: SlickgridReactInstance) {
+    reactGridRef2.current = reactGrid;
   }
 
   // Grid2 definition
-  defineGrids() {
+  function defineGrids() {
     // grid 1
     const columnDefinitions1: Column[] = [
       { id: 'title', name: 'Title', field: 'title', sortable: true, minWidth: 100 },
@@ -99,28 +75,22 @@ export default class Example22 extends React.Component<Props, State> {
       enableSorting: true
     };
 
-    this.setState((state: State) => {
-      return {
-        ...state,
-        gridOptions1,
-        gridOptions2,
-        columnDefinitions1,
-        columnDefinitions2,
-        dataset1: this.mockData(),
-      };
-    });
+    setColumnDefinitions1(columnDefinitions1);
+    setColumnDefinitions2(columnDefinitions2);
+    setGridOptions1(gridOptions1);
+    setGridOptions2(gridOptions2);
   }
 
-  async loadGrid2Data() {
+  async function loadGrid2Data() {
     // load data with Fetch
     const response2 = await fetch(URL_CUSTOMERS_URL);
     const dataset2 = await response2['json']();
 
-    this.setState((state: State) => ({ ...state, dataset2 }));
-    this.isGrid2DataLoaded = true;
+    setDataset2(dataset2);
+    setIsGrid2DataLoaded(true);
   }
 
-  mockData() {
+  function getData() {
     // mock a dataset
     const mockDataset: any[] = [];
     for (let i = 0; i < 1000; i++) {
@@ -148,82 +118,93 @@ export default class Example22 extends React.Component<Props, State> {
    * We need to do this (only once) because SlickGrid relies on the grid being visible in the DOM for it to be sized properly
    * and if it's not (like our use case) we need to resize the grid ourselve and we just need to do that once.
    */
-  async resizeGrid2() {
-    if (!this.isGrid2DataLoaded) {
-      await this.loadGrid2Data();
+  async function resizeGrid2() {
+    if (!isGrid2DataLoaded) {
+      await loadGrid2Data();
     }
-    if (!this.isGrid2Resize) {
-      this.reactGrid2?.resizerService.resizeGrid(10);
+    if (!isGrid2Resize) {
+      reactGridRef2.current?.resizerService.resizeGrid(10);
+      setIsGrid2Resize(true);
     }
   }
 
-  render() {
-    return !this.state.gridOptions1 ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example22.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
-        <div>
-          <ul className="nav nav-tabs"
-            id="myTab"
-            role="tablist">
-            <li className="nav-item">
-              <a className="nav-link active"
-                id="javascript-tab"
-                data-bs-toggle="tab"
-                href="#javascript"
-                role="tab"
-                aria-controls="javascript"
-                aria-selected="true">Javascript</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link"
-                id="fetch-tab"
-                data-bs-toggle="tab"
-                href="#fetch"
-                role="tab"
-                aria-controls="fetch"
-                aria-selected="false"
-                onClick={() => this.resizeGrid2()}>Fetch</a>
-            </li>
-          </ul>
+  return !gridOptions1 ? '' : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 22: Grids in Bootstrap Tabs
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example22.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
+      </h2>
+      {hideSubTitle ? null : <div className="subtitle">
+        This example demonstrate the creation of multiple grids in Bootstrap Tabs
+        <ol>
+          <li>Regular mocked data with javascript</li>
+          <li>Load dataset through Fetch. Also note we need to call a "resizeGrid()" after focusing on this tab</li>
+        </ol>
+      </div>}
 
-          <div className="tab-content"
-            id="myTabContent">
-            <div className="tab-pane fade show active"
-              id="javascript"
-              role="tabpanel"
-              aria-labelledby="javascript-tab">
-              <h4>Grid 1 - Load Local Data</h4>
-              <SlickgridReact gridId="grid1"
-                columnDefinitions={this.state.columnDefinitions1}
-                gridOptions={this.state.gridOptions1}
-                dataset={this.state.dataset1} />
-            </div>
-            <div className="tab-pane fade"
-              id="fetch"
-              role="tabpanel"
-              aria-labelledby="fetch-tab">
-              <h4>Grid 2 - Load a JSON dataset through Fetch</h4>
-              <SlickgridReact gridId="grid2"
-                columnDefinitions={this.state.columnDefinitions2}
-                gridOptions={this.state.gridOptions2}
-                dataset={this.state.dataset2}
-                onReactGridCreated={$event => this.reactGrid2Ready($event.detail)}
-              />
-            </div>
+      <div>
+        <ul className="nav nav-tabs"
+          id="myTab"
+          role="tablist">
+          <li className="nav-item">
+            <a className="nav-link active"
+              id="javascript-tab"
+              data-bs-toggle="tab"
+              href="#javascript"
+              role="tab"
+              aria-controls="javascript"
+              aria-selected="true">Javascript</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link"
+              id="fetch-tab"
+              data-bs-toggle="tab"
+              href="#fetch"
+              role="tab"
+              aria-controls="fetch"
+              aria-selected="false"
+              onClick={() => resizeGrid2()}>Fetch</a>
+          </li>
+        </ul>
+
+        <div className="tab-content"
+          id="myTabContent">
+          <div className="tab-pane fade show active"
+            id="javascript"
+            role="tabpanel"
+            aria-labelledby="javascript-tab">
+            <h4>Grid 1 - Load Local Data</h4>
+            <SlickgridReact gridId="grid1"
+              columnDefinitions={columnDefinitions1}
+              gridOptions={gridOptions1}
+              dataset={dataset1} />
+          </div>
+          <div className="tab-pane fade"
+            id="fetch"
+            role="tabpanel"
+            aria-labelledby="fetch-tab">
+            <h4>Grid 2 - Load a JSON dataset through Fetch</h4>
+            <SlickgridReact gridId="grid2"
+              columnDefinitions={columnDefinitions2}
+              gridOptions={gridOptions2}
+              dataset={dataset2}
+              onReactGridCreated={$event => reactGrid2Ready($event.detail)}
+            />
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
+
+export default Example22;

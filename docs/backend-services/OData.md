@@ -41,7 +41,7 @@ backendServiceApi: {
   // Before executing the query, what action to perform? For example, start a spinner
   preProcess?: () => void;
 
-  // On Processing, we get the query back from the service, and we need to provide a Promise. For example: this.http.get(myGraphqlUrl)
+  // On Processing, we get the query back from the service, and we need to provide a Promise. For example: http.get(myGraphqlUrl)
   process: (query: string) => Promise<any>;
 
   // After executing the query, what action to perform? For example, stop the spinner
@@ -66,21 +66,23 @@ As you can see, you mainly need to define which service to use (GridODataService
 ```tsx
 import { GridOdataService, OdataServiceApi, OdataOption } from '@slickgrid-universal/odata';
 
-interface Props {}
-interface State {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-}
-export class Example extends React.Component<Props, State> {
-  componentDidMount() {
-    this.defineGrid();
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+  const graphqlService = new GraphqlService();
+
+  useEffect(() => defineGrid(), []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  defineGrid() {
-    const columnDefinitions = [/*...*/];
+  function defineGrid() {
+    setColumns([/*...*/]);
 
-    const gridOptions = {
+    setOptions({
       enableFiltering: true,
       enablePagination: true,
       pagination: {
@@ -97,54 +99,48 @@ export class Example extends React.Component<Props, State> {
         },
         // optional but typically use to show data on first page load
         // on init (or on page load), what action to perform?
-        onInit: (query) => this.getCustomerApiCall(query),
+        onInit: (query) => getCustomerApiCall(query),
 
-        preProcess: () => this.displaySpinner(true),
-        process: (query) => this.getCustomerApiCall(query),
+        preProcess: () => displaySpinner(true),
+        process: (query) => getCustomerApiCall(query),
         postProcess: (response) => {
-          this.displaySpinner(false);
-          this.getCustomerCallback(response);
+          displaySpinner(false);
+          getCustomerCallback(response);
         }
       }
-    };
-
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      dataset: this.getData(),
-    }));
+    });
   }
 
   // Web API call
-  getCustomerApiCall(odataQuery) {
+  function getCustomerApiCall(odataQuery) {
     return fetch(`/api/customers?${odataQuery}`).then(response => response.json());
   }
 
-  getCustomerCallback(response) {
+  function getCustomerCallback(response) {
     // totalItems property needs to be filled for pagination to work correctly
     // however we need to force the Framework to do a dirty check, doing a clone object will do just that
     let countPropName = 'totalRecordCount'; // you can use "totalRecordCount" or any name or "odata.count" when "enableCount" is set
-    if (this.isCountEnabled) {
-      countPropName = (this.odataVersion === 4) ? '@odata.count' : 'odata.count';
+    if (isCountEnabled) {
+      countPropName = (odataVersion === 4) ? '@odata.count' : 'odata.count';
     }
-    if (this.metrics) {
-      this.metrics.totalItemCount = data[countPropName];
+    if (metrics) {
+      metrics.totalItemCount = data[countPropName];
     }
 
     // once pagination totalItems is filled, we can update the dataset
-    this.paginationOptions = { ...this.gridOptions.pagination, totalItems: totalItemCount } as Pagination;
-    this.dataset = data.items as Customer[];
+    paginationOptions = { ...gridOptions.pagination, totalItems: totalItemCount } as Pagination;
+    dataset = data.items as Customer[];
   }
+}
 ```
 
 ### Passing Extra Arguments to the Query
 You might need to pass extra arguments to your OData query, for example passing a `userId`, you can do that simply by modifying the query you sent to your `process` callback method. For example
 ```ts
 // Web API call
-getCustomerApiCall(odataQuery) {
+function getCustomerApiCall(odataQuery) {
   const finalQuery = `${odataQuery}$filter=(userId eq 12345)`;
-  return this.http.get(`/api/getCustomers?${finalQuery}`);
+  return http.get(`/api/getCustomers?${finalQuery}`);
 }
 ```
 
@@ -159,21 +155,21 @@ Some are described in more detail below.
 By default the OData version is set to 2 because it was implemented with that version. If you wish to use version 4, then just change the `version: 4`, there are subtle differences.
 
 ```ts
-this.gridOptions = {
+setOptions({
   backendServiceApi: {
     service: new GridOdataService(),
       options: {
         enableCount: true, // add the count in the OData query, which will return a property named "odata.count" (v2) or "@odata.count" (v4)
         version: 4        // defaults to 2, the query string is slightly different between OData 2 and 4
       } as OdataOption,
-      process: (query) => this.getCustomerApiCall(query),
+      process: (query) => getCustomerApiCall(query),
       postProcess: (response) => {
-        this.metrics = response.metrics;
-        this.displaySpinner(false);
-        this.getCustomerCallback(response);
+        metrics = response.metrics;
+        displaySpinner(false);
+        getCustomerCallback(response);
       }
   } as OdataServiceApi
-};
+});
 ```
 
 ### Query total items count
@@ -232,19 +228,20 @@ Column filters may have a `Custom` operator, that acts as a placeholder for you 
 
 E.g. you could listen for a specific column and the active OperatorType.custom in order to switch the filter to a matchesPattern SQL LIKE search:
 
-```ts
-backendServiceApi: {
-  options: {
-    filterQueryOverride: ({ fieldName, columnDef, columnFilterOperator, searchValues }) => {
-      if (columnFilterOperator === OperatorType.custom && columnDef?.id === 'name') {
-        let matchesSearch = searchValues[0].replace(/\*/g, '.*');
-        matchesSearch = matchesSearch.slice(0, 1) + '%5E' + matchesSearch.slice(1);
-        matchesSearch = matchesSearch.slice(0, -1) + '$\'';
-
-        return `matchesPattern(${fieldName}, ${matchesSearch})`;
-      }
-    },
+```tsx
+setOptions({
+  backendServiceApi: {
+    options: {
+      filterQueryOverride: ({ fieldName, columnDef, columnFilterOperator, searchValues }) => {
+        if (columnFilterOperator === OperatorType.custom && columnDef?.id === 'name') {
+          let matchesSearch = searchValues[0].replace(/\*/g, '.*');
+          matchesSearch = matchesSearch.slice(0, 1) + '%5E' + matchesSearch.slice(1);
+          matchesSearch = matchesSearch.slice(0, -1) + '$\'';
+  
+          return `matchesPattern(${fieldName}, ${matchesSearch})`;
+        }
+      },
+    }
   }
-}
-
+});
 ```

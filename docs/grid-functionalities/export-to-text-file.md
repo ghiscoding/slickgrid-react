@@ -26,9 +26,15 @@ You can set certain options for the entire grid, for example if you set `exportW
 ```ts
 import { TextExportService } from '@slickgrid-universal/text-export';
 
-export class MyGrid {
-  defineGrid() {
-    this.gridOptions = {
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    const gridOptions = {
       // set at the grid option level, meaning all column will evaluate the Formatter (when it has a Formatter defined)
       textExportOptions: {
         exportWithFormatter: true
@@ -63,36 +69,45 @@ Inside the column definition there are couple of flags you can set and also some
 ```ts
 import { TextExportService } from '@slickgrid-universal/text-export';
 
-defineGrid() {
-  this.columnDefinitions = [
-    { id: 'id', name: 'ID', field: 'id',
-      excludeFromExport: true // skip the "id" column from the export
-    },
-    { id: 'title', name: 'Title', field: 'id', headerKey: 'TITLE',
-      formatter: myCustomTitleFormatter,
-      exportWithFormatter: false // this Formatter will not be evaluated
-    },
-    { id: 'start', name: 'Start', field: 'start',
-      headerKey: 'START',
-      formatter: Formatters.dateIso // this formatter will be used for the export
-    },
-    { id: 'finish', name: 'Finish', field: 'start',
-      headerKey: 'FINISH',
-      formatter: Formatters.dateIso // this formatter will be used for the export
-    },
-    { id: 'completed', name: 'Completed', field: 'completed', headerKey: 'COMPLETED',
-      formatter: Formatters.checkmarkMaterial,              // will display a checkmark icon in the UI
-      customFormatter: Formatters.translateBoolean, // will export a translated value, e.g. in French, True would show as 'Vrai'
-    }
-  ];
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  this.gridOptions = {
-    // set at the grid option level, meaning all column will evaluate the Formatter (when it has a Formatter defined)
-    textExportOptions: {
-      exportWithFormatter: true
-    },
-    externalResources: [new TextExportService()],
-  };
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setColumns([
+      { id: 'id', name: 'ID', field: 'id',
+        excludeFromExport: true // skip the "id" column from the export
+      },
+      { id: 'title', name: 'Title', field: 'id', headerKey: 'TITLE',
+        formatter: myCustomTitleFormatter,
+        exportWithFormatter: false // this Formatter will not be evaluated
+      },
+      { id: 'start', name: 'Start', field: 'start',
+        headerKey: 'START',
+        formatter: Formatters.dateIso // this formatter will be used for the export
+      },
+      { id: 'finish', name: 'Finish', field: 'start',
+        headerKey: 'FINISH',
+        formatter: Formatters.dateIso // this formatter will be used for the export
+      },
+      { id: 'completed', name: 'Completed', field: 'completed', headerKey: 'COMPLETED',
+        formatter: Formatters.checkmarkMaterial,              // will display a checkmark icon in the UI
+        customFormatter: Formatters.translateBoolean, // will export a translated value, e.g. in French, True would show as 'Vrai'
+      }
+    ]);
+
+    setOptions({
+      // set at the grid option level, meaning all column will evaluate the Formatter (when it has a Formatter defined)
+      textExportOptions: {
+        exportWithFormatter: true
+      },
+      externalResources: [new TextExportService()],
+    });
+  }
+}
 ```
 
 What we can see from the example, is that it will use all Formatters (when exist) on this grid, except for the last column "Completed" since that column has explicitly defined `exportWithFormatter: false`
@@ -101,10 +116,10 @@ What we can see from the example, is that it will use all Formatters (when exist
 You can use the export from the Grid Menu and/or you can simply create your own buttons to export.
 #### View
 ```tsx
-<button class="btn btn-default btn-sm" onClick={() => this.exportToFile('csv')}>
+<button class="btn btn-default btn-sm" onClick={() => exportToFile('csv')}>
    Download to CSV
 </button>
-<button class="btn btn-default btn-sm" onClick={() => this.exportToFile('txt')}>
+<button class="btn btn-default btn-sm" onClick={() => exportToFile('txt')}>
     Download to Text
 </button>
 ```
@@ -114,18 +129,23 @@ The code below is just an example and it can be configured in many ways, the del
 ```ts
 import { TextExportService } from '@slickgrid-universal/text-export';
 
-export class MySample {
-  textExportService = new TextExportService();
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const textExportService = new TextExportService();
 
-  defineGrid() {
-    this.gridOptions = {
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setOptions({
       enableTextExport: true,
-      externalResources: [this.textExportService],
-    };
+      externalResources: [textExportService],
+    });
   }
 
-  exportToFile(type = 'csv') {
-    this.textExportService.exportToFile({
+  function exportToFile(type = 'csv') {
+    textExportService.exportToFile({
       delimiter: (type === 'csv') ? DelimiterType.comma : DelimiterType.tab,
       filename: 'myExport',
       format: (type === 'csv') ? FileType.csv : FileType.txt
@@ -139,24 +159,22 @@ If you have lots of data, you might want to show a spinner telling the user that
 
 ##### Component
 ```tsx
-render() {
-  return (
-    {this.state.processing && <span>
-      <i className="mdi mdi-sync mdi-spin"></i>
-    </span>}
+return !options ? null : (
+  {processing && <span>
+    <i className="mdi mdi-sync mdi-spin"></i>
+  </span>}
 
-    <SlickgridReact gridId="grid5"
-        columnDefinitions={this.state.columnDefinitions}
-        gridOptions={this.state.gridOptions}
-        dataset={this.state.dataset}
-        paginationOptions={this.state.paginationOptions}
-        onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        onBeforeExportToFile={() => this.state.processing = true}
-        onAfterExportToFile={() => this.state.processing =false}
-        onGridStateChanged={$event => this.gridStateChanged($event.detail)}
-    />
-  );
-}
+  <SlickgridReact gridId="grid5"
+      columnDefinitions={columns}
+      gridOptions={options}
+      dataset={dataset}
+      paginationOptions={paginationOptions}
+      onReactGridCreated={$event => reactGridReady($event.detail)}
+      onBeforeExportToFile={() => setProcessing(true)}
+      onAfterExportToFile={() => setProcessing(false)}
+      onGridStateChanged={$event => gridStateChanged($event.detail)}
+  />
+);
 ```
 
 ### UI Sample

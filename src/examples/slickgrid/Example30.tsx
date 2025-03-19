@@ -1,7 +1,7 @@
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
 import { SlickCompositeEditor, SlickCompositeEditorComponent } from '@slickgrid-universal/composite-editor-component';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   type AutocompleterOption,
   type Column,
@@ -27,7 +27,6 @@ import {
 import URL_COUNTRIES_COLLECTION from './data/countries.json';
 
 import './example30.scss'; // provide custom CSS/SASS styling
-import type BaseSlickGridState from './state-slick-grid-base';
 
 const NB_ITEMS = 500;
 
@@ -80,63 +79,45 @@ const myCustomTitleValidator = (value: any, args: any) => {
   return { valid: true, msg: '' };
 };
 
-interface Props { }
-interface State extends BaseSlickGridState {
-  isGridEditable: boolean;
-  isCompositeDisabled: boolean;
-  isMassSelectionDisabled: boolean;
-  cellCssStyleQueue: string[];
-  complexityLevelList: Array<{ value: number; label: string; }>;
-}
-export default class Example30 extends React.Component<Props, State> {
-  private _darkMode = false;
+const Example30: React.FC = () => {
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset] = useState<any[]>(getData(NB_ITEMS));
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [isCompositeDisabled, setIsCompositeDisabled] = useState(false);
+  const [isMassSelectionDisabled, setIsMassSelectionDisabled] = useState(true);
+  const [isGridEditable, setIsGridEditable] = useState(true);
+  const [editedItems, setEditedItems] = useState<any>({});
+  const [editQueue, setEditQueue] = useState<{ item: any, columns: Column[], editCommand: EditCommand }[]>([]);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
-  title = 'Example 30: Composite Editor Modal';
-  subTitle = `Composite Editor allows you to Create, Clone, Edit, Mass Update & Mass Selection Changes inside a nice Modal Window.
-  <br>The modal is simply populated by looping through your column definition list and also uses a lot of the same logic as inline editing (see <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/composite-editor-modal" target="_blank">Composite Editor - Wiki</a>.)`;
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+  const compositeEditorInstanceRef = useRef<SlickCompositeEditorComponent>(new SlickCompositeEditorComponent());
+  const cellCssStyleQueueRef = useRef<string[]>([]);
 
-  compositeEditorInstance: SlickCompositeEditorComponent;
-  reactGrid!: SlickgridReactInstance;
-  editQueue: any[] = [];
-  editedItems: any = {};
-  cellCssStyleQueue: string[] = [];
+  const complexityLevelList = [
+    { value: 0, label: 'Very Simple' },
+    { value: 1, label: 'Simple' },
+    { value: 2, label: 'Straightforward' },
+    { value: 3, label: 'Complex' },
+    { value: 4, label: 'Very Complex' },
+  ];
 
-  constructor(public readonly props: Props) {
-    super(props);
-    this.compositeEditorInstance = new SlickCompositeEditorComponent();
+  useEffect(() => {
+    defineGrid();
 
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: [],
-      isGridEditable: true,
-      isCompositeDisabled: false,
-      isMassSelectionDisabled: true,
-      cellCssStyleQueue: [],
-      complexityLevelList: [
-        { value: 0, label: 'Very Simple' },
-        { value: 1, label: 'Simple' },
-        { value: 2, label: 'Straightforward' },
-        { value: 3, label: 'Complex' },
-        { value: 4, label: 'Very Complex' },
-      ],
+    // make sure it's back to light mode before unmounting
+    return () => {
+      document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
+      document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
     };
+  }, []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  componentDidMount() {
-    document.title = this.title;
-
-    // define the grid options & columns and then create the grid itself
-    this.defineGrids();
-  }
-
-  componentWillUnmount() {
-    document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
-    document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
-  }
-
-  /* Define grid Options and Columns */
-  defineGrids() {
+  function defineGrid() {
     const columnDefinitions: Column[] = [
       {
         id: 'title', name: '<span title="Task must always be followed by a number" class="text-warning mdi mdi-alert-outline"></span> Title <span title="Title is always rendered as UPPERCASE" class="mdi mdi-information-outline"></span>',
@@ -214,15 +195,15 @@ export default class Example30 extends React.Component<Props, State> {
         id: 'complexity', name: 'Complexity', field: 'complexity', minWidth: 100,
         type: FieldType.number,
         sortable: true, filterable: true, columnGroup: 'Analysis',
-        formatter: (_row, _cell, value) => this.state.complexityLevelList[value]?.label,
-        exportCustomFormatter: (_row, _cell, value) => this.state.complexityLevelList[value]?.label,
+        formatter: (_row, _cell, value) => complexityLevelList[value]?.label,
+        exportCustomFormatter: (_row, _cell, value) => complexityLevelList[value]?.label,
         filter: {
           model: Filters.multipleSelect,
-          collection: this.state.complexityLevelList
+          collection: complexityLevelList
         },
         editor: {
           model: Editors.singleSelect,
-          collection: this.state.complexityLevelList,
+          collection: complexityLevelList,
           massUpdate: true
         },
       },
@@ -298,15 +279,15 @@ export default class Example30 extends React.Component<Props, State> {
             minLength: 1,
             fetch: (searchTerm: string, callback: (items: false | any[]) => void) => {
               // const items = require('c://TEMP/items.json');
-              const products = this.mockProducts();
+              const products = mockProducts();
               callback(products.filter(product => product.itemName.toLowerCase().includes(searchTerm.toLowerCase())));
             },
             renderItem: {
               // layout: 'twoRows',
-              // templateCallback: (item: any) => this.renderItemCallbackWith2Rows(item),
+              // templateCallback: (item: any) => renderItemCallbackWith2Rows(item),
 
               layout: 'fourCorners',
-              templateCallback: (item: any) => this.renderItemCallbackWith4Corners(item),
+              templateCallback: (item: any) => renderItemCallbackWith4Corners(item),
             },
           } as AutocompleterOption,
         },
@@ -355,14 +336,14 @@ export default class Example30 extends React.Component<Props, State> {
               title: 'Edit Row',
               iconCssClass: 'mdi mdi-pencil',
               positionOrder: 66,
-              action: () => this.openCompositeModal('edit'),
+              action: () => openCompositeModal('edit'),
             },
             {
               command: 'clone',
               title: 'Clone Row',
               iconCssClass: 'mdi mdi-content-copy',
               positionOrder: 66,
-              action: () => this.openCompositeModal('clone'),
+              action: () => openCompositeModal('clone'),
             },
             'divider',
             {
@@ -376,7 +357,7 @@ export default class Example30 extends React.Component<Props, State> {
                 const dataContext = args.dataContext;
                 const row = args?.row ?? 0;
                 if (confirm(`Do you really want to delete row (${row + 1}) with "${dataContext.title}"`)) {
-                  this.reactGrid.gridService.deleteItemById(dataContext.id);
+                  reactGridRef.current?.gridService.deleteItemById(dataContext.id);
                 }
               }
             },
@@ -409,7 +390,7 @@ export default class Example30 extends React.Component<Props, State> {
       excelExportOptions: {
         exportWithFormatter: false
       },
-      externalResources: [new ExcelExportService(), new SlickCustomTooltip(), this.compositeEditorInstance],
+      externalResources: [new ExcelExportService(), new SlickCustomTooltip(), compositeEditorInstanceRef.current!],
       enableFiltering: true,
       rowSelectionOptions: {
         // True (Single Selection), False (Multiple Selections)
@@ -430,7 +411,7 @@ export default class Example30 extends React.Component<Props, State> {
         // composite editors values are saved as array, so let's convert to array in any case and we'll loop through these values
         const prevSerializedValues = Array.isArray(editCommand.prevSerializedValue) ? editCommand.prevSerializedValue : [editCommand.prevSerializedValue];
         const serializedValues = Array.isArray(editCommand.serializedValue) ? editCommand.serializedValue : [editCommand.serializedValue];
-        const editorColumns = this.state.columnDefinitions?.filter((col) => col.editor !== undefined);
+        const editorColumns = columnDefinitions?.filter((col) => col.editor !== undefined);
 
         const modifiedColumns: Column[] = [];
         prevSerializedValues.forEach((_val, index) => {
@@ -439,11 +420,11 @@ export default class Example30 extends React.Component<Props, State> {
 
           if (prevSerializedValue !== serializedValue || serializedValue === '') {
             const finalColumn = Array.isArray(editCommand.prevSerializedValue) ? editorColumns[index] : column;
-            this.editedItems[this.state.gridOptions?.datasetIdPropertyName || 'id'] = item; // keep items by their row indexes, if the row got edited twice then we'll keep only the last change
-            this.reactGrid.slickGrid.invalidate();
+            editedItems[gridOptions?.datasetIdPropertyName || 'id'] = item; // keep items by their row indexes, if the row got edited twice then we'll keep only the last change
+            reactGridRef.current?.slickGrid.invalidate();
             editCommand.execute();
 
-            this.renderUnsavedCellStyling(item, finalColumn, editCommand);
+            renderUnsavedCellStyling(item, finalColumn, editCommand);
             modifiedColumns.push(finalColumn);
           }
         });
@@ -451,7 +432,7 @@ export default class Example30 extends React.Component<Props, State> {
         // queued editor only keeps 1 item object even when it's a composite editor,
         // so we'll push only 1 change at the end but with all columns modified
         // this way we can undo the entire row change (for example if user changes 3 field in the editor modal, then doing a undo last change will undo all 3 in 1 shot)
-        this.editQueue.push({ item, columns: modifiedColumns, editCommand });
+        editQueue.push({ item, columns: modifiedColumns, editCommand });
       },
       // when using the cellMenu, you can change some of the default options and all use some of the callback methods
       enableCellMenu: true,
@@ -462,26 +443,22 @@ export default class Example30 extends React.Component<Props, State> {
         hideToggleDarkModeCommand: false, // hidden by default
         onCommand: (_, args) => {
           if (args.command === 'toggle-dark-mode') {
-            this._darkMode = !this._darkMode; // keep local toggle var in sync
-            this.toggleBodyBackground();
+            const newDarkMode = !darkMode;
+            setDarkMode(newDarkMode); // keep local toggle var in sync
+            toggleBodyBackground(newDarkMode);
           }
         }
       }
     };
-
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      dataset: this.loadData(NB_ITEMS),
-    }));
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  loadData(count: number) {
+  function getData(count: number) {
     // mock data
     const tmpArray: any[] = [];
     for (let i = 0; i < count; i++) {
-      const randomItemId = Math.floor(Math.random() * this.mockProducts().length);
+      const randomItemId = Math.floor(Math.random() * mockProducts().length);
       const randomYear = 2000 + Math.floor(Math.random() * 10);
       const randomFinishYear = (new Date().getFullYear()) + Math.floor(Math.random() * 10); // use only years not lower than 3 years ago
       const randomMonth = Math.floor(Math.random() * 11);
@@ -505,7 +482,7 @@ export default class Example30 extends React.Component<Props, State> {
         finish: (isCompleted || (i % 3 === 0 && (randomFinish > new Date() && i > 3)) ? (isCompleted ? new Date() : randomFinish) : ''), // make sure the random date is earlier than today and it's index is bigger than 3
         cost: (i % 33 === 0) ? null : Math.round(Math.random() * 10000) / 100,
         completed: (isCompleted && i > 5) || (i % 3 === 0 && randomFinish > new Date() && i > 3),
-        product: { id: this.mockProducts()[randomItemId]?.id, itemName: this.mockProducts()[randomItemId]?.itemName, },
+        product: { id: mockProducts()[randomItemId]?.id, itemName: mockProducts()[randomItemId]?.itemName, },
         origin: (i % 2) ? { code: 'CA', name: 'Canada' } : { code: 'US', name: 'United States' },
       };
 
@@ -521,11 +498,7 @@ export default class Example30 extends React.Component<Props, State> {
   // event handlers
   // ---------------
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  handleValidationError(_e: Event, args: any) {
+  function handleValidationError(_e: Event, args: any) {
     if (args.validationResults) {
       let errorMsg = args.validationResults.msg || '';
       if (args?.editor instanceof SlickCompositeEditor) {
@@ -544,11 +517,11 @@ export default class Example30 extends React.Component<Props, State> {
     return false;
   }
 
-  handleItemDeleted(itemId: string) {
+  function handleItemDeleted(itemId: string) {
     console.log('item deleted with id:', itemId);
   }
 
-  handleOnBeforeEditCell(e: Event, args: any) {
+  function handleOnBeforeEditCell(e: Event, args: any) {
     const { column, item, grid } = args;
 
     if (column && item && !checkItemIsEditable(item, column, grid)) {
@@ -558,17 +531,17 @@ export default class Example30 extends React.Component<Props, State> {
     return true;
   }
 
-  handleOnCellChange(_e: Event, args: any) {
+  function handleOnCellChange(_e: Event, args: any) {
     const dataContext = args?.item;
 
     // when the field "completed" changes to false, we also need to blank out the "finish" date
     if (dataContext && !dataContext.completed) {
       dataContext.finish = null;
-      this.reactGrid.gridService.updateItem(dataContext);
+      reactGridRef.current?.gridService.updateItem(dataContext);
     }
   }
 
-  handleOnCellClicked(e: Event, args: any) {
+  function handleOnCellClicked(e: Event, args: any) {
     console.log(e, args);
     // if (eventData.target.classList.contains('mdi-help-circle-o')) {
     //   alert('please HELP!!!');
@@ -577,55 +550,52 @@ export default class Example30 extends React.Component<Props, State> {
     // }
   }
 
-  handleOnCompositeEditorChange(_e: Event, args: OnCompositeEditorChangeEventArgs) {
+  function handleOnCompositeEditorChange(_e: Event, args: OnCompositeEditorChangeEventArgs) {
     const columnDef = args.column;
     const formValues = args.formValues;
 
     // you can dynamically change a select dropdown collection,
     // if you need to re-render the editor for the list to be reflected
     // if (columnDef.id === 'duration') {
-    //   const editor = this.compositeEditorInstance.editors['percentComplete2'] as SelectEditor;
+    //   const editor = compositeEditorInstanceRef.current!.editors['percentComplete2'] as SelectEditor;
     //   const newCollection = editor.finalCollection;
     //   editor.renderDomElement(newCollection);
     // }
 
     // you can change any other form input values when certain conditions are met
     if (columnDef.id === 'percentComplete' && formValues.percentComplete === 100) {
-      this.compositeEditorInstance.changeFormInputValue('completed', true);
-      this.compositeEditorInstance.changeFormInputValue('finish', new Date());
-      // this.compositeEditorInstance.changeFormInputValue('product', { id: 0, itemName: 'Sleek Metal Computer' });
+      compositeEditorInstanceRef.current!.changeFormInputValue('completed', true);
+      compositeEditorInstanceRef.current!.changeFormInputValue('finish', new Date());
+      // compositeEditorInstanceRef.current!.changeFormInputValue('product', { id: 0, itemName: 'Sleek Metal Computer' });
 
       // you can even change a value that is not part of the form (but is part of the grid)
       // but you will have to bypass the error thrown by providing `true` as the 3rd argument
-      // this.compositeEditorInstance.changeFormInputValue('cost', 9999.99, true);
+      // compositeEditorInstanceRef.current!.changeFormInputValue('cost', 9999.99, true);
     }
 
     // you can also change some editor options
     // not all Editors supports this functionality, so far only these Editors are supported are: Date, Single/Multiple Select, Slider
     /*
     if (columnDef.id === 'completed') {
-      this.compositeEditorInstance.changeFormEditorOption('complexity', 'filter', true); // multiple-select dropdown editor
-      this.compositeEditorInstance.changeFormEditorOption('percentComplete', 'hideSliderNumber', formValues['completed']); // slider editor
-      this.compositeEditorInstance.changeFormEditorOption('finish', 'range', { min: 'today' }); // calendar picker, change minDate to today
+      compositeEditorInstanceRef.current!.changeFormEditorOption('complexity', 'filter', true); // multiple-select dropdown editor
+      compositeEditorInstanceRef.current!.changeFormEditorOption('percentComplete', 'hideSliderNumber', formValues['completed']); // slider editor
+      compositeEditorInstanceRef.current!.changeFormEditorOption('finish', 'range', { min: 'today' }); // calendar picker, change minDate to today
     }
     */
   }
 
-  handleReRenderUnsavedStyling() {
-    this.removeAllUnsavedStylingFromCell();
-    this.renderUnsavedStylingOnAllVisibleCells();
+  function handleReRenderUnsavedStyling() {
+    removeAllUnsavedStylingFromCell();
+    renderUnsavedStylingOnAllVisibleCells();
   }
 
-  handleOnGridStateChanged(gridStateChanges: GridStateChange) {
+  function handleOnGridStateChanged(gridStateChanges: GridStateChange) {
     if (Array.isArray(gridStateChanges.gridState?.rowSelection?.dataContextIds)) {
-      this.setState((state: State) => ({
-        ...state,
-        isMassSelectionDisabled: gridStateChanges.gridState?.rowSelection?.dataContextIds?.length === 0,
-      }));
+      setIsMassSelectionDisabled(gridStateChanges.gridState?.rowSelection?.dataContextIds?.length === 0);
     }
   }
 
-  openCompositeModal(modalType: CompositeEditorModalType) {
+  function openCompositeModal(modalType: CompositeEditorModalType) {
     // open the editor modal and we can also provide a header title with optional parsing pulled from the dataContext, via template {{ }}
     // for example {{title}} => display the item title, or even complex object works {{product.itemName}} => display item product name
 
@@ -648,7 +618,7 @@ export default class Example30 extends React.Component<Props, State> {
         break;
     }
 
-    this.compositeEditorInstance?.openDetails({
+    compositeEditorInstanceRef.current?.openDetails({
       headerTitle: modalTitle,
       modalType,
       insertOptions: { highlightRow: false }, // disable highlight to avoid flaky tests in Cypress
@@ -663,7 +633,7 @@ export default class Example30 extends React.Component<Props, State> {
       onRendered: (modalElm) => {
         // Bootstrap requires extra attribute when toggling Dark Mode (data-bs-theme="dark")
         // we need to manually add this attribute  ourselve before opening the Composite Editor Modal
-        modalElm.dataset.bsTheme = this._darkMode ? 'dark' : 'light';
+        modalElm.dataset.bsTheme = darkMode ? 'dark' : 'light';
       },
       onSave: (formValues, _selection, dataContext) => {
         const serverResponseDelay = 50;
@@ -691,31 +661,29 @@ export default class Example30 extends React.Component<Props, State> {
     });
   }
 
-  toggleGridEditReadonly() {
+  function toggleGridEditReadonly() {
     // first need undo all edits
-    this.undoAllEdits();
+    undoAllEdits();
 
     // then change a single grid options to make the grid non-editable (readonly)
-    const isGridEditable = !this.state.isGridEditable;
-    this.setState((state: State) => ({
-      ...state,
-      isGridEditable,
-      isCompositeDisabled: !isGridEditable,
-      isMassSelectionDisabled: !isGridEditable,
-    }));
+    const newIsGridEditable = !isGridEditable;
+    setIsGridEditable(newIsGridEditable);
+    setIsCompositeDisabled(!newIsGridEditable);
+    setIsMassSelectionDisabled(!newIsGridEditable);
 
     // dynamically change SlickGrid editable grid option
-    this.reactGrid.slickGrid.setOptions({ editable: isGridEditable });
+    reactGridRef.current?.slickGrid.setOptions({ editable: newIsGridEditable });
   }
 
-  toggleDarkMode() {
-    this._darkMode = !this._darkMode;
-    this.toggleBodyBackground();
-    this.reactGrid.slickGrid?.setOptions({ darkMode: this._darkMode });
+  function toggleDarkMode() {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    toggleBodyBackground(newDarkMode);
+    reactGridRef.current?.slickGrid.setOptions({ darkMode: newDarkMode });
   }
 
-  toggleBodyBackground() {
-    if (this._darkMode) {
+  function toggleBodyBackground(darkMode: boolean) {
+    if (darkMode) {
       document.querySelector<HTMLDivElement>('.panel-wm-content')!.classList.add('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'dark';
     } else {
@@ -724,102 +692,102 @@ export default class Example30 extends React.Component<Props, State> {
     }
   }
 
-  removeUnsavedStylingFromCell(_item: any, column: Column, row: number) {
+  function removeUnsavedStylingFromCell(_item: any, column: Column, row: number) {
     // remove unsaved css class from that cell
     const cssStyleKey = `unsaved_highlight_${[column.id]}${row}`;
-    this.reactGrid.slickGrid.removeCellCssStyles(cssStyleKey);
-    const foundIdx = this.cellCssStyleQueue.findIndex(styleKey => styleKey === cssStyleKey);
+    reactGridRef.current?.slickGrid.removeCellCssStyles(cssStyleKey);
+    const foundIdx = cellCssStyleQueueRef.current.findIndex(styleKey => styleKey === cssStyleKey);
     if (foundIdx >= 0) {
-      this.cellCssStyleQueue.splice(foundIdx, 1);
+      cellCssStyleQueueRef.current.splice(foundIdx, 1);
     }
   }
 
-  removeAllUnsavedStylingFromCell() {
-    for (const cssStyleKey of this.cellCssStyleQueue) {
-      this.reactGrid.slickGrid.removeCellCssStyles(cssStyleKey);
+  function removeAllUnsavedStylingFromCell() {
+    for (const cssStyleKey of cellCssStyleQueueRef.current) {
+      reactGridRef.current?.slickGrid.removeCellCssStyles(cssStyleKey);
     }
-    this.cellCssStyleQueue = [];
+    cellCssStyleQueueRef.current = [];
   }
 
-  renderUnsavedStylingOnAllVisibleCells() {
-    for (const lastEdit of this.editQueue) {
+  function renderUnsavedStylingOnAllVisibleCells() {
+    for (const lastEdit of editQueue) {
       if (lastEdit) {
         const { item, columns, editCommand } = lastEdit;
         if (Array.isArray(columns)) {
           columns.forEach((col) => {
-            this.renderUnsavedCellStyling(item, col, editCommand);
+            renderUnsavedCellStyling(item, col, editCommand);
           });
         }
       }
     }
   }
 
-  renderUnsavedCellStyling(item: any, column: Column, editCommand: EditCommand) {
+  function renderUnsavedCellStyling(item: any, column: Column, editCommand: EditCommand) {
     if (editCommand && item && column) {
-      const row = this.reactGrid.dataView.getRowByItem(item) as number;
+      const row = reactGridRef.current?.dataView.getRowByItem(item) as number;
       if (row >= 0) {
         const hash = { [row]: { [column.id]: 'unsaved-editable-field' } };
         const cssStyleKey = `unsaved_highlight_${[column.id]}${row}`;
-        this.reactGrid.slickGrid.setCellCssStyles(`unsaved_highlight_${[column.id]}${row}`, hash);
-        this.cellCssStyleQueue.push(cssStyleKey);
+        reactGridRef.current?.slickGrid.setCellCssStyles(`unsaved_highlight_${[column.id]}${row}`, hash);
+        cellCssStyleQueueRef.current.push(cssStyleKey);
       }
     }
   }
 
-  saveAll() {
+  function saveAll() {
     // Edit Queue (array increases every time a cell is changed, regardless of item object)
-    console.log(this.editQueue);
+    console.log(editQueue);
 
     // Edit Items only keeps the merged data (an object with row index as the row properties)
     // if you change 2 different cells on 2 different cells then this editedItems will only contain 1 property
     // example: editedItems = { 0: { title: task 0, duration: 50, ... }}
     // ...means that row index 0 got changed and the final merged object is { title: task 0, duration: 50, ... }
-    console.log(this.editedItems);
-    // console.log(`We changed ${Object.keys(this.editedItems).length} rows`);
+    console.log(editedItems);
+    // console.log(`We changed ${Object.keys(editedItems).length} rows`);
 
     // since we saved, we can now remove all the unsaved color styling and reset our array/object
-    this.removeAllUnsavedStylingFromCell();
-    this.editQueue = [];
-    this.editedItems = {};
+    removeAllUnsavedStylingFromCell();
+    setEditQueue([]);
+    setEditedItems({});
   }
 
-  undoLastEdit(showLastEditor = false) {
-    const lastEdit = this.editQueue.pop();
+  function undoLastEdit(showLastEditor = false) {
+    const lastEdit = editQueue.pop();
     const lastEditCommand = lastEdit?.editCommand;
     if (lastEdit && lastEditCommand && SlickGlobalEditorLock.cancelCurrentEdit()) {
       lastEditCommand.undo();
 
       // remove unsaved css class from that cell
       for (const lastEditColumn of lastEdit.columns) {
-        this.removeUnsavedStylingFromCell(lastEdit.item, lastEditColumn, lastEditCommand.row);
+        removeUnsavedStylingFromCell(lastEdit.item, lastEditColumn, lastEditCommand.row);
       }
-      this.reactGrid.slickGrid.invalidate();
+      reactGridRef.current?.slickGrid.invalidate();
 
 
       // optionally open the last cell editor associated
       if (showLastEditor) {
-        this.reactGrid.slickGrid.gotoCell(lastEditCommand.row, lastEditCommand.cell, false);
+        reactGridRef.current?.slickGrid.gotoCell(lastEditCommand.row, lastEditCommand.cell, false);
       }
     }
   }
 
-  undoAllEdits() {
-    for (const lastEdit of this.editQueue) {
+  function undoAllEdits() {
+    for (const lastEdit of editQueue) {
       const lastEditCommand = lastEdit?.editCommand;
       if (lastEditCommand && SlickGlobalEditorLock.cancelCurrentEdit()) {
         lastEditCommand.undo();
 
         // remove unsaved css class from that cell
         for (const lastEditColumn of lastEdit.columns) {
-          this.removeUnsavedStylingFromCell(lastEdit.item, lastEditColumn, lastEditCommand.row);
+          removeUnsavedStylingFromCell(lastEdit.item, lastEditColumn, lastEditCommand.row);
         }
       }
     }
-    this.reactGrid.slickGrid.invalidate(); // re-render the grid only after every cells got rolled back
-    this.editQueue = [];
+    reactGridRef.current?.slickGrid.invalidate(); // re-render the grid only after every cells got rolled back
+    setEditQueue([]);
   }
 
-  mockProducts() {
+  function mockProducts() {
     return [
       {
         id: 0,
@@ -828,7 +796,7 @@ export default class Example30 extends React.Component<Props, State> {
         listPrice: 2100.23,
         itemTypeName: 'I',
         image: 'http://i.stack.imgur.com/pC1Tv.jpg',
-        icon: this.getRandomIcon(0),
+        icon: getRandomIcon(0),
       },
       {
         id: 1,
@@ -837,7 +805,7 @@ export default class Example30 extends React.Component<Props, State> {
         listPrice: 3200.12,
         itemTypeName: 'I',
         image: 'https://i.imgur.com/Fnm7j6h.jpg',
-        icon: this.getRandomIcon(1),
+        icon: getRandomIcon(1),
       },
       {
         id: 2,
@@ -846,7 +814,7 @@ export default class Example30 extends React.Component<Props, State> {
         listPrice: 15.00,
         itemTypeName: 'I',
         image: 'https://i.imgur.com/RaVJuLr.jpg',
-        icon: this.getRandomIcon(2),
+        icon: getRandomIcon(2),
       },
       {
         id: 3,
@@ -855,7 +823,7 @@ export default class Example30 extends React.Component<Props, State> {
         listPrice: 25.76,
         itemTypeName: 'I',
         image: 'http://i.stack.imgur.com/pC1Tv.jpg',
-        icon: this.getRandomIcon(3),
+        icon: getRandomIcon(3),
       },
       {
         id: 4,
@@ -864,7 +832,7 @@ export default class Example30 extends React.Component<Props, State> {
         listPrice: 13.35,
         itemTypeName: 'I',
         image: 'https://i.imgur.com/Fnm7j6h.jpg',
-        icon: this.getRandomIcon(4),
+        icon: getRandomIcon(4),
       },
       {
         id: 5,
@@ -873,7 +841,7 @@ export default class Example30 extends React.Component<Props, State> {
         listPrice: 23.33,
         itemTypeName: 'I',
         image: 'https://i.imgur.com/RaVJuLr.jpg',
-        icon: this.getRandomIcon(5),
+        icon: getRandomIcon(5),
       },
       {
         id: 6,
@@ -882,7 +850,7 @@ export default class Example30 extends React.Component<Props, State> {
         listPrice: 71.21,
         itemTypeName: 'I',
         image: 'http://i.stack.imgur.com/pC1Tv.jpg',
-        icon: this.getRandomIcon(6),
+        icon: getRandomIcon(6),
       },
       {
         id: 7,
@@ -891,7 +859,7 @@ export default class Example30 extends React.Component<Props, State> {
         listPrice: 2.43,
         itemTypeName: 'I',
         image: 'https://i.imgur.com/Fnm7j6h.jpg',
-        icon: this.getRandomIcon(7),
+        icon: getRandomIcon(7),
       },
       {
         id: 8,
@@ -900,13 +868,13 @@ export default class Example30 extends React.Component<Props, State> {
         listPrice: 31288.39,
         itemTypeName: 'I',
         image: 'https://i.imgur.com/RaVJuLr.jpg',
-        icon: this.getRandomIcon(8),
+        icon: getRandomIcon(8),
       },
     ];
   }
 
   /** List of icons that are supported in this lib Material Design Icons */
-  getRandomIcon(iconIndex?: number) {
+  function getRandomIcon(iconIndex?: number) {
     const icons = [
       'mdi-arrow-collapse',
       'mdi-arrow-expand',
@@ -964,7 +932,8 @@ export default class Example30 extends React.Component<Props, State> {
     return icons[iconIndex ?? randomNumber];
   }
 
-  renderItemCallbackWith2Rows(item: any): string {
+  /*
+  function renderItemCallbackWith2Rows(item: any): string {
     return `<div class="autocomplete-container-list">
       <div class="autocomplete-left">
         <!--<img src="http://i.stack.imgur.com/pC1Tv.jpg" width="50" />-->
@@ -981,8 +950,9 @@ export default class Example30 extends React.Component<Props, State> {
       <div class="autocomplete-bottom-left">${item.itemNameTranslated}</div>
     </div>`;
   }
+    */
 
-  renderItemCallbackWith4Corners(item: any): string {
+  function renderItemCallbackWith4Corners(item: any): string {
     return `<div class="autocomplete-container-list">
           <div class="autocomplete-left">
             <!--<img src="http://i.stack.imgur.com/pC1Tv.jpg" width="50" />-->
@@ -1002,90 +972,99 @@ export default class Example30 extends React.Component<Props, State> {
         </div>`;
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => this.toggleDarkMode()} data-test="toggle-dark-mode">
-            <i className="mdi mdi-theme-light-dark"></i>
-            <span>Toggle Dark Mode</span>
+
+  return !gridOptions ? '' : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 30: Composite Editor Modal
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example30.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
+        <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => toggleDarkMode()} data-test="toggle-dark-mode">
+          <i className="mdi mdi-theme-light-dark"></i>
+          <span>Toggle Dark Mode</span>
+        </button>
+      </h2>
+
+      {hideSubTitle ? null : <div className="subtitle">
+        Composite Editor allows you to Create, Clone, Edit, Mass Update & Mass Selection Changes inside a nice Modal Window.<br />
+        The modal is simply populated by looping through your column definition list and also uses a lot of the same logic as inline editing
+        (see <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/composite-editor-modal" target="_blank">Composite Editor - Wiki</a>.)
+      </div>}
+
+      <div className="mb-2">
+        <div className="btn-group btn-group-sm" role="group" aria-label="Basic Editing Commands">
+          <button type="button" className="btn btn-outline-secondary btn-icon" data-test="toggle-readonly-btn"
+            onClick={() => toggleGridEditReadonly()}>
+            <i className="mdi mdi-table-edit"></i> Toggle Edit/Readonly Grid
           </button>
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example30.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
-
-        <div className="mb-2">
-          <div className="btn-group btn-group-sm" role="group" aria-label="Basic Editing Commands">
-            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="toggle-readonly-btn"
-              onClick={() => this.toggleGridEditReadonly()}>
-              <i className="mdi mdi-table-edit"></i> Toggle Edit/Readonly Grid
-            </button>
-            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="undo-last-edit-btn"
-              onClick={() => this.undoLastEdit()}>
-              <i className="mdi mdi-undo"></i> Undo Last Edit
-            </button>
-            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="undo-open-editor-btn"
-              onClick={() => this.undoLastEdit(true)}>
-              <i className="mdi mdi-undo"></i> Undo Last Edit &amp; Open Editor
-            </button>
-            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="undo-all-edits-btn"
-              onClick={() => this.undoAllEdits()}>
-              <i className="mdi mdi-history"></i> Undo All Edits
-            </button>
-            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="save-all-btn"
-              onClick={() => this.saveAll()}>
-              Save All
-            </button>
-          </div>
+          <button type="button" className="btn btn-outline-secondary btn-icon" data-test="undo-last-edit-btn"
+            onClick={() => undoLastEdit()}>
+            <i className="mdi mdi-undo"></i> Undo Last Edit
+          </button>
+          <button type="button" className="btn btn-outline-secondary btn-icon" data-test="undo-open-editor-btn"
+            onClick={() => undoLastEdit(true)}>
+            <i className="mdi mdi-undo"></i> Undo Last Edit &amp; Open Editor
+          </button>
+          <button type="button" className="btn btn-outline-secondary btn-icon" data-test="undo-all-edits-btn"
+            onClick={() => undoAllEdits()}>
+            <i className="mdi mdi-history"></i> Undo All Edits
+          </button>
+          <button type="button" className="btn btn-outline-secondary btn-icon" data-test="save-all-btn"
+            onClick={() => saveAll()}>
+            Save All
+          </button>
         </div>
-
-        <div className="mb-3">
-          <div className="btn-group btn-group-sm" role="group" aria-label="Basic example">
-            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="open-modal-create-btn"
-              onClick={() => this.openCompositeModal('create')} disabled={this.state.isCompositeDisabled}>
-              <i className="mdi mdi-shape-square-plus"></i> Item Create
-            </button>
-            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="open-modal-clone-btn"
-              onClick={() => this.openCompositeModal('clone')} disabled={this.state.isCompositeDisabled}>
-              <i className="mdi mdi-content-copy"></i> Item Clone
-            </button>
-            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="open-modal-edit-btn"
-              onClick={() => this.openCompositeModal('edit')} disabled={this.state.isCompositeDisabled}>
-              <i className="mdi mdi-pencil"></i> Item Edit
-            </button>
-            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="open-modal-mass-update-btn"
-              onClick={() => this.openCompositeModal('mass-update')} disabled={this.state.isCompositeDisabled}>
-              <i className="mdi mdi-pencil-box-multiple-outline"></i> Mass Update
-            </button>
-            <button type="button" className="btn btn-outline-secondary btn-icon" data-test="open-modal-mass-selection-btn"
-              onClick={() => this.openCompositeModal('mass-selection')} disabled={this.state.isMassSelectionDisabled}>
-              <i className="mdi mdi-check-box-outline"></i> Update Selected
-            </button>
-          </div>
-        </div>
-
-        <SlickgridReact gridId="grid30"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          onBeforeEditCell={$event => this.handleOnBeforeEditCell($event.detail.eventData, $event.detail.args)}
-          onCellChange={$event => this.handleOnCellChange($event.detail.eventData, $event.detail.args)}
-          onClick={$event => this.handleOnCellClicked($event.detail.eventData, $event.detail.args)}
-          onCompositeEditorChange={$event => this.handleOnCompositeEditorChange($event.detail.eventData, $event.detail.args)}
-          onItemDeleted={$event => this.handleItemDeleted($event.detail)}
-          onGridStateChanged={$event => this.handleOnGridStateChanged($event.detail)}
-          onRowsOrCountChanged={() => this.handleReRenderUnsavedStyling()}
-          onValidationError={$event => this.handleValidationError($event.detail.eventData, $event.detail.args)}
-        />
       </div>
-    );
-  }
+
+      <div className="mb-3">
+        <div className="btn-group btn-group-sm" role="group" aria-label="Basic example">
+          <button type="button" className="btn btn-outline-secondary btn-icon" data-test="open-modal-create-btn"
+            onClick={() => openCompositeModal('create')} disabled={isCompositeDisabled}>
+            <i className="mdi mdi-shape-square-plus"></i> Item Create
+          </button>
+          <button type="button" className="btn btn-outline-secondary btn-icon" data-test="open-modal-clone-btn"
+            onClick={() => openCompositeModal('clone')} disabled={isCompositeDisabled}>
+            <i className="mdi mdi-content-copy"></i> Item Clone
+          </button>
+          <button type="button" className="btn btn-outline-secondary btn-icon" data-test="open-modal-edit-btn"
+            onClick={() => openCompositeModal('edit')} disabled={isCompositeDisabled}>
+            <i className="mdi mdi-pencil"></i> Item Edit
+          </button>
+          <button type="button" className="btn btn-outline-secondary btn-icon" data-test="open-modal-mass-update-btn"
+            onClick={() => openCompositeModal('mass-update')} disabled={isCompositeDisabled}>
+            <i className="mdi mdi-pencil-box-multiple-outline"></i> Mass Update
+          </button>
+          <button type="button" className="btn btn-outline-secondary btn-icon" data-test="open-modal-mass-selection-btn"
+            onClick={() => openCompositeModal('mass-selection')} disabled={isMassSelectionDisabled}>
+            <i className="mdi mdi-check-box-outline"></i> Update Selected
+          </button>
+        </div>
+      </div>
+
+      <SlickgridReact gridId="grid30"
+        columnDefinitions={columnDefinitions}
+        gridOptions={gridOptions}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+        onBeforeEditCell={$event => handleOnBeforeEditCell($event.detail.eventData, $event.detail.args)}
+        onCellChange={$event => handleOnCellChange($event.detail.eventData, $event.detail.args)}
+        onClick={$event => handleOnCellClicked($event.detail.eventData, $event.detail.args)}
+        onCompositeEditorChange={$event => handleOnCompositeEditorChange($event.detail.eventData, $event.detail.args)}
+        onItemDeleted={$event => handleItemDeleted($event.detail)}
+        onGridStateChanged={$event => handleOnGridStateChanged($event.detail)}
+        onRowsOrCountChanged={() => handleReRenderUnsavedStyling()}
+        onValidationError={$event => handleValidationError($event.detail.eventData, $event.detail.args)}
+      />
+    </div>
+  );
 }
+
+export default Example30;

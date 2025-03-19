@@ -95,7 +95,7 @@ By default, the library uses the [inputFilter](https://github.com/ghiscoding/sli
 If you want to load the grid with certain default filter(s), you can use the following optional properties:
 - `searchTerms` (array of values)
 
-For example, setting a default value into an `input` element, you can simply get the search term with `columnDef.filter.searchTerms` and set the default value with `filterElm.value = this.searchTerms;`
+For example, setting a default value into an `input` element, you can simply get the search term with `columnDef.filter.searchTerms` and set the default value with `filterElm.value = searchTerms;`
 
 ### Collection
 If you want to pass a `collection` to your filter (for example, a multiple-select needs a select list of options), you can then use it in your custom filter through `columnDef.filter.collection`
@@ -104,7 +104,7 @@ If you want to pass a `collection` to your filter (for example, a multiple-selec
 By default a `collection` uses the `label/value` pair. You can loop through your `collection` and use the `label/value` properties. For example:
 ```tsx
 // loop through collection to create select option
-this.columnDef.filter.collection.forEach((option: SelectOption) => {
+columnDef.filter.collection.forEach((option: SelectOption) => {
   // use the option value & label
   options += `<option value="${option.value}">${option.label}</option>`;
 });
@@ -115,10 +115,10 @@ What if your `collection` have totally different value/label pair? In this case,
 For example:
 ```tsx
 // use custom structure value/label pair
-const labelName = (this.columnDef.filter.customStructure) ? this.columnDef.filter.customStructure.label : 'label';
-const valueName = (this.columnDef.filter.customStructure) ? this.columnDef.filter.customStructure.value : 'value';
+const labelName = (columnDef.filter.customStructure) ? columnDef.filter.customStructure.label : 'label';
+const valueName = (columnDef.filter.customStructure) ? columnDef.filter.customStructure.value : 'value';
 
-this.columnDef.filter.collection.forEach((option: SelectOption) => {
+columnDef.filter.collection.forEach((option: SelectOption) => {
   // use the option value & translated label
   options += `<option value="${option[valueName]}">${option[labelName]}</option>`;
 });
@@ -129,9 +129,9 @@ this.columnDef.filter.collection.forEach((option: SelectOption) => {
 #### LabelKey
 By default a `collection` uses the `label/value` pair without translation or `labelKey/value` pair with translation usage. So if you want to use translations, then you can loop through your `collection` and use the `labelKey/value` properties. For example:
 ```tsx
-this.columnDef.filter.collection.forEach((option: SelectOption) => {
+columnDef.filter.collection.forEach((option: SelectOption) => {
   // translate label
-  const textLabel = (option.labelKey && typeof this.i18n.tr === 'function') ? this.i18n.tr(option.labelKey || ' ') : option.labelKey;
+  const textLabel = (option.labelKey && typeof i18next.tr === 'function') ? i18next.tr(option.labelKey || ' ') : option.labelKey;
 
   // use the option value & translated label
   options += `<option value="${option.value}">${textLabel}</option>`;
@@ -144,12 +144,12 @@ What if you want to use `customStructure` and translate the labels? Simply pass 
 For example:
 ```tsx
 // use custom structure value/label pair
-const labelName = (this.columnDef.filter.customStructure) ? this.columnDef.filter.customStructure.label : 'label';
-const valueName = (this.columnDef.filter.customStructure) ? this.columnDef.filter.customStructure.value : 'value';
+const labelName = (columnDef.filter.customStructure) ? columnDef.filter.customStructure.label : 'label';
+const valueName = (columnDef.filter.customStructure) ? columnDef.filter.customStructure.value : 'value';
 
-this.columnDef.filter.collection.forEach((option: SelectOption) => {
+columnDef.filter.collection.forEach((option: SelectOption) => {
   // translate label
-  const textLabel = (option.labelKey && typeof this.i18n.tr === 'function') ? this.i18n.tr(option[labelName] || ' ') : option[labelName];
+  const textLabel = (option.labelKey && typeof i18next.tr === 'function') ? i18next.tr(option[labelName] || ' ') : option[labelName];
 
   // use the option value & translated label
   options += `<option value="${option[valueName]}">${textLabel}</option>`;

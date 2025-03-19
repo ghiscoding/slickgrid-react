@@ -61,10 +61,7 @@ const taskFormatter = (_row: number, _cell: number, value: any) => {
   return '';
 };
 
-export default function Example3() {
-  const title = 'Example 3: Editors / Delete';
-  document.title = title;
-
+const Example3: React.FC = () => {
   const [duplicateTitleHeaderCount, setDuplicateTitleHeaderCount] = useState(1);
   const [commandQueue] = useState<EditCommand[]>([]);
   const [isAutoEdit, setIsAutoEdit] = useState(true);
@@ -72,6 +69,7 @@ export default function Example3() {
   const [alertWarning, setAlertWarning] = useState('');
   const [dataset] = useState(getData(NB_ITEMS));
   const [reactGrid, setReactGrid] = useState<SlickgridReactInstance>();
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([
     {
@@ -662,7 +660,7 @@ export default function Example3() {
   return (
     <div id='demo-container' className='container-fluid'>
       <h2>
-        {title}
+        Example 3: Editors / Delete
         <span className="float-end font18">
           see&nbsp;
           <a target="_blank"
@@ -670,8 +668,12 @@ export default function Example3() {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
       </h2>
-      <div className="subtitle">
+
+      {hideSubTitle ? null : <div className="subtitle">
         Grid with Inline Editors and onCellClick actions (<a href='https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/editors' target='_blank'>Docs</a>).
         <ul>
           <li>Multiple Editors & Filters are available: AutoComplete, Checkbox, Date, Slider, SingleSelect, MultipleSelect, Float, Text, LongText... even Custom Editor</li>
@@ -688,7 +690,7 @@ export default function Example3() {
             <li>Any Editor/Filter with a 'collection' can be changed dynamically later in the future</li>
           </ul>
         </ul>
-      </div>
+      </div>}
 
       <div className="row">
         <div className='col-sm-6'>
@@ -808,3 +810,5 @@ export default function Example3() {
     </div>
   );
 }
+
+export default Example3;

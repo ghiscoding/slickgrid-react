@@ -7,7 +7,7 @@ All the events are published with a data payload in a `CustomEvent`, so you will
 #### `SlickGrid` and `SlickDataView`
 ```tsx
 // 1. with PubSub instance
-this.reactGrid.instances?.eventPubSubService?.subscribe('onCellChange', (payload) => console.log('PubSub, cell changed data:', payload));
+reactGridRef.current?.instances?.eventPubSubService?.subscribe('onCellChange', (payload) => console.log('PubSub, cell changed data:', payload));
 
 // 2. with CustomEvent in the View (see html code below)
 handleOnCellChange(e, args) {
@@ -20,11 +20,11 @@ handleOnCellChange(e, args) {
 render() {
   <SlickgridReact
       gridId='grid3'
-      columnDefinitions={this.state.columnDefinitions}
-      gridOptions={this.state.gridOptions}
-      dataset={this.state.dataset}
-      onReactGridCreated={e => { this.reactGridReady(e.detail); }}
-      onCellChange={e => { this.handleOnCellChange(e.detail.eventData, e.detail.args); }}
+      columnDefinitions={columns}
+      gridOptions={options}
+      dataset={dataset}
+      onReactGridCreated={e => { reactGridReady(e.detail); }}
+      onCellChange={e => { handleOnCellChange(e.detail.eventData, e.detail.args); }}
     />
 }
 ```
@@ -32,7 +32,7 @@ render() {
 #### all other events
 ```ts
 // 1. with PubSub instance
-this.reactGrid.instances?.eventPubSubService?.subscribe('onHeaderMenuCommand', (payload) => console.log('PubSub, header menu command', payload));
+reactGridRef.current?.instances?.eventPubSubService?.subscribe('onHeaderMenuCommand', (payload) => console.log('PubSub, header menu command', payload));
 
 // 2. with CustomEvent in the View (see html code below)
 handleOnHeaderMenuCommand(e) {
@@ -44,11 +44,11 @@ handleOnHeaderMenuCommand(e) {
 render() {
   <SlickgridReact
       gridId='grid3'
-      columnDefinitions={this.state.columnDefinitions}
-      gridOptions={this.state.gridOptions}
-      dataset={this.state.dataset}
-      onReactGridCreated={e => { this.reactGridReady(e.detail); }}
-      onHeaderMenuCommand={e => { this.handleOnHeaderMenuCommand(e.detail); }}
+      columnDefinitions={columns}
+      gridOptions={options}
+      dataset={dataset}
+      onReactGridCreated={e => { reactGridReady(e.detail); }}
+      onHeaderMenuCommand={e => { handleOnHeaderMenuCommand(e.detail); }}
     />
 }
 ```

@@ -17,7 +17,7 @@ We use an external lib named [multiple-select-vanilla](https://github.com/ghisco
 Here's an example with a `collection`, `collectionFilterBy` and `collectionSortBy`
 
 ```ts
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'prerequisites', name: 'Prerequisites', field: 'prerequisites',
     type: FieldType.string,
@@ -53,7 +53,7 @@ editor: {
 You could also define certain options as a global level (for the entire grid or even all grids) by taking advantage of the `defaultEditorOptions` Grid Option. Note that they are set via the editor type as a key name (`autocompleter`, `date`, ...) and then the content is the same as `editorOptions` (also note that each key is already typed with the correct editor option interface), for example
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   defaultEditorOptions: { 
     // Note: that `select` combines both multipleSelect & singleSelect
     select: { minHeight: 350 }, // typed as MultipleSelectOption
@@ -81,7 +81,7 @@ interface ColumnEditor {
 ```
 
 ```ts
-this.columnDefinitions = [{
+const columnDefinitions = [{
   id: 'firstName', name: 'First Name', field: 'user.firstName',
   formatter: Formatters.complexObject, // the complex formatter is necessary, unless you provide a custom formatter
   editor: {
@@ -98,7 +98,7 @@ In some cases you might want to provide a custom collection based on the current
 Let take this example, let say that we want to allow collection values lower than or greater than 50 depending on its item Id, we could do the following
 
 ```ts
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'prerequisites', name: 'Prerequisites', field: 'prerequisites',
     type: FieldType.string,
@@ -137,7 +137,7 @@ So you can create the  `multipleSelect` Filter with a `customStructure` by using
 with a `customStructure` defined as
 ```typescript
 editor: {
-  collection: this.currencies,
+  collection: currencies,
   customStructure: {
     value: 'currency',
     label: 'currency',
@@ -157,7 +157,7 @@ By default HTML is not rendered and the `label` will simply show HTML as text. B
 **NOTE:** this is currently only used by the Editors that have a `collection` which are the `MultipleSelect` & `SingleSelect` Editors.
 
 ```typescript
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
     formatter: Formatters.checkmarkMaterial,
@@ -176,7 +176,7 @@ this.columnDefinitions = [
 Sometime you wish that whenever you change your filter collection, you'd like the filter to be updated, it won't do that by default but you could use `enableCollectionWatch` for that purpose to add collection observers and re-render the Filter DOM element whenever the collection changes. Also note that using `collectionAsync` will automatically watch for changes, so there's no need to enable this flag for that particular use case.
 
 ```typescript
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
     formatter: Formatters.checkmarkMaterial,
@@ -210,7 +210,7 @@ Couple of small options were added to suit SlickGrid-Universal needs, which is w
 
 ##### Code
 ```typescript
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'isActive', name: 'Is Active', field: 'isActive',
     filterable: true,

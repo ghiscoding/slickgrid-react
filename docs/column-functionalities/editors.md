@@ -59,7 +59,7 @@ const columnDefinitions = [
   }
 ];
 
-this.gridOptions {
+const gridOptions {
   enableCellNavigation: true, // <<-- VERY IMPORTANT, it won't work without this flag enabled
   editable: true,
 };
@@ -248,19 +248,19 @@ If you want to modify the collection afterward, you simply need to find the asso
 
 For example
 ```tsx
-  addItem() {
-    const lastRowIndex = this.dataset.length;
-    const newRows = this.mockData(1, lastRowIndex);
+  function addItem() {
+    const lastRowIndex = dataset.length;
+    const newRows = mockData(1, lastRowIndex);
 
     // wrap into a timer to simulate a backend async call
     setTimeout(() => {
-      const requisiteColumnDef = this.columnDefinitions.find((column: Column) => column.id === 'prerequisites');
+      const requisiteColumnDef = columnDefinitions.find((column: Column) => column.id === 'prerequisites');
       if (requisiteColumnDef) {
         const editorCollection = requisiteColumnDef.editor.collection;
 
         if (Array.isArray(collection )) {
           // add the new row to the grid
-          this.reactGrid.gridService.addItemToDatagrid(newRows[0]);
+          reactGridRef.current?.gridService.addItemToDatagrid(newRows[0]);
 
           // then refresh the Filter "collection", we have 2 ways of doing it
 
@@ -297,19 +297,22 @@ So you can create the  `multipleSelect` Filter with a `customStructure` by using
 
 with a `customStructure` defined as
 ```tsx
-editor: {
-  collection: this.currencies,
-  customStructure: {
-    value: 'currency',
-    label: 'currency',
-    labelPrefix: 'symbol',
-    labelSuffix: 'country',
-  collectionOptions: {
-    separatorBetweenTextLabels: ' ', // add white space between each text
-    includePrefixSuffixToSelectedValues: true // should the selected value include the prefix/suffix in the output format
-  },
-  model: Editors.multipleSelect
-}
+const columns = [
+  id: 'currency', name: 'Currency', field: 'currency',
+  editor: {
+    collection: currencies,
+    customStructure: {
+      value: 'currency',
+      label: 'currency',
+      labelPrefix: 'symbol',
+      labelSuffix: 'country',
+    collectionOptions: {
+      separatorBetweenTextLabels: ' ', // add white space between each text
+      includePrefixSuffixToSelectedValues: true // should the selected value include the prefix/suffix in the output format
+    },
+    model: Editors.multipleSelect
+  }
+];
 ```
 
 ### Collection Label Render HTML
@@ -375,7 +378,7 @@ const columnDefinitions = [
 Some of the Editors could receive extra options, which is mostly the case for Editors using external dependencies (e.g. `autocompleter`, `date`, `multipleSelect`, ...) you can provide options via the `editorOptions`, for example
 
 ```ts
-this.columnDefinitions = [{
+const columnDefinitions = [{
   id: 'start', name: 'Start Date', field: 'start',
   editor: { 
     model: Editors.date,
@@ -388,7 +391,7 @@ this.columnDefinitions = [{
 You could also define certain options as a global level (for the entire grid or even all grids) by taking advantage of the `defaultEditorOptions` Grid Option. Note that they are set via the editor type as a key name (`autocompleter`, `date`, ...) and then the content is the same as `editorOptions` (also note that each key is already typed with the correct editor option interface), for example
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   defaultEditorOptions: { 
     autocompleter: { debounceWaitMs: 150 }, // typed as AutocompleterOption
     date: { range: { date: 'today' } }, // typed as VanillaCalendarOption,
@@ -447,7 +450,7 @@ const myCustomTitleValidator: EditorValidator = (value: any, args: EditorArgs) =
 ```
 and use it in our Columns Definition like this:
 ```tsx
-this.columnDefinition = [
+const columnDefinition = [
   {
     id: 'title', name: 'Title', field: 'title',
     editor: {
@@ -473,23 +476,33 @@ With that in mind and the code from the SO answer, we end up with the following 
 ```tsx
 import { SlickgridReactInstance, Column, GridOption } from 'slickgrid-react';
 
-export class MyApp extends React.Component<Props, State> {
-  reactGrid: SlickgridReactInstance;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const [isAutoEdit, setIsAutoEdit] = useState(false);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+
+  useEffect(() => defineGrid(), []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+  }
 
   /** Change dynamically `autoEdit` grid options */
-  setAutoEdit(isAutoEdit) {
-    this.isAutoEdit = isAutoEdit;
-    this.reactGrid.slickGrid.setOptions({ autoEdit: isAutoEdit }); // change the grid option dynamically
+  function setAutoEdit(isAutoEdit) {
+    setIsAutoEdit(isAutoEdit);
+    reactGridRef.current?.slickGrid.setOptions({ autoEdit: isAutoEdit }); // change the grid option dynamically
     return true;
   }
 
   render() {
     return (
       <SlickgridReact gridId="grid1"
-        columnDefinitions={this.state.columnDefinitions}
-        gridOptions={this.state.gridOptions}
-        dataset={this.state.dataset}
-        onReactGridCreated={$event => this.reactGridReady($event.detail)}
+        columnDefinitions={columns}
+        gridOptions={options}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
       />
     );
   }
@@ -501,37 +514,37 @@ If your grid uses the `autoResize` and you use Editors in your grid on a mobile 
 
 ##### Component
 ```tsx
- reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+const Example: React.FC = () => {
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  onAfterEditCell($event) {
+  function onAfterEditCell($event) {
     // resume autoResize feature,  and after leaving cell editing mode
     // force a resize to make sure the grid fits the current dimensions
-    this.reactGrid.resizerService.pauseResizer(false);
-    this.reactGrid.resizerService.resizeGrid();
+    reactGridRef.current?.resizerService.pauseResizer(false);
+    reactGridRef.current?.resizerService.resizeGrid();
   }
 
-  onBeforeEditCell($event) {
-    this.reactGrid.resizerService.pauseResizer(true);
+  function onBeforeEditCell($event) {
+    reactGridRef.current?.resizerService.pauseResizer(true);
   }
 
-  render() {
-    return (
+    return !options ? null : (
       <SlickgridReact
           gridId='grid3'
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={e => { this.reactGridReady(e.detail); }}
-          onBeforeEditCell={e => {this.onBeforeEditCell($event.detail.eventData, $event.detail.args)}}
-          onBeforeCellEditorDestroy={e => {this.onAfterEditCell($event.detail.eventData, $event.detail.args)}}
-          onCellChange={e => { this.onCellChanged(e.detail.eventData, e.detail.args); }}
-          onClick={e => { this.onCellClicked(e.detail.eventData, e.detail.args); }}
-          onValidationError={e => { this.onCellValidationError(e.detail.eventData, e.detail.args); }}
+          columnDefinitions={columns}
+          gridOptions={options}
+          dataset={dataset}
+          onReactGridCreated={e => { reactGridRef.current?Ready(e.detail); }}
+          onBeforeEditCell={e => {onBeforeEditCell($event.detail.eventData, $event.detail.args)}}
+          onBeforeCellEditorDestroy={e => {onAfterEditCell($event.detail.eventData, $event.detail.args)}}
+          onCellChange={e => { onCellChanged(e.detail.eventData, e.detail.args); }}
+          onClick={e => { onCellClicked(e.detail.eventData, e.detail.args); }}
+          onValidationError={e => { onCellValidationError(e.detail.eventData, e.detail.args); }}
         />
     );
-  }
+}
 ```
 
 ## Turning individual rows into edit mode
@@ -543,15 +556,15 @@ You can dynamically change a column editor by taking advantage of the `onBeforeE
 
 With the code sample shown below, we are using an input checkbox to toggle the Editor between `Editors.longText` to `Editors.text` and vice/versa
 
-```ts
-changeToInputTextEditor(checked: boolean) {
-    this.isInputTextEditor = checked;
+```tsx
+function changeToInputTextEditor(checked: boolean) {
+    setIsInputTextEditor(checked);
 }
 
-handleOnBeforeEditCell(args: CustomEvent<OnBeforeEditCellEventArgs>) {
+function handleOnBeforeEditCell(args: CustomEvent<OnBeforeEditCellEventArgs>) {
   const args = event?.detail?.args;
   const { grid, column } = args;
-  column.editor.model = this.isInputTextEditor ? Editors.text : Editors.longText;
+  column.editor.model = isInputTextEditor ? Editors.text : Editors.longText;
   column.editorClass = column.editor.model;
   return true;
 }

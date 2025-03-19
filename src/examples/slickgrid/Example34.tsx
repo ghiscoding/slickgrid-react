@@ -14,20 +14,9 @@ import {
 } from '../../slickgrid-react';
 import { faker } from '@faker-js/faker';
 import sparkline from '@fnando/sparkline';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import type BaseSlickGridState from './state-slick-grid-base';
 import './example34.scss';
-
-interface Props { }
-interface State extends BaseSlickGridState {
-  isFullScreen: boolean;
-  highlightDuration: number;
-  itemCount: number;
-  minChangePerCycle: number;
-  maxChangePerCycle: number;
-  refreshRate: number;
-}
 
 const NB_ROWS = 200;
 
@@ -89,55 +78,44 @@ const historicSparklineFormatter: Formatter = (_row, _cell, _value: string, _col
   return div;
 };
 
-export default class Example34 extends React.Component<Props, State> {
-  private _darkMode = false;
-  title = 'Example 34: Real-Time Trading Platform';
-  subTitle = `Simulate a stock trading platform with lot of price changes, it is strongly suggested to disable the <code>autoResize.autoHeight</code> grid option for this type of grid.
-    <ul>
-      <li>you can start/stop the simulation, you can see SlickGrid huge perf by setting: (1) lower Changes Rate, (2) increase both Changes per Cycle, and (3) lower Highlight Duration</li>
-      <li>optionally change random numbers, between 0 and 10 symbols, per cycle (higher numbers means more changes)</li>
-      <li>optionally change the simulation changes refresh rate in ms (lower number means more changes).</li>
-      <li>you can Group by 1 of these columns: Currency, Market or Type</li>
-    </ul>`;
+const Example34: React.FC = () => {
+  const [dataset] = useState<any[]>(loadData(NB_ROWS));
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [highlightDuration, setHighlightDuration] = useState(150);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [minChangePerCycle, setMinChangePerCycle] = useState(0);
+  const [maxChangePerCycle, setMaxChangePerCycle] = useState(10);
+  const [refreshRate, setRefreshRate] = useState(75);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
-  timer?: number;
-  reactGrid!: SlickgridReactInstance;
+  const columnDefinitionsRef = useRef<Column[]>([]);
+  const minChangePerCycleRef = useRef(minChangePerCycle);
+  const maxChangePerCycleRef = useRef(maxChangePerCycle);
+  const highlightDurationRef = useRef(highlightDuration);
+  const refreshRateRef = useRef(refreshRate);
+  const timerRef = useRef<any>();
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  constructor(public readonly props: Props) {
-    super(props);
-
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      isFullScreen: false,
-      highlightDuration: 150,
-      itemCount: 200,
-      minChangePerCycle: 0,
-      maxChangePerCycle: 10,
-      refreshRate: 75,
-    };
-  }
-
-  componentDidMount() {
-    document.title = this.title;
-    this.defineGrid();
-
+  useEffect(() => {
+    defineGrid();
     window.setTimeout(() => {
-      this.startSimulation();
-    }, this.state.refreshRate);
+      startSimulation();
+    }, refreshRateRef.current);
+
+    // make sure it's back to light mode before unmounting
+    return () => {
+      stopSimulation();
+      document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
+      document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
+    };
+  }, []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  componentWillUnmount() {
-    this.stopSimulation();
-    document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
-    document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  defineGrid() {
+  function defineGrid() {
     const columnDefinitions: Column[] = [
       {
         id: 'currency', name: 'Currency', field: 'currency', filterable: true, sortable: true, minWidth: 65, width: 65,
@@ -246,30 +224,19 @@ export default class Example34 extends React.Component<Props, State> {
       cellHighlightCssClass: 'changed',
     };
 
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      dataset: this.loadData(NB_ROWS)
-    }));
+    columnDefinitionsRef.current = columnDefinitions;
+    setGridOptions(gridOptions);
   }
 
-  handleServerDelayInputChange(e: React.FormEvent<HTMLInputElement>) {
-    this.setState((state: State) => ({
-      ...state,
-      serverApiDelay: +((e.target as HTMLInputElement)?.value ?? 0),
-    }));
-  }
-
-  loadData(itemCount: number) {
+  function loadData(itemCount: number) {
     // mock a dataset
     const tmpData: any[] = [];
     for (let i = 0; i < itemCount; i++) {
       const randomPercent = Math.round(Math.random() * 100);
-      const randomLowQty = this.randomNumber(1, 50);
-      const randomHighQty = this.randomNumber(125, 255);
-      const priceChange = this.randomNumber(-25, 35, false);
-      const price = this.randomNumber(priceChange, 300);
+      const randomLowQty = randomNumber(1, 50);
+      const randomHighQty = randomNumber(125, 255);
+      const priceChange = randomNumber(-25, 35, false);
+      const price = randomNumber(priceChange, 300);
       const quantity = price < 5 ? randomHighQty : randomLowQty;
       const amount = price * quantity;
       const now = new Date();
@@ -297,20 +264,20 @@ export default class Example34 extends React.Component<Props, State> {
     return tmpData;
   }
 
-  startSimulation() {
+  function startSimulation() {
     const changes: any = {};
-    const numberOfUpdates = this.randomNumber(this.state.minChangePerCycle, this.state.maxChangePerCycle);
+    const numberOfUpdates = randomNumber(minChangePerCycleRef.current, maxChangePerCycleRef.current);
 
     for (let i = 0; i < numberOfUpdates; i++) {
-      const randomLowQty = this.randomNumber(1, 50);
-      const randomHighQty = this.randomNumber(125, 255);
-      const rowNumber = Math.round(Math.random() * (this.state.dataset?.length ?? 0 - 1));
-      const priceChange = this.randomNumber(-25, 25, false);
-      const prevItem = deepCopy(this.state.dataset?.[rowNumber]);
+      const randomLowQty = randomNumber(1, 50);
+      const randomHighQty = randomNumber(125, 255);
+      const rowNumber = Math.round(Math.random() * (dataset?.length ?? 0 - 1));
+      const priceChange = randomNumber(-25, 25, false);
+      const prevItem = deepCopy(dataset?.[rowNumber]);
       if (!prevItem) {
         continue;
       }
-      const itemTmp = { ...this.state.dataset?.[rowNumber] };
+      const itemTmp = { ...dataset?.[rowNumber] };
       itemTmp.priceChange = priceChange;
       itemTmp.price = ((itemTmp.price + priceChange) < 0) ? 0 : itemTmp.price + priceChange;
       itemTmp.quantity = itemTmp.price < 5 ? randomHighQty : randomLowQty;
@@ -326,31 +293,32 @@ export default class Example34 extends React.Component<Props, State> {
 
       // highlight whichever cell is being changed
       changes[rowNumber]['id'] = 'changed';
-      this.renderCellHighlighting(itemTmp, this.findColumnById('priceChange'), priceChange);
+      renderCellHighlighting(itemTmp, findColumnById('priceChange'), priceChange);
       if ((prevItem.priceChange < 0 && itemTmp.priceChange > 0) || (prevItem.priceChange > 0 && itemTmp.priceChange < 0)) {
-        this.renderCellHighlighting(itemTmp, this.findColumnById('price'), priceChange);
+        renderCellHighlighting(itemTmp, findColumnById('price'), priceChange);
       }
 
       // update the data
-      this.reactGrid.dataView.updateItem(itemTmp.id, itemTmp);
+      reactGridRef.current?.dataView.updateItem(itemTmp.id, itemTmp);
       // NOTE: we should also invalidate/render the row after updating cell data to see the new data rendered in the UI
       // but the cell highlight actually does that for us so we can skip it
     }
 
-    this.timer = window.setTimeout(this.startSimulation.bind(this), this.state.refreshRate || 0);
+    timerRef.current = window.setTimeout(startSimulation, refreshRateRef.current || 0);
   }
 
-  stopSimulation() {
-    window.clearTimeout(this.timer);
+  function stopSimulation() {
+    window.clearTimeout(timerRef.current);
   }
 
-  findColumnById(columnName: string): Column {
-    return this.state.columnDefinitions.find(col => col.field === columnName) as Column;
+  function findColumnById(columnName: string): Column {
+    return columnDefinitionsRef.current.find(col => col.field === columnName) as Column;
   }
 
-  handleRefreshRateChange(elm: HTMLInputElement) {
+  function handleRefreshRateChange(elm: HTMLInputElement) {
     const newVal = elm.value;
-    this.setState((state: State) => ({ ...state, refreshRate: +newVal }));
+    setRefreshRate(+newVal);
+    refreshRateRef.current = +newVal;
 
     const inputElmId = (elm.type === 'number') ? '#refreshRateSlider' : '#refreshRateInput';
     const otherInputElm = document.querySelector<HTMLInputElement>(inputElmId);
@@ -359,37 +327,40 @@ export default class Example34 extends React.Component<Props, State> {
     }
   }
 
-  handleMinChangePerCycle(val: number) {
-    this.setState((state: State) => ({ ...state, minChangePerCycle: val }));
+  function handleMinChangePerCycle(val: number) {
+    setMinChangePerCycle(val);
+    minChangePerCycleRef.current = val;
   }
 
-  handleMaxChangePerCycle(val: number) {
-    this.setState((state: State) => ({ ...state, maxChangePerCycle: val }));
+  function handleMaxChangePerCycle(val: number) {
+    setMaxChangePerCycle(val);
+    maxChangePerCycleRef.current = val;
   }
 
-  handleHighlightDuration(val: number) {
-    this.setState((state: State) => ({ ...state, highlightDuration: val }));
+  function handleHighlightDuration(val: number) {
+    setHighlightDuration(val);
+    highlightDurationRef.current = val;
   }
 
-  renderCellHighlighting(item: any, column: Column, priceChange: number) {
+  function renderCellHighlighting(item: any, column: Column, priceChange: number) {
     if (item && column) {
-      const row = this.reactGrid.dataView.getRowByItem(item) as number;
+      const row = reactGridRef.current?.dataView.getRowByItem(item) as number;
       if (row >= 0) {
         const hash = { [row]: { [column.id]: priceChange >= 0 ? 'changed-gain' : 'changed-loss' } };
-        this.reactGrid.slickGrid.setCellCssStyles(`highlight_${[column.id]}${row}`, hash);
+        reactGridRef.current?.slickGrid.setCellCssStyles(`highlight_${[column.id]}${row}`, hash);
 
         // remove highlight after x amount of time
-        window.setTimeout(() => this.removeUnsavedStylingFromCell(item, column, row), this.state.highlightDuration);
+        window.setTimeout(() => removeUnsavedStylingFromCell(item, column, row), highlightDurationRef.current);
       }
     }
   }
 
   /** remove change highlight css class from that cell */
-  removeUnsavedStylingFromCell(_item: any, column: Column, row: number) {
-    this.reactGrid.slickGrid.removeCellCssStyles(`highlight_${[column.id]}${row}`);
+  function removeUnsavedStylingFromCell(_item: any, column: Column, row: number) {
+    reactGridRef.current?.slickGrid.removeCellCssStyles(`highlight_${[column.id]}${row}`);
   }
 
-  toggleFullScreen() {
+  function toggleFullScreen() {
     const container = document.querySelector('.trading-platform');
     let isFullScreen = false;
     if (container?.classList.contains('full-screen')) {
@@ -399,18 +370,19 @@ export default class Example34 extends React.Component<Props, State> {
       container.classList.add('full-screen');
       isFullScreen = true;
     }
-    this.setState((state: State) => ({ ...state, isFullScreen }));
-    this.reactGrid.resizerService.resizeGrid();
+    setIsFullScreen(isFullScreen);
+    reactGridRef.current?.resizerService.resizeGrid();
   }
 
-  toggleDarkMode() {
-    this._darkMode = !this._darkMode;
-    this.toggleBodyBackground();
-    this.reactGrid.slickGrid?.setOptions({ darkMode: this._darkMode });
+  function toggleDarkMode() {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    toggleBodyBackground(newDarkMode);
+    reactGridRef.current?.slickGrid.setOptions({ darkMode: newDarkMode });
   }
 
-  toggleBodyBackground() {
-    if (this._darkMode) {
+  function toggleBodyBackground(darkMode: boolean) {
+    if (darkMode) {
       document.querySelector<HTMLDivElement>('.panel-wm-content')!.classList.add('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'dark';
     } else {
@@ -419,81 +391,93 @@ export default class Example34 extends React.Component<Props, State> {
     }
   }
 
-  private randomNumber(min: number, max: number, floor = true) {
+  function randomNumber(min: number, max: number, floor = true) {
     const number = Math.random() * (max - min + 1) + min;
     return floor ? Math.floor(number) : number;
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div>
-        <h2>
-          {this.title}
-          <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => this.toggleDarkMode()} data-test="toggle-dark-mode">
-            <i className="mdi mdi-theme-light-dark"></i>
-            <span>Toggle Dark Mode</span>
-          </button>
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example34.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
-        <div className="trading-platform">
-          <div className="row mb-4 simulation-form">
-            <div className="col-sm-12 d-flex align-items-center">
-              <div className="range">
-                <label htmlFor="refreshRateRange" className="form-label me-1">Changes Rate(ms)</label>
-                <input type="range" className="form-range" id="refreshRateRange" min="0" max="250" value={this.state.refreshRate}
-                  onInput={($event) => this.handleRefreshRateChange($event.target as HTMLInputElement)} />
-                <span className="refresh-rate">
-                  <input type="number" id="refreshRateInput" defaultValue={this.state.refreshRate} onInput={($event) => this.handleRefreshRateChange($event.target as HTMLInputElement)} />
-                </span>
-              </div>
-              <span className="ms-3 me-1">
-                <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="start-btn" onClick={() => this.startSimulation()}>
-                  <li className="mdi mdi-play-circle-outline"></li> Start Simulation
-                </button>
+  return !gridOptions ? '' : (
+    <div>
+      <h2>
+        Example 34: Real-Time Trading Platform
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example34.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
+        <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => toggleDarkMode()} data-test="toggle-dark-mode">
+          <i className="mdi mdi-theme-light-dark"></i>
+          <span>Toggle Dark Mode</span>
+        </button>
+      </h2>
+
+      {hideSubTitle ? null : <div className="subtitle">
+        Simulate a stock trading platform with lot of price changes, it is strongly suggested to disable the <code>autoResize.autoHeight</code> grid option for this type of grid.
+        <ul>
+          <li>you can start/stop the simulation, you can see SlickGrid huge perf by setting: (1) lower Changes Rate, (2) increase both Changes per Cycle, and (3) lower Highlight Duration</li>
+          <li>optionally change random numbers, between 0 and 10 symbols, per cycle (higher numbers means more changes)</li>
+          <li>optionally change the simulation changes refresh rate in ms (lower number means more changes).</li>
+          <li>you can Group by 1 of these columns: Currency, Market or Type</li>
+        </ul>
+      </div>}
+
+      <div className="trading-platform">
+        <div className="row mb-4 simulation-form">
+          <div className="col-sm-12 d-flex align-items-center">
+            <div className="range">
+              <label htmlFor="refreshRateRange" className="form-label me-1">Changes Rate(ms)</label>
+              <input type="range" className="form-range" id="refreshRateRange" min="0" max="250" value={refreshRate}
+                onInput={($event) => handleRefreshRateChange($event.target as HTMLInputElement)} />
+              <span className="refresh-rate">
+                <input type="number" id="refreshRateInput" value={refreshRate} onInput={($event) => handleRefreshRateChange($event.target as HTMLInputElement)} />
               </span>
-              <span className="me-3">
-                <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="stop-btn" onClick={() => this.stopSimulation()}>
-                  <li className="mdi mdi-stop-circle-outline"></li> Stop Simulation
-                </button>
-              </span>
-              <span className="mx-1">
-                <label htmlFor="change-per-cycle-input" className="me-1">Changes p/Cycle</label>
-                <input type="number" id="change-per-cycle-input" defaultValue={this.state.minChangePerCycle} max={this.state.maxChangePerCycle}
-                  onInput={($event) => this.handleMinChangePerCycle(+($event.target as HTMLInputElement).value)} />
-                &nbsp;to&nbsp;
-                <input type="number" min={this.state.minChangePerCycle} defaultValue={this.state.maxChangePerCycle}
-                  onInput={($event) => this.handleMaxChangePerCycle(+($event.target as HTMLInputElement).value)} />
-              </span>
-              <span className="ms-2">
-                <label htmlFor="highlight-input" className="me-1">Highlight Duration(ms)</label>
-                <input type="number" id="highlight-input" data-test="highlight-input" defaultValue={this.state.highlightDuration}
-                  onInput={($event) => this.handleHighlightDuration(+($event.target as HTMLInputElement).value)} />
-              </span>
-              <div className="ms-auto">
-                <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={() => this.toggleFullScreen()}>
-                  <li className={this.state.isFullScreen ? 'mdi mdi-arrow-collapse' : 'mdi mdi-arrow-expand'}></li> Toggle Full-Screen
-                </button>
-              </div>
+            </div>
+            <span className="ms-3 me-1">
+              <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="start-btn" onClick={() => startSimulation()}>
+                <li className="mdi mdi-play-circle-outline"></li> Start Simulation
+              </button>
+            </span>
+            <span className="me-3">
+              <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="stop-btn" onClick={() => stopSimulation()}>
+                <li className="mdi mdi-stop-circle-outline"></li> Stop Simulation
+              </button>
+            </span>
+            <span className="mx-1">
+              <label htmlFor="change-per-cycle-input" className="me-1">Changes p/Cycle</label>
+              <input type="number" id="change-per-cycle-input" value={minChangePerCycle} max={maxChangePerCycle}
+                onInput={($event) => handleMinChangePerCycle(+($event.target as HTMLInputElement).value)} />
+              &nbsp;to&nbsp;
+              <input type="number" min={minChangePerCycle} value={maxChangePerCycle}
+                onInput={($event) => handleMaxChangePerCycle(+($event.target as HTMLInputElement).value)} />
+            </span>
+            <span className="ms-2">
+              <label htmlFor="highlight-input" className="me-1">Highlight Duration(ms)</label>
+              <input type="number" id="highlight-input" data-test="highlight-input" value={highlightDuration}
+                onInput={($event) => handleHighlightDuration(+($event.target as HTMLInputElement).value)} />
+            </span>
+            <div className="ms-auto">
+              <button className="btn btn-outline-secondary btn-sm btn-icon" onClick={() => toggleFullScreen()}>
+                <li className={isFullScreen ? 'mdi mdi-arrow-collapse' : 'mdi mdi-arrow-expand'}></li> Toggle Full-Screen
+              </button>
             </div>
           </div>
-
-          <SlickgridReact gridId="grid34"
-            columnDefinitions={this.state.columnDefinitions}
-            gridOptions={this.state.gridOptions}
-            dataset={this.state.dataset}
-            onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          />
         </div>
+
+        <SlickgridReact gridId="grid34"
+          columnDefinitions={columnDefinitionsRef.current}
+          gridOptions={gridOptions}
+          dataset={dataset}
+          onReactGridCreated={$event => reactGridReady($event.detail)}
+        />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
+export default Example34;

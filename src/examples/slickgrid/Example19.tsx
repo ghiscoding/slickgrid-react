@@ -28,6 +28,9 @@ const Example19: React.FC = () => {
   const [flashAlertType, setFlashAlertType] = useState<string>('info');
   const [message, setMessage] = useState<string>('');
   const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
+
+  const serverWaitDelayRef = useRef(serverWaitDelay);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
   useEffect(() => {
@@ -89,7 +92,7 @@ const Example19: React.FC = () => {
         itemDetail.reporter = randomNames[randomNumber(0, 9)] || '';
 
         resolve(itemDetail);
-      }, serverWaitDelay);
+      }, serverWaitDelayRef.current);
     });
   };
 
@@ -184,6 +187,7 @@ const Example19: React.FC = () => {
   const serverDelayChanged = (e: React.FormEvent<HTMLInputElement>) => {
     const newDelay = +((e.target as HTMLInputElement)?.value ?? '');
     setServerWaitDelay(newDelay);
+    serverWaitDelayRef.current = newDelay;
   };
 
   function toggleDarkMode() {
@@ -192,9 +196,9 @@ const Example19: React.FC = () => {
     setDarkMode(newDarkMode);
     toggleBodyBackground(newDarkMode);
     reactGridRef.current?.slickGrid.setOptions({ darkMode: newDarkMode });
-  };
+  }
 
-  const toggleBodyBackground = (darkMode: boolean) => {
+  function toggleBodyBackground(darkMode: boolean) {
     if (darkMode) {
       document.querySelector<HTMLDivElement>('.panel-wm-content')!.classList.add('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'dark';
@@ -202,17 +206,14 @@ const Example19: React.FC = () => {
       document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
     }
-  };
+  }
+
 
   return !gridOptions ? null : (
     <div className="demo19">
       <div id="demo-container" className="container-fluid">
         <h2>
           Example 19: Row Detail View
-          <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={toggleDarkMode} data-test="toggle-dark-mode">
-            <i className="mdi mdi-theme-light-dark"></i>
-            <span>Toggle Dark Mode</span>
-          </button>
           <span className="float-end font18">
             see&nbsp;
             <a target="_blank"
@@ -220,18 +221,23 @@ const Example19: React.FC = () => {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+            <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+          </button>
+          <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={toggleDarkMode} data-test="toggle-dark-mode">
+            <i className="mdi mdi-theme-light-dark"></i>
+            <span>Toggle Dark Mode</span>
+          </button>
         </h2>
 
-        <div className="col-sm-12">
-          <h6 className="subtitle italic content">
-            Add functionality to show extra information with a Row Detail View, (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/row-detail" target="_blank">Wiki docs</a>)
-            <ul>
-              <li>Click on the row "+" icon or anywhere on the row to open it (the latter can be changed via property "useRowClick: false")</li>
-              <li>Pass a View/Model as a Template to the Row Detail</li>
-              <li>You can use "expandableOverride()" callback to override logic to display expand icon on every row (for example only show it every 2nd row)</li>
-            </ul>
-          </h6>
-        </div>
+        {hideSubTitle ? null : <div className="subtitle">
+          Add functionality to show extra information with a Row Detail View, (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/row-detail" target="_blank">Wiki docs</a>)
+          <ul>
+            <li>Click on the row "+" icon or anywhere on the row to open it (the latter can be changed via property "useRowClick: false")</li>
+            <li>Pass a View/Model as a Template to the Row Detail</li>
+            <li>You can use "expandableOverride()" callback to override logic to display expand icon on every row (for example only show it every 2nd row)</li>
+          </ul>
+        </div>}
 
         <div className="row">
           <div className="col-sm-6">

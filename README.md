@@ -36,14 +36,21 @@ npm install slickgrid-react
 import { type Column, type GridOption, SlickgridReact } from 'slickgrid-react';
 
 export default function Example() {
-  const [dataset, setDataset] = useState(getData());
+  const [columns, setColumns] = useState<Column[]>();
+  const [options, setOptions] = useState<GridOption>();
+  const [dataset, setDataset] = useState<any[]>(getData());
 
-  const columnDefinitions: Column[] = [
-    { id: 'firstName', name: 'First Name', field: 'firstName', sortable: true },
-    { id: 'lastName', name: 'Last Name', field: 'lastName', sortable: true },
-    { id: 'age', name: 'Age', field: 'age', type: 'number', sortable: true },
-  ]);
-  const gridOptions: GridOption = { /*...*/ }); // optional grid options
+  useEffect(() => defineGrid());
+
+  function defineGrid() {
+    setColumns([
+      { id: 'firstName', name: 'First Name', field: 'firstName', sortable: true },
+      { id: 'lastName', name: 'Last Name', field: 'lastName', sortable: true },
+      { id: 'age', name: 'Age', field: 'age', type: 'number', sortable: true },
+    ]);
+
+    setOptions({ /*...*/ }); // optional grid options
+  }
 
   function getData() {
     return [
@@ -52,10 +59,10 @@ export default function Example() {
     ];
   }
 
-  return (
+  return !options ? null : (
     <SlickgridReact gridId="grid1"
-        columnDefinitions={columnDefinitions}
-        gridOptions={gridOptions}
+        columnDefinitions={columns}
+        gridOptions={options}
         dataset={dataset}
      />
   );

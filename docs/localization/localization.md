@@ -47,38 +47,34 @@ You need to add a translation key via the property `headerKey` to each column de
 For the `Select` Filter, you will use `labelKey` instead of `label`. Anytime a translation key will come in play, we will add the word `key` to the end (hence `headerKey`, `labelKey`, more to come...)
 
 ```tsx
-import { Formatters } from 'slickgrid-react';
-import i18next, { TFunction } from 'i18next';
+import i18next from 'i18next';
+import { Formatters, SlickgridReact } from 'slickgrid-react';
+import React, { useEffect, useState } from 'react';
 import { withTranslation } from 'react-i18next';
-
-interface Props {
-  t: TFunction;
-}
-interface State extends BaseSlickGridState {
-  gridOptions: GridOption;
-  columnDefinitions: Column[];
-  dataset: any[];
-  selectedLanguage: string;
-}
 
 // create a custom translate Formatter
 function taskTranslateFormatter: Formatter = (row, cell, value, columnDef, dataContext, grid) => {
-  const gridOptions: GridOption = (grid && typeof grid.getOptions === 'function') ? grid.getOptions() : {};
+  const gridOptions: GridOption = (typeof grid?.getOptions === 'function') ? grid.getOptions() : {};
   return gridOptions.i18n?.t('TASK_X', { x: value }) ?? '';
 }
 
-export class Example extends React.Component<Props, State> {
-  constructor(public readonly props: Props) {
-    super(props);
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-  }
+const Example: React.FC = () => {
+  const defaultLang = 'en';
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(defaultLang);
+
+  useEffect(() => {
+    i18next.changeLanguage(defaultLang);
+    defineGrid();
+  }, []);
 
   // Define grid Options and Columns
   // provide a headerKey for each column and enableTranslate to True in GridOption
-  defineGrid() {
-    const columnDefinitions = [
-      { id: 'title', name: 'Title', field: 'title', headerKey: 'TITLE', formatter: this.taskTranslateFormatter, sortable: true, minWidth: 100 },
+  function defineGrid() {
+    const columns: Column[] = [
+      { id: 'title', name: 'Title', field: 'title', headerKey: 'TITLE', formatter: taskTranslateFormatter, sortable: true, minWidth: 100 },
       { id: 'duration', name: 'Duration (days)', field: 'duration', headerKey: 'DURATION', sortable: true, minWidth: 100 },
       { id: 'start', name: 'Start', field: 'start', headerKey: 'START', formatter: Formatters.dateIso, minWidth: 100 },
       { id: 'finish', name: 'Finish', field: 'finish', headerKey: 'FINISH', formatter: Formatters.dateIso, minWidth: 100 },
@@ -86,17 +82,27 @@ export class Example extends React.Component<Props, State> {
       // OR via your own custom translate formatter
       // { id: 'completed', name: 'Completed', field: 'completed', headerKey: 'COMPLETED', formatter: translateFormatter, sortable: true, minWidth: 100 }
     ];
-    const gridOptions = {
+    const gridOptions: GridOption = {
       autoResize: {
         containerId: 'demo-container',
-        sidePadding: 15
       },
       enableAutoResize: true,
       enableTranslate: true,
       i18n: i18next,
     };
+
+    setColumns(columns);
+    setGridOptions(options);
   }
-}
+
+  async function switchLanguage() {
+    const nextLanguage = (selectedLanguage === 'en') ? 'fr' : 'en';
+    await i18next.changeLanguage(nextLanguage);
+    setSelectedLanguage(nextLanguage)
+  }
+};
+
+export default Example;
 ```
 
 #### Custom Formatter (cell values)
@@ -111,7 +117,7 @@ const taskTranslateFormatter: Formatter = (row, cell, value, columnDef, dataCont
 #### Using slickgrid-react Formatters.Translate
 Instead of defining a custom formatter over and over, you could also use the built-in slickgrid-react `Formatters.translate`. However for the formatter to work, you need to provide the `i18n` Service instance, you can do so using the `params` properties which is made to pass any type of data, however you need to pass it with this structure: `params: { i18n: i18next } `.
 ```tsx
-const columnDefinitions = [
+const columns = [
   {
     id: 'title',
     name: 'Title',
@@ -126,7 +132,7 @@ const columnDefinitions = [
 #### Passing `i18n` in the Grid Options for Formatter
 The best and quick way to pass the `i18n` service is to pass it through the generic `params` grid option. However make sure that you use the following structure: `params: { i18n: i18next } `.
 ```tsx
-const gridOptions = {
+const options = {
   enableTranslate: true,
   params: { i18n: i18next } // provide the `i18n instance through the params.i18n property
 };

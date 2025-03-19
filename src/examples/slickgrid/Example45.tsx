@@ -25,14 +25,17 @@ const Example45: React.FC = () => {
   const [isUsingAutoHeight, setIsUsingAutoHeight] = useState<boolean>(false);
   const [isUsingInnerGridStatePresets, setIsUsingInnerGridStatePresets] = useState<boolean>(false);
   const [darkMode, setDarkMode] = useState<boolean>(false);
+
+  const serverWaitDelayRef = useRef(serverWaitDelay);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
   const isUsingAutoHeightRef = useRef(isUsingAutoHeight);
   const isUsingInnerGridStatePresetsRef = useRef(isUsingInnerGridStatePresets);
 
   useEffect(() => {
     defineGrid();
+
+    // make sure it's back to light mode before unmounting
     return () => {
-      // make sure it's back to light mode before unmounting
       document.querySelector('.panel-wm-content')!.classList.remove('dark-mode');
       document.querySelector<HTMLDivElement>('#demo-container')!.dataset.bsTheme = 'light';
     };
@@ -144,7 +147,7 @@ const Example45: React.FC = () => {
         itemDetail.isUsingInnerGridStatePresets = isUsingInnerGridStatePresetsRef.current;
 
         resolve(itemDetail);
-      }, serverWaitDelay);
+      }, serverWaitDelayRef.current);
     });
   }
 
@@ -232,6 +235,7 @@ const Example45: React.FC = () => {
   function serverDelayChanged(e: React.FormEvent<HTMLInputElement>) {
     const newDelay = +((e.target as HTMLInputElement)?.value ?? '');
     setServerWaitDelay(newDelay);
+    serverWaitDelayRef.current = newDelay;
   }
 
   function toggleDarkMode() {

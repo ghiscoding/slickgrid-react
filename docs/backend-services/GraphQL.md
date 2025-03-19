@@ -29,7 +29,7 @@ backendServiceApi: {
   // Before executing the query, what action to perform? For example, start a spinner
   preProcess?: () => void;
 
-  // On Processing, we get the query back from the service, and we need to provide a Promise. For example: this.http.get(myGraphqlUrl)
+  // On Processing, we get the query back from the service, and we need to provide a Promise. For example: http.get(myGraphqlUrl)
   process: (query: string) => Promise<any>;
 
   // After executing the query, what action to perform? For example, stop the spinner
@@ -106,18 +106,17 @@ export interface GraphqlServiceOption extends BackendServiceOption {
 ```tsx
 import { GraphqlService, GraphqlPaginatedResult, GraphqlServiceApi, } from '@slickgrid-universal/graphql';
 
-export class Example extends React.Component<Props, State> {
-  constructor(public readonly props: Props) {
-    super(props);
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const graphqlService = new GraphqlService();
 
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-  }
+  useEffect(() => defineGrid(), []);
 
-  defineGrid() {
-    const columnDefinitions = [/*...*/];
-
-    const gridOptions = {
+  function defineGrid() {
+    setColumns([/*...*/]);
+    setOptions({
       enableFiltering: true,
       enablePagination: true,
       pagination: {
@@ -126,12 +125,12 @@ export class Example extends React.Component<Props, State> {
         totalItems: 0
       },
       backendServiceApi: {
-        service: new GraphqlService(),
+        service: graphqlService,
 
         // add some options to the backend service to work
         // shown below is the minimum setup for the service to work correctly
         options: {
-          columnDefinitions: this.columnDefinitions,
+          columnDefinitions: columns,
           datasetName: 'users',
           paginationOptions: {
             first: 25,
@@ -140,20 +139,20 @@ export class Example extends React.Component<Props, State> {
         },
 
         // define all the on Event callbacks
-        preProcess: () => this.displaySpinner(true),
-        process: (query) => this.getAllCustomers(query),
+        preProcess: () => displaySpinner(true),
+        process: (query) => getAllCustomers(query),
         postProcess: (response) => {
-          this.displaySpinner(false);
-          this.getCustomerCallback(response);
+          displaySpinner(false);
+          getCustomerCallback(response);
         },
         filterTypingDebounce: 700,
-        service: this.graphqlService
+        service: graphqlService
       }
-    };
+    });
   }
 
   // Web API call
-  getAllCustomers(graphqlQuery) {
+  function getAllCustomers(graphqlQuery) {
     // regular Http Client call
     return fetch(`/api/customers?${graphqlQuery}`).asGet().send().then(response => response.content);
 
@@ -161,18 +160,20 @@ export class Example extends React.Component<Props, State> {
     // return fetch(`/api/customers?${graphqlQuery}`).then(response => response.json());
   }
 }
+
+export default Example;
 ```
 
 ### Extra Query Arguments
 You can pass extra query arguments to the GraphQL query via the `extraQueryArguments` property defined in the `backendServiceApi.options`. For example let say you have a list of users and your GraphQL query accepts an optional `userId`, you can write it in code this way:
 ```ts
-this.gridOptions = {
+setOptions({
   backendServiceApi: {
     service: new GraphqlService(),
 
     // add some options to the backend service to work
     options: {
-      columnDefinitions: this.columnDefinitions,
+      columnDefinitions: columns,
       executeProcessCommandOnInit: false, // true by default, which load the data on page load
       datasetName: 'users',
       paginationOptions: {
@@ -186,11 +187,11 @@ this.gridOptions = {
     },
 
     // define all the on Event callbacks
-    preProcess: () => this.displaySpinner(true),
-    process: (query) => this.getCustomerApiCall(query),
-    postProcess: (response) => this.displaySpinner(false)
+    preProcess: () => displaySpinner(true),
+    process: (query) => getCustomerApiCall(query),
+    postProcess: (response) => displaySpinner(false)
   }
-};
+});
 ```
 
 The GraphQL query built with these options will be
@@ -215,49 +216,47 @@ You might want to change certain options dynamically, for example passing new se
 ```tsx
 import { GraphqlService, GraphqlPaginatedResult, GraphqlServiceApi, } from '@slickgrid-universal/graphql';
 
-interface Props {}
-interface State {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-}
-export class Example extends React.Component<Props, State> {
-  graphqlService: GraphqlService;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+  const graphqlService = new GraphqlService();
 
-  constructor(public readonly props: Props) {
-    super(props);
-    this.graphqlService = new GraphqlService();
+  useEffect(() => {
+    i18next.changeLanguage(defaultLang);
+    defineGrid();
+  }, []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  activate(): void {
-    const columnDefinitions = [
+  function defineGrid() {
+    setColumns([
       // ...
-    ];
+    ]);
 
-    const gridOptions = {
+    setOptions({
       backendServiceApi: {
-        service: this.graphqlService,
+        service: graphqlService,
         // ...
       }
-    };
+    });
   }
-}
 
-changeQueryArguments() {
-  // update any Backend Service Options you want
-  this.graphqlService.updateOptions({
-    extraQueryArguments: [{
-      field: 'userId',
-      value: 567
-    }]
-  });
+  function changeQueryArguments() {
+    // update any Backend Service Options you want
+    graphqlService.updateOptions({
+      extraQueryArguments: [{
+        field: 'userId',
+        value: 567
+      }]
+    });
 
-  // then make sure to refresh the dataset
-  this.reactGrid.pluginService.refreshBackendDataset();
+    // then make sure to refresh the dataset
+    reactGrid.pluginService.refreshBackendDataset();
+  }
 }
 ```
 
@@ -266,10 +265,10 @@ By default, the Pagination is enabled and will produce a GraphQL query which inc
 
 #### Code Example
 ```ts
-this.gridOptions = {
+const gridOptions = {
   enablePagination: false,
   backendServiceApi: {
-    service: this.graphqlService,
+    service: graphqlService,
     // ...
   }
 };

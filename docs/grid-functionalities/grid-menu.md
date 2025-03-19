@@ -23,7 +23,7 @@ The Grid Menu also comes, by default, with a list of built-in custom commands (a
 
 This section is called Custom Commands because you can also customize this section with your own commands. To do that, you need to fill in 2 properties (an array of `commandItems` and define `onGridMenuCommand` callback) in your Grid Options. For example, `Slickgrid-React` is configured by default with these settings (you can overwrite any one of them):
 ```typescript
-this.gridOptions = {
+const gridOptions = {
    enableAutoResize: true,
    enableGridMenu: true,   // <<-- this will automatically add extra custom commands
    enableFiltering: true,
@@ -64,10 +64,10 @@ this.gridOptions = {
      ],
      onCommand: (e, args) => {
        if (args.command === 'toggle-filter') {
-         this.gridObj.setHeaderRowVisibility(!this.gridObj.getOptions().showHeaderRow);
+         gridObj.setHeaderRowVisibility(!gridObj.getOptions().showHeaderRow);
        } else if (args.command === 'clear-filter') {
-         this.filterService.clearFilters();
-         this.dataviewObj.refresh();
+         filterService.clearFilters();
+         dataviewObj.refresh();
        }
      }
    }
@@ -109,7 +109,7 @@ For more info on all the available properties of the custom commands, you can re
 ### How to change an icon of all default commands?
 You can change any of the default command icon(s) by changing the `icon[X-command]`, for example, see below for the defaults.
 ```ts
-this.gridOptions = {
+const gridOptions = {
    enableGridMenu: true,
    gridMenu: {
      iconClearAllFiltersCommand: 'mdi mdi-filter-remove-outline'
@@ -125,7 +125,7 @@ this.gridOptions = {
 ### How to Disable the Grid Menu?
 You can disable the Grid Menu, by calling `enableGridMenu: false` from the Grid Options.
 ```typescript
-this.gridOptions = {
+const gridOptions = {
    enableGridMenu: false,
 };
 ```

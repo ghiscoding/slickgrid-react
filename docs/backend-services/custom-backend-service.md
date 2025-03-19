@@ -11,20 +11,27 @@ You typically want to implement your service following these TypeScript interfac
 
 At the end of it, you'll have a Custom Backend Service that will be instantiated just like the GraphQL or OData that I've created, it should look similar to this (also note, try to avoid passing anything in the `constructor` of your Service to keep it usable by everyone)
 ```tsx
-export class GridBasicComponent extends React.Component<Props, State> {
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const graphqlService = new GraphqlService();
 
-  defineGrid() {
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
     const gridOptions = {
       backendServiceApi: {
         service: new YourCustomBackendService(),
         options: {
           // custom service options that extends "backendServiceOption" interface
         },
-        preProcess: () => !this.isDataLoaded ? this.displaySpinner(true) : '',
-        process: (query) => this.getCountries(query),
+        preProcess: () => !isDataLoaded ? displaySpinner(true) : '',
+        process: (query) => getCountries(query),
         postProcess: (result) => {
-          this.displaySpinner(false);
-          this.isDataLoaded = true;
+          displaySpinner(false);
+          setIsDataLoaded(true);
         }
       } as YourCustomBackendServiceApi
     };
@@ -34,16 +41,22 @@ export class GridBasicComponent extends React.Component<Props, State> {
 
 If you need to reference your Service for other purposes then you better instantiated in a separate variable and then just pass it to the `service` property of the `backendServiceApi`.
 ```tsx
-export class GridBasicComponent extends React.Component<Props, State> {
-myCustomService = new YourCustomBackendService();
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const myCustomService = new YourCustomBackendService();
 
-gridInit {
-  const gridOptions = {
-      backendServiceApi: {
-        service: this.myCustomService,
-        // ...
-      } as YourCustomBackendServiceApi
-  };
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    const gridOptions = {
+        backendServiceApi: {
+          service: myCustomService,
+          // ...
+        } as YourCustomBackendServiceApi
+    };
+  }
 }
 ```
 

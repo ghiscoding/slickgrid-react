@@ -15,32 +15,31 @@ To set a pinning for the entire duration of the grid, simply use the Grid Option
 
 ##### Component
 ```tsx
-export class GridBasicComponent  extends React.Component<Props, State> {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  defineGrid(): void {
-    const columnDefinitions = [];
+  useEffect(() => defineGrid(), []);
 
-    const gridOptions = {
+  function defineGrid() {
+    setColumns([]);
+    setOptions({
       alwaysShowVerticalScroll: false, // disable scroll since we don't want it to show on the left pinned columns
       frozenColumn: 2, // number of pinned columns starting from the left
       frozenRow: 3,    // number of pinned columns starting from the top
-    }
+    });
   }
 
-  render() {
-    return (
-      <SlickgridReact gridId="grid1"
-        columnDefinitions={this.state.columnDefinitions}
-        gridOptions={this.state.gridOptions}
-        dataset={this.state.dataset}
-        onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        onGridStateChanged={$event => this.gridStateChanged($event.detail)}
-      />
-    );
-  }
+  return !options ? null : (
+    <SlickgridReact gridId="grid1"
+      columnDefinitions={columns}
+      gridOptions={options}
+      dataset={dataset}
+      onReactGridCreated={$event => reactGridReady($event.detail)}
+      onGridStateChanged={$event => gridStateChanged($event.detail)}
+    />
+  );
 }
 ```
 
@@ -48,21 +47,22 @@ export class GridBasicComponent  extends React.Component<Props, State> {
 This is basically the same thing as previous code sample, except that you will set the Grid Option property `frozenBottom` to true and that it's.
 ##### Component
 ```tsx
-export class GridBasicComponent  extends React.Component<Props, State> {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  defineGrid(): void {
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
       // your columns definition
-    this.columnDefinitions = [];
-
-    this.gridOptions = {
+    setColumns([]);
+    setOptions({
       alwaysShowVerticalScroll: false, // disable scroll since we don't want it to show on the left pinned columns
       frozenColumn: 2,    // number of pinned columns starting from the left
       frozenRow: 3,       // number of pinned columns (starting from bottom with next property)
       frozenBottom: true, // this will make rows to be pinned starting from the bottom and the number of rows will be 3
-    }
+    });
   }
 }
 ```
@@ -74,77 +74,77 @@ You can change the number of pinned columns/rows and even the pinning of columns
 ```tsx
 import { SlickgridReactInstance } from 'slickgrid-react';
 
-export class GridBasicComponent  extends React.Component<Props, State> {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-  gridObj: any;
-  isFrozenBottom = false;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const [isFrozenBottom, setIsFrozenBottom] = useState(false);
+  const reactGridRef = useRef<SlickgridReactInstance>();
 
-  defineGrid(): void {
-  const columnDefinitions = [];
+  useEffect(() => defineGrid(), []);
 
-    const gridOptions = {
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+  }
+
+  function defineGrid() {
+    setColumns([ /*...*/ ]);
+    setOptions({
       alwaysShowVerticalScroll: false, // disable scroll since we don't want it to show on the left pinned columns
       frozenColumn: 2, // number of pinned columns starting from the left
       frozenRow: 3,    // number of pinned columns starting from the top
-    }
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.gridObj = reactGrid.slickGrid;
+    });
   }
 
   /** change dynamically, through slickgrid "setOptions()" the number of pinned columns */
-  changeFrozenColumnCount() {
-    if (this.gridObj && this.gridObj.setOptions) {
-      this.gridObj.setOptions({
-        frozenColumn: this.frozenColumnCount
+  function changeFrozenColumnCount() {
+    if (reactGridRef.current?.slickGrid.setOptions) {
+      reactGridRef.current?.slickGrid.setOptions({
+        frozenColumn: frozenColumnCount
       });
     }
   }
 
   /** change dynamically, through slickgrid "setOptions()" the number of pinned rows */
-  changeFrozenRowCount() {
-    if (this.gridObj && this.gridObj.setOptions) {
-      this.gridObj.setOptions({
-        frozenRow: this.frozenRowCount
+  function changeFrozenRowCount() {
+    if (reactGridRef.current?.slickGrid.setOptions) {
+      reactGridRef.current?.slickGrid.setOptions({
+        frozenRow: frozenRowCount
       });
     }
   }
 
   /** toggle dynamically, through slickgrid "setOptions()" the top/bottom pinned location */
-  toggleFrozenBottomRows() {
-    if (this.gridObj && this.gridObj.setOptions) {
-      this.gridObj.setOptions({
-        frozenBottom: !this.isFrozenBottom
+  function toggleFrozenBottomRows() {
+    const newIsFrozenBottom = !isFrozenBottom;
+    if (reactGridRef.current?.slickGrid.setOptions) {
+      reactGridRef.current?.slickGrid.setOptions({
+        frozenBottom: newIsFrozenBottom
       });
-      this.isFrozenBottom = !this.isFrozenBottom; // toggle the variable
+      setIsFrozenBottom(newIsFrozenBottom); // toggle the variable
     }
   }
 
-  render() {
-    return (
-      <div className="row">
-        <div className="col-sm-12">
-          <span>
-            <label htmlFor="">Pinned Rows: </label>
-            <input type="number" defaultValue={this.state.frozenRowCount} onInput={($event) => this.changeFrozenRowCount($event)} />
-            <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.setFrozenRowCount()}>
-              Set
-            </button>
-          </span>
-          <span style={{ marginLeft: '10px' }}>
-            <label htmlFor="">Pinned Columns: </label>
-            <input type="number" defaultValue={this.state.frozenColumnCount} onInput={($event) => this.changeFrozenColumnCount($event)} />
-            <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => this.setFrozenColumnCount()}>
-              Set
-            </button>
-          </span>
-        </div>
+  return !optionns ? null : (
+    <div className="row">
+      <div className="col-sm-12">
+        <span>
+          <label htmlFor="">Pinned Rows: </label>
+          <input type="number" defaultValue={frozenRowCount} onInput={($event) => changeFrozenRowCount($event)} />
+          <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => setFrozenRowCount()}>
+            Set
+          </button>
+        </span>
+        <span style={{ marginLeft: '10px' }}>
+          <label htmlFor="">Pinned Columns: </label>
+          <input type="number" defaultValue={frozenColumnCount} onInput={($event) => changeFrozenColumnCount($event)} />
+          <button className="btn btn-outline-secondary btn-xs btn-icon" onClick={() => setFrozenColumnCount()}>
+            Set
+          </button>
+        </span>
       </div>
-    );
-  }
+    </div>
+  );
 }
 ```
 

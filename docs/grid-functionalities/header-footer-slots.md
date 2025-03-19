@@ -11,9 +11,9 @@ You can add Header and/or Footer to your grid by using the `#header` and `#foote
 
 ```tsx
 <SlickgridReact gridId="grid"
-    columnDefinitions={this.columnDefinitions}
-    gridOptions={this.gridOptions}
-    dataset={this.dataset}
+    columnDefinitions={columns}
+    gridOptions={options}
+    dataset={dataset}
     header={<Header />}
     footer={<Footer />}
 />

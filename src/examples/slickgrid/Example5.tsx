@@ -1,5 +1,6 @@
 import { format } from '@formkit/tempo';
 import { GridOdataService, type OdataServiceApi, type OdataOption } from '@slickgrid-universal/odata';
+import { useState, useEffect, useRef } from 'react';
 
 import {
   type Column,
@@ -13,8 +14,6 @@ import {
   SlickgridReact,
   type SlickgridReactInstance,
 } from '../../slickgrid-react';
-import React from 'react';
-import type BaseSlickGridState from './state-slick-grid-base';
 import Data from './data/customers_100.json';
 
 const defaultPageSize = 20;
@@ -23,76 +22,36 @@ const PERCENT_HTML_ESCAPED = '%25';
 
 interface Status { text: string, class: string }
 
-interface State extends BaseSlickGridState {
-  paginationOptions?: Pagination;
-  metrics: Metrics;
-  isCountEnabled: boolean;
-  isSelectEnabled: boolean;
-  isExpandEnabled: boolean;
-  odataVersion: number;
-  odataQuery: string;
-  processing: boolean;
-  errorStatus: string;
-  isPageErrorTest: boolean;
-  status: Status;
-}
+const Example5: React.FC = () => {
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [paginationOptions, setPaginationOptions] = useState<Pagination | undefined>(undefined);
+  const [errorStatus, setErrorStatus] = useState<string>('');
+  const [isCountEnabled, setIsCountEnabled] = useState<boolean>(true);
+  const [isSelectEnabled, setIsSelectEnabled] = useState<boolean>(false);
+  const [isExpandEnabled, setIsExpandEnabled] = useState<boolean>(false);
+  const [metrics, setMetrics] = useState<Metrics>({} as Metrics);
+  const [status, setStatus] = useState<Status>({ class: '', text: '' });
+  const [odataVersion, setOdataVersion] = useState<number>(2);
+  const [odataQuery, setOdataQuery] = useState<string>('');
+  const [processing, setProcessing] = useState<boolean>(false);
+  const [isPageErrorTest] = useState<boolean>(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
-interface Props { }
+  const isPageErrorTestRef = useRef(isPageErrorTest);
+  const gridOptionsRef = useRef<GridOption | null>(null);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-export default class Example5 extends React.Component<Props, State> {
-  title = 'Example 5: Grid with Backend OData Service';
-  subTitle = `
-    Use it when you need to support Pagination with a OData endpoint (for simple JSON, use a regular grid)<br/>
-    Take a look at the (<a href="https://ghiscoding.gitbook.io/slickgrid-react/backend-services/odata" target="_blank">Wiki documentation</a>)
-    <br/>
-    <ul class="small">
-      <li>Only "Name" field is sortable for the demo (because we use JSON files), however "multiColumnSort: true" is also supported</li>
-      <li>This example also demos the Grid State feature, open the console log to see the changes</li>
-      <li>String column also support operator (>, >=, <, <=, <>, !=, =, ==, *)</li>
-      <ul>
-        <li>The (*) can be used as startsWith (ex.: "abc*" => startsWith "abc") / endsWith (ex.: "*xyz" => endsWith "xyz")</li>
-        <li>The other operators can be used on column type number for example: ">=100" (greater than or equal to 100)</li>
-      </ul>
-      <li>OData Service could be replaced by other Service type in the future (GraphQL or whichever you provide)</li>
-      <li>You can also preload a grid with certain "presets" like Filters / Sorters / Pagination <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grid-state-preset" target="_blank">Wiki - Grid Preset</a></li>
-      <li><span class="text-danger">NOTE:</span> For demo purposes, the last column (filter & sort) will always throw an
-        error and its only purpose is to demo what would happen when you encounter a backend server error
-        (the UI should rollback to previous state before you did the action).
-        Also changing Page Size to 50,000 will also throw which again is for demo purposes.
-      </li>
-    </ul>
-  `;
-  reactGrid!: SlickgridReactInstance;
+  useEffect(() => {
+    defineGrid();
+  }, []);
 
-  constructor(public readonly props: Props) {
-    super(props);
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: [],
-      paginationOptions: undefined,
-      errorStatus: '',
-      isCountEnabled: true,
-      isSelectEnabled: false,
-      isExpandEnabled: false,
-      metrics: {} as Metrics,
-      status: { class: '', text: '' },
-      odataVersion: 2,
-      odataQuery: '',
-      processing: false,
-      isPageErrorTest: false
-    };
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  componentDidMount() {
-    this.defineGrid();
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  getGridDefinition(): GridOption {
+  function getGridDefinition(): GridOption {
     return {
       enableAutoResize: true,
       autoResize: {
@@ -132,9 +91,9 @@ export default class Example5 extends React.Component<Props, State> {
       backendServiceApi: {
         service: new GridOdataService(),
         options: {
-          enableCount: this.state.isCountEnabled, // add the count in the OData query, which will return a property named "__count" (v2) or "@odata.count" (v4)
-          enableSelect: this.state.isSelectEnabled,
-          enableExpand: this.state.isExpandEnabled,
+          enableCount: isCountEnabled, // add the count in the OData query, which will return a property named "__count" (v2) or "@odata.count" (v4)
+          enableSelect: isSelectEnabled,
+          enableExpand: isExpandEnabled,
           filterQueryOverride: ({ fieldName, columnDef, columnFilterOperator, searchValues }) => {
             if (columnFilterOperator === OperatorType.custom && columnDef?.id === 'name') {
               let matchesSearch = searchValues[0].replace(/\*/g, '.*');
@@ -145,29 +104,27 @@ export default class Example5 extends React.Component<Props, State> {
             }
             return;
           },
-          version: this.state.odataVersion        // defaults to 2, the query string is slightly different between OData 2 and 4
+          version: odataVersion // defaults to 2, the query string is slightly different between OData 2 and 4
         },
         onError: (error: Error) => {
-          this.setState((state: State) => ({ ...state, errorStatus: error.message }));
-          this.displaySpinner(false, true);
+          setErrorStatus(error.message);
+          displaySpinner(false, true);
         },
         preProcess: () => {
-          this.setState((state: State) => ({ ...state, errorStatus: '' }));
-          this.displaySpinner(true);
+          setErrorStatus('');
+          displaySpinner(true);
         },
-        process: (query) => this.getCustomerApiCall(query),
+        process: (query) => getCustomerApiCall(query),
         postProcess: (response) => {
-          this.setState(
-            (state: State) => ({ ...state, metrics: response.metrics }),
-            () => this.getCustomerCallback(response)
-          );
-          this.displaySpinner(false);
+          setMetrics(response.metrics);
+          getCustomerCallback(response);
+          displaySpinner(false);
         }
       } as OdataServiceApi
     };
   }
 
-  getColumnDefinitions(): Column[] {
+  function getColumnDefinitions(): Column[] {
     return [
       {
         id: 'name', name: 'Name', field: 'name', sortable: true,
@@ -197,64 +154,56 @@ export default class Example5 extends React.Component<Props, State> {
     ];
   }
 
-  defineGrid() {
-    const columnDefinitions = this.getColumnDefinitions();
-    const gridOptions = this.getGridDefinition();
+  function defineGrid() {
+    const columnDefinitions = getColumnDefinitions();
+    const gridOptions = getGridDefinition();
 
-    this.setState((state: State) => ({
-      ...state,
-      columnDefinitions,
-      gridOptions,
-    }));
+    gridOptionsRef.current = gridOptions;
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  displaySpinner(isProcessing: boolean, isError?: boolean) {
-    this.setState((state: State) => ({ ...state, processing: isProcessing }));
+  function displaySpinner(isProcessing: boolean, isError?: boolean) {
+    setProcessing(isProcessing);
 
     if (isError) {
-      this.setState((state: State) => ({ ...state, status: { text: 'ERROR!!!', class: 'alert alert-danger' } }));
+      setStatus({ text: 'ERROR!!!', class: 'alert alert-danger' });
     } else {
-      this.setState((state: State) => ({
-        ...state,
-        status: (isProcessing)
-          ? { text: 'loading', class: 'alert alert-warning' }
-          : { text: 'finished', class: 'alert alert-success' }
-      }));
+      setStatus(isProcessing
+        ? { text: 'loading', class: 'alert alert-warning' }
+        : { text: 'finished', class: 'alert alert-success' });
     }
   }
 
-  getCustomerCallback(data: any) {
+  function getCustomerCallback(data: any) {
     // totalItems property needs to be filled for pagination to work correctly
     // however we need to force React to do a dirty check, doing a clone object will do just that
-    let totalItemCount: number = data['totalRecordCount']; // you can use "totalRecordCount" or any name or "odata.count" when "enableCount" is set
-    if (this.state.isCountEnabled) {
-      totalItemCount = (this.state.odataVersion === 4) ? data['@odata.count'] : data['d']['__count'];
+    let totalItemCount: number = data['totalRecordCount'];
+    if (isCountEnabled) {
+      totalItemCount = (odataVersion === 4) ? data['@odata.count'] : data['d']['__count'];
     }
 
     // once pagination totalItems is filled, we can update the dataset
-    this.setState((state: State) => ({
-      ...state,
-      paginationOptions: { ...state.gridOptions!.pagination, totalItems: totalItemCount } as Pagination,
-      dataset: state.odataVersion === 4 ? data.value : data.d.results,
-      odataQuery: data['query'],
-      metrics: { ...state.metrics, totalItemCount }
-    }));
+    setPaginationOptions({ ...gridOptionsRef.current!.pagination, totalItems: totalItemCount } as Pagination);
+    setDataset(odataVersion === 4 ? data.value : data.d.results);
+    setOdataQuery(data['query']);
+    setMetrics({ ...metrics, totalItemCount });
 
     // Slickgrid-React requires the user to update pagination via this pubsub publish
-    this.reactGrid.eventPubSubService?.publish('onPaginationOptionsChanged', { ...this.state.gridOptions!.pagination, totalItems: totalItemCount } as Pagination, 1);
+    reactGridRef.current?.eventPubSubService?.publish('onPaginationOptionsChanged', { ...gridOptionsRef.current!.pagination, totalItems: totalItemCount } as Pagination, 1);
   }
 
-  getCustomerApiCall(query: string) {
+  function getCustomerApiCall(query: string) {
     // in your case, you will call your WebAPI function (wich needs to return a Promise)
     // for the demo purpose, we will call a mock WebAPI function
-    return this.getCustomerDataApiMock(query);
+    return getCustomerDataApiMock(query);
   }
 
   /**
    * This function is only here to mock a WebAPI call (since we are using a JSON file for the demo)
    *  in your case the getCustomer() should be a WebAPI function returning a Promise
    */
-  getCustomerDataApiMock(query: string): Promise<any> {
+  function getCustomerDataApiMock(query: string): Promise<any> {
     // the mock is returning a Promise, just like a WebAPI typically does
     return new Promise(resolve => {
       const queryParams = query.toLowerCase().split('&');
@@ -264,8 +213,8 @@ export default class Example5 extends React.Component<Props, State> {
       let countTotalItems = 100;
       const columnFilters = {};
 
-      if (this.state.isPageErrorTest) {
-        this.setState((state: State) => ({ ...state, isPageErrorTest: false }));
+      if (isPageErrorTestRef.current) {
+        isPageErrorTestRef.current = false;
         throw new Error('Server timed out trying to retrieve data for the last page');
       }
 
@@ -421,18 +370,18 @@ export default class Example5 extends React.Component<Props, State> {
 
       window.setTimeout(() => {
         const backendResult: any = { query };
-        if (!this.state.isCountEnabled) {
+        if (!isCountEnabled) {
           backendResult['totalRecordCount'] = countTotalItems;
         }
 
-        if (this.state.odataVersion === 4) {
+        if (odataVersion === 4) {
           backendResult['value'] = updatedData;
-          if (this.state.isCountEnabled) {
+          if (isCountEnabled) {
             backendResult['@odata.count'] = countTotalItems;
           }
         } else {
           backendResult['d'] = { results: updatedData };
-          if (this.state.isCountEnabled) {
+          if (isCountEnabled) {
             backendResult['d']['__count'] = countTotalItems;
           }
         }
@@ -443,56 +392,54 @@ export default class Example5 extends React.Component<Props, State> {
     });
   }
 
-  goToFirstPage() {
-    this.reactGrid.paginationService!.goToFirstPage();
+  function goToFirstPage() {
+    reactGridRef.current?.paginationService!.goToFirstPage();
   }
 
-  goToLastPage() {
-    this.reactGrid.paginationService!.goToLastPage();
+  function goToLastPage() {
+    reactGridRef.current?.paginationService!.goToLastPage();
   }
 
   /** Dispatched event of a Grid State Changed event */
-  gridStateChanged(gridStateChanges: GridStateChange) {
+  function gridStateChanged(gridStateChanges: GridStateChange) {
     // console.log('Client sample, Grid State changed:: ', gridStateChanges);
     console.log('Client sample, Grid State changed:: ', gridStateChanges.change);
   }
 
-  setFiltersDynamically() {
+  function setFiltersDynamically() {
     // we can Set Filters Dynamically (or different filters) afterward through the FilterService
-    this.reactGrid.filterService.updateFilters([
+    reactGridRef.current?.filterService.updateFilters([
       // { columnId: 'gender', searchTerms: ['male'], operator: OperatorType.equal },
       { columnId: 'name', searchTerms: ['A'], operator: 'a*' },
     ]);
   }
 
-  setSortingDynamically() {
-    this.reactGrid.sortService.updateSorting([
+  function setSortingDynamically() {
+    reactGridRef.current?.sortService.updateSorting([
       { columnId: 'name', direction: 'DESC' },
     ]);
   }
 
-  throwPageChangeError() {
-    this.setState(
-      (state: State) => ({ ...state, isPageErrorTest: true }),
-      () => this.reactGrid?.paginationService?.goToLastPage()
-    );
+  function throwPageChangeError() {
+    isPageErrorTestRef.current = true;
+    reactGridRef.current?.paginationService?.goToLastPage();
   }
 
   // YOU CAN CHOOSE TO PREVENT EVENT FROM BUBBLING IN THE FOLLOWING 3x EVENTS
   // note however that internally the cancelling the search is more of a rollback
-  handleOnBeforeSort(_e: Event) {
+  function handleOnBeforeSort(_e: Event) {
     // e.preventDefault();
     // return false;
     return true;
   }
 
-  handleOnBeforeSearchChange(_e: Event) {
+  function handleOnBeforeSearchChange(_e: Event) {
     // e.preventDefault();
     // return false;
     return true;
   }
 
-  handleOnBeforePaginationChange(_e: Event) {
+  function handleOnBeforePaginationChange(_e: Event) {
     // e.preventDefault();
     // return false;
     return true;
@@ -501,161 +448,183 @@ export default class Example5 extends React.Component<Props, State> {
   // THE FOLLOWING METHODS ARE ONLY FOR DEMO PURPOSES DO NOT USE THIS CODE
   // ---
 
-  changeCountEnableFlag() {
-    const isCountEnabled = !this.state.isCountEnabled;
-    this.setState((state: State) => ({ ...state, isCountEnabled }));
-    this.resetOptions({ enableCount: isCountEnabled });
+  function changeCountEnableFlag() {
+    const newIsCountEnabled = !isCountEnabled;
+    setIsCountEnabled(newIsCountEnabled);
+    resetOptions({ enableCount: newIsCountEnabled });
     return true;
   }
 
-  changeEnableSelectFlag() {
-    const isSelectEnabled = !this.state.isSelectEnabled;
-    this.setState((state: State) => ({ ...state, isSelectEnabled }));
-    this.resetOptions({ enableSelect: isSelectEnabled });
+  function changeEnableSelectFlag() {
+    const newIsSelectEnabled = !isSelectEnabled;
+    setIsSelectEnabled(newIsSelectEnabled);
+    resetOptions({ enableSelect: newIsSelectEnabled });
     return true;
   }
 
-  changeEnableExpandFlag() {
-    const isExpandEnabled = !this.state.isExpandEnabled;
-    this.setState((state: State) => ({ ...state, isExpandEnabled }));
-    this.resetOptions({ enableExpand: isExpandEnabled });
+  function changeEnableExpandFlag() {
+    const newIsExpandEnabled = !isExpandEnabled;
+    setIsExpandEnabled(newIsExpandEnabled);
+    resetOptions({ enableExpand: newIsExpandEnabled });
     return true;
   }
 
-  setOdataVersion(version: number) {
-    this.setState((state: State) => ({ ...state, odataVersion: version }));
-    this.resetOptions({ version });
+  function changeOdataVersion(version: number) {
+    setOdataVersion(version);
+    resetOptions({ version });
     return true;
   }
 
-  private resetOptions(options: Partial<OdataOption>) {
-    this.displaySpinner(true);
-    const odataService = this.state.gridOptions!.backendServiceApi!.service as GridOdataService;
+  function resetOptions(options: Partial<OdataOption>) {
+    displaySpinner(true);
+    const odataService = gridOptionsRef.current!.backendServiceApi!.service as GridOdataService;
     odataService.updateOptions(options);
     odataService.clearFilters();
-    this.reactGrid?.filterService.clearFilters();
+    reactGridRef.current?.filterService.clearFilters();
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example5.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
+  return !gridOptions ? null : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 5: Grid with Backend OData Service
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example5.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
+      </h2>
 
-        <div className="row">
-          <div className="col-sm-9">
-            <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
-          </div>
-          <div className="col-sm-3">
-            {this.state.errorStatus && <div className="alert alert-danger" data-test="error-status">
-              <em><strong>Backend Error:</strong> <span>{this.state.errorStatus}</span></em>
-            </div>}
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-sm-2">
-            <div className={this.state.status.class} role="alert" data-test="status">
-              <strong>Status: </strong> {this.state.status.text}
-              {this.state.processing && <span>
-                <i className="mdi mdi-sync mdi-spin"></i>
-              </span>}
-            </div>
-          </div>
-          <div className="col-sm-10">
-            <div className="alert alert-info" data-test="alert-odata-query">
-              <strong>OData Query:</strong> <span data-test="odata-query-result">{this.state.odataQuery}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-sm-4">
-
-            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="set-dynamic-filter" onClick={() => this.setFiltersDynamically()}>
-              Set Filters Dynamically
-            </button>
-            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="set-dynamic-sorting" onClick={() => this.setSortingDynamically()}>
-              Set Sorting Dynamically
-            </button>
+      <div className="row">
+        <div className="col-sm-9">
+          {hideSubTitle ? null : <div className="subtitle">
+            Use it when you need to support Pagination with a OData endpoint (for simple JSON, use a regular grid)<br />
+            Take a look at the (<a href="https://ghiscoding.gitbook.io/slickgrid-react/backend-services/odata" target="_blank">Wiki documentation</a>)
             <br />
-            {this.state.metrics && <span><><b>Metrics:</b>
-              {this.state.metrics?.endTime ? format(this.state.metrics.endTime, 'YYYY-MM-DD HH:mm:ss') : ''}
-              | {this.state.metrics.itemCount} of {this.state.metrics.totalItemCount} items </>
+            <ul className="small">
+              <li>Only "Name" field is sortable for the demo (because we use JSON files), however "multiColumnSort: true" is also supported</li>
+              <li>This example also demos the Grid State feature, open the console log to see the changes</li>
+              <li>String column also support operator (&gt;, &gt;=, &lt;, &lt;=, &lt;&gt;, !=, =, ==, *)</li>
+              <ul>
+                <li>The (*) can be used as startsWith (ex.: "abc*" =&gt; startsWith "abc") / endsWith (ex.: "*xyz" =&gt; endsWith "xyz")</li>
+                <li>The other operators can be used on column type number for example: "&gt;=100" (greater than or equal to 100)</li>
+              </ul>
+              <li>OData Service could be replaced by other Service type in the future (GraphQL or whichever you provide)</li>
+              <li>You can also preload a grid with certain "presets" like Filters / Sorters / Pagination <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grid-state-preset" target="_blank">Wiki - Grid Preset</a></li>
+              <li><span className="text-danger">NOTE:</span> For demo purposes, the last column (filter & sort) will always throw an
+                error and its only purpose is to demo what would happen when you encounter a backend server error
+                (the UI should rollback to previous state before you did the action).
+                Also changing Page Size to 50,000 will also throw which again is for demo purposes.
+              </li>
+            </ul>
+          </div>}
+        </div>
+        <div className="col-sm-3">
+          {errorStatus && <div className="alert alert-danger" data-test="error-status">
+            <em><strong>Backend Error:</strong> <span>{errorStatus}</span></em>
+          </div>}
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="col-sm-2">
+          <div className={status.class} role="alert" data-test="status">
+            <strong>Status: </strong> {status.text}
+            {processing && <span>
+              <i className="mdi mdi-sync mdi-spin"></i>
             </span>}
           </div>
-          <div className="col-sm-8">
-            <label>OData Version:&nbsp;</label>
-            <span data-test="radioVersion">
-              <label className="radio-inline control-label" htmlFor="radio2">
-                <input type="radio" name="inlineRadioOptions" data-test="version2" id="radio2" defaultChecked={true} value="2"
-                  onChange={() => this.setOdataVersion(2)} /> 2&nbsp;
-              </label>
-              <label className="radio-inline control-label" htmlFor="radio4">
-                <input type="radio" name="inlineRadioOptions" data-test="version4" id="radio4" value="4"
-                  onChange={() => this.setOdataVersion(4)} /> 4
-              </label>
-            </span>
-            <label className="checkbox-inline control-label" htmlFor="enableCount" style={{ marginLeft: '20px' }}>
-              <input type="checkbox" id="enableCount" data-test="enable-count" defaultChecked={this.state.isCountEnabled}
-                onChange={() => this.changeCountEnableFlag()} />
-              <span style={{ fontWeight: 'bold' }}> Enable Count</span> (add to OData query)
-            </label>
-            <label className="checkbox-inline control-label" htmlFor="enableSelect" style={{ marginLeft: '20px' }}>
-              <input type="checkbox" id="enableSelect" data-test="enable-select" defaultChecked={this.state.isSelectEnabled}
-                onChange={() => this.changeEnableSelectFlag()} />
-              <span style={{ fontWeight: 'bold' }}> Enable Select</span> (add to OData query)
-            </label>
-            <label className="checkbox-inline control-label" htmlFor="enableExpand" style={{ marginLeft: '20px' }}>
-              <input type="checkbox" id="enableExpand" data-test="enable-expand" defaultChecked={this.state.isExpandEnabled}
-                onChange={() => this.changeEnableExpandFlag()} />
-              <span style={{ fontWeight: 'bold' }}> Enable Expand</span> (add to OData query)
-            </label>
-          </div >
-        </div >
-        <div className="row mt-2 mb-1">
-          <div className="col-md-12">
-            <button className="btn btn-outline-danger btn-sm" data-test="throw-page-error-btn"
-              onClick={() => this.throwPageChangeError()}>
-              <span>Throw Error Going to Last Page... </span>
-              <i className="mdi mdi-page-last"></i>
-            </button>
-
-            <span className="ms-2">
-              <label>Programmatically go to first/last page:</label>
-              <div className="btn-group" role="group">
-                <button className="btn btn-outline-secondary btn-xs btn-icon px-2" data-test="goto-first-page" onClick={() => this.goToFirstPage()}>
-                  <i className="mdi mdi-page-first"></i>
-                </button>
-                <button className="btn btn-outline-secondary btn-xs btn-icon px-2" data-test="goto-last-page" onClick={() => this.goToLastPage()}>
-                  <i className="mdi mdi-page-last"></i>
-                </button>
-              </div>
-            </span>
+        </div>
+        <div className="col-sm-10">
+          <div className="alert alert-info" data-test="alert-odata-query">
+            <strong>OData Query:</strong> <span data-test="odata-query-result">{odataQuery}</span>
           </div>
         </div>
-
-        <SlickgridReact gridId="grid5"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          paginationOptions={this.state.paginationOptions}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          onGridStateChanged={$event => this.gridStateChanged($event.detail)}
-          onBeforeSort={$event => this.handleOnBeforeSort($event.detail.eventData)}
-          onBeforeSearchChange={$event => this.handleOnBeforeSearchChange($event.detail.eventData)}
-          onBeforePaginationChange={$event => this.handleOnBeforePaginationChange($event.detail.eventData)}
-        />
       </div>
-    );
-  }
-}
 
+      <div className="row">
+        <div className="col-sm-4">
+
+          <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="set-dynamic-filter" onClick={() => setFiltersDynamically()}>
+            Set Filters Dynamically
+          </button>
+          <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="set-dynamic-sorting" onClick={() => setSortingDynamically()}>
+            Set Sorting Dynamically
+          </button>
+          <br />
+          {metrics && <span><><b>Metrics:</b>
+            {metrics?.endTime ? format(metrics.endTime, 'YYYY-MM-DD HH:mm:ss') : ''}
+            | {metrics.itemCount} of {metrics.totalItemCount} items </>
+          </span>}
+        </div>
+        <div className="col-sm-8">
+          <label>OData Version:&nbsp;</label>
+          <span data-test="radioVersion">
+            <label className="radio-inline control-label" htmlFor="radio2">
+              <input type="radio" name="inlineRadioOptions" data-test="version2" id="radio2" defaultChecked={true} value="2"
+                onChange={() => changeOdataVersion(2)} /> 2&nbsp;
+            </label>
+            <label className="radio-inline control-label" htmlFor="radio4">
+              <input type="radio" name="inlineRadioOptions" data-test="version4" id="radio4" value="4"
+                onChange={() => changeOdataVersion(4)} /> 4
+            </label>
+          </span>
+          <label className="checkbox-inline control-label" htmlFor="enableCount" style={{ marginLeft: '20px' }}>
+            <input type="checkbox" id="enableCount" data-test="enable-count" defaultChecked={isCountEnabled}
+              onChange={() => changeCountEnableFlag()} />
+            <span style={{ fontWeight: 'bold' }}> Enable Count</span> (add to OData query)
+          </label>
+          <label className="checkbox-inline control-label" htmlFor="enableSelect" style={{ marginLeft: '20px' }}>
+            <input type="checkbox" id="enableSelect" data-test="enable-select" defaultChecked={isSelectEnabled}
+              onChange={() => changeEnableSelectFlag()} />
+            <span style={{ fontWeight: 'bold' }}> Enable Select</span> (add to OData query)
+          </label>
+          <label className="checkbox-inline control-label" htmlFor="enableExpand" style={{ marginLeft: '20px' }}>
+            <input type="checkbox" id="enableExpand" data-test="enable-expand" defaultChecked={isExpandEnabled}
+              onChange={() => changeEnableExpandFlag()} />
+            <span style={{ fontWeight: 'bold' }}> Enable Expand</span> (add to OData query)
+          </label>
+        </div >
+      </div >
+      <div className="row mt-2 mb-1">
+        <div className="col-md-12">
+          <button className="btn btn-outline-danger btn-sm" data-test="throw-page-error-btn"
+            onClick={() => throwPageChangeError()}>
+            <span>Throw Error Going to Last Page... </span>
+            <i className="mdi mdi-page-last"></i>
+          </button>
+
+          <span className="ms-2">
+            <label>Programmatically go to first/last page:</label>
+            <div className="btn-group" role="group">
+              <button className="btn btn-outline-secondary btn-xs btn-icon px-2" data-test="goto-first-page" onClick={() => goToFirstPage()}>
+                <i className="mdi mdi-page-first"></i>
+              </button>
+              <button className="btn btn-outline-secondary btn-xs btn-icon px-2" data-test="goto-last-page" onClick={() => goToLastPage()}>
+                <i className="mdi mdi-page-last"></i>
+              </button>
+            </div>
+          </span>
+        </div>
+      </div>
+
+      <SlickgridReact gridId="grid5"
+        columnDefinitions={columnDefinitions}
+        gridOptions={gridOptions}
+        dataset={dataset}
+        paginationOptions={paginationOptions}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+        onGridStateChanged={$event => gridStateChanged($event.detail)}
+        onBeforeSort={$event => handleOnBeforeSort($event.detail.eventData)}
+        onBeforeSearchChange={$event => handleOnBeforeSearchChange($event.detail.eventData)}
+        onBeforePaginationChange={$event => handleOnBeforePaginationChange($event.detail.eventData)}
+      />
+    </div>
+  );
+};
+
+export default Example5;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   type Column,
   type GridOption,
@@ -8,73 +8,34 @@ import {
 } from '../../slickgrid-react';
 import './example7.scss';
 
-let columns1WithHighlightingById: any = {};
-let columns2WithHighlightingById: any = {};
+const Example7: React.FC = () => {
+  const [gridOptions1, setGridOptions1] = useState<GridOption | undefined>(undefined);
+  const [gridOptions2, setGridOptions2] = useState<GridOption | undefined>(undefined);
+  const [columnDefinitions1, setColumnDefinitions1] = useState<Column[]>([]);
+  const [columnDefinitions2, setColumnDefinitions2] = useState<Column[]>([]);
+  const [dataset1, setDataset1] = useState<any[]>([]);
+  const [dataset2, setDataset2] = useState<any[]>([]);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
-interface Props { }
+  const reactGridRef1 = useRef<SlickgridReactInstance | null>(null);
+  const reactGridRef2 = useRef<SlickgridReactInstance | null>(null);
+  const columns1WithHighlightingById: any = {};
+  const columns2WithHighlightingById: any = {};
+
+  useEffect(() => {
+    defineGrid();
+  }, []);
 
 
-interface State {
-  gridOptions1?: GridOption;
-  gridOptions2?: GridOption;
-  columnDefinitions1: Column[];
-  columnDefinitions2: Column[];
-  dataset1: any[];
-  dataset2: any[];
-}
-
-export default class Example7 extends React.Component<Props, State> {
-  title = 'Example 7: Header Button Plugin';
-  subTitle = `
-    This example demonstrates using the <b>SlickHeaderButtons</b> plugin to easily add buttons to colum headers.
-    These buttons can be specified directly in the column definition, and are very easy to configure and use.
-    (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/header-menu-header-buttons" target="_blank">Docs</a>)
-    <ul>
-      <li>Resize the 1st column to see all icon/command</li>
-      <li>Mouse hover the 2nd column to see it's icon/command</li>
-      <li>For all the other columns, click on top-right red circle icon to enable highlight of negative numbers.</li>
-      <li>Note: The "Header Button" & "Header Menu" Plugins cannot be used at the same time</li>
-      <li>Use override callback functions to change the properties of show/hide, enable/disable the menu or certain item(s) from the list</li>
-      <ol>
-        <li>These callbacks are: "itemVisibilityOverride", "itemUsabilityOverride"</li>
-        <li>for example the "Column E" does not show the header button via "itemVisibilityOverride"</li>
-        <li>for example the "Column J" header button is displayed but it not usable via "itemUsabilityOverride"</li>
-      </ol>
-    </ul>
-  `;
-
-  reactGrid1!: SlickgridReactInstance;
-  reactGrid2!: SlickgridReactInstance;
-
-  constructor(public readonly props: Props) {
-    super(props);
-    columns1WithHighlightingById = {};
-    columns2WithHighlightingById = {};
-
-    this.state = {
-      gridOptions1: undefined,
-      gridOptions2: undefined,
-      columnDefinitions1: [],
-      columnDefinitions2: [],
-      dataset1: [],
-      dataset2: []
-    };
+  function reactGrid1Ready(reactGrid: SlickgridReactInstance) {
+    reactGridRef1.current = reactGrid;
   }
 
-  componentDidMount() {
-    document.title = this.title;
-    this.defineGrid();
+  function reactGrid2Ready(reactGrid: SlickgridReactInstance) {
+    reactGridRef2.current = reactGrid;
   }
 
-  reactGrid1Ready(reactGrid: SlickgridReactInstance) {
-    this.reactGrid1 = reactGrid;
-  }
-
-  reactGrid2Ready(reactGrid: SlickgridReactInstance) {
-    this.reactGrid2 = reactGrid;
-  }
-
-  defineGrid() {
+  function defineGrid() {
     const gridOptions1: GridOption = {
       enableAutoResize: true,
       enableHeaderButton: true,
@@ -94,39 +55,33 @@ export default class Example7 extends React.Component<Props, State> {
       gridHeight: 275,
       headerButton: {
         // you can use the "onCommand" (in Grid Options) and/or the "action" callback (in Column Definition)
-        onCommand: (_e, args) => this.handleOnCommand(_e, args, 1)
+        onCommand: (_e, args) => handleOnCommand(_e, args, 1)
       }
     };
 
     // grid 2 options, same as grid 1 + extras
-    const gridOptions2: GridOption = {
+    setGridOptions1(gridOptions1);
+    setGridOptions2({
       ...gridOptions1,
       enableHeaderMenu: true,
       enableFiltering: true,
       // frozenColumn: 2,
       // frozenRow: 2,
       headerButton: {
-        onCommand: (_e, args) => this.handleOnCommand(_e, args, 2)
+        onCommand: (_e, args) => handleOnCommand(_e, args, 2)
       }
-    };
-
-    const columnDefinitions1 = this.createColumnDefinitions(1);
-    const columnDefinitions2 = this.createColumnDefinitions(2);
-
-    this.setState((state: any) => {
-      return {
-        ...state,
-        gridOptions1,
-        gridOptions2,
-        columnDefinitions1,
-        columnDefinitions2,
-        dataset1: this.loadData(200, columnDefinitions1),
-        dataset2: this.loadData(200, columnDefinitions2),
-      };
     });
+
+    const columnDefinitions1 = createColumnDefinitions(1);
+    const columnDefinitions2 = createColumnDefinitions(2);
+    setColumnDefinitions1(columnDefinitions1);
+    setColumnDefinitions2(columnDefinitions2);
+
+    setDataset1(loadData(200, columnDefinitions1));
+    setDataset2(loadData(200, columnDefinitions2));
   }
 
-  handleOnCommand(_e: SlickEventData, args: any, gridNo: 1 | 2) {
+  function handleOnCommand(_e: SlickEventData, args: any, gridNo: 1 | 2) {
     const column = args.column;
     const button = args.button;
     const command = args.command;
@@ -150,14 +105,14 @@ export default class Example7 extends React.Component<Props, State> {
         button.tooltip = 'Remove highlight.';
       }
       if (gridNo === 1) {
-        this.reactGrid1.slickGrid.invalidate();
+        reactGridRef1.current?.slickGrid.invalidate();
       } else {
-        this.reactGrid2.slickGrid.invalidate();
+        reactGridRef2.current?.slickGrid.invalidate();
       }
     }
   }
 
-  createColumnDefinitions(gridNo: number) {
+  function createColumnDefinitions(gridNo: number) {
     // Set up some test columns.
     const columnDefinitions: any[] = [];
 
@@ -256,7 +211,7 @@ export default class Example7 extends React.Component<Props, State> {
     return columnDefinitions;
   }
 
-  loadData(count: number, columnDefinitions: Column[]) {
+  function loadData(count: number, columnDefinitions: Column[]) {
     // mock a dataset
     const mockDataset: any[] = [];
 
@@ -270,39 +225,59 @@ export default class Example7 extends React.Component<Props, State> {
     return mockDataset;
   }
 
-  render() {
-    return !this.state.gridOptions2 ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example7.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
+  return !gridOptions1 ? null : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 7: Header Button Plugin
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example7.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
+      </h2>
 
-        <h5>Grid 1</h5>
-        <SlickgridReact gridId="grid7-1"
-          columnDefinitions={this.state.columnDefinitions1}
-          gridOptions={this.state.gridOptions1}
-          dataset={this.state.dataset1}
-          onReactGridCreated={$event => this.reactGrid1Ready($event.detail)}
-        />
+      {hideSubTitle ? null : <div className="subtitle">
+        This example demonstrates using the <b>SlickHeaderButtons</b> plugin to easily add buttons to colum headers.
+        These buttons can be specified directly in the column definition, and are very easy to configure and use.
+        (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/header-menu-header-buttons" target="_blank">Docs</a>)
+        <ul>
+          <li>Resize the 1st column to see all icon/command</li>
+          <li>Mouse hover the 2nd column to see it's icon/command</li>
+          <li>For all the other columns, click on top-right red circle icon to enable highlight of negative numbers.</li>
+          <li>Note: The "Header Button" & "Header Menu" Plugins cannot be used at the same time</li>
+          <li>Use override callback functions to change the properties of show/hide, enable/disable the menu or certain item(s) from the list</li>
+          <ol>
+            <li>These callbacks are: "itemVisibilityOverride", "itemUsabilityOverride"</li>
+            <li>for example the "Column E" does not show the header button via "itemVisibilityOverride"</li>
+            <li>for example the "Column J" header button is displayed but it not usable via "itemUsabilityOverride"</li>
+          </ol>
+        </ul>
+      </div>}
 
-        <br />
+      <h5>Grid 1</h5>
+      <SlickgridReact gridId="grid7-1"
+        columnDefinitions={columnDefinitions1}
+        gridOptions={gridOptions1}
+        dataset={dataset1}
+        onReactGridCreated={$event => reactGrid1Ready($event.detail)}
+      />
 
-        <h5>Grid 2 - <span className="subtitle">with both Header Buttons & Menus</span></h5>
-        <SlickgridReact gridId="grid7-2"
-          columnDefinitions={this.state.columnDefinitions2}
-          gridOptions={this.state.gridOptions2}
-          dataset={this.state.dataset2}
-          onReactGridCreated={$event => this.reactGrid2Ready($event.detail)}
-        />
-      </div>
-    );
-  }
-}
+      <br />
+
+      <h5>Grid 2 - <span className="subtitle">with both Header Buttons & Menus</span></h5>
+      <SlickgridReact gridId="grid7-2"
+        columnDefinitions={columnDefinitions2}
+        gridOptions={gridOptions2}
+        dataset={dataset2}
+        onReactGridCreated={$event => reactGrid2Ready($event.detail)}
+      />
+    </div>
+  );
+};
+
+export default Example7;

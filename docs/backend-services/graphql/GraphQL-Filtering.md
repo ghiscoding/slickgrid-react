@@ -43,42 +43,40 @@ Dealing with complex objects are a little bit more involving. Because of some li
 ```tsx
 import { GraphqlService, GraphqlPaginatedResult, GraphqlServiceApi, } from '@slickgrid-universal/graphql';
 
-interface Props {}
-interface State {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-}
-export class Example extends React.Component<Props, State> {
-  defineGrid() {
-    const columnDefinitions = [
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(defaultLang);
+
+  useEffect(() => {
+    i18next.changeLanguage(defaultLang);
+    defineGrid();
+  }, []);
+
+  function defineGrid() {
+    setColumns([
       { id: 'name', name: 'Name', field: 'name', filterable: true, sortable: true },
       { id: 'company', name: 'Company', field: 'company', filterable: true },
       { id: 'billingStreet', name: 'Billing Address Street', field: 'billing.address.street', filterable: true, sortable: true },
       { id: 'billingZip', name: 'Billing Address Zip', field: 'billing.address.zip', filterable: true, sortable: true },
-    ];
+    ]);
 
-    const gridOptions = {
+    setOptions({
       backendServiceApi: {
         service: new GraphqlService(),
-        process: (query) => this.userService.getAll<User[]>(query),
+        process: (query) => userService.getAll<User[]>(query),
         options: {
           datasetName: 'users',
-          columnDefinitions: this.columnDefinitions,
+          columnDefinitions: columnDefinitions,
           keepArgumentFieldDoubleQuotes: true // FALSE by default
         }
       }
-    };
-
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      dataset: this.getData(),
-    }));
+    });
   }
 }
 
+export default Example;
 ```
 
 ##### GraphQL Query
@@ -107,13 +105,13 @@ From the previous example, you can see that the `orderBy` keeps the (.) dot nota
 If you want to pass extra arguments outside of the `filterBy` argument, that will be used for the life of the grid. You can do so by using the `extraQueryArguments` which accept an array of field/value. For example, let say you want to load a grid of items that belongs to a particular user (with a `userId`). You can pass the `extraQueryArguments` to the `backendServiceApi` `options` property, like so
 
 ##### Component
-```typescript
-this.gridOptions = {
+```tsx
+setOptions({
   backendServiceApi: {
     service: new GraphqlService(),
-    process: (query) => this.userService.getAll<User[]>(query),
+    process: (query) => userService.getAll<User[]>(query),
     options: {
-      columnDefinitions: this.columnDefinitions,
+      columnDefinitions: columnDefinitions,
       datasetName: 'users',
       extraQueryArguments: [{
         field: 'userId',
@@ -121,7 +119,7 @@ this.gridOptions = {
       }]
     }
   }
-};
+});
 ```
 
 ##### GraphQL Query
@@ -152,14 +150,16 @@ E.g. you could listen for a specific column and the active `OperatorType.custom`
 
 > **Note** technically speaking GraphQL isn't a database query language like SQL, it's an application query language. Depending on your configuration, your GraphQL Server might already support regex querying (e.g. Hasura [_regex](https://hasura.io/docs/latest/queries/postgres/filters/text-search-operators/#_regex)) or you could add your own implementation (e.g. see this SO: https://stackoverflow.com/a/37981802/1212166). Just make sure that whatever custom operator that you want to use, is already included in your GraphQL Schema.
 ```ts
-backendServiceApi: {
-  options: {
-    filterQueryOverride: ({ fieldName, columnDef, columnFilterOperator, searchValues }) => {
-      if (columnFilterOperator === OperatorType.custom && columnDef?.id === 'name') {
-        // the `operator` is a string, make sure to implement this new operator in your GraphQL Schema
-        return { field: fieldName, operator: 'Like', value: searchValues[0] };
-      }
-    },
+setOptions({
+  backendServiceApi: {
+    options: {
+      filterQueryOverride: ({ fieldName, columnDef, columnFilterOperator, searchValues }) => {
+        if (columnFilterOperator === OperatorType.custom && columnDef?.id === 'name') {
+          // the `operator` is a string, make sure to implement this new operator in your GraphQL Schema
+          return { field: fieldName, operator: 'Like', value: searchValues[0] };
+        }
+      },
+    }
   }
-}
+});
 ```

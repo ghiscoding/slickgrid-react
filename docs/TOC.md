@@ -16,7 +16,6 @@
 * [Cell Menu (Action Menu)](column-functionalities/cell-menu.md)
 * [Editors](column-functionalities/editors.md)
   * [Autocomplete](column-functionalities/editors/autocomplete-editor-kraaden.md)
-  * [old Date Picker (flatpickr)](column-functionalities/editors/date-editor-flatpickr.md)
   * [new Date Picker (vanilla-calendar)](column-functionalities/editors/date-editor-vanilla-calendar.md)
   * [LongText (textarea)](column-functionalities/editors/longtext-editor-textarea.md)
   * [Select Dropdown Editor (single/multiple)](column-functionalities/editors/select-dropdown-editor.md)

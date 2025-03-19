@@ -1,4 +1,4 @@
-import i18next, { type TFunction } from 'i18next';
+import i18next from 'i18next';
 import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
 import {
   type Column,
@@ -6,29 +6,15 @@ import {
   FieldType,
   Formatters,
   type GridOption,
-  type SlickGrid,
   SlickgridReact,
   type SlickgridReactInstance,
 } from '../../slickgrid-react';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
-import type BaseSlickGridState from './state-slick-grid-base';
 import './example35.scss';
 
 const NB_ITEMS = 20;
-
-
-interface Props {
-  t: TFunction;
-}
-interface State extends BaseSlickGridState {
-  selectedLanguage: string;
-  fetchResult: string;
-  statusClass: string;
-  statusStyle: string;
-}
-
 
 function fakeFetch(_input: string | URL | Request, _init?: RequestInit | undefined): Promise<Response> {
   return new Promise((resolve) => {
@@ -39,42 +25,29 @@ function fakeFetch(_input: string | URL | Request, _init?: RequestInit | undefin
   });
 }
 
-class Example35 extends React.Component<Props, State> {
-  title = 'Example 35: Row Based Editing';
-  reactGrid!: SlickgridReactInstance;
-  gridObj!: SlickGrid;
+const Example35: React.FC = () => {
+  const defaultLang = 'en';
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset] = useState<any[]>(getData(NB_ITEMS));
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(defaultLang);
+  const [statusClass, setStatusClass] = useState('alert alert-light');
+  const [fetchResult, setFetchResult] = useState('');
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
-  constructor(public readonly props: Props) {
-    super(props);
+  const gridOptionsRef = useRef<GridOption>();
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-    // always start with English for Cypress E2E tests to be consistent
-    const defaultLang = 'en';
-
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: [],
-      selectedLanguage: defaultLang,
-      fetchResult: '',
-      statusClass: 'alert alert-light',
-      statusStyle: 'display: none',
-    };
-
+  useEffect(() => {
     i18next.changeLanguage(defaultLang);
-  }
+    defineGrid();
+  }, []);
 
-  componentDidMount() {
-    document.title = this.title;
-
-    this.defineGrid();
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
   /* Define grid Options and Columns */
-  defineGrid() {
+  function defineGrid() {
     const columnDefinitions: Column[] = [
       {
         id: 'title',
@@ -158,7 +131,7 @@ class Example35 extends React.Component<Props, State> {
       i18n: i18next,
       rowBasedEditOptions: {
         allowMultipleRows: false,
-        onBeforeEditMode: () => this.clearStatus(),
+        onBeforeEditMode: () => clearStatus(),
         onBeforeRowUpdated: (args: any) => {
           const { effortDriven, percentComplete, finish, start, duration, title } = args.dataContext;
 
@@ -179,10 +152,7 @@ class Example35 extends React.Component<Props, State> {
           })
             .then((response: any) => {
               if (response === false) {
-                this.setState((state: State) => ({
-                  ...state,
-                  statusClass: 'alert alert-danger',
-                }));
+                setStatusClass('alert alert-danger');
                 return false;
               }
               if (typeof response === 'object') {
@@ -190,12 +160,8 @@ class Example35 extends React.Component<Props, State> {
               }
             })
             .then(json => {
-              this.setState((state: State) => ({
-                ...state,
-                statusStyle: 'display: block',
-                statusClass: 'alert alert-success',
-                fetchResult: json.message,
-              }));
+              setStatusClass('alert alert-success');
+              setFetchResult(json.message);
               return true;
             });
         },
@@ -233,15 +199,11 @@ class Example35 extends React.Component<Props, State> {
       externalResources: [new SlickCustomTooltip()],
     };
 
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      dataset: this.getData(NB_ITEMS),
-    }));
+    setColumnDefinitions(columnDefinitions);
+    gridOptionsRef.current = gridOptions;
   }
 
-  getData(count: number) {
+  function getData(count: number) {
     // mock a dataset
     const mockDataset: any[] = [];
     for (let i = 0; i < count; i++) {
@@ -264,120 +226,118 @@ class Example35 extends React.Component<Props, State> {
     return mockDataset;
   }
 
-  clearStatus() {
-    this.setState((state: State) => ({
-      ...state,
-      statusClass: 'alert alert-light',
-      statusStyle: 'display: none',
-      fetchResult: '',
-    }));
+  function clearStatus() {
+    setStatusClass('alert alert-light');
+    setFetchResult('');
   }
 
-  toggleSingleMultiRowEdit() {
+  function toggleSingleMultiRowEdit() {
     const gridOptions: GridOption = {
-      ...this.state.gridOptions,
+      ...gridOptionsRef.current,
       ...{
         rowBasedEditOptions: {
-          ...this.state.gridOptions!.rowBasedEditOptions,
-          ...{ allowMultipleRows: !this.state.gridOptions!.rowBasedEditOptions?.allowMultipleRows },
+          ...gridOptionsRef.current!.rowBasedEditOptions,
+          ...{ allowMultipleRows: !gridOptionsRef.current!.rowBasedEditOptions?.allowMultipleRows },
         },
       },
     };
-    this.reactGrid.slickGrid.setOptions(gridOptions);
-    this.setState((state: State) => ({ ...state, gridOptions: this.reactGrid.slickGrid.getOptions() }));
+    reactGridRef.current?.slickGrid.setOptions(gridOptions);
+    gridOptionsRef.current = reactGridRef.current?.slickGrid.getOptions();
   }
 
-  async switchLanguage() {
-    const nextLanguage = (this.state.selectedLanguage === 'en') ? 'fr' : 'en';
+  async function switchLanguage() {
+    const nextLanguage = (selectedLanguage === 'en') ? 'fr' : 'en';
     await i18next.changeLanguage(nextLanguage);
-    this.setState((state: State) => ({ ...state, selectedLanguage: nextLanguage }));
+    setSelectedLanguage(nextLanguage);
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div>
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example35.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle">
-          <ul>
-            <li>
-              The Row Based Edit plugin allows you to edit either a single or multiple
-              specific rows at a time, while disabling the rest of the grid rows.
-            </li>
-            <li>
-              Editedable rows, as well as modified cells are highlighted with a
-              different color, which you can customize using css variables (see
-              <a
-                target="_blank"
-                href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example35.scss"
-              >
-                example35.scss </a
-              >)
-            </li>
-            <li>
-              Modifications are kept track of and if the cancel button is pressed, all
-              modifications are rolled back.
-            </li>
-            <li>
-              If the save button is pressed, a custom "onBeforeRowUpdated" callback is called, which you can use to save the data with your backend.<br />
-              The callback needs to return a Promise&lt;boolean&gt; and if the promise resolves to true, then the row will be updated, otherwise it will be cancelled and stays in edit mode.
-              You can try out the later by defining a Duration value <b>larger than 40</b>.
-              <br />
-              <small><span className="has-text-danger">NOTE:</span> You can also combine this with e.g. Batch Editing like shown <a href="#/example30">in Example 30</a></small>
-            </li>
-            <li>
-              This example additionally uses the ExcelCopyBuffer Plugin, which you can see also in Slickgrid-Universal
-              <a href="https://ghiscoding.github.io/slickgrid-universal/#/example19">example 19</a>.
-              The example defines a rule that pastes in the first column are prohibited. In combination with the Row Based Editing Plugin though, this rule gets enhanced with the fact
-              that only the edited rows are allowed to be pasted into, while still respecting the original rule.
-            </li>
-          </ul>
-        </div>
 
-        <section>
-          <div className="row mb-4">
-            <div className="col-sm-8">
-              <button
-                className="btn btn-outline-secondary btn-sm btn-icon"
-                data-test="single-multi-toggle"
-                onClick={() => this.toggleSingleMultiRowEdit()}
-              >
-                Toggle Single/Multi Row Edit
-              </button>
-              <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="toggle-language" onClick={() => this.switchLanguage()}>
-                <i className="mdi mdi-translate"></i>
-                Switch Language for Action column buttons
-              </button>
-              <label>Locale:</label>
-              <span style={{ fontStyle: 'italic', width: '70px' }} data-test="selected-locale">
-                {this.state.selectedLanguage + '.json'}
-              </span>
-            </div>
+  return !gridOptionsRef.current ? '' : (
+    <div>
+      <h2>
+        Example 35: Row Based Editing
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example35.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
+      </h2>
+      {hideSubTitle ? null : <div className="subtitle">
+        <ul>
+          <li>
+            The Row Based Edit plugin allows you to edit either a single or multiple
+            specific rows at a time, while disabling the rest of the grid rows.
+          </li>
+          <li>
+            Editedable rows, as well as modified cells are highlighted with a
+            different color, which you can customize using css variables (see
+            <a
+              target="_blank"
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/example35.scss"
+            >
+              example35.scss </a
+            >)
+          </li>
+          <li>
+            Modifications are kept track of and if the cancel button is pressed, all
+            modifications are rolled back.
+          </li>
+          <li>
+            If the save button is pressed, a custom "onBeforeRowUpdated" callback is called, which you can use to save the data with your backend.<br />
+            The callback needs to return a Promise&lt;boolean&gt; and if the promise resolves to true, then the row will be updated, otherwise it will be cancelled and stays in edit mode.
+            You can try out the later by defining a Duration value <b>larger than 40</b>.
+            <br />
+            <small><span className="has-text-danger">NOTE:</span> You can also combine this with e.g. Batch Editing like shown <a href="#/example30">in Example 30</a></small>
+          </li>
+          <li>
+            This example additionally uses the ExcelCopyBuffer Plugin, which you can see also in Slickgrid-Universal
+            <a href="https://ghiscoding.github.io/slickgrid-universal/#/example19">example 19</a>.
+            The example defines a rule that pastes in the first column are prohibited. In combination with the Row Based Editing Plugin though, this rule gets enhanced with the fact
+            that only the edited rows are allowed to be pasted into, while still respecting the original rule.
+          </li>
+        </ul>
+      </div>}
 
-            <div className={`col-sm-4 ${this.state.statusClass}`}>
-              <strong>Status: </strong>
-              <span data-test="fetch-result" dangerouslySetInnerHTML={{ __html: this.state.fetchResult }}></span>
-            </div>
+      <section>
+        <div className="row mb-4">
+          <div className="col-sm-8">
+            <button
+              className="btn btn-outline-secondary btn-sm btn-icon"
+              data-test="single-multi-toggle"
+              onClick={() => toggleSingleMultiRowEdit()}
+            >
+              Toggle Single/Multi Row Edit
+            </button>
+            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="toggle-language" onClick={() => switchLanguage()}>
+              <i className="mdi mdi-translate"></i>
+              Switch Language for Action column buttons
+            </button>
+            <label>Locale:</label>
+            <span style={{ fontStyle: 'italic', width: '70px' }} data-test="selected-locale">
+              {selectedLanguage + '.json'}
+            </span>
           </div>
-        </section>
 
-        <SlickgridReact gridId="grid35"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        />
-      </div>
-    );
-  }
+          <div className={`col-sm-4 ${statusClass}`}>
+            <strong>Status: </strong>
+            <span data-test="fetch-result" dangerouslySetInnerHTML={{ __html: fetchResult }}></span>
+          </div>
+        </div>
+      </section>
+
+      <SlickgridReact gridId="grid35"
+        columnDefinitions={columnDefinitions}
+        gridOptions={gridOptionsRef.current}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+      />
+    </div>
+  );
 }
 
 export default withTranslation()(Example35);

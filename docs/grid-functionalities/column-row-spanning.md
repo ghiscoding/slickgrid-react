@@ -35,11 +35,12 @@ implement necessary callback to update your `metadata` accordingly (see [List of
 import { Column, GridOption } from 'slickgrid-react';
 import { useState } from 'react';
 
-export default function Example() {
-  const gridOptions = ref<GridOption>();
-  const columnDefinitions = ref<Column[]>([]);
-  const [dataset] = useState(loadData());
-  
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption>();
+  const reactGridRef = useRef();
+
   // metadata can be dynamic too, it doesn't have to be preset
   const metadata: ItemMetadata | Record<number, ItemMetadata> = {
     0: {
@@ -52,19 +53,27 @@ export default function Example() {
       },
     }
   };
+
+  useEffect(() => defineGrid(), []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+  }
   
-  const columnDefinitions: Column[] = [ /*...*/ ];
-  const gridOptions: GridOption = {
-    enableCellNavigation: true,
-    enableCellRowSpan: true, // required for rowspan to work
-    dataView: {
-      globalItemMetadataProvider: {
-        getRowMetadata: (_item, row) => {
-          return this.metadata[row];
+  function defineGrid() {
+    setColumns([ /*...*/ ]);
+    setOptions({
+      enableCellNavigation: true,
+      enableCellRowSpan: true, // required for rowspan to work
+      dataView: {
+        globalItemMetadataProvider: {
+          getRowMetadata: (_item, row) => {
+            return metadata[row];
+          },
         },
       },
-    },
-    rowTopOffsetRenderType: 'top', // rowspan doesn't render well with 'transform', default is 'top'
-  };
+      rowTopOffsetRenderType: 'top', // rowspan doesn't render well with 'transform', default is 'top'
+    });
+  }
 }
 ```

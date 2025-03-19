@@ -16,53 +16,33 @@ import {
 } from '../../slickgrid-react';
 import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import { SlickCustomTooltip } from '@slickgrid-universal/custom-tooltip-plugin';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import type BaseSlickGridState from './state-slick-grid-base';
 import './example33.scss';
 
+const FAKE_SERVER_DELAY = 500;
 const NB_ITEMS = 500;
 
-interface Props { }
-interface State extends BaseSlickGridState {
-  serverApiDelay: number;
-}
+const Example33: React.FC = () => {
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset] = useState<any[]>(loadData(NB_ITEMS));
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
+  const [editCommandQueue] = useState<EditCommand[]>([]);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
-export default class Example32 extends React.Component<Props, State> {
-  title = 'Example 33: Regular & Custom Tooltips';
-  subTitle = `
-  This demo shows how to create Regular & Custom Tooltips (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/custom-tooltip" target="_blank">Docs</a>)
-  <br/>
-  <ul class="small">
-    <li>optionally parse regular [title] attributes and transform them into tooltips</li>
-    <li>create your own Custom Tooltip via a Custom Formatter</li>
-    <li>create an Async Custom Tooltip (Promise/Observable) to allowing fetching data from an API</li>
-    <li>optionally add Custom Tooltip on Column Header & Column Header-Row (filters)</li>
-  </ul>`;
-  editCommandQueue: EditCommand[] = [];
-  editedItems: any = {};
-  reactGrid!: SlickgridReactInstance;
+  const serverWaitDelayRef = useRef(serverWaitDelay);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  constructor(public readonly props: Props) {
-    super(props);
+  useEffect(() => {
+    defineGrid();
+  }, []);
 
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      serverApiDelay: 500,
-    };
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  componentDidMount() {
-    document.title = this.title;
-    this.defineGrid();
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  defineGrid() {
+  function defineGrid() {
     const columnDefinitions: Column[] = [
       {
         id: 'title', name: 'Title', field: 'title', sortable: true, type: FieldType.string,
@@ -78,16 +58,16 @@ export default class Example32 extends React.Component<Props, State> {
           position: 'right-align', // defaults to "auto"
           // you can use the Custom Tooltip in 2 ways (synchronous or asynchronous)
           // example 1 (sync):
-          // formatter: this.tooltipTaskFormatter,
+          // formatter: tooltipTaskFormatter,
 
           // example 2 (async):
           // when using async, the `formatter` will contain the loading spinner
           // you will need to provide an `asyncPost` function returning a Promise and also `asyncPostFormatter` formatter to display the result once the Promise resolves
           formatter: () => `<div><span class="mdi mdi-load mdi-spin"></span> loading...</div>`,
           asyncProcess: () => new Promise(resolve => {
-            window.setTimeout(() => resolve({ ratio: Math.random() * 10 / 10, lifespan: Math.random() * 100 }), this.state.serverApiDelay);
+            window.setTimeout(() => resolve({ ratio: Math.random() * 10 / 10, lifespan: Math.random() * 100 }), serverWaitDelayRef.current);
           }),
-          asyncPostFormatter: this.tooltipTaskAsyncFormatter as Formatter,
+          asyncPostFormatter: tooltipTaskAsyncFormatter as Formatter,
 
           // optional conditional usability callback
           // usabilityOverride: (args) => !!(args.dataContext?.id % 2) // show it only every second row
@@ -189,9 +169,9 @@ export default class Example32 extends React.Component<Props, State> {
 
           // 2- delay the opening by a simple Promise and `setTimeout`
           asyncProcess: () => new Promise(resolve => {
-            window.setTimeout(() => resolve({}), this.state.serverApiDelay); // delayed by half a second
+            window.setTimeout(() => resolve({}), serverWaitDelayRef.current); // delayed by half a second
           }),
-          asyncPostFormatter: this.tooltipFormatter.bind(this) as Formatter,
+          asyncPostFormatter: tooltipFormatter as Formatter,
         },
       },
       {
@@ -245,7 +225,7 @@ export default class Example32 extends React.Component<Props, State> {
           // OR 2- use a Promise
           collectionAsync: new Promise<any>((resolve) => {
             window.setTimeout(() => {
-              resolve(Array.from(Array(this.state.dataset?.length).keys()).map(k => ({ value: k, label: k, prefix: 'Task', suffix: 'days' })));
+              resolve(Array.from(Array(dataset?.length).keys()).map(k => ({ value: k, label: k, prefix: 'Task', suffix: 'days' })));
             }, 500);
           }),
           customStructure: {
@@ -262,7 +242,7 @@ export default class Example32 extends React.Component<Props, State> {
           // collectionAsync: fetch(URL_SAMPLE_COLLECTION_DATA),
           collectionAsync: new Promise((resolve) => {
             window.setTimeout(() => {
-              resolve(Array.from(Array(this.state.dataset?.length).keys()).map(k => ({ value: k, label: `Task ${k}` })));
+              resolve(Array.from(Array(dataset?.length).keys()).map(k => ({ value: k, label: `Task ${k}` })));
             });
           }),
           customStructure: {
@@ -341,9 +321,9 @@ export default class Example32 extends React.Component<Props, State> {
       // Custom Tooltip options can be defined in a Column or Grid Options or a mixed of both (first options found wins)
       externalResources: [new SlickCustomTooltip(), new ExcelExportService()],
       customTooltip: {
-        formatter: this.tooltipFormatter.bind(this) as Formatter,
-        headerFormatter: this.headerFormatter,
-        headerRowFormatter: this.headerRowFormatter,
+        formatter: tooltipFormatter as Formatter,
+        headerFormatter,
+        headerRowFormatter,
         usabilityOverride: (args) => (args.cell !== 0 && args?.column?.id !== 'action'), // don't show on first/last columns
         // hideArrow: true, // defaults to False
       },
@@ -364,7 +344,7 @@ export default class Example32 extends React.Component<Props, State> {
         hideInColumnTitleRow: true,
       },
       editCommandHandler: (_item: any, _column: Column, editCommand: EditCommand) => {
-        this.editCommandQueue.push(editCommand);
+        editCommandQueue.push(editCommand);
         editCommand.execute();
       },
       // when using the cellMenu, you can change some of the default options and all use some of the callback methods
@@ -372,34 +352,29 @@ export default class Example32 extends React.Component<Props, State> {
       cellMenu: {
         // all the Cell Menu callback methods (except the action callback)
         // are available under the grid options as shown below
-        onCommand: (e, args) => this.executeCommand(e, args),
+        onCommand: (e, args) => executeCommand(e, args),
         onOptionSelected: (_e, args) => {
           // change "Completed" property with new option selected from the Cell Menu
           const dataContext = args && args.dataContext;
           if (dataContext && dataContext.hasOwnProperty('completed')) {
             dataContext.completed = args.item.option;
-            this.reactGrid.gridService.updateItem(dataContext);
+            reactGridRef.current?.gridService.updateItem(dataContext);
           }
         },
       },
     };
 
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      dataset: this.loadData(NB_ITEMS)
-    }));
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  handleServerDelayInputChange(e: React.FormEvent<HTMLInputElement>) {
-    this.setState((state: State) => ({
-      ...state,
-      serverApiDelay: parseInt((e.target as HTMLInputElement)?.value, 10) ?? '',
-    }));
+  function handleServerDelayInputChange(e: React.FormEvent<HTMLInputElement>) {
+    const newDelay = parseInt((e.target as HTMLInputElement)?.value, 10) ?? '';
+    setServerWaitDelay(newDelay);
+    serverWaitDelayRef.current = newDelay;
   }
 
-  loadData(itemCount: number): any[] {
+  function loadData(itemCount: number): any[] {
     // mock a dataset
     // mock data
     const tmpArray: any[] = [];
@@ -427,7 +402,7 @@ export default class Example32 extends React.Component<Props, State> {
     return tmpArray;
   }
 
-  executeCommand(_e: any, args: MenuCommandItemCallbackArgs) {
+  function executeCommand(_e: any, args: MenuCommandItemCallbackArgs) {
     // const columnDef = args.column;
     const command = args.command;
     const dataContext = args.dataContext;
@@ -444,25 +419,25 @@ export default class Example32 extends React.Component<Props, State> {
         break;
       case 'delete-row':
         if (confirm(`Do you really want to delete row (${(args.row || 0) + 1}) with "${dataContext.title}"`)) {
-          this.reactGrid?.gridService.deleteItemById(dataContext.id);
+          reactGridRef.current?.gridService.deleteItemById(dataContext.id);
         }
         break;
     }
   }
 
-  headerFormatter(row: number, cell: number, value: any, column: Column) {
+  function headerFormatter(row: number, cell: number, value: any, column: Column) {
     const tooltipTitle = 'Custom Tooltip - Header';
     return `<div class="header-tooltip-title">${tooltipTitle}</div>
     <div class="tooltip-2cols-row"><div>Column:</div> <div>${column.name}</div></div>`;
   }
 
-  headerRowFormatter(row: number, cell: number, value: any, column: Column) {
+  function headerRowFormatter(row: number, cell: number, value: any, column: Column) {
     const tooltipTitle = 'Custom Tooltip - Header Row (filter)';
     return `<div class="headerrow-tooltip-title">${tooltipTitle}</div>
     <div class="tooltip-2cols-row"><div>Column:</div> <div>${column.field}</div></div>`;
   }
 
-  tooltipFormatter(row: number, cell: number, value: any, column: Column, dataContext: any, grid: SlickGrid) {
+  function tooltipFormatter(row: number, cell: number, value: any, column: Column, dataContext: any, grid: SlickGrid) {
     const tooltipTitle = 'Custom Tooltip';
     const effortDrivenHtml = Formatters.checkmarkMaterial(row, cell, dataContext.effortDriven, column, dataContext, grid) as HTMLElement;
 
@@ -470,11 +445,11 @@ export default class Example32 extends React.Component<Props, State> {
     <div class="tooltip-2cols-row"><div>Id:</div> <div>${dataContext.id}</div></div>
     <div class="tooltip-2cols-row"><div>Title:</div> <div>${dataContext.title}</div></div>
     <div class="tooltip-2cols-row"><div>Effort Driven:</div> <div>${effortDrivenHtml.outerHTML || ''}</div></div>
-    <div class="tooltip-2cols-row"><div>Completion:</div> <div>${this.loadCompletionIcons(dataContext.percentComplete)}</div></div>
+    <div class="tooltip-2cols-row"><div>Completion:</div> <div>${loadCompletionIcons(dataContext.percentComplete)}</div></div>
     `;
   }
 
-  tooltipTaskAsyncFormatter(row: number, cell: number, value: any, column: Column, dataContext: any, grid: SlickGrid) {
+  function tooltipTaskAsyncFormatter(row: number, cell: number, value: any, column: Column, dataContext: any, grid: SlickGrid) {
     const tooltipTitle = `Task ${dataContext.id} - (async tooltip)`;
 
     // use a 2nd Formatter to get the percent completion
@@ -488,7 +463,7 @@ export default class Example32 extends React.Component<Props, State> {
     return out;
   }
 
-  loadCompletionIcons(percentComplete: number) {
+  function loadCompletionIcons(percentComplete: number) {
     let output = '';
     let iconCount = 0;
     if (percentComplete > 5 && percentComplete < 25) {
@@ -509,40 +484,52 @@ export default class Example32 extends React.Component<Props, State> {
     return output;
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example33.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
+
+  return !gridOptions ? '' : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 33: Regular & Custom Tooltips
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example33.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
+      </h2>
+      {hideSubTitle ? null : <div className="subtitle">
+        This demo shows how to create Regular & Custom Tooltips (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/custom-tooltip" target="_blank">Docs</a>)
+        <br />
+        <ul className="small">
+          <li>optionally parse regular [title] attributes and transform them into tooltips</li>
+          <li>create your own Custom Tooltip via a Custom Formatter</li>
+          <li>create an Async Custom Tooltip (Promise/Observable) to allowing fetching data from an API</li>
+          <li>optionally add Custom Tooltip on Column Header & Column Header-Row (filters)</li>
+        </ul>
+      </div>}
 
 
-        <div style={{ marginBottom: '20px' }}>
-          <label htmlFor="pinned-rows">Simulated Server Delay (ms): </label>
-          <input type="number" id="server-delay" data-test="server-delay" style={{ width: '60px' }}
-            value={this.state.serverApiDelay}
-            onInput={($event) => this.handleServerDelayInputChange($event)}
-          />
-        </div>
-
-        <div id="smaller-container" style={{ width: '950px' }}>
-          <SlickgridReact gridId="grid33"
-            columnDefinitions={this.state.columnDefinitions}
-            gridOptions={this.state.gridOptions}
-            dataset={this.state.dataset}
-            onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          />
-        </div>
+      <div style={{ marginBottom: '20px' }}>
+        <label htmlFor="pinned-rows">Simulated Server Delay (ms): </label>
+        <input type="number" id="server-delay" data-test="server-delay" style={{ width: '60px' }}
+          value={serverWaitDelay}
+          onInput={($event) => handleServerDelayInputChange($event)}
+        />
       </div>
-    );
-  }
+
+      <div id="smaller-container" style={{ width: '950px' }}>
+        <SlickgridReact gridId="grid33"
+          columnDefinitions={columnDefinitions}
+          gridOptions={gridOptions}
+          dataset={dataset}
+          onReactGridCreated={$event => reactGridReady($event.detail)}
+        />
+      </div>
+    </div>
+  );
 }
 
+export default Example33;

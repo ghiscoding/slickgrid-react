@@ -9,13 +9,12 @@ import { useState } from 'react';
 
 const NB_ITEMS = 995;
 
-export default function Example1() {
-  const title = 'Example 1: Basic Grids';
-  document.title = title;
+const Example1: React.FC = () => {
   const defaultBrowserDarkMode = isBrowserDarkModeEnabled();
 
   const [darkModeGrid1, setDarkModeGrid1] = useState(defaultBrowserDarkMode);
   const [reactGrid1, setReactGrid1] = useState<SlickgridReactInstance>();
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   // mock some data (different in each dataset)
   const [dataset1] = useState<any[]>(mockData(NB_ITEMS));
@@ -100,7 +99,7 @@ export default function Example1() {
   return (
     <div id="demo-container" className="container-fluid">
       <h2>
-        {title}
+        Example 1: Basic Grids
         <span className="float-end font18">
           see&nbsp;
           <a target="_blank"
@@ -108,10 +107,14 @@ export default function Example1() {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
       </h2>
-      <div className="subtitle">
+
+      {hideSubTitle ? null : <div className="subtitle">
         Simple Grids with Fixed Sizes (800 x 225)
-      </div>
+      </div>}
 
       <h3>
         <div className="column">
@@ -138,6 +141,8 @@ export default function Example1() {
         columnDefinitions={columnDefinitions2}
         gridOptions={gridOptions2!}
         dataset={dataset2} />
-    </div>
+    </div >
   );
 }
+
+export default Example1;

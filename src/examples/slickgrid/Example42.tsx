@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   type Column,
   FieldType,
@@ -7,52 +7,38 @@ import {
   type GridOption,
   type MultipleSelectOption,
   OperatorType,
-  type Pagination,
   SlickgridReact,
   type SlickgridReactInstance,
   type SliderRangeOption,
 } from '../../slickgrid-react';
 
-import { CustomPagerComponent } from './Example42-Custom-Pager';
-import type BaseSlickGridState from './state-slick-grid-base';
+import CustomPagerComponent from './Example42-Custom-Pager';
 
 const NB_ITEMS = 5000;
-
-interface Props { }
-interface State extends BaseSlickGridState {
-  pageSize: number,
-}
 
 function randomBetween(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-export default class Example42 extends React.Component<Props, State> {
-  paginationPosition: 'bottom' | 'top' = 'top';
-  paginationOptions!: Pagination;
-  reactGrid!: SlickgridReactInstance;
+const Example42: React.FC = () => {
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset] = useState<any[]>(loadData(NB_ITEMS));
+  const [pageSize, setPageSize] = useState(50);
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
-  constructor(public readonly props: Props) {
-    super(props);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: this.loadData(NB_ITEMS),
-      pageSize: 50,
-    };
+  useEffect(() => {
+    defineGrid();
+  }, []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  componentDidMount() {
-    this.defineGrid();
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  getColumnsDefinition(): Column[] {
-    return [
+  function defineGrid() {
+    const columnDefinitions: Column[] = [
       {
         id: 'title', name: 'Title', field: 'id', minWidth: 100,
         sortable: true,
@@ -115,23 +101,8 @@ export default class Example42 extends React.Component<Props, State> {
         }
       }
     ];
-  }
 
-  defineGrid() {
-    const columnDefinitions = this.getColumnsDefinition();
-    const gridOptions = this.getGridOptions();
-
-    this.setState((props: Props, state: any) => {
-      return {
-        ...state,
-        columnDefinitions,
-        gridOptions
-      };
-    });
-  }
-
-  getGridOptions(): GridOption {
-    return {
+    const gridOptions: GridOption = {
       autoResize: {
         container: '#demo-container',
         bottomPadding: 20 // add a padding to include our custom pagination
@@ -141,13 +112,16 @@ export default class Example42 extends React.Component<Props, State> {
       customPaginationComponent: CustomPagerComponent, // load our Custom Pagination Component
       enablePagination: true,
       pagination: {
-        pageSize: this.state.pageSize
+        pageSize
       },
       rowHeight: 40,
     };
+
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  loadData(itemCount: number): any[] {
+  function loadData(itemCount: number): any[] {
     // mock a dataset
     const tempDataset: any[] = [];
     for (let i = 0, ln = itemCount; i < ln; i++) {
@@ -173,50 +147,50 @@ export default class Example42 extends React.Component<Props, State> {
     return tempDataset;
   }
 
-  pageSizeChanged(pageSize: number | string) {
-    this.setState((props: Props, state: any) => {
-      return { ...state, pageSize: +pageSize }
-    });
-    this.reactGrid.paginationService?.changeItemPerPage(+pageSize);
+  function pageSizeChanged(pageSize: number | string) {
+    setPageSize(+pageSize);
+    reactGridRef.current?.paginationService?.changeItemPerPage(+pageSize);
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div className="demo42">
-        <div id="demo-container" className="container-fluid">
-          <h2>
-            Example 42: Custom Pagination
-            <span className="float-end font18">
-              see&nbsp;
-              <a target="_blank"
-                href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example42.tsx">
-                <span className="mdi mdi-link-variant"></span> code
-              </a>
-            </span>
-          </h2>
 
-          <div className="col-sm-12">
-            <h6 className="subtitle italic">
-              You can create a Custom Pagination by passing a React Custom Component and it must <code>implements BasePaginationComponent</code>.
-              Any of the pagination controls could be moved anywhere on the page (for example we purposely moved the page size away from the rest of the pagination elements).
-            </h6>
-          </div>
+  return !gridOptions ? '' : (
+    <div className="demo42">
+      <div id="demo-container" className="container-fluid">
+        <h2>
+          Example 42: Custom Pagination
+          <span className="float-end font18">
+            see&nbsp;
+            <a target="_blank"
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example42.tsx">
+              <span className="mdi mdi-link-variant"></span> code
+            </a>
+          </span>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+            <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+          </button>
+        </h2>
 
-          <div>
-            <span className="margin-15px">
-              Page Size&nbsp;
-              <input type="text" className="input is-small is-narrow" data-test="page-size-input" style={{ width: '55px' }} value={this.state.pageSize} onInput={($event) => this.pageSizeChanged(($event.target as HTMLInputElement).value)} />
-            </span>
-          </div>
+        {hideSubTitle ? null : <div className="subtitle">
+          You can create a Custom Pagination by passing a React Custom Component and it must <code>implements BasePaginationComponent</code>.
+          Any of the pagination controls could be moved anywhere on the page (for example we purposely moved the page size away from the rest of the pagination elements).
+        </div>}
 
-          <SlickgridReact gridId="grid42"
-            columnDefinitions={this.state.columnDefinitions}
-            gridOptions={this.state.gridOptions}
-            dataset={this.state.dataset}
-            onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          />
+        <div>
+          <span className="margin-15px">
+            Page Size&nbsp;
+            <input type="text" className="input is-small is-narrow" data-test="page-size-input" style={{ width: '55px' }} value={pageSize} onInput={($event) => pageSizeChanged(($event.target as HTMLInputElement).value)} />
+          </span>
         </div>
+
+        <SlickgridReact gridId="grid42"
+          columnDefinitions={columnDefinitions}
+          gridOptions={gridOptions}
+          dataset={dataset}
+          onReactGridCreated={$event => reactGridReady($event.detail)}
+        />
       </div>
-    );
-  }
+    </div>
+  );
 }
+
+export default Example42;

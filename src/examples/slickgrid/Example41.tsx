@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   type Column,
   Formatters,
@@ -8,40 +8,29 @@ import {
   type SlickgridReactInstance,
 } from '../../slickgrid-react';
 
-import type BaseSlickGridState from './state-slick-grid-base';
 import './example41.scss';
 
-interface Props { }
+const Example41: React.FC = () => {
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset, setDataset] = useState<any[]>(getData());
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
-interface State extends BaseSlickGridState {
-}
+  const dragHelperRef = useRef<HTMLElement>();
+  const dragRowsRef = useRef<number[]>([]);
+  const dragModeRef = useRef('');
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-export default class Example41 extends React.Component<Props, State> {
-  reactGrid!: SlickgridReactInstance;
-  dragHelper?: HTMLElement;
-  dragRows: number[] = [];
-  dragMode = '';
+  useEffect(() => {
+    defineGrid();
+  }, []);
 
-  constructor(public readonly props: Props) {
-    super(props);
-
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: this.mockData(),
-    };
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  componentDidMount() {
-    this.defineGrid();
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  getColumnsDefinition(): Column[] {
-    return [
+  function defineGrid() {
+    const columnDefinitions: Column[] = [
       {
         id: 'name',
         name: 'Name',
@@ -58,23 +47,8 @@ export default class Example41 extends React.Component<Props, State> {
         formatter: Formatters.checkmarkMaterial,
       }
     ];
-  }
 
-  defineGrid() {
-    const columnDefinitions = this.getColumnsDefinition();
-    const gridOptions = this.getGridOptions();
-
-    this.setState((props: Props, state: any) => {
-      return {
-        ...state,
-        columnDefinitions,
-        gridOptions
-      };
-    });
-  }
-
-  getGridOptions(): GridOption {
-    return {
+    const gridOptions: GridOption = {
       enableAutoResize: false,
       gridHeight: 225,
       gridWidth: 800,
@@ -91,16 +65,19 @@ export default class Example41 extends React.Component<Props, State> {
         cancelEditOnDrag: true,
         disableRowSelection: true,
         hideRowMoveShadow: false,
-        onBeforeMoveRows: this.onBeforeMoveRows.bind(this),
-        onMoveRows: this.onMoveRows.bind(this),
+        onBeforeMoveRows,
+        onMoveRows,
 
         // you can also override the usability of the rows, for example make every 2nd row the only moveable rows,
         // usabilityOverride: (row, dataContext, grid) => dataContext.id % 2 === 1
       },
     };
+
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  mockData() {
+  function getData() {
     return [
       { id: 0, name: 'Make a list', complete: true },
       { id: 1, name: 'Check it twice', complete: false },
@@ -109,7 +86,7 @@ export default class Example41 extends React.Component<Props, State> {
     ];
   }
 
-  onBeforeMoveRows(e: MouseEvent | TouchEvent, data: { rows: number[]; insertBefore: number; }) {
+  function onBeforeMoveRows(e: MouseEvent | TouchEvent, data: { rows: number[]; insertBefore: number; }) {
     for (const dataRow of data.rows) {
       // no point in moving before or after itself
       if (dataRow === data.insertBefore || dataRow === data.insertBefore - 1) {
@@ -120,11 +97,11 @@ export default class Example41 extends React.Component<Props, State> {
     return true;
   }
 
-  onMoveRows(_e: MouseEvent | TouchEvent, args: { rows: number[]; insertBefore: number; }) {
+  function onMoveRows(_e: MouseEvent | TouchEvent, args: { rows: number[]; insertBefore: number; }) {
     const extractedRows: any[] = [];
     const rows = args.rows;
     const insertBefore = args.insertBefore;
-    const tmpDataset = this.state.dataset || [];
+    const tmpDataset = dataset || [];
     const left = tmpDataset.slice(0, insertBefore);
     const right = tmpDataset.slice(insertBefore, tmpDataset.length);
 
@@ -150,26 +127,26 @@ export default class Example41 extends React.Component<Props, State> {
       selectedRows.push(left.length + i);
     }
 
-    this.reactGrid.dataView.setItems(finalDataset);
-    this.reactGrid.slickGrid?.resetActiveCell();
-    this.reactGrid.slickGrid?.invalidate();
+    reactGridRef.current?.dataView.setItems(finalDataset);
+    reactGridRef.current?.slickGrid?.resetActiveCell();
+    reactGridRef.current?.slickGrid?.invalidate();
   }
 
-  handleOnDragInit(e: CustomEvent) {
+  function handleOnDragInit(e: CustomEvent) {
     // prevent the grid from cancelling drag'n'drop by default
     e.stopImmediatePropagation();
   }
 
-  handleOnDragStart(e: CustomEvent) {
-    const cell = this.reactGrid.slickGrid?.getCellFromEvent(e);
+  function handleOnDragStart(e: CustomEvent) {
+    const cell = reactGridRef.current?.slickGrid?.getCellFromEvent(e);
 
     if (!cell || cell.cell === 0) {
-      this.dragMode = '';
+      dragModeRef.current = '';
       return;
     }
 
     const row = cell.row;
-    if (!this.state.dataset?.[row]) {
+    if (!dataset?.[row]) {
       return;
     }
 
@@ -178,35 +155,35 @@ export default class Example41 extends React.Component<Props, State> {
     }
 
     e.stopImmediatePropagation();
-    this.dragMode = 'recycle';
+    dragModeRef.current = 'recycle';
 
-    let selectedRows: number[] = this.reactGrid.slickGrid?.getSelectedRows() || [];
+    let selectedRows: number[] = reactGridRef.current?.slickGrid?.getSelectedRows() || [];
 
     if (!selectedRows.length || selectedRows.findIndex(row => row === row) === -1) {
       selectedRows = [row];
-      this.reactGrid.slickGrid?.setSelectedRows(selectedRows);
+      reactGridRef.current?.slickGrid?.setSelectedRows(selectedRows);
     }
 
-    this.dragRows = selectedRows;
+    dragRowsRef.current = selectedRows;
     const dragCount = selectedRows.length;
 
     const dragMsgElm = document.createElement('span');
     dragMsgElm.className = 'drag-message';
     dragMsgElm.textContent = `Drag to Recycle Bin to delete ${dragCount} selected row(s)`;
-    this.dragHelper = dragMsgElm;
+    dragHelperRef.current = dragMsgElm;
     document.body.appendChild(dragMsgElm);
     document.querySelector<HTMLDivElement>('#dropzone')?.classList.add('drag-dropzone');
 
     return dragMsgElm;
   }
 
-  handleOnDrag(e: MouseEvent, args: any) {
-    if (this.dragMode !== 'recycle') {
+  function handleOnDrag(e: MouseEvent, args: any) {
+    if (dragModeRef.current !== 'recycle') {
       return;
     }
-    if (this.dragHelper instanceof HTMLElement) {
-      this.dragHelper.style.top = `${e.pageY + 5}px`;
-      this.dragHelper.style.left = `${e.pageX + 5}px`;
+    if (dragHelperRef.current instanceof HTMLElement) {
+      dragHelperRef.current.style.top = `${e.pageY + 5}px`;
+      dragHelperRef.current.style.left = `${e.pageX + 5}px`;
     }
 
     // add/remove pink background color when hovering recycle bin
@@ -218,74 +195,76 @@ export default class Example41 extends React.Component<Props, State> {
     }
   }
 
-  handleOnDragEnd(e: CustomEvent, args: any) {
-    if (this.dragMode !== 'recycle') {
+  function handleOnDragEnd(e: CustomEvent, args: any) {
+    if (dragModeRef.current !== 'recycle') {
       return;
     }
-    this.dragHelper?.remove();
+    dragHelperRef.current?.remove();
     document.querySelector<HTMLDivElement>('#dropzone')?.classList.remove('drag-dropzone', 'drag-hover');
 
-    if (this.dragMode !== 'recycle' || args.target.id !== 'dropzone') {
+    if (dragModeRef.current !== 'recycle' || args.target.id !== 'dropzone') {
       return;
     }
 
     // reaching here means that we'll remove the row that we started dragging from the dataset
-    const tmpDataset = this.reactGrid.dataView.getItems();
-    const rowsToDelete = this.dragRows.sort().reverse();
+    const tmpDataset: any[] = reactGridRef.current?.dataView.getItems() || [];
+    const rowsToDelete = dragRowsRef.current.sort().reverse();
     for (const rowToDelete of rowsToDelete) {
       tmpDataset.splice(rowToDelete, 1);
     }
-    this.reactGrid.slickGrid?.invalidate();
-    this.reactGrid.slickGrid?.setSelectedRows([]);
-    this.setState(() => ({ dataset: [...tmpDataset] }));
+    reactGridRef.current?.slickGrid?.invalidate();
+    reactGridRef.current?.slickGrid?.setSelectedRows([]);
+    setDataset([...tmpDataset]);
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div className="demo41">
-        <div id="demo-container" className="container-fluid">
-          <h2>
-            Example 41: Drag & Drop
-            <span className="float-end font18">
-              see&nbsp;
-              <a target="_blank"
-                href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example41.tsx">
-                <span className="mdi mdi-link-variant"></span> code
-              </a>
-            </span>
-          </h2>
 
-          <div className="col-sm-12">
-            <h6 className="subtitle italic">
-              <ul>
-                <li>Click to select, Ctrl-click to toggle selection(s).</li>
-                <li>Drag one or more rows by the handle icon (1st column) to reorder.</li>
-                <li>Drag one or more rows by selection (2nd or 3rd column) and drag to the recycle bin to delete.</li>
-              </ul>
-            </h6>
-          </div>
+  return !gridOptions ? '' : (
+    <div className="demo41">
+      <div id="demo-container" className="container-fluid">
+        <h2>
+          Example 41: Drag & Drop
+          <span className="float-end font18">
+            see&nbsp;
+            <a target="_blank"
+              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example41.tsx">
+              <span className="mdi mdi-link-variant"></span> code
+            </a>
+          </span>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+            <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+          </button>
+        </h2>
 
-          <div className="row">
-            <div className="col">
-              <SlickgridReact gridId="grid41"
-                columnDefinitions={this.state.columnDefinitions}
-                gridOptions={this.state.gridOptions}
-                dataset={this.state.dataset}
-                onReactGridCreated={$event => this.reactGridReady($event.detail)}
-                onDragInit={$event => this.handleOnDragInit($event.detail.eventData)}
-                onDragStart={$event => this.handleOnDragStart($event.detail.eventData)}
-                onDrag={$event => this.handleOnDrag($event.detail.eventData, $event.detail.args)}
-                onDragEnd={$event => this.handleOnDragEnd($event.detail.eventData, $event.detail.args)}
-              />
-            </div>
-          </div>
+        {hideSubTitle ? null : <div className="subtitle">
+          <ul>
+            <li>Click to select, Ctrl-click to toggle selection(s).</li>
+            <li>Drag one or more rows by the handle icon (1st column) to reorder.</li>
+            <li>Drag one or more rows by selection (2nd or 3rd column) and drag to the recycle bin to delete.</li>
+          </ul>
+        </div>}
+
+        <div className="row">
           <div className="col">
-            <div id="dropzone" className="recycle-bin mt-4">
-              Recycle Bin
-            </div>
+            <SlickgridReact gridId="grid41"
+              columnDefinitions={columnDefinitions}
+              gridOptions={gridOptions}
+              dataset={dataset}
+              onReactGridCreated={$event => reactGridReady($event.detail)}
+              onDragInit={$event => handleOnDragInit($event.detail.eventData)}
+              onDragStart={$event => handleOnDragStart($event.detail.eventData)}
+              onDrag={$event => handleOnDrag($event.detail.eventData, $event.detail.args)}
+              onDragEnd={$event => handleOnDragEnd($event.detail.eventData, $event.detail.args)}
+            />
+          </div>
+        </div>
+        <div className="col">
+          <div id="dropzone" className="recycle-bin mt-4">
+            Recycle Bin
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
+
+export default Example41;

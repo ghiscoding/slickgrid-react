@@ -1,6 +1,5 @@
 import {
   type Column,
-  ExtensionName,
   Filters,
   Formatters,
   type GridOption,
@@ -8,61 +7,27 @@ import {
   SlickgridReact,
   type SlickgridReactInstance,
 } from '../../slickgrid-react';
-import React from 'react';
-import type BaseSlickGridState from './state-slick-grid-base';
+import React, { useEffect, useRef, useState } from 'react';
 
-interface Props { }
-interface State extends BaseSlickGridState { }
+const Example16: React.FC = () => {
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset, setDataset] = useState<any[]>(getData());
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
-export default class Example16 extends React.Component<Props, State> {
-  title = 'Example 16: Row Move & Checkbox Selector';
-  subTitle = `
-    This example demonstrates using the <b>SlickRowMoveManager</b> plugin to easily move a row in the grid.<br/>
-    <ul>
-      <li>Click to select, Ctrl+Click to toggle selection, Shift+Click to select a range.</li>
-      <li>Drag one or more rows by the handle (icon) to reorder</li>
-      <li>If you plan to use Row Selection + Row Move, then use "singleRowMove: true" and "disableRowSelection: true"</li>
-      <li>You can change "columnIndexPosition" to move the icon position of any extension (RowMove, RowDetail or RowSelector icon)</li>
-      <ul>
-        <li>You will also want to enable the DataView "syncGridSelection: true" to keep row selection even after a row move</li>
-      </ul>
-      <li>If you plan to use only Row Move, then you could keep default values (or omit them completely) of "singleRowMove: false" and "disableRowSelection: false"</li>
-      <ul>
-        <li>SingleRowMove has the name suggest will only move 1 row at a time, by default it will move any row(s) that are selected unless you disable the flag</li>
-      </ul>
-    </ul>
-  `;
-  reactGrid!: SlickgridReactInstance;
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  constructor(public readonly props: Props) {
-    super(props);
+  useEffect(() => {
+    defineGrid();
+    getData();
+  }, []);
 
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      dataset: [],
-    };
-
-    this.defineGrid();
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  get rowMoveInstance(): any {
-    return this.reactGrid?.extensionService?.getExtensionInstanceByName(ExtensionName.rowMoveManager) || {};
-  }
-
-  componentDidMount() {
-    document.title = this.title;
-
-    // populate the dataset once the grid is ready
-    this.setState(() => ({ dataset: this.getData() }));
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
   /* Define grid Options and Columns */
-  defineGrid() {
+  function defineGrid() {
     const columnDefinitions: Column[] = [
       { id: 'title', name: 'Title', field: 'title', filterable: true, },
       { id: 'duration', name: 'Duration', field: 'duration', filterable: true, sortable: true },
@@ -118,8 +83,8 @@ export default class Example16 extends React.Component<Props, State> {
         disableRowSelection: true,
         cancelEditOnDrag: true,
         width: 30,
-        onBeforeMoveRows: this.onBeforeMoveRow.bind(this),
-        onMoveRows: this.onMoveRows.bind(this),
+        onBeforeMoveRows,
+        onMoveRows,
 
         // you can change the move icon position of any extension (RowMove, RowDetail or RowSelector icon)
         // note that you might have to play with the position when using multiple extension
@@ -141,14 +106,11 @@ export default class Example16 extends React.Component<Props, State> {
       },
     };
 
-    this.state = {
-      ...this.state,
-      columnDefinitions,
-      gridOptions,
-    };
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  getData() {
+  function getData() {
     // Set up some test columns.
     const mockDataset: any[] = [];
     for (let i = 0; i < 500; i++) {
@@ -165,10 +127,10 @@ export default class Example16 extends React.Component<Props, State> {
     return mockDataset;
   }
 
-  onBeforeMoveRow(e: MouseEvent | TouchEvent, data: { rows: number[]; insertBefore: number; }) {
+  function onBeforeMoveRows(e: MouseEvent | TouchEvent, data: { rows: number[]; insertBefore: number; }) {
     for (const rowIdx of data.rows) {
       // no point in moving before or after itself
-      if (rowIdx === data.insertBefore || (rowIdx === data.insertBefore - 1 && ((data.insertBefore - 1) !== this.reactGrid.dataView.getItemCount()))) {
+      if (rowIdx === data.insertBefore || (rowIdx === data.insertBefore - 1 && ((data.insertBefore - 1) !== reactGridRef.current?.dataView.getItemCount()))) {
         e.stopPropagation();
         return false;
       }
@@ -176,7 +138,7 @@ export default class Example16 extends React.Component<Props, State> {
     return true;
   }
 
-  onMoveRows(_e: MouseEvent | TouchEvent, args: any) {
+  function onMoveRows(_e: MouseEvent | TouchEvent, args: any) {
     // rows and insertBefore references,
     // note that these references are assuming that the dataset isn't filtered at all
     // which is not always the case so we will recalcualte them and we won't use these reference afterward
@@ -187,19 +149,19 @@ export default class Example16 extends React.Component<Props, State> {
     // when moving rows, we need to cancel any sorting that might happen
     // we can do this by providing an undefined sort comparer
     // which basically destroys the current sort comparer without resorting the dataset, it basically keeps the previous sorting
-    this.reactGrid.dataView.sort(undefined as any, true);
+    reactGridRef.current?.dataView.sort(undefined as any, true);
 
     // the dataset might be filtered/sorted,
     // so we need to get the same dataset as the one that the SlickGrid DataView uses
-    const tmpDataset = this.reactGrid.dataView.getItems();
-    const filteredItems = this.reactGrid.dataView.getFilteredItems();
+    const tmpDataset = reactGridRef.current?.dataView.getItems() || [];
+    const filteredItems = reactGridRef.current?.dataView.getFilteredItems() || [];
 
-    const itemOnRight = this.reactGrid.dataView.getItem(insertBefore);
-    const insertBeforeFilteredIdx = itemOnRight ? this.reactGrid.dataView.getIdxById(itemOnRight.id) : this.reactGrid.dataView.getItemCount();
+    const itemOnRight = reactGridRef.current?.dataView.getItem(insertBefore);
+    const insertBeforeFilteredIdx = itemOnRight ? reactGridRef.current?.dataView.getIdxById(itemOnRight.id) : reactGridRef.current?.dataView.getItemCount();
 
     const filteredRowItems: any[] = [];
     rows.forEach(row => filteredRowItems.push(filteredItems[row]));
-    const filteredRows = filteredRowItems.map(item => this.reactGrid.dataView.getIdxById(item.id));
+    const filteredRows = filteredRowItems.map(item => reactGridRef.current?.dataView.getIdxById(item.id));
 
     const left = tmpDataset.slice(0, insertBeforeFilteredIdx);
     const right = tmpDataset.slice(insertBeforeFilteredIdx, tmpDataset.length);
@@ -226,37 +188,33 @@ export default class Example16 extends React.Component<Props, State> {
     // final updated dataset, we need to overwrite the DataView dataset (and our local one) with this new dataset that has a new order
     const finalDataset = left.concat(extractedRows.concat(right));
 
-    this.setState(() => {
-      return {
-        dataset: finalDataset,
-      };
-    });
+    setDataset(finalDataset);
   }
 
-  hideDurationColumnDynamically() {
+  function hideDurationColumnDynamically() {
     // -- you can hide by one Id or multiple Ids:
     // hideColumnById(id, options), hideColumnByIds([ids], options)
     // you can also provide options, defaults are: { autoResizeColumns: true, triggerEvent: true, hideFromColumnPicker: false, hideFromGridMenu: false }
 
-    this.reactGrid.gridService.hideColumnById('duration');
+    reactGridRef.current?.gridService.hideColumnById('duration');
 
     // or with multiple Ids and extra options
-    // this.reactGrid.gridService.hideColumnByIds(['duration', 'finish'], { hideFromColumnPicker: true, hideFromGridMenu: false });
+    // reactGridRef.current?.gridService.hideColumnByIds(['duration', 'finish'], { hideFromColumnPicker: true, hideFromGridMenu: false });
   }
 
   // Disable/Enable Filtering/Sorting functionalities
   // --------------------------------------------------
 
-  disableFilters() {
-    this.reactGrid.filterService.disableFilterFunctionality(true);
+  function disableFilters() {
+    reactGridRef.current?.filterService.disableFilterFunctionality(true);
   }
 
-  disableSorting() {
-    this.reactGrid.sortService.disableSortFunctionality(true);
+  function disableSorting() {
+    reactGridRef.current?.sortService.disableSortFunctionality(true);
   }
 
-  addEditDeleteColumns() {
-    if (this.state.columnDefinitions[0].id !== 'change-symbol') {
+  function addEditDeleteColumns() {
+    if (columnDefinitions[0].id !== 'change-symbol') {
       const newCols = [
         {
           id: 'change-symbol',
@@ -283,7 +241,7 @@ export default class Example16 extends React.Component<Props, State> {
           maxWidth: 30,
           onCellClick: (e: Event, args: OnEventArgs) => {
             if (confirm('Are you sure?')) {
-              this.reactGrid.gridService.deleteItemById(args.dataContext.id);
+              reactGridRef.current?.gridService.deleteItemById(args.dataContext.id);
             }
           }
         }
@@ -292,79 +250,97 @@ export default class Example16 extends React.Component<Props, State> {
       // NOTE if you use an Extensions (Checkbox Selector, Row Detail, ...) that modifies the column definitions in any way
       // you MUST use "getAllColumnDefinitions()" from the GridService, using this will be ALL columns including the 1st column that is created internally
       // for example if you use the Checkbox Selector (row selection), you MUST use the code below
-      const allColumns = this.reactGrid.gridService.getAllColumnDefinitions();
+      const allColumns = reactGridRef.current?.gridService.getAllColumnDefinitions() || [];
       allColumns.unshift(newCols[0], newCols[1]);
-      this.setState((state: State) => ({ ...state, columnDefinitions: [...allColumns] })); // (or use slice) reassign to column definitions for React to do dirty checking
+      setColumnDefinitions([...allColumns]); // (or use slice) reassign to column definitions for React to do dirty checking
     }
   }
 
   // or Toggle Filtering/Sorting functionalities
   // ---------------------------------------------
 
-  toggleFilter() {
-    this.reactGrid.filterService.toggleFilterFunctionality();
+  function toggleFilter() {
+    reactGridRef.current?.filterService.toggleFilterFunctionality();
   }
 
-  toggleSorting() {
-    this.reactGrid.sortService.toggleSortFunctionality();
+  function toggleSorting() {
+    reactGridRef.current?.sortService.toggleSortFunctionality();
   }
 
-  render() {
-    return (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example16.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
+  return !gridOptions ? '' : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 16: Row Move & Checkbox Selector
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example16.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
+      </h2>
+      {hideSubTitle ? null : <div className="subtitle">
+        This example demonstrates using the <b>SlickRowMoveManager</b> plugin to easily move a row in the grid.<br />
+        <ul>
+          <li>Click to select, Ctrl+Click to toggle selection, Shift+Click to select a range.</li>
+          <li>Drag one or more rows by the handle (icon) to reorder</li>
+          <li>If you plan to use Row Selection + Row Move, then use "singleRowMove: true" and "disableRowSelection: true"</li>
+          <li>You can change "columnIndexPosition" to move the icon position of any extension (RowMove, RowDetail or RowSelector icon)</li>
+          <ul>
+            <li>You will also want to enable the DataView "syncGridSelection: true" to keep row selection even after a row move</li>
+          </ul>
+          <li>If you plan to use only Row Move, then you could keep default values (or omit them completely) of "singleRowMove: false" and "disableRowSelection: false"</li>
+          <ul>
+            <li>SingleRowMove has the name suggest will only move 1 row at a time, by default it will move any row(s) that are selected unless you disable the flag</li>
+          </ul>
+        </ul>
+      </div>}
 
-        <div className="row">
-          <div className="col-sm-12">
-            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="hide-duration-btn"
-              onClick={() => this.hideDurationColumnDynamically()}>
-              <i className="mdi mdi-eye-off-outline me-1"></i>
-              Dynamically Hide "Duration"
-            </button>
-            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="disable-filters-btn"
-              onClick={() => this.disableFilters()}>
-              <i className="mdi mdi-close me-1"></i>
-              Disable Filters
-            </button>
-            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="disable-sorting-btn"
-              onClick={() => this.disableSorting()}>
-              <i className="mdi mdi-close me-1"></i>
-              Disable Sorting
-            </button>
-            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="toggle-filtering-btn" onClick={() => this.toggleFilter()}>
-              <i className="mdi mdi-swap-vertical me-1"></i>
-              Toggle Filtering
-            </button>
-            <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="toggle-sorting-btn" onClick={() => this.toggleSorting()}>
-              <i className="mdi mdi-swap-vertical me-1"></i>
-              Toggle Sorting
-            </button>
-            <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="add-crud-columns-btn" onClick={() => this.addEditDeleteColumns()}>
-              <i className="mdi mdi-shape-square-plus me-1"></i>
-              Add Edit/Delete Columns
-            </button>
-          </div>
+      <div className="row">
+        <div className="col-sm-12">
+          <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="hide-duration-btn"
+            onClick={() => hideDurationColumnDynamically()}>
+            <i className="mdi mdi-eye-off-outline me-1"></i>
+            Dynamically Hide "Duration"
+          </button>
+          <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="disable-filters-btn"
+            onClick={() => disableFilters()}>
+            <i className="mdi mdi-close me-1"></i>
+            Disable Filters
+          </button>
+          <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="disable-sorting-btn"
+            onClick={() => disableSorting()}>
+            <i className="mdi mdi-close me-1"></i>
+            Disable Sorting
+          </button>
+          <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="toggle-filtering-btn" onClick={() => toggleFilter()}>
+            <i className="mdi mdi-swap-vertical me-1"></i>
+            Toggle Filtering
+          </button>
+          <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="toggle-sorting-btn" onClick={() => toggleSorting()}>
+            <i className="mdi mdi-swap-vertical me-1"></i>
+            Toggle Sorting
+          </button>
+          <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="add-crud-columns-btn" onClick={() => addEditDeleteColumns()}>
+            <i className="mdi mdi-shape-square-plus me-1"></i>
+            Add Edit/Delete Columns
+          </button>
         </div>
-
-        <br />
-
-        <SlickgridReact gridId="grid16"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions!}
-          dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        />
       </div>
-    );
-  }
+
+      <br />
+
+      <SlickgridReact gridId="grid16"
+        columnDefinitions={columnDefinitions}
+        gridOptions={gridOptions!}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+      />
+    </div>
+  );
 }
+
+export default Example16;

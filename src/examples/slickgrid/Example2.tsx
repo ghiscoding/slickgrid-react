@@ -37,13 +37,11 @@ const customEnableButtonFormatter: Formatter<DataItem> = (_row: number, _cell: n
     </span>`;
 };
 
-export default function Example2() {
-  const title = 'Example 2: Grid with Formatters';
-  document.title = title;
-
+const Example2: React.FC = () => {
   const [reactGrid, setReactGrid] = useState<SlickgridReactInstance>();
   const [resizerPaused, setResizerPaused] = useState(false);
   const [dataset] = useState(getData());
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
   // the columns field property is type-safe, try to add a different string not representing one of DataItems properties
   const columnDefinitions: Column[] = [
@@ -161,7 +159,7 @@ export default function Example2() {
   return (
     <div id="demo-container" className="container-fluid">
       <h2>
-        {title}
+        Example 2: Grid with Formatters
         <span className="float-end font18">
           see&nbsp;
           <a target="_blank"
@@ -169,8 +167,12 @@ export default function Example2() {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
       </h2>
-      <div className="subtitle">
+
+      {hideSubTitle ? null : <div className="subtitle">
         Grid with Custom and/or included Slickgrid Formatters (<a href="https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/formatters" target="_blank">Docs</a>).
         <ul>
           <li>The 2 last columns are using Custom Formatters</li>
@@ -181,7 +183,7 @@ export default function Example2() {
           </li>
           <li>This example also has auto-resize enabled, and we also demo how you can pause the resizer if you wish to</li>
         </ul>
-      </div>
+      </div>}
 
       <button className="btn btn-outline-secondary btn-sm btn-icon"
         onClick={() => togglePauseResizer()}>
@@ -197,3 +199,5 @@ export default function Example2() {
     </div>
   );
 }
+
+export default Example2;

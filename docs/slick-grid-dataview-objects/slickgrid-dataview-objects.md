@@ -13,82 +13,75 @@ Since version `2.x`, we can now access the Slick `Grid` & `DataView` objects dir
 ```tsx
 import { SlickgridReactInstance, Column, GridOption } from 'slickgrid-react';
 
-export class MyApp extends React.Component<Props, State> {
-  reactGrid: SlickgridReactInstance;
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-  isAutoEdit = true;
-  gridObj: SlickGrid;
-  dataViewObj: SlickDataView;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const [isAutoEdit, setIsAutoEdit] = useState(false);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
+  useEffect(() => defineGrid());
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-
-    // the React Grid Instance exposes both Slick Grid & DataView objects
-    this.gridObj = reactGrid.slickGrid;
-    this.dataViewObj = reactGrid.dataView;
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
-
+  
   /** Change dynamically `autoEdit` grid options */
-  setAutoEdit(isAutoEdit) {
-    this.isAutoEdit = isAutoEdit;
-    this.gridObj.setOptions({ autoEdit: isAutoEdit }); // change the grid option dynamically
+  function setAutoEdit(isAutoEdit) {
+    setIsAutoEdit(isAutoEdit);
+    reactGridRef.current?.setOptions({ autoEdit: isAutoEdit }); // change the grid option dynamically
     return true;
   }
 
-  collapseAllGroups() {
-    this.dataviewObj.collapseAllGroups();
+  function collapseAllGroups() {
+    reactGridRef.current?.collapseAllGroups();
   }
 
-  expandAllGroups() {
-    this.dataviewObj.expandAllGroups();
+  function expandAllGroups() {
+    reactGridRef.current?.expandAllGroups();
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div id='demo-container' className='container-fluid'>
-        <div className='col-sm-6'>
-          <label className="me-1">autoEdit setting:</label>
-          <span id='radioAutoEdit'>
-            <label className='radio-inline control-label me-1' htmlFor='radioTrue'>
-              <input
-                type='radio'
-                name='inlineRadioOptions'
-                id='radioTrue'
-                defaultChecked={this.state.isAutoEdit}
-                onInput={() => this.setAutoEdit(true)}
-              />{' '}
-              ON (single-click)
-            </label>
-            <label className='radio-inline control-label' htmlFor='radioFalse'>
-              <input
-                type='radio'
-                name='inlineRadioOptions'
-                id='radioFalse'
-                onInput={() => this.setAutoEdit(false)}
-              />{' '}
-              OFF (double-click)
-            </label>
-          </span>
-        </div>
-
-        <div className='col-sm-12'>
-          <SlickgridReact
-            gridId='grid3'
-            columnDefinitions={this.state.columnDefinitions}
-            gridOptions={this.state.gridOptions}
-            dataset={this.state.dataset}
-            onReactGridCreated={e => { this.reactGridReady(e.detail); }}
-            onCellChange={e => { this.onCellChanged(e.detail.eventData, e.detail.args); }}
-            onClick={e => { this.onCellClicked(e.detail.eventData, e.detail.args); }}
-            onValidationError={e => { this.onCellValidationError(e.detail.eventData, e.detail.args); }}
-          />
-        </div>
+  return !options ? '' : (
+    <div id='demo-container' className='container-fluid'>
+      <div className='col-sm-6'>
+        <label className="me-1">autoEdit setting:</label>
+        <span id='radioAutoEdit'>
+          <label className='radio-inline control-label me-1' htmlFor='radioTrue'>
+            <input
+              type='radio'
+              name='inlineRadioOptions'
+              id='radioTrue'
+              defaultChecked={isAutoEdit}
+              onInput={() => setAutoEdit(true)}
+            />{' '}
+            ON (single-click)
+          </label>
+          <label className='radio-inline control-label' htmlFor='radioFalse'>
+            <input
+              type='radio'
+              name='inlineRadioOptions'
+              id='radioFalse'
+              onInput={() => setAutoEdit(false)}
+            />{' '}
+            OFF (double-click)
+          </label>
+        </span>
       </div>
-    );
-  }
+
+      <div className='col-sm-12'>
+        <SlickgridReact
+          gridId='grid3'
+          columnDefinitions={columns}
+          gridOptions={options}
+          dataset={dataset}
+          onReactGridCreated={e => { reactGridReady(e.detail); }}
+          onCellChange={e => { onCellChanged(e.detail.eventData, e.detail.args); }}
+          onClick={e => { onCellClicked(e.detail.eventData, e.detail.args); }}
+          onValidationError={e => { onCellValidationError(e.detail.eventData, e.detail.args); }}
+        />
+      </div>
+    </div>
+  );
 }
 ```
 
@@ -99,23 +92,33 @@ You could also get all the Service instances via the new `instances` bindable pr
 ```tsx
 import { SlickgridReactInstance, Column, GridOption } from 'slickgrid-react';
 
-export class MyApp extends React.Component<Props, State> {
-  reactGrid: SlickgridReactInstance;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const [isAutoEdit, setIsAutoEdit] = useState(false);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+
+  useEffect(() => defineGrid());
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+  }
 
   /** Change dynamically `autoEdit` grid options */
-  setAutoEdit(isAutoEdit) {
-    this.isAutoEdit = isAutoEdit;
-    this.reactGrid.slickGrid.setOptions({ autoEdit: isAutoEdit }); // change the grid option dynamically
+  function setAutoEdit(isAutoEdit: boolean) {
+    setIsAutoEdit(isAutoEdit);
+    reactGridRef.current?.slickGrid.setOptions({ autoEdit: isAutoEdit }); // change the grid option dynamically
     return true;
   }
 
   render() {
     return (
       <SlickgridReact gridId="grid1"
-        columnDefinitions={this.state.columnDefinitions}
-        gridOptions={this.state.gridOptions}
-        dataset={this.state.dataset}
-        onReactGridCreated={$event => this.reactGridReady($event.detail)}
+        columnDefinitions={columns}
+        gridOptions={options}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
       />
     );
   }

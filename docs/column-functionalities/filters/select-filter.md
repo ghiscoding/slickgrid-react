@@ -60,10 +60,11 @@ You can change the `multipleSelect` and `singleSelect` styling with SASS [variab
 Simply set the flag `filterable` to True and and enable the filters in the Grid Options. Here is an example with a full column definition:
 ```ts
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
+const columnDefinitions = [
   { id: 'title', name: 'Title', field: 'title' },
   { id: 'description', name: 'Description', field: 'description', filterable: true },
-  { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
+  { 
+    id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
     type: FieldType.boolean,
     filterable: true,
     filter: {
@@ -78,11 +79,12 @@ this.columnDefinitions = [
 
        // you can also add an optional placeholder
        placeholder: 'choose an option'
-   }
+    }
+  }
 ];
 
 // you also need to enable the filters in the Grid Options
-this.gridOptions = {
+const gridOptions = {
    enableFiltering: true
 };
 ```
@@ -100,17 +102,19 @@ If you also have `presets` in the grid options, then your `searchTerms` will be 
 #### Sample
 ```ts
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
+const columnDefinitions = [
   { id: 'title', name: 'Title', field: 'title' },
   { id: 'description', name: 'Description', field: 'description', filterable: true },
-  { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
+  { 
+    id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
     type: FieldType.boolean,
     filterable: true,
     filter: {
        collection: [ { value: '', label: '' }, { value: true, label: 'true' }, { value: false, label: 'false' } ],
        model: Filters.multipleSelect,
        searchTerms: [true],
-   }
+    }
+  }
 ];
 ```
 
@@ -119,15 +123,17 @@ this.columnDefinitions = [
 For the Select (dropdown) filter, you can fill in the "labelKey" property, if found it will translate it right away. If no `labelKey` is provided nothing will be translated (unless you have `enableTranslateLabel` set to true), else it will use "label"
 ```typescript
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
-  { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
+const columnDefinitions = [
+  { 
+    id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
     formatter: Formatters.checkmarkMaterial,
     type: FieldType.boolean,
     filterable: true,
     filter: {
        collection: [ { value: '', label: '' }, { value: true, labelKey: 'TRUE' }, { value: false, label: 'FALSE' } ],
        model: Filters.singleSelect,
-   }
+    }
+  }
 ];
 ```
 
@@ -135,8 +141,9 @@ this.columnDefinitions = [
 You could also use the `enableTranslateLabel` which will translate regardless of the label key name (so it could be used with `label`, `labelKey` or even a `customStructure` label).
 ```typescript
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
-  { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
+const columnDefinitions = [
+  { 
+    id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
     formatter: Formatters.checkmarkMaterial,
     type: FieldType.boolean,
     filterable: true,
@@ -144,7 +151,8 @@ this.columnDefinitions = [
        collection: [ { value: '', label: '' }, { value: true, label: 'true' }, { value: false, label: 'false' } ],
        model: Filters.singleSelect,
        enableTranslateLabel: true
-   }
+    }
+  }
 ];
 ```
 
@@ -152,8 +160,9 @@ this.columnDefinitions = [
 What if your select options (collection) have totally different value/label pair? In this case, you can use the `customStructure` to change the property name(s) to use. You can change the label and/or the value, they can be passed independently.
 ```typescript
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
-  { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
+const columnDefinitions = [
+  { 
+    id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
     formatter: Formatters.checkmarkMaterial,
     type: FieldType.boolean,
     filterable: true,
@@ -168,7 +177,8 @@ this.columnDefinitions = [
          value: 'customValue'
        },
        model: Filters.multipleSelect,
-   }
+    }
+  }
 ];
 ```
 
@@ -177,8 +187,9 @@ What if you want to use `customStructure` and translate the labels? Simply pass 
 
 ```typescript
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
-  { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
+const columnDefinitions = [
+  { 
+    id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
     formatter: Formatters.checkmarkMaterial,
     type: FieldType.boolean,
     filterable: true,
@@ -194,7 +205,8 @@ this.columnDefinitions = [
        },
        enableTranslateLabel: true,
        model: Filters.multipleSelect,
-   }
+    }
+  }
 ];
 ```
 
@@ -207,8 +219,9 @@ Note: the defaults for single & multiple select filters are different
 
 ```ts
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
-  { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
+const columnDefinitions = [
+  { 
+    id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
     formatter: Formatters.checkmarkMaterial,
     type: FieldType.boolean,
     filterable: true,
@@ -216,7 +229,8 @@ this.columnDefinitions = [
        collection: [ { value: '', label: '' }, { value: true, labelKey: 'TRUE' }, { value: false, label: 'FALSE' } ],
        model: Filters.singleSelect,
        emptySearchTermReturnAllValues: false, // False when we really want to filter empty values
-   }
+    }
+  }
 ];
 ```
 
@@ -231,8 +245,9 @@ You can also pre-sort or pre-filter the collection given to the multipleSelect/s
 Full example:
 ```typescript
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
-  { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
+const columnDefinitions = [
+  { 
+    id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
     formatter: Formatters.checkmarkMaterial,
     type: FieldType.boolean,
     filterable: true,
@@ -254,7 +269,8 @@ this.columnDefinitions = [
           fieldType: FieldType.boolean // defaults to FieldType.string when not provided
        },
        model: Filters.multipleSelect
-   }
+    }
+  }
 ];
 ```
 
@@ -268,8 +284,9 @@ for (let i = 0; i < 365; i++) {
   multiSelectFilterArray.push({ value: i, label: i, labelSuffix: ' days' });
 }
 
-this.columnDefinitions = [
-  { id: 'duration', name: 'Duration', field: 'duration',
+const columnDefinitions = [
+  { 
+    id: 'duration', name: 'Duration', field: 'duration',
     formatter: Formatters.checkmarkMaterial,
     type: FieldType.boolean,
     filterable: true,
@@ -294,8 +311,9 @@ However please note that by default the `collectionFilterBy` will **not** merge 
 What if you wanted to merge the results instead? Then in this case, you can change the `filterResultAfterEachPass` flag defined in `collectionOptions
 
 ```typescript
-this.columnDefinitions = [
-  { id: 'duration', name: 'Duration', field: 'duration',
+const columnDefinitions = [
+  { 
+    id: 'duration', name: 'Duration', field: 'duration',
     filter: {
       collection: [yourCollection],
       collectionFilterBy: [
@@ -318,8 +336,9 @@ What if you want to use `customStructure` and translate the labels? Simply pass 
 
 ```typescript
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
-  { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
+const columnDefinitions = [
+  { 
+    id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
     formatter: Formatters.checkmarkMaterial,
     type: FieldType.boolean,
     filterable: true,
@@ -335,7 +354,8 @@ this.columnDefinitions = [
        },
        enableTranslateLabel: true,
        model: Filters.multipleSelect,
-   }
+    }
+  }
 ];
 ```
 
@@ -343,30 +363,32 @@ this.columnDefinitions = [
 You can also pre-sort or pre-filter the collection given to the multipleSelect/singleSelect Filters. Also note that if the `enableTranslateLabel` flag is set to `True`, it will use the translated value to filter or sort the collection. For example:
 ```typescript
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
-  { id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
+const columnDefinitions = [
+  { 
+    id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
     formatter: Formatters.checkmarkMaterial,
     type: FieldType.boolean,
     filterable: true,
     filter: {
-       collection: [
-         { value: '', label: '' },
-         { value: true, label: 'true' },
-         { value: false, label: 'false' },
-         { value: undefined, label: 'undefined' }
-       ],
-       collectionFilterBy: {
-          property: 'effortDriven',
-          operator: OperatorType.equal, // defaults to equal when not provided
-          value: undefined
-       },
-       collectionSortBy: {
-          property: 'effortDriven',    // will sort by translated value since "enableTranslateLabel" is true
-          sortDesc: false,             // defaults to "false" when not provided
-          fieldType: FieldType.boolean // defaults to FieldType.string when not provided
-       },
-       model: Filters.multipleSelect
-   }
+      collection: [
+        { value: '', label: '' },
+        { value: true, label: 'true' },
+        { value: false, label: 'false' },
+        { value: undefined, label: 'undefined' }
+      ],
+      collectionFilterBy: {
+        property: 'effortDriven',
+        operator: OperatorType.equal, // defaults to equal when not provided
+        value: undefined
+      },
+      collectionSortBy: {
+        property: 'effortDriven',    // will sort by translated value since "enableTranslateLabel" is true
+        sortDesc: false,             // defaults to "false" when not provided
+        fieldType: FieldType.boolean // defaults to FieldType.string when not provided
+      },
+      model: Filters.multipleSelect
+    }
+  }
 ];
 ```
 
@@ -393,7 +415,7 @@ So you can create the  `multipleSelect` Filter with a `customStructure` by using
 with a `customStructure` defined as
 ```typescript
 filter: {
-  collection: this.currencies,
+  collection: currencies,
   customStructure: {
     value: 'currency',
     label: 'currency',
@@ -414,7 +436,7 @@ By default HTML is not rendered and the `label` will simply show HTML as text. B
 **NOTE:** this is currently only used by the Filters that have a `collection` which are the `MultipleSelect` & `SingleSelect` Filters.
 
 ```typescript
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'effort-driven', name: 'Effort Driven', field: 'effortDriven',
     formatter: Formatters.checkmarkMaterial,
@@ -434,8 +456,9 @@ this.columnDefinitions = [
 In some cases a blank entry at the beginning of the collection could be useful, the most common example for this is to use the first option as a blank entry to tell our Filter to show everything. So for that we can use the `addBlankEntry` flag in `collectionOptions
 
 ```typescript
-this.columnDefinitions = [
-  { id: 'duration', name: 'Duration', field: 'duration',
+const columnDefinitions = [
+  { 
+    id: 'duration', name: 'Duration', field: 'duration',
     filter: {
       collection: [yourCollection],
       collectionOptions: {
@@ -451,8 +474,9 @@ this.columnDefinitions = [
 We can optionally add a custom entry at the beginning of the collection, the most common example for this is to use the first option as a blank entry to tell our Filter to show everything. So for that we can use the `addCustomFirstEntry` or `addCustomLastEntry` flag in `collectionOptions
 
 ```typescript
-this.columnDefinitions = [
-  { id: 'duration', name: 'Duration', field: 'duration',
+const columnDefinitions = [
+  { 
+    id: 'duration', name: 'Duration', field: 'duration',
     filter: {
       collection: [yourCollection],
       collectionOptions: {
@@ -473,12 +497,12 @@ You can also load the collection asynchronously, but for that you will have to u
 #### Load the collection through an Http call
 
 ```ts
-this.columnDefinitions = [
-    {
+const columnDefinitions = [
+  {
     id: 'prerequisites', name: 'Prerequisites', field: 'prerequisites',
     filterable: true,
     filter: {
-      collectionAsync: this.http.fetch('api/data/pre-requisites'),
+      collectionAsync: http.fetch('api/data/pre-requisites'),
       model: Filters.multipleSelect,
     }
   }
@@ -489,8 +513,8 @@ this.columnDefinitions = [
 What if my collection is nested under the response object? For that you can use `collectionInsideObjectProperty` to let the filter know how to get the collection.
 
 ```ts
-this.columnDefinitions = [
-    {
+const columnDefinitions = [
+  {
     id: 'prerequisites', name: 'Prerequisites', field: 'prerequisites',
     filterable: true,
     filter: {
@@ -498,7 +522,7 @@ this.columnDefinitions = [
 
       // this async call will return the collection inside the response object in this format
       // { data: { myCollection: [ /*...*/ ] } }
-      collectionAsync: this.http.fetch('api/data/pre-requisites'),
+      collectionAsync: http.fetch('api/data/pre-requisites'),
       collectionOptions: {
         collectionInsideObjectProperty: 'data.myCollection' // with/without dot notation
       }
@@ -512,38 +536,38 @@ If you want to modify the `collection` afterward, you simply need to find the as
 
 For example
 ```ts
-  addItem() {
-    const lastRowIndex = this.dataset.length;
-    const newRows = this.mockData(1, lastRowIndex);
+function addItem() {
+  const lastRowIndex = dataset.length;
+  const newRows = mockData(1, lastRowIndex);
 
-    // wrap into a timer to simulate a backend async call
-    setTimeout(() => {
-      const requisiteColumnDef = this.columnDefinitions.find((column: Column) => column.id === 'prerequisites');
-      if (requisiteColumnDef) {
-        const filterCollection = requisiteColumnDef.filter.collection;
+  // wrap into a timer to simulate a backend async call
+  setTimeout(() => {
+    const requisiteColumnDef = columns.find((column: Column) => column.id === 'prerequisites');
+    if (requisiteColumnDef) {
+      const filterCollection = requisiteColumnDef.filter.collection;
 
-        if (Array.isArray(collectionFilterAsync)) {
-          // add the new row to the grid
-          this.reactGrid.gridService.addItemToDatagrid(newRows[0]);
+      if (Array.isArray(collectionFilterAsync)) {
+        // add the new row to the grid
+        reactGridRef.current?.gridService.addItemToDatagrid(newRows[0]);
 
-          // then refresh the Filter "collection", we have 2 ways of doing it
+        // then refresh the Filter "collection", we have 2 ways of doing it
 
-          // 1- Push to the Filter "collection"
-          filterCollection.push({ value: lastRowIndex, label: lastRowIndex, prefix: 'Task' });
+        // 1- Push to the Filter "collection"
+        filterCollection.push({ value: lastRowIndex, label: lastRowIndex, prefix: 'Task' });
 
-          // or 2- replace the entire "collection"
-          filterCollection = [...collection, ...[{ value: lastRowIndex, label: lastRowIndex }]];
-        }
+        // or 2- replace the entire "collection"
+        filterCollection = [...collection, ...[{ value: lastRowIndex, label: lastRowIndex }]];
       }
-    }, 250);
-  }
+    }
+  }, 250);
+}
 ```
 
 ### Collection Watch
 We can enable the collection watch via the column filter `enableCollectionWatch` flag, or if you use a `collectionAsync` then this will be enabled by default. The collection watch will basically watch for any changes applied to the collection (any mutation changes like `push`, `pop`, `unshift`, ...) and will also watch for the `filter.collection` array replace, when any changes happens then it will re-render the Select Filter with the updated collection list.
 
 ```ts
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'title', name: 'Title', field: 'title',
     filterable: true,
@@ -571,7 +595,7 @@ filter: {
 #### Grid Option `defaultFilterOptions
 You could also define certain options as a global level (for the entire grid or even all grids) by taking advantage of the `defaultFilterOptions` Grid Option. Note that they are set via the filter type as a key name (`autocompleter`, `date`, ...) and then the content is the same as `filterOptions` (also note that each key is already typed with the correct filter option interface), for example
 ```ts
-this.gridOptions = {
+const gridOptions = {
   defaultFilterOptions: { 
     // Note: that `select` combines both multipleSelect & singleSelect
     select: { minHeight: 350 }, // typed as MultipleSelectOption
@@ -600,7 +624,7 @@ Couple of small options were added to suit SlickGrid-Universal needs, which is w
 
 ##### Code
 ```typescript
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'isActive', name: 'Is Active', field: 'isActive',
     filterable: true,
@@ -620,7 +644,7 @@ this.columnDefinitions = [
 #### Display shorter selected label text
 If we find that our text shown as selected text is too wide, we can choose change that by using `optionLabel` in Custom Structure.
 ```typescript
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'isActive', name: 'Is Active', field: 'isActive',
     filterable: true,
@@ -657,14 +681,14 @@ What if your grid is displaying a certain `field` but you wish to query against 
 
 ##### Example
 ```ts
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'salesRepName',
     field: 'salesRepName',          // display in Grid the sales rep name with "field"
     queryFieldFilter: 'salesRepId', // but query against a different field for our multi-select to work
     filterable: true,
     filter: {
-      collection: this.salesRepList, // an array of Sales Rep
+      collection: salesRepList, // an array of Sales Rep
       model: Filters.multipleSelect,
       customStructure: {
         label: 'salesRepName',

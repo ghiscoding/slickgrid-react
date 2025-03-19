@@ -19,20 +19,16 @@ If you want to pass the entire list to the AutoComplete (like a JSON file or a W
 
 ##### Component
 ```tsx
-interface Props {}
-interface State {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-}
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const graphqlService = new GraphqlService();
 
-export class GridBasicComponent  extends React.Component<Props, State> {
-  componentDidMount() {
-    this.defineGrid();
-  }
+  useEffect(() => defineGrid(), []);
 
-  defineGrid(): void {
-    const columnDefinitions = [
+  function defineGrid() {
+    setColumns([
       {
         id: 'countryOfOrigin', name: 'Country of Origin', field: 'countryOfOrigin',
         formatter: Formatters.complexObject,
@@ -54,16 +50,9 @@ export class GridBasicComponent  extends React.Component<Props, State> {
           collectionAsync: fetch('assets/data/countries.json'),
         }
       }
-    ];
+    ]);
 
-    const gridOptions = {/*...*/};
-
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-      dataset: this.getData(),
-    }));
+    setOptions({/*...*/});
   }
 }
 ```
@@ -85,9 +74,15 @@ You could also use external 3rd party Web API (can be JSONP query or regular JSO
 
 ##### Component
 ```tsx
-export class GridBasicComponent  extends React.Component<Props, State> {
-  defineGrid(): void {
-    const columnDefinitions = [
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setColumns([
       {
         id: 'cityOfOrigin', name: 'City of Origin', field: 'cityOfOrigin',
         filterable: true,
@@ -135,9 +130,9 @@ export class GridBasicComponent  extends React.Component<Props, State> {
           },
         }
       }
-    ];
+    ]);
 
-    const gridOptions = {/*...*/};
+    setOptions({/*...*/});
   }
 }
 ```
@@ -146,23 +141,24 @@ export class GridBasicComponent  extends React.Component<Props, State> {
 If you want to add the autocomplete functionality but want the user to be able to input a new option, then follow the example below:
 
 ```ts
-  this.columnDefinitions = [{
-        id: 'area',
-        name: 'Area',
-        field: 'area',
-        type: FieldType.string,
-        editor: {
-          model: Editors.autocompleter,
-          editorOptions: {
-            minLength: 0,
-            forceUserInput: true,
-            fetch: (searchText, updateCallback) => {
-              updateCallback(this.areas); // add here the array
-            },
-          }
-        }
-      },
-  ];
+const columnDefinitions = [
+  {
+    id: 'area',
+    name: 'Area',
+    field: 'area',
+    type: FieldType.string,
+    editor: {
+      model: Editors.autocompleter,
+      editorOptions: {
+        minLength: 0,
+        forceUserInput: true,
+        fetch: (searchText, updateCallback) => {
+          updateCallback(areas); // add here the array
+        },
+      }
+    }
+  },
+];
 ```
 You can also use the `minLength` to limit the autocomplete text to `0` characters or more, the default number is `3`.
 

@@ -11,21 +11,21 @@ Some users might want to have 1 main single search for filtering the grid data i
 ### Code Sample
 ##### Component
 ```tsx
-export class MyExample extends React.Component<Props, State> {
-  @bindable() selectedColumn: Column;
-  @bindable() selectedOperator: string;
-  @bindable() searchValue: string;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const [operatorList, setOperatorList] = useState<OperatorString[]>(['=', '<', '<=', '>', '>=', '<>']);
+  const reactGridRef = useRef();
+  const graphqlService = new GraphqlService();
 
-  reactGrid: SlickgridReactInstance;
-  grid: SlickGrid;
-  dataView: SlickDataView;
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-  operatorList: OperatorString[] = ['=', '<', '<=', '>', '>=', '<>'];
+  useEffect(() => defineGrid(), []);
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
+  }
+
+  function defineGrid() {
   }
 
   //
@@ -33,105 +33,89 @@ export class MyExample extends React.Component<Props, State> {
   //
 
   selectedOperatorChanged() {
-    this.updateFilter();
+    updateFilter();
   }
 
   selectedColumnChanged() {
-    this.updateFilter();
+    updateFilter();
   }
 
   searchValueChanged() {
-    this.updateFilter();
+    updateFilter();
   }
 
   updateFilter() {
-    const fieldName = this.selectedColumn.field;
+    const fieldName = selectedColumn.field;
     const filter = {};
     const filterArg: FilterCallbackArg = {
-      columnDef: this.selectedColumn,
-      operator: this.selectedOperator as OperatorString, // or fix one yourself like '='
-      searchTerms: [this.searchValue || '']
+      columnDef: selectedColumn,
+      operator: selectedOperator as OperatorString, // or fix one yourself like '='
+      searchTerms: [searchValue || '']
     };
 
-    if (this.searchValue) {
+    if (searchValue) {
       // pass a columnFilter object as an object which it's property name must be a column field name (e.g.: 'duration': {...} )
       filter[fieldName] = filterArg;
     }
 
-    this.reactGrid.dataView.setFilterArgs({
+    reactGridRef.current?.dataView.setFilterArgs({
       columnFilters: filter,
-      grid: this.reactGrid.slickGrid
+      grid: reactGridRef.current?.slickGrid
     });
-    this.reactGrid.dataView.refresh();
+    reactGridRef.current?.dataView.refresh();
   }
 
-  render() {
-    return (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example21.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
+  return !options ? null : (
+    <div className="row row-cols-lg-auto g-1 align-items-center">
+      <div className="col">
+        <label htmlFor="columnSelect">Single Search:</label>
+      </div>
+      <div className="col">
+        <select className="form-select" data-test="search-column-list" name="selectedColumn" onChange={($event) => selectedColumnChanged($event)}>
+          <option value="''">...</option>
+          {
+            columnDefinitions.map((column) =>
+              <option value={column.id} key={column.id}>{column.name}</option>
+            )
+          }
+        </select>
+      </div>
+      <div className="col">
+        <select className="form-select" data-test="search-operator-list" name="selectedOperator" onChange={($event) => selectedOperatorChanged($event)}>
+          <option value="''">...</option>
+          {
+            operatorList.map((operator) =>
+              <option value={operator} key={operator}>{operator}</option>
+            )
+          }
+        </select>
+      </div>
 
-        <div className="row row-cols-lg-auto g-1 align-items-center">
-          <div className="col">
-            <label htmlFor="columnSelect">Single Search:</label>
-          </div>
-          <div className="col">
-            <select className="form-select" data-test="search-column-list" name="selectedColumn" onChange={($event) => this.selectedColumnChanged($event)}>
-              <option value="''">...</option>
-              {
-                this.state.columnDefinitions.map((column) =>
-                  <option value={column.id} key={column.id}>{column.name}</option>
-                )
-              }
-            </select>
-          </div>
-          <div className="col">
-            <select className="form-select" data-test="search-operator-list" name="selectedOperator" onChange={($event) => this.selectedOperatorChanged($event)}>
-              <option value="''">...</option>
-              {
-                this.operatorList.map((operator) =>
-                  <option value={operator} key={operator}>{operator}</option>
-                )
-              }
-            </select>
-          </div>
+      <div className="col">
+        <div className="input-group">
+          <input type="text"
+            className="form-control"
+            placeholder="search value"
+            data-test="search-value-input"
+            value={searchValue}
+            onInput={($event) => searchValueChanged($event)} />
+          <button className="btn btn-outline-secondary d-flex align-items-center pl-2 pr-2" data-test="clear-search-value"
+            onClick={() => clearGridSearchInput()}>
+            <span className="mdi mdi-close m-1"></span>
+          </button>
+        </div>
+      </div>
 
-          <div className="col">
-            <div className="input-group">
-              <input type="text"
-                className="form-control"
-                placeholder="search value"
-                data-test="search-value-input"
-                value={this.state.searchValue}
-                onInput={($event) => this.searchValueChanged($event)} />
-              <button className="btn btn-outline-secondary d-flex align-items-center pl-2 pr-2" data-test="clear-search-value"
-                onClick={() => this.clearGridSearchInput()}>
-                <span className="mdi mdi-close m-1"></span>
-              </button>
-            </div>
-          </div>
-        </div >
+      <hr />
 
-        <hr />
-
-        <SlickgridReact gridId="grid21"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        />
-      </div >
-    );
-  }
+      <SlickgridReact gridId="grid21"
+        columnDefinitions={columns}
+        gridOptions={options}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+      />
+    </div >
+  );
 }
 ```
 

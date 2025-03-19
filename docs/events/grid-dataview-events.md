@@ -8,51 +8,42 @@ SlickGrid has a nice amount of events, see the full list of [Available Events](A
 Hook yourself to the Changed event of the bindable grid object.
 
 ```tsx
-export class GridExample extends React.Component<Props, State> {
-  reactGrid: SlickgridReactInstance;
-  gridObj: any;
-  dataViewObj: any;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const graphqlService = new GraphqlService();
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  useEffect(() => defineGrid(), []);
 
-    // the React Grid Instance exposes both Slick Grid & DataView objects
-    this.gridObj = reactGrid.slickGrid;
-    this.dataViewObj = reactGrid.dataView;
-
-    // it also exposes all the Services
-    // this.reactGrid.resizerService.resizeGrid(10);
-  }
-
-  defineGrid() {
+  function defineGrid() {
     // populate the grid
   }
 
-  onCellClicked(e, args) {
+  function onCellClicked(e, args) {
     // do something
   }
 
-  onCellChanged(e, args) {
-    this.updatedObject = args.item;
-    this.reactGrid.resizerService.resizeGrid(10);
+  function onCellChanged(e, args) {
+    setUpdatedObject(args.item);
+    reactGridRef.current?.resizerService.resizeGrid(10);
   }
 
-  onMouseEntered(e, args) {
+  function onMouseEntered(e, args) {
     // do something
   }
 
-  render() {
-    return (
+  return !options ? null : (
       <SlickgridReact
           gridId='grid3'
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={e => { this.reactGridReady(e.detail); }}
-          onCellChange={e => { this.onCellChanged(e.detail.eventData, e.detail.args); }}
-          onClick={e => { this.onCellClicked(e.detail.eventData, e.detail.args); }}
+          columnDefinitions={columns}
+          gridOptions={options}
+          dataset={dataset}
+          onReactGridCreated={e => { reactGridReady(e.detail); }}
+          onCellChange={e => { onCellChanged(e.detail.eventData, e.detail.args); }}
+          onClick={e => { onCellClicked(e.detail.eventData, e.detail.args); }}
           onMouseEnter={e => onMouseEntered(e.detail.eventData, e.detail.args)}
-          onValidationError={e => { this.onCellValidationError(e.detail.eventData, e.detail.args); }}
+          onValidationError={e => { onCellValidationError(e.detail.eventData, e.detail.args); }}
         />
     );
   }
@@ -72,73 +63,61 @@ Once the `Grid` and `DataView` are ready, see all [Available Events](../events/a
 import { inject, bindable } from 'react-framework';
 import { Editors, Formatters, GridExtraUtils } from 'slickgrid-react';
 
-export class GridEditorComponent extends React.Component<Props, State> {
-  gridObj: any;
-  dataviewObj: any;
-  dataviewObj: any;
-  onCellChangeSubscriber: any;
-  onCellClickSubscriber: any;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const graphqlService = new GraphqlService();
 
-  constructor(public readonly props: Props) {
-    super(props);
+  useEffect(() => {
+    defineGrid();
 
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-  }
+    return () => {
+      // don't forget to unsubscribe to the Slick Grid Events
+      onCellChangeSubscriber.unsubscribe();
+      onCellClickSubscriber.unsubscribe();
+    };
+  }, []);
 
-  componentDidUnmount() {
-    // don't forget to unsubscribe to the Slick Grid Events
-    this.onCellChangeSubscriber.unsubscribe();
-    this.onCellClickSubscriber.unsubscribe();
-  }
-
-  defineGrid() {
-    const columnDefinitions = [
+  function defineGrid() {
+    setColumns([
       { id: 'delete', field: 'id', formatter: Formatters.deleteIcon, maxWidth: 30 }
       // ...
-    ];
+    ]);
 
-    const gridOptions = {
+    setOptions({
       editable: true,
       enableCellNavigation: true,
       autoEdit: true
-    };
+    });
   }
 
-  subscribeToSomeGridEvents(grid) {
-    this.onCellChangeSubscriber = grid.onCellChange.subscribe((e, args) => {
+  function subscribeToSomeGridEvents(grid) {
+    onCellChangeSubscriber = grid.onCellChange.subscribe((e, args) => {
       console.log('onCellChange', args);
       // for example, CRUD with WebAPI calls
     });
 
-    this.onCellClickSubscriber = grid.onClick.subscribe((e, args) => {
+    onCellClickSubscriber = grid.onClick.subscribe((e, args) => {
       const column = GridExtraUtils.getColumnDefinitionAndData(args);
 
       if (column.columnDef.id === 'delete') {
         if (confirm('Are you sure?')) {
-          this.dataviewObj.deleteItem(column.dataContext.id);
-          this.dataviewObj.refresh();
+          reactGridRef.current?.deleteItem(column.dataContext.id);
+          reactGridRef.current?.refresh();
         }
       }
     });
   }
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-    this.gridObj = reactGrid.slickGrid;
-    this.dataviewObj = reactGrid.dataView;
-  }
-
-  render() {
-    return (
-      <SlickgridReact gridId="grid12"
-        columnDefinitions={this.state.columnDefinitions}
-        gridOptions={this.state.gridOptions}
-        dataset={this.state.dataset}
-        onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        onGridStateChanged={$event => this.gridStateChanged($event.detail)}
-      />
-    );
-  }
+  return !options ? null : (
+    <SlickgridReact gridId="grid12"
+      columnDefinitions={columns}
+      gridOptions={options}
+      dataset={dataset}
+      onReactGridCreated={$event => reactGridReady($event.detail)}
+      onGridStateChanged={$event => gridStateChanged($event.detail)}
+    />
+  );
 }
 ```

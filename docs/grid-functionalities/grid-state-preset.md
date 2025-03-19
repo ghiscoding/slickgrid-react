@@ -28,42 +28,48 @@ You can get the `Grid State` at any point in time. However if you wish to save t
 ```tsx
 import { SlickgridReactInstance, GridState } from 'slickgrid-react';
 
-export class GridExample {
-  reactGrid: SlickgridReactInstance;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  useEffect(() => {
+    defineGrid();
+
+    // unmount
+    return () => {
+      saveCurrentGridState();
+    }
+  })
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  defineGrid() {
+  function defineGrid() {
     // populate the grid
   }
 
-  detached() {
-    this.saveCurrentGridState()
-  }
-
-  gridStateChanged(gridState) {
+  function gridStateChanged(gridState) {
     console.log(gridState);
   }
 
   // you can save it to Local Storage of DB in this call
-  saveCurrentGridState() {
-    const gridState: GridState = this.reactGrid.gridStateService.getCurrentGridState();
+  function saveCurrentGridState() {
+    const gridState: GridState = reactGridRef.current?.gridStateService.getCurrentGridState();
     console.log('Leaving page with current grid state', gridState);
   }
 
-  render() {
-    return (
-      <SlickgridReact gridId="grid1"
-        columnDefinitions={this.state.columnDefinitions}
-        gridOptions={this.state.gridOptions}
-        dataset={this.state.dataset}
-        onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        onGridStateChanged={$event => this.gridStateChanged($event.detail)}
-      />
-    );
-  }
+  return !options ? null : (
+    <SlickgridReact gridId="grid1"
+      columnDefinitions={columns}
+      gridOptions={options}
+      dataset={dataset}
+      onReactGridCreated={$event => reactGridReady($event.detail)}
+      onGridStateChanged={$event => gridStateChanged($event.detail)}
+    />
+  );
 }
 ```
 
@@ -113,25 +119,26 @@ For example, we can set `presets` on a grid like so:
 ```tsx
 import { SlickgridReactInstance, GridState } from 'slickgrid-react';
 
-export class GridDemoComponent extends React.Component<Props, State> {
-  reactGrid: SlickgridReactInstance;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  componentDidMount() {
-    this.defineGrid();
+useEffect(() => defineGrid(), []);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
-
-  defineGrid() {
-    const columnDefinitions = [
+  function defineGrid() {
+    setColumns([
       { id: 'name', name: 'Name', field: 'name', filterable: true, sortable: true, sortable: true },
       { id: 'duration', name: 'Duration', field: 'duration', filterable: true, sortable: true },
       { id: 'complete', name: '% Complete', field: 'percentComplete', filterable: true, sortable: true },
-    ];
+    ]);
 
-    const gridOptions = {
+    setOptions({
       enableFiltering: true,
 
       // use columnDef searchTerms OR use presets as shown below
@@ -154,7 +161,7 @@ export class GridDemoComponent extends React.Component<Props, State> {
         // with Backend Service ONLY, you can also add Pagination info
         pagination: { pageNumber: 2, pageSize: 20 }
       }
-    };
+    });
   }
 }
 ```
@@ -167,22 +174,25 @@ Examples
 
 ##### Component (recommended way)
 ```tsx
-export class Example extends React.Component<Props, State> {
-  gridStateChanged(gridState) {
-    console.log(gridState);
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
+
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  render() {
-    return (
-      <SlickgridReact gridId="grid1"
-        columnDefinitions={this.state.columnDefinitions}
-        gridOptions={this.state.gridOptions}
-        dataset={this.state.dataset}
-        onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        onGridStateChanged={$event => this.gridStateChanged($event.detail)}
-      />
-    );
-  }
+  return !options ? null : (
+    <SlickgridReact gridId="grid1"
+      columnDefinitions={columns}
+      gridOptions={options}
+      dataset={dataset}
+      onReactGridCreated={$event => reactGridReady($event.detail)}
+      onGridStateChanged={$event => gridStateChanged($event.detail)}
+    />
+  );
 }
 ```
 
@@ -192,17 +202,17 @@ You can show/hide or even change a column position via the `presets`, yes `prese
 So let say that we want to hide the last Column on page load, we can just find the column by it's `id` that you want to hide and pass the new column definition to the `presets` (again make sure to follow the correct preset structure).
 
 ```ts
-this.columnDefinitions = [
+const columnDefinitions = [
   // initial column definitions
 ];
 
 // for example, let's hide last column, we can just use `pop()` to ommit last column
 // and use `map()` to pull only the required field for presets to work
-const mappedColumnDefinitions = this.columnDefinitions.map(col => ({ columnId: col.id, width: col.width }));
+const mappedColumnDefinitions = columnDefinitions.map(col => ({ columnId: col.id, width: col.width }));
 mappedColumnDefinitions.pop();
 
 // then pass it to the presets
-this.gridOptions = {
+const gridOptions = {
   presets: {
     columns: mappedColumnDefinitions
   }
@@ -215,17 +225,17 @@ As pointed out earlier, the `presets` requires a specific structure where the `c
 ##### Component
 ```tsx
 const gridOptions = {
-      enableFiltering: true,
+  enableFiltering: true,
 
-      // use columnDef searchTerms OR use presets as shown below
-      presets: {
-        // the column position in the array is very important and represent
-        // the position that will show in the grid
-        columns: [
-          { columnId: 'duration', width: 88, headerCssClass: 'customHeaderClass' },
-          { columnId: 'complete', width: 57 }
-        ],
-   }
+  // use columnDef searchTerms OR use presets as shown below
+  presets: {
+    // the column position in the array is very important and represent
+    // the position that will show in the grid
+    columns: [
+      { columnId: 'duration', width: 88, headerCssClass: 'customHeaderClass' },
+      { columnId: 'complete', width: 57 }
+    ],
+  }
 };
 ```
 You could technically redefine by hand the complete list of `columns` that the `presets` requires. I would personally do it via the Column Definitions looping with `map()`, but go manual is also perfectly fine. You would just re-declare the `columns` again with the `id` and `width` and that would work as well.

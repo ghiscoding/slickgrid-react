@@ -4,15 +4,12 @@ import {
   Filters,
   Formatters,
   type GridOption,
-  type Metrics,
   type MultipleSelectOption,
   OperatorType,
   SlickgridReact,
-  type SlickgridReactInstance,
 } from '../../slickgrid-react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './example25.scss'; // provide custom CSS/SASS styling
-import type BaseSlickGridState from './state-slick-grid-base';
 
 const COUNTRIES_API = 'https://countries.trevorblades.com/';
 
@@ -29,55 +26,20 @@ export interface Country {
   languageName: string;
   languageNative: string;
 }
-interface Status { text: string, class: string }
 
-interface Props { }
-interface State extends BaseSlickGridState {
-  metrics?: Metrics;
-  graphqlQuery: string;
-  processing: boolean;
-  selectedLanguage: string;
-  status: Status;
-}
+const Example25: React.FC = () => {
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset] = useState<any[]>([]);
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [status, setStatus] = useState({ text: '', class: '' })
+  const [processing, setProcessing] = useState(false);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
-export default class Example25 extends React.Component<Props, State> {
-  title = 'Example 25: GraphQL Basic API without Pagination';
-  subTitle = `
-  Use basic GraphQL query with any external public APIs (<a href="https://ghiscoding.gitbook.io/slickgrid-react/backend-services/graphql" target="_blank">Docs</a>).
-  <ul>
-    <li>This Examples uses a Public GraphQL API that you can find at this link <a href="https://countries.trevorblades.com/" target="_blank">https://countries.trevorblades.com/</a></li>
-    <li>Compare to the regular and default GraphQL implementation, you will find the following differences</li>
-    <ul>
-      <li>There are no Pagination and we only use GraphQL <b>once</b> to load the data, then we use the grid as a regular local in-memory grid</li>
-      <li>We enabled the following 2 flags "useLocalFiltering" and "useLocalSorting" to use regular (in memory) DataView filtering/sorting</li>
-    </ul>
-    <li>NOTE - This Example calls multiple GraphQL queries, this is <b>ONLY</b> for demo purposes, you would typically only call 1 query (which is what GraphQL is good at)</li>
-    <li>This example is mainly to demo the use of GraphqlService to build the query and retrieve the data but also to demo how to mix that with local (in-memory) Filtering/Sorting strategies</li>
-  </ul>
-  `;
+  useEffect(() => {
+    defineGrid();
+  }, []);
 
-  reactGrid!: SlickgridReactInstance;
-
-  constructor(public readonly props: Props) {
-    super(props);
-
-    this.state = {
-      gridOptions: undefined,
-      columnDefinitions: [],
-      graphqlQuery: '',
-      metrics: undefined,
-      processing: false,
-      selectedLanguage: '',
-      status: { text: '', class: '' },
-    };
-  }
-
-  async componentDidMount() {
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-  }
-
-  defineGrid() {
+  function defineGrid() {
     const columnDefinitions: Column[] = [
       { id: 'countryCode', field: 'code', name: 'Code', maxWidth: 90, sortable: true, filterable: true, columnGroup: 'Country' },
       { id: 'countryName', field: 'name', name: 'Name', width: 60, sortable: true, filterable: true, columnGroup: 'Country' },
@@ -95,7 +57,7 @@ export default class Example25 extends React.Component<Props, State> {
         // we also need to use the Operator IN_CONTAINS
         filter: {
           model: Filters.multipleSelect,
-          collectionAsync: this.getLanguages(),
+          collectionAsync: getLanguages(),
           operator: OperatorType.inContains,
           collectionOptions: {
             addBlankEntry: true,
@@ -125,7 +87,7 @@ export default class Example25 extends React.Component<Props, State> {
         filterable: true,
         filter: {
           model: Filters.multipleSelect,
-          collectionAsync: this.getLanguages(),
+          collectionAsync: getLanguages(),
           operator: OperatorType.inContains,
           collectionOptions: {
             addBlankEntry: true,
@@ -164,7 +126,7 @@ export default class Example25 extends React.Component<Props, State> {
         filterable: true,
         filter: {
           model: Filters.singleSelect,
-          collectionAsync: this.getContinents(),
+          collectionAsync: getContinents(),
           collectionOptions: {
             // the data is not at the root of the array, so we must tell the Select Filter where to pull the data
             collectionInsideObjectProperty: 'data.continents',
@@ -206,32 +168,26 @@ export default class Example25 extends React.Component<Props, State> {
           datasetName: 'countries', // the only REQUIRED property
         },
         // you can define the onInit callback OR enable the "executeProcessCommandOnInit" flag in the service init
-        preProcess: () => this.displaySpinner(true),
-        process: (query) => this.getCountries(query),
+        preProcess: () => displaySpinner(true),
+        process: (query) => getCountries(query),
         postProcess: (result: GraphqlResult<Country>) => {
-          this.setState((state: State) => ({ ...state, metrics: result.metrics }));
-          this.displaySpinner(false);
+          console.log(result.metrics);
+          displaySpinner(false);
         }
       } as GraphqlServiceApi
     };
 
-    this.setState((state: State) => ({
-      ...state,
-      gridOptions,
-      columnDefinitions,
-    }));
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  displaySpinner(isProcessing: boolean) {
+  function displaySpinner(isProcessing: boolean) {
     const newStatus = (isProcessing)
       ? { text: 'processing...', class: 'alert alert-danger' }
       : { text: 'finished', class: 'alert alert-success' };
 
-    this.setState((state: State) => ({
-      ...state,
-      status: newStatus,
-      processing: isProcessing,
-    }));
+    setStatus(newStatus);
+    setProcessing(isProcessing);
   }
 
   // --
@@ -241,7 +197,7 @@ export default class Example25 extends React.Component<Props, State> {
   // --
 
   /** Calling the GraphQL backend API to get the Countries with the Query created by the "process" method of GraphqlService  */
-  getCountries(query: string): Promise<GraphqlResult<Country>> {
+  function getCountries(query: string): Promise<GraphqlResult<Country>> {
     return new Promise(async resolve => {
       const response = await fetch(COUNTRIES_API, {
         method: 'post',
@@ -257,7 +213,7 @@ export default class Example25 extends React.Component<Props, State> {
    * So we will have to write, by hand, the query to get the continents code & name
    * We also need to resolve the data in a flat array (singleSelect/multipleSelect Filters only accept data at the root of the array)
    */
-  getContinents(): Promise<GraphqlResult<{ code: string; name: string; }>> {
+  function getContinents(): Promise<GraphqlResult<{ code: string; name: string; }>> {
     const continentQuery = `query { continents { code, name  }}`;
     return new Promise(async resolve => {
       const response = await fetch(COUNTRIES_API, {
@@ -274,7 +230,7 @@ export default class Example25 extends React.Component<Props, State> {
    * So we will have to write, by hand, the query to get the languages code & name
    * We also need to resolve the data in a flat array (singleSelect/multipleSelect Filters only accept data at the root of the array)
    */
-  getLanguages(): Promise<GraphqlResult<{ code: string; name: string; native: string; }>> {
+  function getLanguages(): Promise<GraphqlResult<{ code: string; name: string; native: string; }>> {
     const languageQuery = `query { languages { code, name, native  }}`;
     return new Promise(async resolve => {
       const response = await fetch(COUNTRIES_API, {
@@ -286,52 +242,68 @@ export default class Example25 extends React.Component<Props, State> {
     });
   }
 
-  setFiltersDynamically() {
-    // we can Set Filters Dynamically (or different filters) afterward through the FilterService
-    this.reactGrid.filterService.updateFilters([
-      { columnId: 'countryName', searchTerms: ['G'], operator: OperatorType.startsWith },
-    ]);
-  }
+  // function setFiltersDynamically() {
+  //   // we can Set Filters Dynamically (or different filters) afterward through the FilterService
+  //   reactGridRef.current?.filterService.updateFilters([
+  //     { columnId: 'countryName', searchTerms: ['G'], operator: OperatorType.startsWith },
+  //   ]);
+  // }
 
-  setSortingDynamically() {
-    this.reactGrid.sortService.updateSorting([
-      // orders matter, whichever is first in array will be the first sorted column
-      { columnId: 'billingAddressZip', direction: 'DESC' },
-      { columnId: 'company', direction: 'ASC' },
-    ]);
-  }
+  // function setSortingDynamically() {
+  //   reactGridRef.current?.sortService.updateSorting([
+  //     // orders matter, whichever is first in array will be the first sorted column
+  //     { columnId: 'billingAddressZip', direction: 'DESC' },
+  //     { columnId: 'company', direction: 'ASC' },
+  //   ]);
+  // }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example25.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
 
-        <div className="row">
-          <div className="col-xs-6 col-sm-3">
-            <div className={this.state.status.class} role="alert" data-test="status">
-              <strong>Status: </strong> {this.state.status.text}
-              {this.state.processing ? <span>
-                <i className="mdi mdi-sync mdi-spin"></i>
-              </span> : ''}
-            </div>
+  return !gridOptions ? '' : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 25: GraphQL Basic API without Pagination
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example25.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
+        </button>
+      </h2>
+      {hideSubTitle ? null : <div className="subtitle">
+        Use basic GraphQL query with any external public APIs (<a href="https://ghiscoding.gitbook.io/slickgrid-react/backend-services/graphql" target="_blank">Docs</a>).
+        <ul>
+          <li>This Examples uses a Public GraphQL API that you can find at this link <a href="https://countries.trevorblades.com/" target="_blank">https://countries.trevorblades.com/</a></li>
+          <li>Compare to the regular and default GraphQL implementation, you will find the following differences</li>
+          <ul>
+            <li>There are no Pagination and we only use GraphQL <b>once</b> to load the data, then we use the grid as a regular local in-memory grid</li>
+            <li>We enabled the following 2 flags "useLocalFiltering" and "useLocalSorting" to use regular (in memory) DataView filtering/sorting</li>
+          </ul>
+          <li>NOTE - This Example calls multiple GraphQL queries, this is <b>ONLY</b> for demo purposes, you would typically only call 1 query (which is what GraphQL is good at)</li>
+          <li>This example is mainly to demo the use of GraphqlService to build the query and retrieve the data but also to demo how to mix that with local (in-memory) Filtering/Sorting strategies</li>
+        </ul>
+      </div>}
+
+      <div className="row">
+        <div className="col-xs-6 col-sm-3">
+          <div className={status.class} role="alert" data-test="status">
+            <strong>Status: </strong> {status.text}
+            {processing ? <span>
+              <i className="mdi mdi-sync mdi-spin"></i>
+            </span> : ''}
           </div>
         </div>
-
-        <SlickgridReact gridId="grid25"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset} />
       </div>
-    );
-  }
+
+      <SlickgridReact gridId="grid25"
+        columnDefinitions={columnDefinitions}
+        gridOptions={gridOptions}
+        dataset={dataset} />
+    </div>
+  );
 }
+
+export default Example25;

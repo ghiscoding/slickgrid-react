@@ -46,13 +46,13 @@ For filters to work properly (default is `string`), make sure to provide a `Fiel
 Simply set the flag `filterable` to True and and enable the filters in the Grid Options. Here is an example with a full column definition:
 ```ts
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
+const columns = [
   { id: 'title', name: 'Title', field: 'title' },
   { id: 'description', name: 'Description', field: 'description', filterable: true }
 ];
 
 // you also need to enable the filters in the Grid Options
-this.gridOptions = {
+const options = {
    enableFiltering: true
 };
 ```
@@ -61,10 +61,10 @@ this.gridOptions = {
 When using a regular grid with a JSON dataset (that is without using Backend Service API), the filter might not working correctly on cell values that are translated (because it will try to filter against the translation key instead of the actual formatted value). So to bypass this problem, a new extra `params` was created to resolve this, you need to set `useFormatterOuputToFilter` to True and the filter will, has the name suggest, use the output of the Formatter to filter against. Example:
 ```ts
 // define you columns, in this demo Effort Driven will use a Select Filter
-this.columnDefinitions = [
+const columns = [
   { id: 'title', name: 'Title', field: 'id',
     headerKey: 'TITLE',
-    formatter: this.taskTranslateFormatter,  // <-- this could be a custom Formatter or the built-in translateFormatter
+    formatter: taskTranslateFormatter,  // <-- this could be a custom Formatter or the built-in translateFormatter
     filterable: true,
     params: { useFormatterOuputToFilter: true } // <-- set this flag to True
   },
@@ -72,13 +72,13 @@ this.columnDefinitions = [
 ];
 
 // you also need to enable the filters in the Grid Options
-this.gridOptions = {
+const options = {
    enableFiltering: true
 };
 
 // using a custom translate Formatter OR translateFormatter
 taskTranslateFormatter: Formatter = (row, cell, value, columnDef, dataContext) => {
-  return this.i18n.tr('TASK_X', { x: value });
+  return i18next.tr('TASK_X', { x: value });
 }
 ```
 
@@ -95,7 +95,7 @@ const dataset = [
 
 We can now filter the zip code from the buyer's address using this filter:
 ```ts
-this.columnDefinitions = [
+const columns = [
   {
     // the zip is a property of a complex object which is under the "buyer" property
     // it will use the "field" property to explode (from "." notation) and find the child value
@@ -109,16 +109,19 @@ You can update/change the Filters dynamically (on the fly) via the `updateFilter
 
 ##### Component
 ```tsx
-export class Example extends React.Component<Props, State> {
-  reactGrid: SlickgridReactInstance;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  setFiltersDynamically() {
+  function setFiltersDynamically() {
     // we can Set Filters Dynamically (or different filters) afterward through the FilterService
-    this.reactGrid.filterService.updateFilters([
+    reactGridRef.current?.filterService.updateFilters([
       { columnId: 'duration', searchTerms: [2, 25, 48, 50] },
       { columnId: 'complete', searchTerms: [95], operator: '<' },
       { columnId: 'effort-driven', searchTerms: [true] },
@@ -126,22 +129,20 @@ export class Example extends React.Component<Props, State> {
     ]);
   }
 
-  render() {
-    return (
-      <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="set-dynamic-filter"
-        onClick={() => this.setFiltersDynamically()}>
-        Set Filters Dynamically
-      </button>
+  return !options ? null : (
+    <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="set-dynamic-filter"
+      onClick={() => setFiltersDynamically()}>
+      Set Filters Dynamically
+    </button>
 
-      <SlickgridReact gridId="grid1"
-        columnDefinitions={this.state.columnDefinitions}
-        gridOptions={this.state.gridOptions}
-        dataset={this.state.dataset}
-        onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        onGridStateChanged={$event => this.gridStateChanged($event.detail)}
-      />
-    );
-  }
+    <SlickgridReact gridId="grid1"
+      columnDefinitions={columns}
+      gridOptions={options}
+      dataset={dataset}
+      onReactGridCreated={$event => reactGridReady($event.detail)}
+      onGridStateChanged={$event => gridStateChanged($event.detail)}
+    />
+  );
 }
 ```
 
@@ -173,7 +174,7 @@ queryFieldNameGetterFn: (dataContext) => {
 ### Debounce/Throttle Text Search (wait for user to stop typing before filtering)
 When having a large dataset, it might be useful to add a debounce delay so that typing multiple character successively won't affect the search time, you can use the `filterTypingDebounce` grid option for that use case. What it will do is simply wait for the user to finish typing before executing the filter condition, you typically don't want to put this number too high and I find that between 250-500 is a good number.
 ```ts
-this.gridOptions = {
+const options = {
    filterTypingDebounce: 250,
 };
 ```
@@ -181,7 +182,7 @@ this.gridOptions = {
 ### Ignore Locale Accent in Text Filter/Sorting
 You can ignore latin accent (or any other language accent) in text filter via the Grid Option `ignoreAccentOnStringFilterAndSort` flag (default is false)
 ```ts
-this.gridOptions = {
+const options = {
    ignoreAccentOnStringFilterAndSort: true,
 };
 ```
@@ -190,7 +191,7 @@ this.gridOptions = {
 You can provide a custom predicate by using the `filterPredicate` when defining your `filter`, the callback will provide you with 2 arguments (`dataContext` and `searchFilterArgs`). The `searchFilterArgs` has a type of `SearchColumnFilter` interface which will provide you more info about the filter itself (like parsed operator, search terms, column definition, column id and type as well). You can see a live demo at [Example 14](https://ghiscoding.github.io/slickgrid-universal/#/example14) and the associated [lines](https://github.com/ghiscoding/slickgrid-universal/blob/1a2c2ff4b72ac3f51b30b1d3d101e84ed9ec9ece/examples/vite-demo-vanilla-bundle/src/examples/example14.ts#L153-L178) of code.
 
 ```ts
-this.columnDefinitions = [
+const columns = [
   {
     id: 'title', name: 'Title', field: 'title', sortable: true,
     filterable: true, type: FieldType.string,
@@ -235,7 +236,7 @@ User can declare some Filter Shortcuts, that will be added to the Header Menu of
  The shortcuts can be declared via an array that must include at least a `title` (or `titleKey`) a `searchTerms` array and lastly an optional `operator` can also be provided. The available properties of these shortcut is a merge of Header Menu Item interface (except `command` and `action` which are reserved and assigned internally) and of course the 3 properties mentioned above. The declaration is very similar to how we use it when declaring Grid Presets as shown below
 
 ```ts
-this.columnDefinitions = [
+const columns = [
   {
     id: 'country', name: 'Country', field: 'country',
     filter: {

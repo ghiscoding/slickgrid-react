@@ -89,20 +89,14 @@ To use any of them, you simply need to import `Formatters` from `Slickgrid-Unive
 ```tsx
 import { Formatters } from 'slickgrid-react';
 
-interface Props {}
-interface State {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
-}
-export class Example extends React.Component<Props, State> {
-  constructor(public readonly props: Props) {
-    super(props);
-    // define the grid options & columns and then create the grid itself
-    this.defineGrid();
-  }
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  defineGrid() {
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
     const columnDefinitions = [
       { id: 'title', name: 'Title', field: 'title' },
       { id: 'duration', name: 'Duration (days)', field: 'duration' },
@@ -122,7 +116,7 @@ What if you want to pass extra arguments that you want to use within the Formatt
 ```ts
 let optionList = ['True', 'False'];
 
-this.columnDefinitions = [
+const columnDefinitions = [
   { id: 'title', field: 'title',
     headerTranslate: 'TITLE',
     formatter: myCustomSelectFormatter,
@@ -144,7 +138,7 @@ SlickGrid only has 1 `formatter` property but if you want to use more than 1 For
 // Data Example::
 // data = [{ shipping: { cost: 123.22, address: { zip: 123456 } } }];
 
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'shippingCost', field: 'shipping.cost', name: 'Shipping Cost',
     formatter: Formatters.multiple,
@@ -227,14 +221,14 @@ If you need to add more complex logic to a `Formatter`, you can take a look at t
 You can set some defined common Formatter Options in your Grid Options through the `formatterOptions` in the Grid Options (locally or globally) as seen below, and/or independently through the column definition `params` (the option names are the same in both locations)
 
 ```ts
-loadGrid() {
-  this.columnDefinitions = [
+function defineGrid() {
+  setColumns([
     // through the column definition "params"
     { id: 'price', field: 'price', params: { thousandSeparator: ',' } },
-  ];
+  ]);
 
   // or through grid options to make it global
-  this.gridOptions = {
+  setOptions({
     autoResize: {
       containerId: 'demo-container',
       sidePadding: 15
@@ -269,7 +263,7 @@ loadGrid() {
       // Defaults to empty string, thousand separator on a number. Example: 12345678 becomes 12,345,678
       thousandSeparator: '_', // can be any of ',' | '_' | ' ' | ''
     },
-  }
+  });
 }
 ```
 
@@ -279,8 +273,8 @@ SlickGrid also support Post Render Formatter (asynchronously) via the Column pro
 To see it in action, from the 6pac samples, click [here](http://6pac.github.io/SlickGrid/examples/example10-async-post-render.html)
 Code example:
 ```ts
-const renderSparklineFormatter: Formatter = (row: number, cell: number, value: any, columnDef: Column, dataContext: any) => {
-    var vals = [
+  const renderSparklineFormatter: Formatter = (row: number, cell: number, value: any, columnDef: Column, dataContext: any) => {
+    const vals = [
       dataContext["n1"],
       dataContext["n2"],
       dataContext["n3"],
@@ -290,16 +284,17 @@ const renderSparklineFormatter: Formatter = (row: number, cell: number, value: a
     $(cellNode).empty().sparkline(vals, {width: "100%"});
   }
 
- defineGrid() {
-   this.columnDefinitions = [
+  function defineGrid() {
+    setColumns([
       { id: 'title', name: 'Title', field: 'title' },
       { id: "chart", name: "Chart", sortable: false, width: 60,
-         formatter: waitingFormatter,
-         rerenderOnResize: true,
-         asyncPostRender: renderSparklineFormatter
+          formatter: waitingFormatter,
+          rerenderOnResize: true,
+          asyncPostRender: renderSparklineFormatter
       }
-    ];
- }
+    ]);
+  }
+ 
 ```
 
 A **Better Solution** is to use Custom Formatters **as much as possible** because using an React Components with `asyncPostRender` are **SLOW** (you are warned). They are slow because they require a full cycle, cannot be cached and are rendered **after** each rows are rendered (because of their asynchronous nature), while Custom Formatters are rendered at the same time as the row itself since they are synchronous in nature.

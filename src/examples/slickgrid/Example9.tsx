@@ -1,5 +1,5 @@
-import i18next, { type TFunction } from 'i18next';
-import React from 'react';
+import i18next from 'i18next';
+import React, { useEffect, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import {
@@ -9,72 +9,33 @@ import {
   Filters,
   Formatters,
   type GridOption,
-  type SlickDataView,
-  type SlickgridReactInstance,
-  type SlickGrid,
   SlickgridReact,
+  type SlickgridReactInstance,
 } from '../../slickgrid-react';
-import type BaseSlickGridState from './state-slick-grid-base';
+
 import './example9.scss'; // provide custom CSS/SASS styling
 
-interface Props {
-  t: TFunction;
-}
+const Example9: React.FC = () => {
+  const defaultLang = 'en';
+  const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(defaultLang);
+  const [hideSubTitle, setHideSubTitle] = useState(false);
 
-interface State extends BaseSlickGridState {
-  selectedLanguage: string,
-}
+  const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
-class Example9 extends React.Component<Props, State> {
-  title = 'Example 9: Grid Menu Control';
-  subTitle = `
-    This example demonstrates using the <b>Slick.Controls.GridMenu</b> plugin to easily add a Grid Menu (aka hamburger menu) on the top right corner of the grid.<br/>
-    (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grid-menu" target="_blank">Docs</a>)
-    <ul>
-      <li>You can change the Grid Menu icon, for example "mdi-dots-vertical"&nbsp;&nbsp;<span class="mdi mdi-dots-vertical"></span>&nbsp;&nbsp;(which is shown in this example)</li>
-      <li>By default the Grid Menu shows all columns which you can show/hide them</li>
-      <li>You can configure multiple custom "commands" to show up in the Grid Menu and use the "onGridMenuCommand()" callback</li>
-      <li>Doing a "right + click" over any column header will also provide a way to show/hide a column (via the Column Picker Plugin)</li>
-      <li>You can change the icons of both picker via SASS variables as shown in this demo (check all SASS variables)</li>
-      <li><i class="mdi mdi-arrow-down icon"></i> You can also show the Grid Menu anywhere on your page</li>
-    </ul>
-  `;
-
-  reactGrid!: SlickgridReactInstance;
-  dataView!: SlickDataView;
-  gridObj!: SlickGrid;
-
-  constructor(public readonly props: Props) {
-    super(props);
-    // define the grid options & columns and then create the grid itself
-
-    // always start with English for Cypress E2E tests to be consistent
-    const defaultLang = 'en';
+  useEffect(() => {
     i18next.changeLanguage(defaultLang);
+    defineGrid();
+    getData();
+  }, []);
 
-    this.state = {
-      columnDefinitions: [],
-      dataset: [],
-      gridOptions: undefined,
-      selectedLanguage: defaultLang
-    };
+  function reactGridReady(reactGrid: SlickgridReactInstance) {
+    reactGridRef.current = reactGrid;
   }
 
-  componentDidMount() {
-    this.defineGrid();
-
-    document.title = this.title;
-    // populate the dataset once the grid is ready
-    this.getData();
-  }
-
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-    this.gridObj = reactGrid && reactGrid.slickGrid;
-    this.dataView = reactGrid && reactGrid.dataView;
-  }
-
-  getColumnDefinitions(): Column[] {
+  function getColumnDefinitions(): Column[] {
     return [
       { id: 'title', name: 'Title', field: 'title', nameKey: 'TITLE', filterable: true, type: FieldType.string },
       { id: 'duration', name: 'Duration', field: 'duration', nameKey: 'DURATION', sortable: true, filterable: true, type: FieldType.string },
@@ -100,7 +61,7 @@ class Example9 extends React.Component<Props, State> {
     ];
   }
 
-  getGridOptions(): GridOption {
+  function getGridOptions(): GridOption {
     return {
       columnPicker: {
         hideForceFitButton: true,
@@ -174,8 +135,8 @@ class Example9 extends React.Component<Props, State> {
             action: (_e: Event, args: any) => alert(args.command),
             itemVisibilityOverride: () => {
               // for example hide this command from the menu if there's any filter entered
-              if (this.reactGrid) {
-                return this.isObjectEmpty(this.reactGrid.filterService.getColumnFilters());
+              if (reactGridRef.current) {
+                return isObjectEmpty(reactGridRef.current.filterService.getColumnFilters());
               }
               return true;
             },
@@ -238,26 +199,21 @@ class Example9 extends React.Component<Props, State> {
     };
   }
 
-  defineGrid() {
-    const columnDefinitions = this.getColumnDefinitions();
-    const gridOptions = this.getGridOptions();
-    this.setState((state: any) => {
-      return {
-        ...state,
-        columnDefinitions,
-        gridOptions,
-      };
-    });
+  function defineGrid() {
+    const columnDefinitions = getColumnDefinitions();
+    const gridOptions = getGridOptions();
+    setColumnDefinitions(columnDefinitions);
+    setGridOptions(gridOptions);
   }
 
-  getData() {
+  function getData() {
     // Set up some test columns.
     const mockDataset: any[] = [];
     for (let i = 0; i < 500; i++) {
       mockDataset[i] = {
         id: i,
         title: 'Task ' + i,
-        phone: this.generatePhoneNumber(),
+        phone: generatePhoneNumber(),
         duration: Math.round(Math.random() * 25) + ' days',
         percentComplete: Math.round(Math.random() * 100),
         start: '01/01/2009',
@@ -265,15 +221,11 @@ class Example9 extends React.Component<Props, State> {
         completed: (i % 5 === 0)
       };
     }
-    this.setState((state: any) => {
-      return {
-        ...state,
-        dataset: mockDataset
-      };
-    });
+
+    setDataset(mockDataset)
   }
 
-  generatePhoneNumber() {
+  function generatePhoneNumber() {
     let phone = '';
     for (let i = 0; i < 10; i++) {
       phone += Math.round(Math.random() * 9) + '';
@@ -281,25 +233,20 @@ class Example9 extends React.Component<Props, State> {
     return phone;
   }
 
-  async switchLanguage() {
-    const nextLanguage = (this.state.selectedLanguage === 'en') ? 'fr' : 'en';
+  async function switchLanguage() {
+    const nextLanguage = (selectedLanguage === 'en') ? 'fr' : 'en';
     await i18next.changeLanguage(nextLanguage);
-    this.setState((state: any) => {
-      return {
-        ...state,
-        selectedLanguage: nextLanguage
-      };
-    });
+    setSelectedLanguage(nextLanguage)
   }
 
-  toggleGridMenu(e: MouseEvent) {
-    if (this.reactGrid && this.reactGrid.extensionService) {
-      const gridMenuInstance = this.reactGrid.extensionService.getExtensionInstanceByName(ExtensionName.gridMenu);
+  function toggleGridMenu(e: MouseEvent) {
+    if (reactGridRef.current?.extensionService) {
+      const gridMenuInstance = reactGridRef.current.extensionService.getExtensionInstanceByName(ExtensionName.gridMenu);
       gridMenuInstance.showGridMenu(e, { dropSide: 'right' });
     }
   }
 
-  private isObjectEmpty(obj: any) {
+  function isObjectEmpty(obj: any) {
     for (const key in obj) {
       if (obj.hasOwnProperty(key) && obj[key] !== '') {
         return false;
@@ -308,41 +255,54 @@ class Example9 extends React.Component<Props, State> {
     return true;
   }
 
-  render() {
-    return !this.state.gridOptions ? '' : (
-      <div id="demo-container" className="container-fluid">
-        <h2>
-          {this.title}
-          <span className="float-end font18">
-            see&nbsp;
-            <a target="_blank"
-              href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example9.tsx">
-              <span className="mdi mdi-link-variant"></span> code
-            </a>
-          </span>
-        </h2>
-        <div className="subtitle" dangerouslySetInnerHTML={{ __html: this.subTitle }}></div>
-
-        <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="external-gridmenu"
-          onClick={$event => this.toggleGridMenu($event.nativeEvent)}>
-          <i className="mdi mdi-menu me-1"></i>
-          Grid Menu
+  return !gridOptions ? null : (
+    <div id="demo-container" className="container-fluid">
+      <h2>
+        Example 9: Grid Menu Control
+        <span className="float-end font18">
+          see&nbsp;
+          <a target="_blank"
+            href="https://github.com/ghiscoding/slickgrid-react/blob/master/src/examples/slickgrid/Example9.tsx">
+            <span className="mdi mdi-link-variant"></span> code
+          </a>
+        </span>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
-        <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="language" onClick={() => this.switchLanguage()}>
-          <i className="mdi mdi-translate me-1"></i>
-          Switch Language
-        </button>
-        <b>Locale:</b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{this.state.selectedLanguage + '.json'}</span>
+      </h2>
 
-        <SlickgridReact gridId="grid9"
-          columnDefinitions={this.state.columnDefinitions}
-          dataset={this.state.dataset}
-          gridOptions={this.state.gridOptions}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        />
-      </div>
-    );
-  }
+      {hideSubTitle ? null : <div className="subtitle">
+        This example demonstrates using the <b>Slick.Controls.GridMenu</b> plugin to easily add a Grid Menu (aka hamburger menu) on the top right corner of the grid.<br />
+        (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grid-menu" target="_blank">Docs</a>)
+        <ul>
+          <li>You can change the Grid Menu icon, for example "mdi-dots-vertical"&nbsp;&nbsp;<span className="mdi mdi-dots-vertical"></span>&nbsp;&nbsp;(which is shown in this example)</li>
+          <li>By default the Grid Menu shows all columns which you can show/hide them</li>
+          <li>You can configure multiple custom "commands" to show up in the Grid Menu and use the "onGridMenuCommand()" callback</li>
+          <li>Doing a "right + click" over any column header will also provide a way to show/hide a column (via the Column Picker Plugin)</li>
+          <li>You can change the icons of both picker via SASS variables as shown in this demo (check all SASS variables)</li>
+          <li><i className="mdi mdi-arrow-down icon"></i> You can also show the Grid Menu anywhere on your page</li>
+        </ul>
+      </div>}
+
+      <button className="btn btn-outline-secondary btn-sm btn-icon" data-test="external-gridmenu"
+        onClick={$event => toggleGridMenu($event.nativeEvent)}>
+        <i className="mdi mdi-menu me-1"></i>
+        Grid Menu
+      </button>
+      <button className="btn btn-outline-secondary btn-sm btn-icon mx-1" data-test="language" onClick={() => switchLanguage()}>
+        <i className="mdi mdi-translate me-1"></i>
+        Switch Language
+      </button>
+      <b>Locale:</b> <span style={{ fontStyle: 'italic' }} data-test="selected-locale">{selectedLanguage + '.json'}</span>
+
+      <SlickgridReact gridId="grid9"
+        columnDefinitions={columnDefinitions}
+        dataset={dataset}
+        gridOptions={gridOptions}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+      />
+    </div>
+  );
 }
 
 export default withTranslation()(Example9);

@@ -17,7 +17,7 @@ By default all the range filters are with exclusive range, which mean between va
 For example
 ```ts
 // your columns definition
-this.columnDefinitions = [
+const columnDefinitions = [
   {
     id: 'duration', field: 'duration', name: 'Duration',
     filterable: true,
@@ -39,14 +39,16 @@ You can use a regular input filter with the 2 dots (..) notation to represent a 
 ```ts
 import { Filters, Formatters, GridOption, OperatorType } from '@slickgrid-universal/common';
 
-export class GridBasicComponent {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  attached(): void {
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
     // your columns definition
-    this.columnDefinitions = [
+    setColumns([
       {
         id: 'duration', field: 'duration', name: 'Duration',
         type: 'number', // you can optionally specify that the data are numbers
@@ -58,11 +60,9 @@ export class GridBasicComponent {
           operator: OperatorType.rangeInclusive // defaults to exclusive
         }
       },
-    ];
+    ]);
 
-    this.gridOptions = {
-      // your grid options config
-    }
+    setOptions({ /*... */ });
   }
 }
 ```
@@ -74,14 +74,15 @@ The slider range filter is very useful if you can just want to use the mouse to 
 ```ts
 import { Filters, Formatters, GridOption, SliderRangeOption, OperatorType } from '@slickgrid-universal/commomn';
 
-export class GridBasicComponent {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  attached(): void {
-    // your columns definition
-    this.columnDefinitions = [
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setColumns([
       {
         id: 'complete', name: '% Complete', field: 'percentComplete', headerKey: 'PERCENT_COMPLETE', minWidth: 120,
         sortable: true,
@@ -98,11 +99,9 @@ export class GridBasicComponent {
           filterOptions: { sliderStartValue: 5 } as SliderRangeOption
         }
       },
-    ];
+    ]);
 
-    this.gridOptions = {
-      // your grid options config
-    }
+    setOptions({ /* ... */ });
   }
 }
 ```
@@ -123,7 +122,7 @@ filter: {
 You could also define certain options as a global level (for the entire grid or even all grids) by taking advantage of the `defaultFilterOptions` Grid Option. Note that they are set via the filter type as a key name (`autocompleter`, `date`, ...) and then the content is the same as `filterOptions` (also note that each key is already typed with the correct filter option interface), for example
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   defaultFilterOptions: {
     // Note: that `date`, `select` and `slider` are combining both compound & range filters together
     date: { range: { min: 'today' } },
@@ -142,14 +141,15 @@ The date range filter allows you to search data between 2 dates, it uses the [Va
 import { Filters, Formatters, GridOption, OperatorType, VanillaCalendarOption } from '@slickgrid-universal/common';
 
 ```typescript
-export class GridBasicComponent {
-  columnDefinitions: Column[];
-  gridOptions: GridOption;
-  dataset: any[];
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  attached(): void {
-    // your columns definition
-    this.columnDefinitions = [
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setColumns([
       {
         id: 'finish', name: 'Finish', field: 'finish', headerKey: 'FINISH',
         minWidth: 75, width: 120, exportWithFormatter: true,
@@ -163,11 +163,9 @@ export class GridBasicComponent {
           filterOptions: { range: { min: 'today' } } as VanillaCalendarOption
         }
       },
-    ];
+    ]);
 
-    this.gridOptions = {
-      // your grid options config
-    }
+    setOptions({ /* ... */ });
   }
 }
 ```

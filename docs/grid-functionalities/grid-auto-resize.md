@@ -20,11 +20,11 @@ Almost all grids from the demos are using the auto-resize feature, and the featu
 All you need to do is enable the Grid Option `enableAutoResize: true` and provide necessary information in the `autoResize`, at minimum you should provide your container an id or class name.
 
 ```ts
-this.columnDefinitions = [
+const columnDefinitions = [
   // ...
 ];
 
-this.gridOptions = {
+const gridOptions = {
   autoResize: {
     container: '#demo-container' // container DOM selector
   },
@@ -38,23 +38,23 @@ There are multiple options you can pass to the `autoResize` in the Grid Options,
 ### Delay a Grid Resize
 Note that you can also delay the resize via the 1st argument to the `resizeGrid()` call.
 ```ts
-  openSidebar() {
-    this.isSidebarOpen = true;
+  function openSidebar() {
+    setIsSidebarOpen(true);
     const delay = 100; // delay in milliseconds
-    this.sgb.resizerService.resizeGrid(delay);
+    reactGridRef.current?.resizerService.resizeGrid(delay);
   }
 ```
 
 ### Last Resize Dimensions
 The `resizeGrid()` returns a promise with the last used resize dimensions, that might be helpful to resize and fix another grid or DOM element height/width. For example, we use that in our project to resize a sidebar element to become the same height as the main grid.
 ```ts
-async openSidebar() {
-  this.isSidebarOpen = true;
+async function openSidebar() {
+  setIsSidebarOpen(true);
 
   // resize the CPA list grid and resize the sidebar to the same height as the grid with it's pagination
-  const lastDimensions = await this.sgb.resizerService.resizeGrid();
+  const lastDimensions = await reactGridRef.current?.resizerService.resizeGrid();
   if (lastDimensions && lastDimensions.heightWithPagination) {
-    this.sidebarMaxHeight = `${lastDimensions.heightWithPagination}px`;
+    setSidebarMaxHeight(`${lastDimensions.heightWithPagination}px`);
   }
 }
 ```
@@ -63,32 +63,35 @@ User can pause the resizer at any time and later resume the auto-resize. This mi
 
 ##### Component
 ```tsx
-export export class GridBasicComponent extends React.Component<Props, State> {
-  reactGrid: SlickgridReactInstance;
-  resizerPaused = false;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [resizerPaused, setResizerPaused] = useState(false);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
+  useEffect(() => defineGrid(), []);
 
-  togglePauseResizer() {
-    this.resizerPaused = !this.resizerPaused;
-    this.reactGrid.resizerService.pauseResizer(this.resizerPaused);
+  function defineGrid() {}
+
+  function togglePauseResizer() {
+    const newResizerPaused() = !resizerPaused;
+    setResizerPaused(newResizerPaused);
+    reactGridRef.current?.resizerService.pauseResizer(resizerPaused);
   }
 
   render() {
     return (
       <button className="btn btn-outline-secondary btn-sm btn-icon"
-        onClick={() => this.togglePauseResizer()}>
-        Pause auto-resize: <b>{this.resizerPaused}</b>
+        onClick={() => togglePauseResizer()}>
+        Pause auto-resize: <b>{resizerPaused}</b>
       </button>
 
       <SlickgridReact gridId="grid1"
-        columnDefinitions={this.state.columnDefinitions}
-        gridOptions={this.state.gridOptions}
-        dataset={this.state.dataset}
-        onReactGridCreated={$event => this.reactGridReady($event.detail)}
-        onGridStateChanged={$event => this.gridStateChanged($event.detail)}
+        columnDefinitions={columns}
+        gridOptions={options}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+        onGridStateChanged={$event => gridStateChanged($event.detail)}
       />
     );
   }
@@ -99,7 +102,7 @@ export export class GridBasicComponent extends React.Component<Props, State> {
 You can set some values for minimum, maximum grid height and width that will be analyzed while executing the calculate available space for the grid.
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   enableAutoResize: true,
   autoResize: {
     maxHeight: 600,
@@ -114,7 +117,7 @@ this.gridOptions = {
 Sometime the resizer is very close to the perfect size but you can just want to remove a bit more pixels for the total calculation, you can do that by simply adding paddings as shown below
 
 ```ts
-this.gridOptions = {
+const gridOptions = {
   enableAutoResize: true,
   autoResize: {
     rightPadding: 20,  // note that there's no left option since we don't control the grid position
@@ -142,34 +145,36 @@ The default way the grid detects a resize is by window. In other words, when the
 It's also possible to let the grid detect a resize by the grid container element. In other words, when the grid container element resizes the grid calculates the width and height it should be and resizes to that. Technically a `ResizeObserver` is used which may not be [available](https://caniuse.com/resizeobserver) in all browsers you target, if that is the case you could install a polyfill like [resize-observer-polyfill](https://www.npmjs.com/package/resize-observer-polyfill). When detecting container resizes it could make sense to also calculate available size by container.
 
 ```tsx
-export class GridBasicComponent extends React.Component<Props, State> {
-  //...
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  defineGrid() {
-    const gridOptions = {
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {
+    setOptions({
       enableAutoResize: true,
       autoResize: {
         container: '#demo-container',
         resizeDetection: 'container',  // the 2 options would be 'container' | 'window'
         calculateAvailableSizeBy: 'container'
       }
-    }
+    });
   }
 
-  render() {
-    // for example you could add a resize handle to the grid container (shown on the bottom right corner):
-    return (
-      <div id="demo-container" style="resize:both; overflow:auto;">
-        <SlickgridReact gridId="grid1"
-          columnDefinitions={this.state.columnDefinitions}
-          gridOptions={this.state.gridOptions}
-          dataset={this.state.dataset}
-          onReactGridCreated={$event => this.reactGridReady($event.detail)}
-          onGridStateChanged={$event => this.gridStateChanged($event.detail)}
-        />
-      </div>
-    );
-  }
+  // for example you could add a resize handle to the grid container (shown on the bottom right corner):
+  return !options ? null : (
+    <div id="demo-container" style="resize:both; overflow:auto;">
+      <SlickgridReact gridId="grid1"
+        columnDefinitions={columns}
+        gridOptions={options}
+        dataset={dataset}
+        onReactGridCreated={$event => reactGridReady($event.detail)}
+        onGridStateChanged={$event => gridStateChanged($event.detail)}
+      />
+    </div>
+  );
 }
 ```
 
@@ -178,16 +183,18 @@ You can call `resizeGrid()` method at any point in time by passing dimensions as
 
 ##### Component
 ```tsx
-export export class GridBasicComponent extends React.Component<Props, State> {
-  reactGrid: SlickgridReactInstance;
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
+  useEffect(() => defineGrid(), []);
 
-  togglePauseResizer() {
+  function defineGrid() {}
+
+  function togglePauseResizer() {
     const delay = 0;
-    this.reactGrid.resizerService.gridResize(delay, { height: 800: width: 600 });
+    reactGridRef.current?.resizerService.gridResize(delay, { height: 800: width: 600 });
   }
 }
 ```
@@ -200,19 +207,25 @@ export export class GridBasicComponent extends React.Component<Props, State> {
 This feature uses `window.resize` event and if you change the size of your DIV programmatically, it will **not** change the size of your grid, mainly because that action did not trigger a `window.resize` event. However to circumvent this issue, you can call the auto-resize of the grid manually with the `ResizerService`. For example, we change the DIV CSS classes to use a different Bootstrap container size, that won't trigger an event and we have to manually call the resize, below is the code to do that.
 
 ```tsx
-  reactGridReady(reactGrid: SlickgridReactInstance) {
-    this.reactGrid = reactGrid;
-  }
+const Example: React.FC = () => {
+  const [dataset, setDataset] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [options, setOptions] = useState<GridOption | undefined>(undefined);
 
-  closeSidebar() {
-    this.isSidebarOpen = false;
-    this.reactGrid.resizerService.resizeGrid();
+  useEffect(() => defineGrid(), []);
+
+  function defineGrid() {}
+
+  function closeSidebar() {
+    setIsSidebarOpen(false);
+    reactGridRef.current?.resizerService.resizeGrid();
   }
 
   openSidebar() {
-    this.isSidebarOpen = true;
-    this.reactGrid.resizerService.resizeGrid();
+    setIsSidebarOpen(true);
+    reactGridRef.current?.resizerService.resizeGrid();
   }
+}
 ```
 
 #### Possible reason 2
