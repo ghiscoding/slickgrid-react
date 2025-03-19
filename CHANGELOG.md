@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.13.1](https://github.com/ghiscoding/slickgrid-react/compare/v5.13.0...v5.13.1) (2025-03-19)
+
+### Bug Fixes
+
+* Row Detail redraw all should work as expected ([#472](https://github.com/ghiscoding/slickgrid-react/issues/472)) ([e3a7c0b](https://github.com/ghiscoding/slickgrid-react/commit/e3a7c0b2b4afdd86f15bfae95dc89ed4a7eb1ff1))
+* Row Detail should also work with fixed grid height or w/o autoHeight ([#473](https://github.com/ghiscoding/slickgrid-react/issues/473)) ([c2a3c88](https://github.com/ghiscoding/slickgrid-react/commit/c2a3c88a12b3b4d4ce02aae1688833b588ab9df0))
+
 ## [5.13.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.12.2...v5.13.0) (2025-03-01)
 
 ### Features
