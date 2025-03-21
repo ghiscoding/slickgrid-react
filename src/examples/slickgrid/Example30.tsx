@@ -972,6 +972,13 @@ const Example30: React.FC = () => {
         </div>`;
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGridRef.current?.resizerService.resizeGrid(0);
+  }
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -984,7 +991,7 @@ const Example30: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
         <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => toggleDarkMode()} data-test="toggle-dark-mode">
@@ -993,11 +1000,11 @@ const Example30: React.FC = () => {
         </button>
       </h2>
 
-      {hideSubTitle ? null : <div className="subtitle">
+      <div className="subtitle">
         Composite Editor allows you to Create, Clone, Edit, Mass Update & Mass Selection Changes inside a nice Modal Window.<br />
         The modal is simply populated by looping through your column definition list and also uses a lot of the same logic as inline editing
         (see <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/composite-editor-modal" target="_blank">Composite Editor - Wiki</a>.)
-      </div>}
+      </div>
 
       <div className="mb-2">
         <div className="btn-group btn-group-sm" role="group" aria-label="Basic Editing Commands">

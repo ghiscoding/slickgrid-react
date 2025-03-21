@@ -306,6 +306,13 @@ const Example27: React.FC = () => {
     reactGridRef.current?.treeDataService.applyToggledItemStateChanges(treeToggleItems);
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGridRef.current?.resizerService.resizeGrid(0);
+  }
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -318,11 +325,12 @@ const Example27: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      {hideSubTitle ? null : <div className="subtitle">
+
+      <div className="subtitle">
         <ul>
           <li>It is assumed that your dataset will have Parent/Child references AND also Tree Level (indent) property.</li>
           <ul>
@@ -330,7 +338,7 @@ const Example27: React.FC = () => {
             <li>You could also pass the result of "convertParentChildArrayToHierarchicalView()" to "dataset-hierarchical.bind" as defined in the next Hierarchical Example</li>
           </ul>
         </ul>
-      </div>}
+      </div>
 
       <div className="row" style={{ marginBottom: '4px' }}>
         <div className="col-md-12">

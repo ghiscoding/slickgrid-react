@@ -330,6 +330,13 @@ const Example39: React.FC = () => {
     setSelectedLanguage(nextLanguage);
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGridRef.current?.resizerService.resizeGrid(0);
+  }
 
   return !gridOptionsRef.current ? '' : (
     <div className="demo39">
@@ -343,12 +350,12 @@ const Example39: React.FC = () => {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
-          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
             <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
           </button>
         </h2>
 
-        {hideSubTitle ? null : <div className="subtitle">
+        <div className="subtitle">
           <ul>
             <li>
               Infinite scrolling allows the grid to lazy-load rows from the server when reaching the scroll bottom (end) position.
@@ -370,7 +377,7 @@ const Example39: React.FC = () => {
               </li>
             </ol>
           </ul>
-        </div>}
+        </div>
 
         <div className="row">
           <div className="col-sm-5">

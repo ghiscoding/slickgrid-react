@@ -755,6 +755,13 @@ const Example32: React.FC = () => {
         </div>`;
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGridRef.current?.resizerService.resizeGrid(0);
+  }
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -767,15 +774,16 @@ const Example32: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      {hideSubTitle ? null : <div className="subtitle">
+
+      <div className="subtitle">
         The grid below uses the optional resize by cell content (with a fixed 950px for demo purposes), you can click on the 2 buttons to see the difference.
         The "autosizeColumns" is really the default option used by SlickGrid-Universal, the resize by cell content is optional
         because it requires to read the first thousand rows and do extra width calculation.
-      </div>}
+      </div>
 
       <h4 className="ml-3">Container Width (950px)</h4>
 

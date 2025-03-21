@@ -283,6 +283,14 @@ const Example4: React.FC = () => {
     ]);
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGrid?.resizerService.resizeGrid(0);
+  }
+
   return (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -294,12 +302,12 @@ const Example4: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
-      {hideSubTitle ? null : <div className="subtitle">
+      <div className="subtitle">
         Sort/Filter on client side only using SlickGrid DataView (<a href="https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/sorting" target="_blank">Docs</a>)
         <br />
         <ul className="small">
@@ -319,7 +327,7 @@ const Example4: React.FC = () => {
           <li>On String filters, (*) can be used as startsWith (Hello* =&gt; matches "Hello Word") ... endsWith (*Doe =&gt; matches: "John Doe")</li>
           <li>Custom Filter are now possible, "Description" column below, is a customized InputFilter with different placeholder. See <a href="https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/filters/custom-filter" target="_blank">Wiki - Custom Filter</a></li>
         </ul>
-      </div>}
+      </div>
 
       <br />
       {metrics && <span><><b>Metrics:</b>

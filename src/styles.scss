@@ -13,8 +13,7 @@ $primary-color: #0e6cfa;
 // -- 1. load with modern `@use`
 // @use '@slickgrid-universal/common/dist/styles/sass/slickgrid-theme-bootstrap.scss';
 @use '@slickgrid-universal/common/dist/styles/sass/slickgrid-theme-bootstrap.scss' with (
-  $slick-primary-color: $primary-color,
-  // $slick-input-focus-box-shadow: 0 0 0 0.25rem rgba($primary-color, 0.25),
+  $slick-primary-color: $primary-color // $slick-input-focus-box-shadow: 0 0 0 0.25rem rgba($primary-color, 0.25),
 );
 
 // -- 2. load with legacy `@import`
@@ -24,8 +23,8 @@ $primary-color: #0e6cfa;
 
 :root {
   --ms-choice-border: var(--bs-border-width) solid var(--bs-border-color);
-//   --slick-button-style-bg-color: #fff;
-//   --slick-button-border-color: #c7c7c7;
+  //   --slick-button-style-bg-color: #fff;
+  //   --slick-button-border-color: #c7c7c7;
 }
 
 .bold {
@@ -54,11 +53,12 @@ $primary-color: #0e6cfa;
   gap: 4px;
 }
 
-.btn-group-xs > .btn, .btn-xs {
-  padding  : 1px 5px;
-  font-size  : 12px;
-  line-height  : 1.5;
-  border-radius : 3px;
+.btn-group-xs > .btn,
+.btn-xs {
+  padding: 1px 5px;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 3px;
   margin: 0;
   font-size: 12px;
   height: 22px;
@@ -115,15 +115,6 @@ section {
   border-bottom: 1px solid #d6d6d6;
 }
 
-.navbar {
-  .navbar-brand {
-    margin-right: 0px;
-  }
-  .logo {
-    margin: 0 8px;
-  }
-}
-
 .panel-wm {
   padding: #{$navbar-height} 0 0 0;
 
@@ -135,7 +126,7 @@ section {
     }
   }
 
-  .nav>li>a {
+  .nav > li > a {
     padding: 10px 15px;
     border-radius: 0;
   }
@@ -160,9 +151,17 @@ section {
   }
 }
 
+.navbar {
+  .navbar-brand {
+    margin-right: 0px;
+  }
+  .logo {
+    margin: 0 8px;
+  }
+}
+
 .github-button-container {
   position: relative;
-  top: 6px;
   margin: 0 5px;
 }
 
@@ -170,7 +169,7 @@ section {
   --slick-button-style-bg-color: #212121;
   --slick-button-border-color: #626262;
   .text-primary {
-    color: #599BFE !important;
+    color: #599bfe !important;
   }
 }
 
@@ -220,7 +219,8 @@ section {
 }
 
 /* editable field with outline border */
-.slick-cell .editing-field, .slick-cell.selected .editing-field {
+.slick-cell .editing-field,
+.slick-cell.selected .editing-field {
   border: 1px solid #dddbda;
   padding: 3px 5px 3px 4px;
   margin: -2px;

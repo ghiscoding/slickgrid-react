@@ -217,6 +217,13 @@ const Example41: React.FC = () => {
     setDataset([...tmpDataset]);
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGridRef.current?.resizerService.resizeGrid(0);
+  }
 
   return !gridOptions ? '' : (
     <div className="demo41">
@@ -230,18 +237,18 @@ const Example41: React.FC = () => {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
-          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
             <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
           </button>
         </h2>
 
-        {hideSubTitle ? null : <div className="subtitle">
+        <div className="subtitle">
           <ul>
             <li>Click to select, Ctrl-click to toggle selection(s).</li>
             <li>Drag one or more rows by the handle icon (1st column) to reorder.</li>
             <li>Drag one or more rows by selection (2nd or 3rd column) and drag to the recycle bin to delete.</li>
           </ul>
-        </div>}
+        </div>
 
         <div className="row">
           <div className="col">

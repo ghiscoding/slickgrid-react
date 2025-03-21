@@ -484,6 +484,13 @@ const Example33: React.FC = () => {
     return output;
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGridRef.current?.resizerService.resizeGrid(0);
+  }
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -496,11 +503,12 @@ const Example33: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      {hideSubTitle ? null : <div className="subtitle">
+
+      <div className="subtitle">
         This demo shows how to create Regular & Custom Tooltips (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/custom-tooltip" target="_blank">Docs</a>)
         <br />
         <ul className="small">
@@ -509,7 +517,7 @@ const Example33: React.FC = () => {
           <li>create an Async Custom Tooltip (Promise/Observable) to allowing fetching data from an API</li>
           <li>optionally add Custom Tooltip on Column Header & Column Header-Row (filters)</li>
         </ul>
-      </div>}
+      </div>
 
 
       <div style={{ marginBottom: '20px' }}>

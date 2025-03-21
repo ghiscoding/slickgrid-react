@@ -257,6 +257,14 @@ const Example45: React.FC = () => {
     }
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGridRef.current?.resizerService.resizeGrid(0);
+  }
+
   return !gridOptions ? null : (
     <div className="demo45">
       <div id="demo-container" className="container-fluid">
@@ -268,7 +276,7 @@ const Example45: React.FC = () => {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
-          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
             <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
           </button>
           <button className="btn btn-outline-secondary btn-sm btn-icon ms-3" onClick={toggleDarkMode} data-test="toggle-dark-mode">
@@ -277,9 +285,9 @@ const Example45: React.FC = () => {
           </button>
         </h2>
 
-        {hideSubTitle ? null : <div className="subtitle">
+        <div className="subtitle">
           Add functionality to show extra information with a Row Detail View, (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/row-detail" target="_blank">Wiki docs</a>), we'll use an inner grid inside our Row Detail Component. Note that because SlickGrid uses Virtual Scroll, the rows and row details are often be re-rendered (when row is out of viewport range) and this means unmounting Row Detail Component which indirectly mean that all component states (dynamic elements, forms, ...) will be disposed as well, however you can use Grid State/Presets to reapply previous state whenever the row detail gets re-rendered when back to viewport.
-        </div>}
+        </div>
 
         <div className="row">
           <div className="col-sm-10">

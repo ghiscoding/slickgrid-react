@@ -208,6 +208,13 @@ const Example19: React.FC = () => {
     }
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGridRef.current?.resizerService.resizeGrid(0);
+  }
 
   return !gridOptions ? null : (
     <div className="demo19">
@@ -221,7 +228,7 @@ const Example19: React.FC = () => {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
-          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
             <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
           </button>
           <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={toggleDarkMode} data-test="toggle-dark-mode">
@@ -230,14 +237,14 @@ const Example19: React.FC = () => {
           </button>
         </h2>
 
-        {hideSubTitle ? null : <div className="subtitle">
+        <div className="subtitle">
           Add functionality to show extra information with a Row Detail View, (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/row-detail" target="_blank">Wiki docs</a>)
           <ul>
             <li>Click on the row "+" icon or anywhere on the row to open it (the latter can be changed via property "useRowClick: false")</li>
             <li>Pass a View/Model as a Template to the Row Detail</li>
             <li>You can use "expandableOverride()" callback to override logic to display expand icon on every row (for example only show it every 2nd row)</li>
           </ul>
-        </div>}
+        </div>
 
         <div className="row">
           <div className="col-sm-6">

@@ -152,6 +152,13 @@ const Example42: React.FC = () => {
     reactGridRef.current?.paginationService?.changeItemPerPage(+pageSize);
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGridRef.current?.resizerService.resizeGrid(0);
+  }
 
   return !gridOptions ? '' : (
     <div className="demo42">
@@ -165,15 +172,15 @@ const Example42: React.FC = () => {
               <span className="mdi mdi-link-variant"></span> code
             </a>
           </span>
-          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+          <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
             <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
           </button>
         </h2>
 
-        {hideSubTitle ? null : <div className="subtitle">
+        <div className="subtitle">
           You can create a Custom Pagination by passing a React Custom Component and it must <code>implements BasePaginationComponent</code>.
           Any of the pagination controls could be moved anywhere on the page (for example we purposely moved the page size away from the rest of the pagination elements).
-        </div>}
+        </div>
 
         <div>
           <span className="margin-15px">

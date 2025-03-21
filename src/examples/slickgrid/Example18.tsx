@@ -428,6 +428,13 @@ const Example18: React.FC = () => {
     }
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGridRef.current?.resizerService.resizeGrid(0);
+  }
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -440,7 +447,7 @@ const Example18: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
         <button className="btn btn-outline-secondary btn-sm btn-icon ms-2" onClick={() => toggleDarkMode()} data-test="toggle-dark-mode">
@@ -449,7 +456,7 @@ const Example18: React.FC = () => {
         </button>
       </h2>
 
-      {hideSubTitle ? null : <div className="subtitle">
+      <div className="subtitle">
         <ul>
           <li>This example shows 3 ways of grouping <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/grouping-aggregators" target="_blank">Docs</a></li>
           <ol>
@@ -461,7 +468,7 @@ const Example18: React.FC = () => {
           <li>Each grouping level can have its own aggregates (over child rows, child groups, or all descendant rows)..</li>
           <li>Use "Aggregators" and "GroupTotalFormatters" directly from Slickgrid-React</li>
         </ul>
-      </div>}
+      </div>
 
       <form className="form-inline" onSubmit={(e) => e.preventDefault()}>
         <div className="row">

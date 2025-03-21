@@ -444,6 +444,13 @@ const Example31: React.FC = () => {
     reactGridRef.current?.filterService.clearFilters();
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGridRef.current?.resizerService.resizeGrid(0);
+  }
 
   return !gridOptionsRef.current ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -456,14 +463,14 @@ const Example31: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
-      {hideSubTitle ? null : <div className="subtitle">
+      <div className="subtitle">
         Optionally use RxJS instead of Promises, you would typically use this with a Backend Service API (OData/GraphQL)
-      </div>}
+      </div>
 
       <div className="row">
         <div className="col-md-12" aria-label="Basic Editing Commands">

@@ -302,6 +302,13 @@ const Example20: React.FC = () => {
     setIsFrozenBottom(newIsFrozenBottom);
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGridRef.current?.resizerService.resizeGrid(0);
+  }
 
   return !gridOptions ? '' : (
     <div id="demo-container" className="container-fluid">
@@ -314,11 +321,12 @@ const Example20: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      {hideSubTitle ? null : <div className="subtitle">
+
+      <div className="subtitle">
         This example demonstrates the use of Pinned (aka frozen) Columns and/or Rows (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/frozen-columns-rows" target="_blank">Docs</a>)
         <ul>
           <li>Option to pin any number of columns (left only) or rows</li>
@@ -326,7 +334,7 @@ const Example20: React.FC = () => {
           <li>You can also dynamically any of these options, through SlickGrid "setOptions()"</li>
           <li>Possibility to change the styling of the line border between pinned columns/rows</li>
         </ul>
-      </div>}
+      </div>
 
       <br />
 

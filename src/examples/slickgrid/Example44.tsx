@@ -374,6 +374,13 @@ export default function Example44() {
     setReactGrid(instance);
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGrid?.resizerService.resizeGrid(0);
+  }
 
   return (
     <div id="demo-container" className="container-fluid">
@@ -388,12 +395,12 @@ export default function Example44() {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
-      {hideSubTitle ? null : <div className="subtitle">
+      <div className="subtitle">
         <p className="italic example-details">
           This page demonstrates <code>colspan</code> & <code>rowspan</code> using DataView with item metadata. <b>Note</b>:
           <code>colspan</code> & <code>rowspan</code> are rendered via row/cell indexes, any operations that could change these indexes (i.e.
@@ -401,7 +408,7 @@ export default function Example44() {
           responsability). This demo does not show this because it is up to you to decide what to do when the span changes shape (i.e. you
           default to 3 rowspan but you filter a row in the middle, how do you want to proceed?).
         </p>
-      </div>}
+      </div>
 
       <section className="row mb-2">
         <div className="d-flex">

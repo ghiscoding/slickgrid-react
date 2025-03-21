@@ -156,6 +156,14 @@ const Example2: React.FC = () => {
     }
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGrid?.resizerService.resizeGrid(0);
+  }
+
   return (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -167,12 +175,12 @@ const Example2: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
-      {hideSubTitle ? null : <div className="subtitle">
+      <div className="subtitle">
         Grid with Custom and/or included Slickgrid Formatters (<a href="https://ghiscoding.gitbook.io/slickgrid-react/column-functionalities/formatters" target="_blank">Docs</a>).
         <ul>
           <li>The 2 last columns are using Custom Formatters</li>
@@ -183,7 +191,7 @@ const Example2: React.FC = () => {
           </li>
           <li>This example also has auto-resize enabled, and we also demo how you can pause the resizer if you wish to</li>
         </ul>
-      </div>}
+      </div>
 
       <button className="btn btn-outline-secondary btn-sm btn-icon"
         onClick={() => togglePauseResizer()}>

@@ -483,6 +483,14 @@ const Example5: React.FC = () => {
     reactGridRef.current?.filterService.clearFilters();
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGridRef.current?.resizerService.resizeGrid(0);
+  }
+
   return !gridOptions ? null : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -494,14 +502,14 @@ const Example5: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
 
       <div className="row">
         <div className="col-sm-9">
-          {hideSubTitle ? null : <div className="subtitle">
+          <div className="subtitle">
             Use it when you need to support Pagination with a OData endpoint (for simple JSON, use a regular grid)<br />
             Take a look at the (<a href="https://ghiscoding.gitbook.io/slickgrid-react/backend-services/odata" target="_blank">Wiki documentation</a>)
             <br />
@@ -521,7 +529,7 @@ const Example5: React.FC = () => {
                 Also changing Page Size to 50,000 will also throw which again is for demo purposes.
               </li>
             </ul>
-          </div>}
+          </div>
         </div>
         <div className="col-sm-3">
           {errorStatus && <div className="alert alert-danger" data-test="error-status">

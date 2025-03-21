@@ -11,12 +11,12 @@ export class NavBar extends React.Component {
             <i className="mdi mdi-github"></i>
             <span className="ms-2">Slickgrid-React</span>
           </a>
-          <img src={ReactLogo} className="logo" height="34" />
+          <img src={ReactLogo} className="logo" height="38" />
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-target="#navbarContent"
             aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="github-button-container" style={{ height: '40px' }}>
+          <div className="github-button-container">
             <a href="https://github.com/ghiscoding/slickgrid-react">
               <img src="https://img.shields.io/github/stars/slickgrid-universal/slickgrid-react?style=social" />
             </a>

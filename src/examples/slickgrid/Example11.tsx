@@ -250,6 +250,14 @@ const Example11: React.FC = () => {
     reactGridRef.current?.slickGrid.navigateTop();
   }
 
+  function toggleSubTitle() {
+    const newHideSubTitle = !hideSubTitle;
+    setHideSubTitle(newHideSubTitle);
+    const action = newHideSubTitle ? 'add' : 'remove';
+    document.querySelector('.subtitle')?.classList[action]('hidden');
+    reactGridRef.current?.resizerService.resizeGrid(0);
+  }
+
   return !gridOptions ? null : (
     <div id="demo-container" className="container-fluid">
       <h2>
@@ -261,11 +269,12 @@ const Example11: React.FC = () => {
             <span className="mdi mdi-link-variant"></span> code
           </a>
         </span>
-        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => setHideSubTitle(!hideSubTitle)}>
+        <button className="ms-2 btn btn-outline-secondary btn-sm btn-icon" type="button" data-test="toggle-subtitle" onClick={() => toggleSubTitle()}>
           <span className="mdi mdi-information-outline" title="Toggle example sub-title details"></span>
         </button>
       </h2>
-      {hideSubTitle ? null : <div className="subtitle">
+
+      <div className="subtitle">
         Add / Update / Hightlight an Item from the Datagrid (<a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/add-update-highlight" target="_blank">Docs</a>).
         <ul>
           <li><b>Note:</b> this demo is <b>only</b> on the datagrid (client) side, you still need to deal with the backend yourself</li>
@@ -282,7 +291,7 @@ const Example11: React.FC = () => {
             <li>Example, click on button "Highlight Rows with Duration over 50" to see row styling changing. <a href="https://ghiscoding.gitbook.io/slickgrid-react/grid-functionalities/dynamic-item-metadata" target="_blank">Wiki doc</a></li>
           </ul>
         </ul>
-      </div>}
+      </div>
 
       <div className="col-sm-12">
         <span>
