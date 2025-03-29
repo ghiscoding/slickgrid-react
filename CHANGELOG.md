@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.13.2](https://github.com/ghiscoding/slickgrid-react/compare/v5.13.1...v5.13.2) (2025-03-29)
+
+### Bug Fixes
+
+* shift + a should not select all cells upwards ([#486](https://github.com/ghiscoding/slickgrid-react/issues/486)) ([c83734a](https://github.com/ghiscoding/slickgrid-react/commit/c83734a791e55481258a47b0dddef12797532445))
+
 ## [5.13.1](https://github.com/ghiscoding/slickgrid-react/compare/v5.13.0...v5.13.1) (2025-03-19)
 
 ### Bug Fixes
