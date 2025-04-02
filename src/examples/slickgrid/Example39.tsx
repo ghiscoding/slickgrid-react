@@ -39,7 +39,7 @@ const Example39: React.FC = () => {
   const [tagDataClass, setTagDataClass] = useState('');
   const [hideSubTitle, setHideSubTitle] = useState(false);
 
-  const gridOptionsRef = useRef<GridOption>();
+  const gridOptionsRef = useRef<GridOption>(null);
   const metricsRef = useRef({} as Metrics);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
   const serverWaitDelayRef = useRef(serverWaitDelay);

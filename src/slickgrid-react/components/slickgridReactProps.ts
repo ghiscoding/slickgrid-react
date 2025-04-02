@@ -65,8 +65,8 @@ import type {
 import type { SlickgridReactInstance } from '../models';
 
 export interface SlickgridReactProps {
-  header?: JSX.Element;
-  footer?: JSX.Element;
+  header?: React.ReactElement;
+  footer?: React.ReactElement;
   containerService: ContainerService;
   translaterService: TranslaterService;
   customDataView?: SlickDataView;

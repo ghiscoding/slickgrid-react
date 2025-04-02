@@ -94,7 +94,7 @@ const Example34: React.FC = () => {
   const maxChangePerCycleRef = useRef(maxChangePerCycle);
   const highlightDurationRef = useRef(highlightDuration);
   const refreshRateRef = useRef(refreshRate);
-  const timerRef = useRef<any>();
+  const timerRef = useRef<any>(null);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
   useEffect(() => {
