@@ -21,7 +21,7 @@ import { ExcelExportService } from '@slickgrid-universal/excel-export';
 import React, { useEffect, useRef, useState } from 'react';
 
 import './example32.scss'; // provide custom CSS/SASS styling
-import URL_COUNTRIES_COLLECTION_URL from './data/countries.json?url';
+import COUNTRIES_COLLECTION_URL from './data/countries.json?url';
 
 const NB_ITEMS = 400;
 
@@ -276,7 +276,7 @@ const Example32: React.FC = () => {
           model: Editors.autocompleter,
           massUpdate: true,
           customStructure: { label: 'name', value: 'code' },
-          collectionAsync: fetch(URL_COUNTRIES_COLLECTION_URL),
+          collectionAsync: fetch(COUNTRIES_COLLECTION_URL),
         },
         filter: {
           model: Filters.inputText,

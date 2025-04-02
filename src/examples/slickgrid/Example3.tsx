@@ -284,7 +284,7 @@ const Example3: React.FC = () => {
         // placeholder: '🔎︎ search city',
 
         // We can use the autocomplete through 3 ways 'collection', 'collectionAsync' or with your own autocomplete options
-        // collectionAsync: httpFetch.fetch(URL_COUNTRIES_COLLECTION),
+        // collectionAsync: httpFetch.fetch(COUNTRIES_COLLECTION_URL),
 
         // OR use your own autocomplete options, instead of fetch-jsonp, use React HttpClient or FetchClient
         // here we use fetch-jsonp just because I'm not sure how to configure React HttpClient with JSONP and CORS
@@ -378,7 +378,7 @@ const Example3: React.FC = () => {
         // 3 ways are supported (fetch, Promise or RxJS when available)
 
         // 1- use `fetch`
-        // collectionAsync: fetch(URL_SAMPLE_COLLECTION_DATA),
+        // collectionAsync: fetch(SAMPLE_COLLECTION_DATA_URL),
 
         // OR 2- use a Promise
         collectionAsync: Promise.resolve(SAMPLE_COLLECTION_DATA),
