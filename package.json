@@ -92,7 +92,7 @@
     "sortablejs": "^1.15.6"
   },
   "peerDependencies": {
-    "react": ">=18.0.0"
+    "react": ">=19.0.0"
   },
   "devDependencies": {
     "@4tw/cypress-drag-drop": "^2.3.0",
@@ -111,8 +111,8 @@
     "@types/fnando__sparkline": "^0.3.7",
     "@types/i18next-xhr-backend": "^1.4.2",
     "@types/node": "^22.13.17",
-    "@types/react": "^18.3.20",
-    "@types/react-dom": "^18.3.5",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.1",
     "@types/sortablejs": "^1.15.8",
     "@types/text-encoding-utf-8": "^1.0.5",
     "@vitejs/plugin-react": "^4.3.4",
@@ -134,8 +134,8 @@
     "isomorphic-fetch": "^3.0.0",
     "native-copyfiles": "^0.3.2",
     "npm-run-all2": "^7.0.2",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "react-i18next": "^15.4.1",
     "react-router-dom": "^7.4.1",
     "regenerator-runtime": "^0.14.1",
