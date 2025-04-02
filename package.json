@@ -88,7 +88,7 @@
     "@slickgrid-universal/pagination-component": "~5.13.3",
     "@slickgrid-universal/row-detail-view-plugin": "~5.13.3",
     "dequal": "^2.0.3",
-    "i18next": "^23.16.8",
+    "i18next": "^24.2.3",
     "sortablejs": "^1.15.6"
   },
   "peerDependencies": {
@@ -110,7 +110,7 @@
     "@slickgrid-universal/text-export": "~5.13.3",
     "@types/fnando__sparkline": "^0.3.7",
     "@types/i18next-xhr-backend": "^1.4.2",
-    "@types/node": "^22.13.17",
+    "@types/node": "^22.14.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.1",
     "@types/sortablejs": "^1.15.8",
@@ -130,7 +130,7 @@
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.2.0",
     "globals": "^16.0.0",
-    "i18next-http-backend": "^2.7.3",
+    "i18next-http-backend": "^3.0.2",
     "isomorphic-fetch": "^3.0.0",
     "native-copyfiles": "^0.3.2",
     "npm-run-all2": "^7.0.2",
