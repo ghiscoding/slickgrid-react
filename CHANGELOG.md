@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.13.3](https://github.com/ghiscoding/slickgrid-react/compare/v5.13.2...v5.13.3) (2025-04-02)
+
+### Bug Fixes
+
+* findItemInTreeStructure() shouldn't throw w/large dataset ([#488](https://github.com/ghiscoding/slickgrid-react/issues/488)) ([eedbfb6](https://github.com/ghiscoding/slickgrid-react/commit/eedbfb66dab39db71d82ab4da54fa15e8de7f94c))
+
 ## [5.13.2](https://github.com/ghiscoding/slickgrid-react/compare/v5.13.1...v5.13.2) (2025-03-29)
 
 ### Bug Fixes
