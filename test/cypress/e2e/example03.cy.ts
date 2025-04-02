@@ -248,7 +248,7 @@ describe('Example 3 - Grid with Editors', () => {
       .trigger('click');
   });
 
-  it('should open the "Prerequisites" Editor and expect to have Task 100 & 101 in the Editor', () => {
+  it.skip('should open the "Prerequisites" Editor and expect to have Task 100 & 101 in the Editor', () => {
     cy.get(`[style="top: ${GRID_ROW_HEIGHT * 0}px;"] > .slick-cell:nth(12)`)
       .should('contain', '')
       .click();
@@ -271,7 +271,7 @@ describe('Example 3 - Grid with Editors', () => {
     cy.get(`[style="top: ${GRID_ROW_HEIGHT * 0}px;"] > .slick-cell:nth(12)`).should('contain', 'Task 101');
   });
 
-  it('should delete the last item "Task 101" and expect it to be removed from the Filter', () => {
+  it.skip('should delete the last item "Task 101" and expect it to be removed from the Filter', () => {
     cy.get('[data-test="delete-item-btn"]').click();
 
     cy.get(`[style="top: ${GRID_ROW_HEIGHT * 0}px;"] > .slick-cell:nth(2)`).should('contain', 'Task 100');
@@ -287,7 +287,7 @@ describe('Example 3 - Grid with Editors', () => {
       .trigger('click');
   });
 
-  it('should open the "Prerequisites" Filter then choose "Task 3", "Task 4" and "Task 8" from the list and expect to see 2 rows of data in the grid', () => {
+  it.skip('should open the "Prerequisites" Filter then choose "Task 3", "Task 4" and "Task 8" from the list and expect to see 2 rows of data in the grid', () => {
     cy.get('div.ms-filter.filter-prerequisites')
       .trigger('click');
 

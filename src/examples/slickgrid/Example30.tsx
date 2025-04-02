@@ -24,7 +24,7 @@ import {
   SortComparers,
   type VanillaCalendarOption,
 } from '../../slickgrid-react';
-import URL_COUNTRIES_COLLECTION from './data/countries.json';
+import COUNTRIES_COLLECTION from './data/countries.json';
 
 import './example30.scss'; // provide custom CSS/SASS styling
 
@@ -313,7 +313,7 @@ const Example30: React.FC = () => {
           model: Editors.autocompleter,
           massUpdate: true,
           customStructure: { label: 'name', value: 'code' },
-          collectionAsync: Promise.resolve(URL_COUNTRIES_COLLECTION),
+          collectionAsync: Promise.resolve(COUNTRIES_COLLECTION),
           editorOptions: { minLength: 0 }
         },
         filter: {

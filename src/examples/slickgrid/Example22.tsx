@@ -9,7 +9,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import './example22.scss';
 
-import URL_CUSTOMERS_URL from './data/customers_100.json?url';
+import CUSTOMERS_URL from './data/customers_100.json?url';
 
 const Example22: React.FC = () => {
   const [gridOptions1, setGridOptions1] = useState<GridOption | undefined>(undefined);
@@ -83,7 +83,7 @@ const Example22: React.FC = () => {
 
   async function loadGrid2Data() {
     // load data with Fetch
-    const response2 = await fetch(URL_CUSTOMERS_URL);
+    const response2 = await fetch(CUSTOMERS_URL);
     const dataset2 = await response2['json']();
 
     setDataset2(dataset2);
