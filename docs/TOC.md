@@ -92,6 +92,6 @@
 
 ## Migrations
 
-* [Migration Guide to 3.x](migrations/migration-to-3.x.md)
-* [Migration Guide to 4.x](migrations/migration-to-4.x.md)
-* [Migration Guide to 5.x](migrations/migration-to-5.x.md)
+* [Migration Guide to 3.x (2023-05-29)](migrations/migration-to-3.x.md)
+* [Migration Guide to 4.x (2023-12-15)](migrations/migration-to-4.x.md)
+* [Migration Guide to 5.x (2024-05-10)](migrations/migration-to-5.x.md)
