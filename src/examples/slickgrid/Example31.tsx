@@ -34,7 +34,7 @@ const Example31: React.FC = () => {
   const [genderCollection] = useState([{ value: 'male', label: 'male' }, { value: 'female', label: 'female' }]);
   const [hideSubTitle, setHideSubTitle] = useState(false);
 
-  const gridOptionsRef = useRef<GridOption>();
+  const gridOptionsRef = useRef<GridOption>(null);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
   useEffect(() => {

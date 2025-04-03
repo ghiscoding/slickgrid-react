@@ -34,7 +34,7 @@ const Example35: React.FC = () => {
   const [fetchResult, setFetchResult] = useState('');
   const [hideSubTitle, setHideSubTitle] = useState(false);
 
-  const gridOptionsRef = useRef<GridOption>();
+  const gridOptionsRef = useRef<GridOption>(null);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
 
   useEffect(() => {
@@ -242,7 +242,7 @@ const Example35: React.FC = () => {
       },
     };
     reactGridRef.current?.slickGrid.setOptions(gridOptions);
-    gridOptionsRef.current = reactGridRef.current?.slickGrid.getOptions();
+    gridOptionsRef.current = reactGridRef.current?.slickGrid.getOptions() || {};
   }
 
   async function switchLanguage() {

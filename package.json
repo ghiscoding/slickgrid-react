@@ -88,11 +88,11 @@
     "@slickgrid-universal/pagination-component": "~5.13.3",
     "@slickgrid-universal/row-detail-view-plugin": "~5.13.3",
     "dequal": "^2.0.3",
-    "i18next": "^23.16.8",
+    "i18next": "^24.2.3",
     "sortablejs": "^1.15.6"
   },
   "peerDependencies": {
-    "react": ">=18.0.0"
+    "react": ">=19.0.0"
   },
   "devDependencies": {
     "@4tw/cypress-drag-drop": "^2.3.0",
@@ -110,9 +110,9 @@
     "@slickgrid-universal/text-export": "~5.13.3",
     "@types/fnando__sparkline": "^0.3.7",
     "@types/i18next-xhr-backend": "^1.4.2",
-    "@types/node": "^22.13.17",
-    "@types/react": "^18.3.20",
-    "@types/react-dom": "^18.3.5",
+    "@types/node": "^22.14.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.1",
     "@types/sortablejs": "^1.15.8",
     "@types/text-encoding-utf-8": "^1.0.5",
     "@vitejs/plugin-react": "^4.3.4",
@@ -130,17 +130,17 @@
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.2.0",
     "globals": "^16.0.0",
-    "i18next-http-backend": "^2.7.3",
+    "i18next-http-backend": "^3.0.2",
     "isomorphic-fetch": "^3.0.0",
     "native-copyfiles": "^0.3.2",
     "npm-run-all2": "^7.0.2",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "react-i18next": "^15.4.1",
     "react-router-dom": "^7.4.1",
     "regenerator-runtime": "^0.14.1",
     "release-it": "^19.0.0-next.3",
-    "rimraf": "^5.0.10",
+    "rimraf": "^6.0.1",
     "rxjs": "^7.8.2",
     "sass": "^1.86.1",
     "typescript": "^5.8.2",
@@ -150,7 +150,7 @@
     "vite-tsconfig-paths": "^5.1.4"
   },
   "engines": {
-    "node": ">=18.19.0"
+    "node": ">=20.0.0"
   },
   "resolutions": {
     "caniuse-lite": "1.0.30001707"

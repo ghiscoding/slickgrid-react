@@ -25,7 +25,7 @@ const Example40: React.FC = () => {
   const [hideSubTitle, setHideSubTitle] = useState(false);
 
   const shouldResetOnSortRef = useRef(false);
-  const gridOptionsRef = useRef<GridOption>();
+  const gridOptionsRef = useRef<GridOption>(null);
   const [metrics, setMetrics] = useState({
     itemCount: FETCH_SIZE,
     totalItemCount: FETCH_SIZE,

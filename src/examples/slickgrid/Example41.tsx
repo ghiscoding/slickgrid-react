@@ -16,7 +16,7 @@ const Example41: React.FC = () => {
   const [gridOptions, setGridOptions] = useState<GridOption | undefined>(undefined);
   const [hideSubTitle, setHideSubTitle] = useState(false);
 
-  const dragHelperRef = useRef<HTMLElement>();
+  const dragHelperRef = useRef<HTMLElement>(null);
   const dragRowsRef = useRef<number[]>([]);
   const dragModeRef = useRef('');
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);

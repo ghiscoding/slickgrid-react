@@ -1623,7 +1623,7 @@ export class SlickgridReact<TData = any> extends React.Component<SlickgridReactP
 
   render() {
     return (
-      <div id={`slickGridContainer-${this.props.gridId}`} className="grid-pane" ref={elm => this._elm = elm} >
+      <div id={`slickGridContainer-${this.props.gridId}`} className="grid-pane" ref={elm => { this._elm = elm as HTMLDivElement; }} >
         {/* <!-- Header slot if you need to create a complex custom header --> */}
         {this.props.header && <div className="header">{this.props.header}</div>}
 

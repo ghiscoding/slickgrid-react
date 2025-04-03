@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react';
 import dns from 'node:dns';
 import { defineConfig } from 'vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 dns.setDefaultResultOrder('verbatim');
 
@@ -19,7 +20,10 @@ export default defineConfig(() => {
         },
       },
     },
-    plugins: [react()],
+    plugins: [
+      react({ jsxRuntime: 'automatic' }),
+      tsconfigPaths(),
+    ],
     preview: {
       port: 8080
     },
