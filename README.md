@@ -8,6 +8,11 @@
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/slickgrid-react?color=success&label=gzip)](https://bundlephobia.com/result?p=slickgrid-react)
 [![Actions Status](https://github.com/ghiscoding/slickgrid-react/workflows/CI%20Build/badge.svg)](https://github.com/ghiscoding/slickgrid-react/actions)
 
+## Structure Change (happening soon)
+> [!NOTE]
+> Please note that Angular-Slickgrid (and all other supported frameworks) will soon be moved under the [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal) project.
+> This will happen in the next major version, which is expected in Q2 of 2025. The installation remains the same `npm install angular-slickgrid`, it's just the project that will be moved into a central location (easier to maintain).
+
 ### Brief introduction
 One of the best JavasSript data grid [SlickGrid](https://github.com/mleibman/SlickGrid), which was originally developed by @mleibman, is now available to the React world. SlickGrid beats most other data grids in terms of features, customizability & performance (running smoothly with even a million rows). Slickgrid-React is a wrapper on top of [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal/) (which is a dependency), in the early beginning we used the `6pac/SlickGrid` fork but that was dropped in >=[v4.0](https://github.com/ghiscoding/slickgrid-react/releases/tag/v4.0.2) since Slickgrid-Universal is now a standalone project. SlickGrid was also recently rewritten with browser native code (no more ~jQuery~ 🎉).
 
