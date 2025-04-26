@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.14.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.13.4...v5.14.0) (2025-04-26)
+
+### Features
+
+* allow providing custom date format via base Date Formatter ([#496](https://github.com/ghiscoding/slickgrid-react/issues/496)) ([50b95bd](https://github.com/ghiscoding/slickgrid-react/commit/50b95bd9e9e87af5573d2bda71815cc49fe973d1))
+* **filter:** add `collectionLazy` callback to Column Filter ([#495](https://github.com/ghiscoding/slickgrid-react/issues/495)) ([c0960d4](https://github.com/ghiscoding/slickgrid-react/commit/c0960d42d61e4b8c8c4c74048f06e29c3b8ff80f))
+
 ## [5.13.4](https://github.com/ghiscoding/slickgrid-react/compare/v5.13.3...v5.13.4) (2025-04-10)
 
 ### Bug Fixes
