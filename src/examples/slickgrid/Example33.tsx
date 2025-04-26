@@ -21,7 +21,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import './example33.scss';
 
 const FAKE_SERVER_DELAY = 500;
-const NB_ITEMS = 500;
+const NB_ITEMS = 1000;
 
 const Example33: React.FC = () => {
   const [columnDefinitions, setColumnDefinitions] = useState<Column[]>([]);
@@ -30,6 +30,7 @@ const Example33: React.FC = () => {
   const [serverWaitDelay, setServerWaitDelay] = useState<number>(FAKE_SERVER_DELAY);
   const [editCommandQueue] = useState<EditCommand[]>([]);
   const [hideSubTitle, setHideSubTitle] = useState(false);
+  const [showLazyLoading, setShowLazyLoading] = useState(false);
 
   const serverWaitDelayRef = useRef(serverWaitDelay);
   const reactGridRef = useRef<SlickgridReactInstance | null>(null);
@@ -240,18 +241,32 @@ const Example33: React.FC = () => {
         },
         filter: {
           // collectionAsync: fetch(SAMPLE_COLLECTION_DATA_URL),
-          collectionAsync: new Promise((resolve) => {
-            window.setTimeout(() => {
-              resolve(Array.from(Array(dataset?.length).keys()).map(k => ({ value: k, label: `Task ${k}` })));
+          // collectionAsync: new Promise((resolve) => {
+          //   window.setTimeout(() => {
+          //     resolve(Array.from(Array(dataset.value?.length).keys()).map((k) => ({ value: k, label: `Task ${k}` })));
+          //   });
+          // }),
+          collectionLazy: () => {
+            setShowLazyLoading(true);
+
+            return new Promise((resolve) => {
+              window.setTimeout(() => {
+                setShowLazyLoading(false);
+                resolve(Array.from(Array((dataset || []).length).keys()).map((k) => ({ value: k, label: `Task ${k}` })));
+              }, serverWaitDelayRef.current);
             });
-          }),
+          },
+          // onInstantiated: (msSelect) => console.log('ms-select instance', msSelect),
           customStructure: {
             label: 'label',
             value: 'value',
             labelPrefix: 'prefix',
           },
           collectionOptions: {
-            separatorBetweenTextLabels: ' '
+            separatorBetweenTextLabels: ' ',
+          },
+          filterOptions: {
+            minHeight: 70,
           },
           model: Filters.multipleSelect,
           operator: OperatorType.inContains,
@@ -519,13 +534,17 @@ const Example33: React.FC = () => {
         </ul>
       </div>
 
-
-      <div style={{ marginBottom: '20px' }}>
-        <label htmlFor="pinned-rows">Simulated Server Delay (ms): </label>
-        <input type="number" id="server-delay" data-test="server-delay" style={{ width: '60px' }}
-          value={serverWaitDelay}
-          onInput={($event) => handleServerDelayInputChange($event)}
-        />
+      <div className="row">
+        <div className="col" style={{ marginBottom: '20px' }}>
+          <label htmlFor="pinned-rows">Simulated Server Delay (ms): </label>
+          <input type="number" id="server-delay" data-test="server-delay" style={{ width: '60px' }}
+            value={serverWaitDelay}
+            onInput={($event) => handleServerDelayInputChange($event)}
+          />
+        </div>
+        <div className={`alert alert-info is-narrow col ${!showLazyLoading ? 'invisible' : ''}`} data-test="alert-lazy">
+          Lazy loading collection...
+        </div>
       </div>
 
       <div id="smaller-container" style={{ width: '950px' }}>
