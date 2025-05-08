@@ -10,7 +10,7 @@
 
 ## Structure Change (happening soon)
 > [!NOTE]
-> Please note that Angular-Slickgrid (and all other supported frameworks) will soon be moved under the [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal) project.
+> Please note that Slickgrid-React (and all other supported frameworks) will soon be moved under the [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal) project.
 > This will happen in the next major version, which is expected to happen in May 2025. The installation will remain the same `npm install slickgrid-react`, it's just the project that will be moved into a more central location (much easier to maintain).
 
 ### Brief introduction
