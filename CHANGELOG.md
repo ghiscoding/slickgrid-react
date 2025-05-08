@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.14.1](https://github.com/ghiscoding/slickgrid-react/compare/v5.14.0...v5.14.1) (2025-05-08)
+
+### Bug Fixes
+
+* Row Detail open/close multiple times should always re-render ([#499](https://github.com/ghiscoding/slickgrid-react/issues/499)) ([9f05208](https://github.com/ghiscoding/slickgrid-react/commit/9f052083444dfda8f2da5665449684eea31a5c70))
+
 ## [5.14.0](https://github.com/ghiscoding/slickgrid-react/compare/v5.13.4...v5.14.0) (2025-04-26)
 
 ### Features
