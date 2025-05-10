@@ -8,10 +8,11 @@
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/slickgrid-react?color=success&label=gzip)](https://bundlephobia.com/result?p=slickgrid-react)
 [![Actions Status](https://github.com/ghiscoding/slickgrid-react/workflows/CI%20Build/badge.svg)](https://github.com/ghiscoding/slickgrid-react/actions)
 
-## Structure Change (happening soon)
-> [!NOTE]
-> Please note that Slickgrid-React (and all other supported frameworks) will soon be moved under the [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal) project.
-> This will happen in the next major version, which is expected to happen in May 2025. The installation will remain the same `npm install slickgrid-react`, it's just the project that will be moved into a more central location (much easier to maintain).
+## Project moved under [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal)
+> [!CAUTION]
+> This project (and all other supported frameworks) were moved directly into the [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal) project.
+> Any new code change will now happen directly under Slickgrid-Universal and no more code will be pushed in here
+> Slickgrid-React installation remains the same `npm install slickgrid-react`, head over [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal) for more details.
 
 ### Brief introduction
 One of the best JavasSript data grid [SlickGrid](https://github.com/mleibman/SlickGrid), which was originally developed by @mleibman, is now available to the React world. SlickGrid beats most other data grids in terms of features, customizability & performance (running smoothly with even a million rows). Slickgrid-React is a wrapper on top of [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal/) (which is a dependency), in the early beginning we used the `6pac/SlickGrid` fork but that was dropped in >=[v4.0](https://github.com/ghiscoding/slickgrid-react/releases/tag/v4.0.2) since Slickgrid-Universal is now a standalone project. SlickGrid was also recently rewritten with browser native code (no more ~jQuery~ 🎉).
