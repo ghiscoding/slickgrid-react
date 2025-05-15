@@ -8,11 +8,11 @@
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/slickgrid-react?color=success&label=gzip)](https://bundlephobia.com/result?p=slickgrid-react)
 [![Actions Status](https://github.com/ghiscoding/slickgrid-react/workflows/CI%20Build/badge.svg)](https://github.com/ghiscoding/slickgrid-react/actions)
 
-## Project is moving under [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal) repo
+## Project got moved under [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal) repo
 > [!CAUTION]
 > This project (and all other supported frameworks) got moved into the [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal) project.
 > From v9.0 and above, any new code change will happen strictly and only under the [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal) project and no longer in here.
-> Note that Slickgrid-React installation remains the same `npm install slickgrid-react`, head over to [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal) for more details.
+> Note that Slickgrid-React installation remains the same as before `npm install slickgrid-react`, head over to [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal) for more details and latest codebase.
 
 ### Brief introduction
 One of the best JavasSript data grid [SlickGrid](https://github.com/mleibman/SlickGrid), which was originally developed by @mleibman, is now available to the React world. SlickGrid beats most other data grids in terms of features, customizability & performance (running smoothly with even a million rows). Slickgrid-React is a wrapper on top of [Slickgrid-Universal](https://github.com/ghiscoding/slickgrid-universal/) (which is a dependency), in the early beginning we used the `6pac/SlickGrid` fork but that was dropped in >=[v4.0](https://github.com/ghiscoding/slickgrid-react/releases/tag/v4.0.2) since Slickgrid-Universal is now a standalone project. SlickGrid was also recently rewritten with browser native code (no more ~jQuery~ 🎉).
